@@ -1,0 +1,36 @@
+.modal-header {
+  height: 56px !important;
+  background-color: #0074bd !important;
+
+  .modal-title {
+    color: #fff;
+  }
+
+  .btn-close {
+    color: #fff;
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    font-size: 16px;
+  }
+}
+
+.div-bill {
+  margin: 0 auto;
+
+  .bill {
+    border-radius: 8px;
+    margin: 10px 20px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #e6f1f8;
+    }
+  }
+}
+
+.active {
+  background-color: #e6f1f8;
+}

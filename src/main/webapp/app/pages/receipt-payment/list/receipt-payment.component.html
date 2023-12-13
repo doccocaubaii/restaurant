@@ -1,0 +1,440 @@
+<div class="d-flex justify-content-between">
+  <h1 class="page-header" jhiTranslate="easyPos.receipt.title"></h1>
+</div>
+<div class="d-flex receipt-payment-container">
+  <div class="col-sm-12 col-lg-12 me-3 box-left">
+    <div class="tab-content m-0 panel-1">
+      <div class="d-flex mb-3 total-box pt-7px pb-7px">
+        <div class="d-flex col-12 col-sm-6 align-items-center justify-content-center receipt-box">
+          <div class="stats-icon col-3 icon-receipt me-3 d-flex align-items-center justify-content-center">
+            <span [innerHTML]="ICON_ARROW_DOWN_SOLID | safeHtml"></span>
+          </div>
+          <div class="d-flex" style="flex-direction: column">
+            <div class="total-money-receipt">{{ receiptAmount | number }}</div>
+            <div>
+              <label class="total-text">Tổng thu hàng ngày</label>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex col-12 col-sm-6 align-items-center justify-content-center receipt-box">
+          <div class="stats-icon col-3 icon-payment me-3 d-flex align-items-center justify-content-center">
+            <span [innerHTML]="ICON_ARROW_UP_SOLID | safeHtml"></span>
+          </div>
+          <div class="d-flex" style="flex-direction: column">
+            <div class="total-money-payment">{{ paymentAmount | number }}</div>
+            <div>
+              <label class="total-text">Tổng chi hàng ngày</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="panel-custom">
+  <ul class="nav nav-pills mb-2">
+    <li class="nav-item" (click)="searchByType(undefined)">
+      <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link nav-receipt" [class.active]="!typeSelect && typeSelect !== 0">
+        <span class="d-sm-none" jhiTranslate="global.info.all">Tất cả</span>
+        <span class="d-sm-block d-none" jhiTranslate="global.info.all">Tất cả</span>
+      </a>
+    </li>
+    <li class="nav-item" (click)="searchByType(0)" [style]="utilsService.getStyleByCode('TT')">
+      <a href="#nav-pills-tab-2" data-bs-toggle="tab" class="nav-link nav-receipt" [class.active]="typeSelect == 0">
+        <span class="d-sm-none" jhiJsonCustom="TT"></span>
+        <span class="d-sm-block d-none" jhiJsonCustom="TT"></span>
+      </a>
+    </li>
+    <li class="nav-item" (click)="searchByType(1)" [style]="utilsService.getStyleByCode('TC')">
+      <a href="#nav-pills-tab-5" data-bs-toggle="tab" class="nav-link nav-receipt" [class.active]="typeSelect == 1">
+        <span class="d-sm-none" jhiJsonCustom="TC"></span>
+        <span class="d-sm-block d-none" jhiJsonCustom="TC"></span>
+      </a>
+    </li>
+  </ul>
+</div>
+<div class="group-form-custom mt-5px mb-15px d-flex row" style="gap: 30px">
+  <div class="col-12 group-form-custom mt-5px mb-150px d-flex row">
+    <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+      <label class="form-label label-search" jhiTranslate="global.info.fromDate"></label>
+      <div class="item-search">
+        <input
+          class="form-control"
+          placeholder="DD/MM/YYYY"
+          name="d3"
+          ngbDatepicker
+          dateFormat
+          #d3="ngbDatepicker"
+          [maxDate]="utilsService.getFromToMoment(toDate)"
+          [(ngModel)]="fromDate"
+          (ngModelChange)="getListTransaction()"
+        />
+        <button class="btn form-control btn-datepicker" (click)="d3.toggle()" type="button">
+          <fa-icon [icon]="'calendar-alt'"></fa-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+      <label class="form-label label-search" jhiTranslate="global.info.toDate"></label>
+      <div class="item-search">
+        <input
+          class="form-control"
+          placeholder="DD/MM/YYYY"
+          name="d2"
+          #c2="ngModel"
+          [minDate]="utilsService.getFromToMoment(fromDate, true)"
+          [maxDate]="utilsService.getCurrentDate()"
+          [(ngModel)]="toDate"
+          ngbDatepicker
+          dateFormat
+          #d2="ngbDatepicker"
+          (ngModelChange)="getListTransaction()"
+        />
+        <button class="btn form-control btn-datepicker" (click)="d2.toggle()" type="button">
+          <fa-icon [icon]="'calendar-alt'"></fa-icon>
+        </button>
+      </div>
+    </div>
+    <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3 search-text">
+      <!-- <label class="form-label label-search">Tên khách hàng</label> -->
+      <div class="item-search">
+        <input
+          name="keyword"
+          [(ngModel)]="searchTransactionReq.keyword"
+          (keyup.enter)="getListTransaction()"
+          (ngModelChange)="onDeleteKeywordSearch()"
+          class="form-control"
+          type="search"
+          placeholder="{{ 'easyPos.receipt.search.placeHolder' | translate }}"
+        />
+      </div>
+    </div>
+    <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+      <label class="form-label label-search d-block">&nbsp;</label>
+      <button (click)="getListTransaction()" class="btn-search" appDisableButton>
+        <fa-icon icon="search"></fa-icon>
+        <span jhiTranslate="global.info.search"></span>
+      </button>
+    </div>
+  </div>
+  <!-- <div class="col-1 group-form-custom mt-5px mb-20px d-flex row export" style="justify-content: flex-end">
+    <button class="btn btn-primary col-md-12 col-lg-6 btn-export">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g id="mingcute:download-2-fill" clip-path="url(#clip0_895_16925)">
+          <g id="Group">
+            <path
+              id="Vector"
+              d="M16.6667 12.0833C16.9982 12.0833 17.3161 12.215 17.5506 12.4494C17.785 12.6839 17.9167 13.0018 17.9167 13.3333V16.6667C17.9167 17.2192 17.6972 17.7491 17.3065 18.1398C16.9158 18.5305 16.3859 18.75 15.8333 18.75H4.16668C3.61414 18.75 3.08424 18.5305 2.69354 18.1398C2.30284 17.7491 2.08334 17.2192 2.08334 16.6667V13.3333C2.08334 13.0018 2.21504 12.6839 2.44946 12.4494C2.68388 12.215 3.00182 12.0833 3.33334 12.0833C3.66486 12.0833 3.98281 12.215 4.21723 12.4494C4.45165 12.6839 4.58334 13.0018 4.58334 13.3333V16.25H15.4167V13.3333C15.4167 13.0018 15.5484 12.6839 15.7828 12.4494C16.0172 12.215 16.3352 12.0833 16.6667 12.0833ZM10 1.25C10.3315 1.25 10.6495 1.3817 10.8839 1.61612C11.1183 1.85054 11.25 2.16848 11.25 2.5V10.03L12.6517 8.62833C12.8881 8.4046 13.2025 8.28192 13.5279 8.28637C13.8534 8.29082 14.1643 8.42205 14.3945 8.65216C14.6247 8.88227 14.7561 9.19311 14.7607 9.51857C14.7653 9.84404 14.6428 10.1585 14.4192 10.395L11.0308 13.7842C10.7574 14.0574 10.3866 14.2109 10 14.2109C9.61341 14.2109 9.24264 14.0574 8.96918 13.7842L5.58084 10.3958C5.35315 10.1601 5.22715 9.84433 5.23 9.51658C5.23285 9.18884 5.36431 8.87532 5.59607 8.64356C5.82783 8.4118 6.14135 8.28034 6.46909 8.27749C6.79684 8.27464 7.11259 8.40064 7.34834 8.62833L8.75001 10.03V2.5C8.75001 2.16848 8.88171 1.85054 9.11613 1.61612C9.35055 1.3817 9.66849 1.25 10 1.25Z"
+              fill="white"
+            />
+          </g>
+        </g>
+        <defs>
+          <clipPath id="clip0_895_16925">
+            <rect width="20" height="20" fill="white" />
+          </clipPath>
+        </defs>
+      </svg>
+    </button>
+  </div> -->
+</div>
+<div class="panel-action">
+  <ul class="nav">
+    <li class="nav-action cursor-pointer">
+      <a class="nav-link nav-link-action" (click)="openModalCreateTransaction(0)">
+        <i class="fa-solid fa-plus"></i>
+        <span class="d-sm-block ms-2">Khoản thu</span>
+      </a>
+    </li>
+    <li class="nav-action cursor-pointer">
+      <a class="nav-link nav-link-action" (click)="openModalCreateTransaction(1)">
+        <i class="fa-solid fa-plus"></i>
+        <span class="d-sm-block ms-2">Khoản chi</span>
+      </a>
+    </li>
+    <li
+      class="nav-action cursor-pointer"
+      [hidden]="paramCheckAll"
+      (click)="
+        paramCheckAll = true;
+        paramCheckAllPage = true;
+        utilsService.checkAll(lstTransactionRes, listSelected, paramCheckAll, this.paramCheckAllPage)
+      "
+    >
+      <a class="nav-link nav-link-action">
+        <fa-icon icon="check"></fa-icon>
+        <span class="d-sm-block ms-2">Chọn tất cả</span>
+      </a>
+    </li>
+    <li
+      class="nav-action cursor-pointer"
+      [hidden]="!paramCheckAll"
+      (click)="
+        paramCheckAll = false;
+        paramCheckAllPage = false;
+        utilsService.checkAll(lstTransactionRes, listSelected, paramCheckAll, this.paramCheckAllPage)
+      "
+    >
+      <a class="nav-link nav-link-action">
+        <span class="d-flex align-items-center" [innerHTML]="ICON_CANCEL_WHITE | safeHtml"></span>
+        <span class="d-sm-block ms-2">Bỏ chọn tất cả</span>
+      </a>
+    </li>
+    <li class="nav-action">
+      <a
+        class="nav-link nav-link-action"
+        (click)="deleteMultiTransaction()"
+        [class]="paramCheckAll || listSelected?.length > 0 ? '' : 'disable-button'"
+      >
+        <i class="fa-solid fa-trash-can"></i>
+        <span class="d-sm-block ms-2">Xóa giao dịch</span>
+      </a>
+    </li>
+  </ul>
+  <div class="d-flex justify-content-end align-items-center">
+    <div class="form-page-size">
+      <label
+        class="form-label form-label label-search me-2 mb-0 text-bold"
+        jhiTranslate="global.info.totalParam"
+        [translateValues]="{ count: totalItems || 0 }"
+      ></label>
+      <div class="form-select-size">
+        <ng-select
+          [items]="sizes"
+          class="select-value select-size"
+          bindLabel="name"
+          bindValue="id"
+          placeholder="Tất cả"
+          [(ngModel)]="size"
+          (ngModelChange)="onSearch()"
+        >
+        </ng-select>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="tab-content rounded-top panel rounded-0 m-0">
+  <div class="tab-pane fade active show">
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="table-responsive" style="height: calc(100vh - 411px); max-height: 46vh">
+          <table class="table editing-table">
+            <thead class="table-header-sticky">
+              <tr class="table-custom-header">
+                <th>
+                  <div class="custom-checkbox custom-contro col-checkbox">
+                    <input
+                      class="custom-control-input"
+                      id="checkAllForPage"
+                      type="checkbox"
+                      [disabled]="paramCheckAll"
+                      [(ngModel)]="paramCheckAllPage"
+                      (change)="utilsService.checkAllForPage(lstTransactionRes, listSelected, paramCheckAllPage)"
+                    /><label class="custom-control-label" for="checkAllForPage"></label>
+                  </div>
+                </th>
+                <th jhiTranslate="easyPos.receipt.detail.date">Ngày giao dịch</th>
+                <th jhiTranslate="easyPos.receipt.update.fund">Nguồn tiền</th>
+                <th jhiTranslate="easyPos.receipt.update.business">Phân loại</th>
+                <th jhiTranslate="easyPos.receipt.update.pay">Tổng chi</th>
+                <th jhiTranslate="easyPos.receipt.update.rec">Tổng thu</th>
+                <th jhiTranslate="easyPos.receipt.detail.typeDesc" style="border-right: 1px solid #b0d4eb !important">Mô tả</th>
+                <th jhiTranslate="global.info.action" class="text-center form-button">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let transaction of lstTransactionRes; let index = index">
+                <tr
+                  class="cursor-pointer table-custom-body"
+                  [class.editing-head]="idEditing == transaction.id"
+                  (click)="(transaction.id == idEditing); utilsService.scrollToTargets()"
+                >
+                  <td>
+                    <div class="custom-checkbox custom-contro col-checkbox">
+                      <input
+                        class="custom-control-input"
+                        id="exampleCustomCheckbox{{ index }}"
+                        name="exampleCustomCheckbox{{ index }}"
+                        type="checkbox"
+                        [(ngModel)]="transaction.check"
+                        (click)="utilsService.check(transaction, listSelected, paramCheckAll, selectedItem)"
+                      /><label class="custom-control-label" for="exampleCustomCheckbox{{ index }}"></label>
+                    </div>
+                  </td>
+                  <td (click)="getDetailTransaction(transaction.id)" style="text-align: center">
+                    {{ formatDate(transaction.date) }}
+                  </td>
+                  <td (click)="getDetailTransaction(transaction.id)" style="text-align: center" class="long-text">
+                    {{ transaction.no }}
+                  </td>
+                  <td (click)="getDetailTransaction(transaction.id)">
+                    {{ getBusinessTypeName(transaction.businessTypeId) }}
+                  </td>
+                  <td
+                    *ngIf="transaction.type == 1"
+                    (click)="getDetailTransaction(transaction.id)"
+                    class="long-text text-danger"
+                    style="font-weight: 700; text-align: right"
+                  >
+                    {{ transaction.amount | number }}
+                  </td>
+                  <td
+                    *ngIf="transaction.type == 1"
+                    (click)="getDetailTransaction(transaction.id)"
+                    class="long-text text-primary"
+                    style="font-weight: 700; text-align: center"
+                  >
+                    _
+                  </td>
+                  <td
+                    *ngIf="transaction.type == 0"
+                    (click)="getDetailTransaction(transaction.id)"
+                    class="long-text text-danger"
+                    style="font-weight: 700; text-align: center"
+                  >
+                    _
+                  </td>
+                  <td
+                    *ngIf="transaction.type == 0"
+                    (click)="getDetailTransaction(transaction.id)"
+                    class="long-text text-primary"
+                    style="font-weight: 700; text-align: right"
+                  >
+                    {{ transaction.amount | number }}
+                  </td>
+                  <td (click)="getDetailTransaction(transaction.id)">{{ transaction.note }}</td>
+                  <td class="text-center">
+                    <div class="list-action">
+                      <i
+                        class="fa-solid fa-pen-to-square"
+                        ngbTooltip="{{ 'global.button.edit' | translate }}"
+                        (click)="openModalUpdateTransaction(transaction.id)"
+                        *jhiHasAnyAuthority="authorRECEIPT_PAYMENT_UPDATE"
+                      >
+                      </i>
+                      <i
+                        class="fa-solid fa-trash-can"
+                        ngbTooltip="{{ 'global.button.delete' | translate }}"
+                        (click)="openModalDeleteTransaction(transaction)"
+                        *jhiHasAnyAuthority="authorRECEIPT_PAYMENT_DELETE"
+                      ></i>
+                    </div>
+                  </td>
+                </tr>
+                <tr
+                  *ngIf="transaction.id == idEditing && tractionSelect"
+                  [class.editing-body]="idEditing == transaction.id"
+                  class="scroll-target"
+                >
+                  <td [attr.colspan]="getColspan()">
+                    <div class="row wrap-order-detail">
+                      <div class="col-sm-12 col-md-6 right-order-detail-content">
+                        <div class="form-group form-input-custom detail-custom">
+                          <label class="form-label" jhiTranslate="easyPos.receipt.update.amount">Số tiền</label>
+                          <input type="text" [(ngModel)]="tractionSelect.amount" class="form-control" readonly jhiCurrencyNumber />
+                        </div>
+                        <div class="col-sm-12 col-md-6 form-group form-input-custom detail-custom">
+                          <label class="form-label" jhiTranslate="easyPos.receipt.update.business">Chọn loại nghiệp vụ</label>
+                          <div class="custom-select-wrapper custom-ng-select col-12">
+                            <ng-select
+                              class="w-100"
+                              [items]="lstBusinessTypeRes"
+                              bindLabel="businessTypeName"
+                              title="Tìm kiếm khách hàng"
+                              placeholder="{{ 'easyPos.receipt.search.businessPlaceHolder' | translate }}"
+                              bindValue="id"
+                              [virtualScroll]="true"
+                              [(ngModel)]="tractionSelect.businessType"
+                              [typeahead]="keywordBusiness$"
+                              disabled
+                            >
+                            </ng-select>
+                            <!-- <div
+                                    class="icon-right"
+                                    *ngIf="!tractionSelect.canEdit"
+                                    (click)="openModalCreateBusinessType(tractionSelect.type)"
+                                  >
+                                    <i class="icon-add fa-sharp fa-solid fa-plus" style="color: #1484c6"></i>
+                                  </div> -->
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-12 col-md-6 right-order-detail-content">
+                        <div class="form-group form-input-custom detail-custom">
+                          <label class="form-label with-label-name">Thời gian giao dịch</label>
+                          <div class="input-group">
+                            <input
+                              class="form-control"
+                              placeholder="YYYY-MM-DD"
+                              name="d2"
+                              #c3="ngModel"
+                              #d3="ngbDatepicker"
+                              [maxDate]="utilsService.getFromToMoment(now)"
+                              [(ngModel)]="date"
+                              readonly
+                              ngbDatepicker
+                            />
+                            <button class="btn btn-outline-secondary" (click)="d3.toggle()" disabled type="button">
+                              <i class="fa fa-calendar"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="form-group form-input-custom detail-custom">
+                          <label class="form-label" jhiTranslate="easyPos.receipt.update.note">Ghi chú</label>
+                          <input type="text" [(ngModel)]="tractionSelect.note" class="form-control" readonly />
+                        </div>
+                      </div>
+                      <div class="modal-footer mt-3 pe-2 justify-content-between" style="gap: 1.4rem">
+                        <div>
+                          <!-- <span class="p-2 text-danger" *ngIf="tractionSelect.canEdit" jhiTranslate="easyPos.receipt.notFix"
+                                  >Phieu nay khong duoc sua</span
+                                > -->
+                        </div>
+                        <!--                              <div class="d-flex" style="gap: 1.4rem">-->
+                        <!--                                <button type="button" class="exit-button-dialog d-flex align-items-center" (click)="cancelUpdate()">-->
+                        <!--                                  <span [innerHTML]="ICON_CANCEL | safeHtml"></span>&nbsp;-->
+                        <!--                                  <label jhiTranslate="global.entity.action.cancel">Hủy</label>-->
+                        <!--                                </button>-->
+                        <!--                                 <button-->
+                        <!--                                  type="button"-->
+                        <!--                                  class="save-button-dialog d-flex align-items-center"-->
+                        <!--                                  [style]="tractionSelect.canEdit ? 'background-color: #6ea5c6;' : ''"-->
+                        <!--                                  [disabled]="tractionSelect.canEdit"-->
+                        <!--                                  (click)="update()"-->
+                        <!--                                >-->
+                        <!--                                  <svg width="17" height="20" viewBox="0 0 17 20" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+                        <!--                                    <path-->
+                        <!--                                      d="M2 20C1.45 20 0.979002 19.804 0.587002 19.412C0.195002 19.02 -0.000664969 18.5493 1.69779e-06 18V5C1.69779e-06 4.71667 0.0960018 4.479 0.288002 4.287C0.480002 4.095 0.717335 3.99934 1 4C1.28334 4 1.521 4.096 1.713 4.288C1.905 4.48 2.00067 4.71734 2 5V18H12C12.2833 18 12.521 18.096 12.713 18.288C12.905 18.48 13.0007 18.7173 13 19C13 19.2833 12.904 19.521 12.712 19.713C12.52 19.905 12.2827 20.0007 12 20H2ZM6 16C5.45 16 4.979 15.804 4.587 15.412C4.195 15.02 3.99934 14.5493 4 14V2C4 1.45 4.196 0.979002 4.588 0.587002C4.98 0.195002 5.45067 -0.000664969 6 1.69779e-06H15C15.55 1.69779e-06 16.021 0.196002 16.413 0.588002C16.805 0.980002 17.0007 1.45067 17 2V14C17 14.55 16.804 15.021 16.412 15.413C16.02 15.805 15.5493 16.0007 15 16H6Z"-->
+                        <!--                                      fill="white"-->
+                        <!--                                    />-->
+                        <!--                                  </svg>-->
+                        <!--                                  &nbsp; Cập nhật-->
+                        <!--                                </button> -->
+                        <!--                              </div>-->
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="group-page-size" *ngIf="totalItems > 0">
+  <div class="from-pagination d-flex justify-content-center mt-10px">
+    <ngb-pagination
+      [collectionSize]="totalItems"
+      [page]="page"
+      [pageSize]="size"
+      [maxSize]="5"
+      [rotate]="true"
+      [boundaryLinks]="true"
+      (pageChange)="navigateToPage($event)"
+    ></ngb-pagination>
+  </div>
+</div>
+<!-- </div> -->

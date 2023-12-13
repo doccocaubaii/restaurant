@@ -1,0 +1,130 @@
+<h1 class="page-header">Thống kê hoạt động gần đây</h1>
+
+<div class="group-form-custom mt-10px mb-4 row">
+  <!--    formdate -->
+  <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+    <label class="form-label label-search" jhiTranslate="global.info.fromDate"></label>
+    <div class="item-search">
+      <input
+        class="form-control"
+        placeholder="DD/MM/YYYY"
+        name="d2"
+        #c3="ngModel"
+        [maxDate]="utilsService.getFromToMoment(toDate)"
+        [(ngModel)]="fromDate"
+        ngbDatepicker
+        #d3="ngbDatepicker"
+        dateFormat
+      />
+      <button class="btn form-control btn-datepicker" (click)="d3.toggle()" type="button">
+        <fa-icon [icon]="'calendar-alt'"></fa-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+    <label class="form-label label-search" jhiTranslate="global.info.toDate"></label>
+    <div class="item-search">
+      <input
+        class="form-control"
+        placeholder="DD/MM/YYYY"
+        [minDate]="utilsService.getFromToMoment(fromDate, true)"
+        [maxDate]="utilsService.getCurrentDate()"
+        name="d2"
+        #c2="ngModel"
+        [(ngModel)]="toDate"
+        ngbDatepicker
+        #d2="ngbDatepicker"
+        dateFormat
+      />
+      <button class="btn form-control btn-datepicker" (click)="d2.toggle()" type="button">
+        <fa-icon [icon]="'calendar-alt'"></fa-icon>
+      </button>
+    </div>
+  </div>
+
+  <button (click)="getData()" class="btn btn-sm btn-blue btn-search" style="width: fit-content; margin-left: 8px">
+    <fa-icon icon="search"></fa-icon>
+    <span jhiTranslate="global.info.search"></span>
+  </button>
+</div>
+
+<div class="panel-action" style="padding: 4px 0px">
+  <ul class="nav"></ul>
+
+  <div class="d-flex justify-content-end align-items-center">
+    <div class="form-page-size">
+      <label
+        class="form-label label-search me-2 mb-0 text-bold"
+        jhiTranslate="global.info.totalParam"
+        [translateValues]="{ count: totalItems || 0 }"
+      ></label>
+      <div class="form-select-size" *ngIf="totalItems > 0">
+        <ng-select
+          [items]="sizes"
+          class="select-value select-size"
+          bindLabel="name"
+          bindValue="id"
+          placeholder="Tất cả"
+          [(ngModel)]="searchReq.size"
+          (ngModelChange)="getData()"
+        >
+        </ng-select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-pane fade active show">
+  <div class="row">
+    <div class="col-xl-12">
+      <div class="panel panel-inverse">
+        <div class="table-responsive">
+          <table class="table editing-table">
+            <thead>
+              <tr class="table-custom-header">
+                <th>STT</th>
+                <th>Thời gian</th>
+                <th>Loại hoạt động</th>
+                <th>Mô tả chi tiết</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody *ngIf="totalItems > 0">
+              <ng-container *ngFor="let data of listData; index as i">
+                <tr class="table-custom-body">
+                  <td>{{ i + 1 }}</td>
+                  <td class="break-word-table text-center">{{ data.updateTime | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+                  <td class="break-word-table">{{ data.type === 1 ? 'Đơn hàng' : 'Hóa đơn' }}</td>
+                  <td class="break-word-table">{{ data.description }}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+            <tbody *ngIf="totalItems === 0">
+              <tr class="table-not-data">
+                <td colspan="8">
+                  <span jhiTranslate="easyPos.product.info.notData"></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="group-page-size">
+    <div class="from-pagination d-flex justify-content-center" *ngIf="totalItems > 0">
+      <ngb-pagination
+        class="pagination"
+        [collectionSize]="totalItems || 0"
+        [pageSize]="searchReq.size"
+        [page]="searchReq.page"
+        aria-label="Default pagination"
+        [directionLinks]="true"
+        [maxSize]="5"
+        (pageChange)="loadMore($event)"
+      ></ngb-pagination>
+    </div>
+  </div>
+</div>
+<!-- END pos-stock-body -->

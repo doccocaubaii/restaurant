@@ -1,0 +1,497 @@
+<div class="pos pos-stock" id="pos-stock">
+  <div
+    class="pos pos-customer"
+    id="pos-customer"
+    [ngClass]="{
+      'pos-mobile-sidebar-toggled': posMobileSidebarToggled
+    }"
+  >
+    <!-- BEGIN pos-stock-body -->
+    <div class="pos-stock-body">
+      <!-- BEGIN pos-stock-content -->
+      <div class="pos-stock-content col-md-12 d-flex">
+        <div class="pt-0 form-intake form-product">
+          <div class="inner-form">
+            <label class="input-field">
+              <input
+                style="width: 92%; border-radius: 6px 0 0 6px !important"
+                class="form-control input-search fs-16px"
+                id="choices-text-preset-values"
+                type="search"
+                [(ngModel)]="filterProduct.keyword"
+                (keyup.enter)="onSearch()"
+                (ngModelChange)="onDeleteKeywordSearch()"
+                placeholder="Tìm kiếm sản phẩm ..."
+              />
+              <div style="width: 8%" class="d-flex align-items-center group-icon-search">
+                <span style="border-radius: 0 6px 6px 0" class="box-icon-search" (click)="onSearch()">
+                  <span class="d-flex icon-search-product" [innerHTML]="ICON_SEARCH_LG | safeHtml"></span>
+                </span>
+              </div>
+            </label>
+          </div>
+
+          <div (scroll)="loadMore($event)" class="pos-stock-content-container ps-0 pe-0 pos-scroll-bar">
+            <div class="row gx-0 prd-content">
+              <!--              (scroll)="onScroll()"-->
+              <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 custom-product" (click)="onCreateProduct()">
+                <div class="pos-stock-product add-product">
+                  <jhi-base-create-product></jhi-base-create-product>
+                </div>
+              </div>
+              <div
+                class="col-xl-3 col-lg-3 col-md-4 col-sm-6 custom-product"
+                *ngFor="let product of lstProduct"
+                (click)="onSelectProductIntake(product)"
+              >
+                <div class="pos-stock-product">
+                  <jhi-base-form-product [product]="product" type="warehouse"></jhi-base-form-product>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-inward">
+          <div class="pos-group-instake pe-0">
+            <div class="pos-intake form-intake flex-infor">
+              <div class="intake-infor pt-0 customer-info">
+                <label class="title-intake">{{intakeReq.type === 2 ? 'Thông tin xuất kho' : 'Thông tin nhập kho'}}</label>
+                <div class="group-select-addition ng-select-custom">
+                  <ng-select
+                    [items]="lstCustomer"
+                    id="lstCustomer"
+                    name="lstCustomer"
+                    class="select-value select-add-value"
+                    placeholder="Chọn nhà cung cấp"
+                    bindLabel="name"
+                    bindValue="id"
+                    [(ngModel)]="intakeReq.customerId"
+                    (change)="onChangeCustomer($event)"
+                    [virtualScroll]="true"
+                    [typeahead]="keywordCustomer$"
+                    (scrollToEnd)="loadMoreCustomer()"
+                  >
+                  </ng-select>
+                  <div class="button-add-value" (click)="onCreateCustomer()">
+                    <i class="fa-solid fa-plus"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="intake-infor" [class.sm-product]="posSidebarFooterStatus" [class.lg-product]="!posSidebarFooterStatus">
+                <label class="title-intake">Danh sách sản phẩm </label>
+                <div
+                  class="pos-scroll-bar p-2 pt-0 pb-0"
+                  [class.sm-lst-product]="posSidebarFooterStatus"
+                  [class.lg-lst-product]="!posSidebarFooterStatus"
+                  *ngIf="lstProductIntake"
+                >
+                  <div
+                    class="product-intake col-md-12 mt-2 mb-2"
+                    *ngFor="let product of lstProductIntake"
+                    (click)="onUpdateProductIntake(product)"
+                  >
+                    <!--                    -->
+                    <div
+                      class="img-intake"
+                      [class.non-url]="!product.imageUrl"
+                      [style.background-image]="
+                        'url(' + (product.imageUrl ? product.imageUrl : '../../../../content/icon/san-pham/products.svg') + ')'
+                      "
+                    ></div>
+                    <div class="group-infor-inward">
+                      <div class="basic-infor">
+                        <div class="name-intake">
+                          <label class="title-product-name"> {{ product.productName }} </label>
+                          <div class="quantity-group">
+                            <a class="btn-minus" (click)="onMinusIntake($event, product)">
+                              <i class="fa-solid fa-minus"></i>
+                            </a>
+                            <input
+                              type="text"
+                              placeholder="0"
+                              [(ngModel)]="product.numberIntake"
+                              jhiCurrencyNumber
+                              [numberRound]="6"
+                              class="form-control input-quantity ng-untouched ng-pristine ng-valid"
+                              autocomplete="off"
+                              (click)="onClickQuantity($event)"
+                              (ngModelChange)="onChangeQuantity(product)"
+                              (blur)="onDeleteProduct(product)"
+                              [maxvalue]="(intakeReq.type === 2 && overStock === 0) ? product.inventoryCount : null"
+                            />
+                            <a class="btn btn-plus" (click)="onPlusIntake($event, product)">
+                              <i class="fa-solid fa-plus"></i>
+                            </a>
+                          </div>
+                          <label>
+                            <span class="title-product-description" jhiTranslate="easyPos.product.info.unit"></span>
+                            <span class="title-product-unit"> {{ product.unit }} </span>
+                          </label>
+                        </div>
+                        <div class="number-intake text-end">
+                          <span>{{ product.purchasePrice | number }} đ</span>
+                        </div>
+                        <div class="wrap-delete-icon">
+                          <fa-icon
+                            [icon]="'xmark'"
+                            class="cursor-pointer delete-product"
+                            (click)="onDismisProductIntake($event, product)"
+                          ></fa-icon>
+                        </div>
+                      </div>
+                      <div class="amount">
+                        <label class="title title-product-purchasePrice"> Tổng </label>
+                        <label class="title title-product-purchasePrice"> {{ product.amountIntake | number }} đ</label>
+                      </div>
+                    </div>
+                    <ng-container *ngIf="activeRemoveProduct == product.productProductUnitId">
+                      <div class="pos-remove-confirmation" (click)="onClickFormDelete($event)">
+                        <span [innerHTML]="ICON_DELETE_SM | safeHtml"></span>
+                        <div class="alert" jhiTranslate="easyPos.product.notify.delete" style="max-width: 50%">
+                          Bạn có chắc chắn muốn xóa sản phẩm?
+                        </div>
+                        <a class="btn btn-white ms-auto me-2" jhiTranslate="global.entity.action.cancel" (click)="cancel($event)">Hủy</a>
+                        <a
+                          class="btn btn-danger"
+                          jhiTranslate="global.entity.action.delete"
+                          (click)="onDismisProductIntake($event, product)"
+                          >Xóa</a
+                        >
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+              <div class="flex-end-content" [class.lg-amount]="posSidebarFooterStatus" [class.sm-amount]="!posSidebarFooterStatus">
+                <div class="ps-8px pe-8px pb-3 input-text-custom">
+                  <input class="form-control" id="desciption" placeholder="Nhập mô tả" [(ngModel)]="intakeReq.description" />
+                </div>
+                <div class="intake-infor pb-0">
+                  <div class="panel-payment">
+                    <div class="pos-sidebar-footer">
+                      <div class="header-detail-amount" (click)="togglePosSidebarFooter()">
+                        <span class="text">Chi tiết thanh toán</span>
+                        <div style="color: #ffffff">
+                          <i *ngIf="posSidebarFooterStatus" class="cursor-pointer fa-solid fa-chevron-down icon-chevron"></i>
+                          <i *ngIf="!posSidebarFooterStatus" class="cursor-pointer fa-solid fa-chevron-up icon-chevron"></i>
+                        </div>
+                      </div>
+                      <div *ngIf="posSidebarFooterStatus" class="amount-infor">
+                        <span class="text">Tổng số lượng</span>
+                        <span class="fw-600"> {{ intakeReq.quantity | number: '1.0-6' }} </span>
+                      </div>
+                      <div *ngIf="posSidebarFooterStatus" class="amount-infor">
+                        <span class="text">Tổng tiền hàng</span>
+                        <span class="fw-600"> {{ intakeReq.amount | number }} đ</span>
+                      </div>
+                      <div *ngIf="posSidebarFooterStatus" class="amount-infor">
+                        <span class="text">Chiết khấu</span>
+                        <span class="fw-600" (click)="onDiscountAmount()">
+                          {{ intakeReq.discountAmount | number }} <i class="icon-edit fas fa-edit"></i>
+                        </span>
+                      </div>
+                      <div *ngIf="posSidebarFooterStatus" class="amount-infor">
+                        <span class="text">Chi phí phát sinh</span>
+                        <span class="fw-600" (click)="onCostAmount()">
+                          {{ intakeReq.costAmount | number }} <i class="icon-edit fas fa-edit"></i>
+                        </span>
+                      </div>
+                      <div class="amount-infor total-amount mb-0">
+                        <span class="text">Tổng tiền thanh toán</span>
+                        <span> {{ intakeReq.totalAmount | number }} đ</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="intake-infor btn-intake w-100 d-flex justify-content-end">
+                  <button type="button" class="exit-button-dialog me-2" (click)="onBack()">
+                    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+                    <span jhiTranslate="global.button.cancel"></span>
+                  </button>
+                  <button type="button" class="save-button-dialog" (click)="onChoosePayMethod()">
+                    <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+                    <span>{{ intakeReq && intakeReq.type === 2 ? 'Xuất kho' : 'Nhập kho' }}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- END pos-stock-content -->
+      </div>
+      <!-- END pos-stock-body -->
+    </div>
+  </div>
+  <!-- END pos-stock -->
+</div>
+
+<div
+  class="modal fade bd-example-modal-lg"
+  id="modalIntakeProduct"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Chi tiết nhập hàng</h3>
+        <button type="button" class="btn-close" (click)="closeIntakeProductModal()" aria-label="Close" name="btnCloseCheckModal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="" *ngIf="productIntake">
+          <div class="d-flex">
+            <div class="col-md-6 p-2 input-text-custom">
+              <label class="title-info">Tên sản phẩm </label>
+              <input class="input-value form-control" [(ngModel)]="productIntake.productName" placeholder="0" type="text" disabled="true" />
+            </div>
+            <div class="input-purchase-price col-md-6 p-2 input-text-custom">
+              <label class="title-info">Đơn vị </label>
+              <input class="input-value form-control" [(ngModel)]="productIntake.unit" placeholder="0" type="text" disabled="true" />
+            </div>
+          </div>
+          <div class="d-flex">
+            <div class="col-md-6 p-2 input-text-custom">
+              <label class="title-info">Số lượng tồn kho </label>
+              <input
+                class="input-value form-control"
+                [(ngModel)]="productIntake.inventoryCount"
+                placeholder="0"
+                type="text"
+                disabled="true"
+              />
+            </div>
+            <div class="input-purchase-price col-md-6 p-2 input-text-custom">
+              <label class="title-info">Số lượng nhập </label>
+              <input
+                class="input-value form-control"
+                [(ngModel)]="productIntake.numberIntake"
+                placeholder="0"
+                type="text"
+                jhiCurrencyNumber
+                [numberRound]="6"
+                (ngModelChange)="onChangeNumberIntake()"
+              />
+            </div>
+          </div>
+          <div class="d-flex">
+            <div class="col-md-6 p-2 input-text-custom">
+              <label class="title-info">Giá nhập hàng <span style="color: red; margin: 0px">*</span> </label>
+              <input
+                class="input-value form-control"
+                [(ngModel)]="productIntake.purchasePrice"
+                placeholder="0"
+                type="text"
+                jhiCurrencyNumber
+                [numberRound]="6"
+                (ngModelChange)="onChangePurchasePrise()"
+              />
+            </div>
+            <div class="input-purchase-price col-md-6 p-2 input-text-custom">
+              <label class="title-info">Thành tiền </label>
+              <input
+                class="input-value form-control"
+                [(ngModel)]="productIntake.amountIntake"
+                placeholder="0"
+                disabled="true"
+                jhiCurrencyNumber
+                [numberRound]="0"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="btn-row col-md-12 m-0 d-flex justify-content-end">
+          <button type="button" class="exit-button-dialog me-2" (click)="dismissIntakeProduct()">
+            <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+            <span jhiTranslate="global.button.cancel"></span>
+          </button>
+          <button type="button" class="save-button-dialog" (click)="onProductDetailIntake()">
+            <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+
+            <span jhiTranslate="global.button.save"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade bd-example-modal-lg"
+  id="modalDiscountAmount"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Chiết khấu</h3>
+        <button type="button" class="btn-close" (click)="closeDiscountModal()" aria-label="Close" name="btnCloseCheckModal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="discount-info">
+          <label class="title-intake">Kiểu chiết khấu </label>
+          <div class="ng-select-custom">
+            <ng-select
+              [items]="discountType"
+              id="discountType"
+              name="discountType"
+              class="select-value"
+              placeholder="Chọn loại chiết khấu"
+              bindLabel="name"
+              bindValue="value"
+              [(ngModel)]="checkPercentOrValue"
+              (change)="changeTypeDiscount()"
+            >
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-md-12 mt-2 input-text-custom" *ngIf="checkPercentOrValue">
+          <label class="title-info"> Nhập phần trăm </label>
+          <input
+            class="input-value form-control"
+            [(ngModel)]="percentInput"
+            placeholder="0"
+            type="text"
+            jhiCurrencyNumber
+            [maxvalue]="100"
+            [numberRound]="0"
+            (ngModelChange)="onChangeDiscount()"
+          />
+        </div>
+        <div class="col-md-12 mt-2 input-text-custom">
+          <label class="title-info"> {{ checkPercentOrValue ? 'Tiền chiết khấu' : 'Nhập chiết khấu' }} </label>
+          <input
+            class="input-value form-control"
+            [(ngModel)]="discountInput"
+            placeholder="0"
+            type="text"
+            jhiCurrencyNumber
+            [numberRound]="0"
+            [maxvalue]="intakeReq.amount"
+            [disabled]="checkPercentOrValue ? true : false"
+            (ngModelChange)="onChangeDiscount()"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="btn-row col-md-12 m-0 d-flex justify-content-end">
+          <button type="button" class="exit-button-dialog me-2" (click)="dismissDiscountAmount()">
+            <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+            <span jhiTranslate="global.button.cancel"></span>
+          </button>
+          <button type="button" class="save-button-dialog" (click)="onSaveDiscount()">
+            <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+
+            <span jhiTranslate="global.button.save"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade bd-example-modal-lg"
+  id="modalCostAmount"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Chi phí phát sinh</h3>
+        <button type="button" class="btn-close" (click)="closeCostModal()" aria-label="Close" name="btnCloseCheckModal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-12">
+          <label class="title-info">Chi phí phát sinh </label>
+          <input
+            class="input-value form-control"
+            [(ngModel)]="costInput"
+            placeholder="0"
+            jhiCurrencyNumber
+            [numberRound]="0"
+            (change)="onChangeCost()"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="btn-row col-md-12 m-0 d-flex justify-content-end">
+          <button type="button" class="exit-button-dialog me-2" (click)="dismissCostAmount()">
+            <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+            <span jhiTranslate="global.button.cancel"></span>
+          </button>
+          <button type="button" class="save-button-dialog" (click)="onSaveCostAmount()">
+            <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+
+            <span jhiTranslate="global.button.save"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade bd-example-modal-lg"
+  id="modalPaymentMethod"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Hình thức thanh toán{{ intakeReq.paymentMethod }}</h3>
+        <button type="button" class="btn-close" (click)="closeMethodModal()" aria-label="Close" name="btnCloseCheckModal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="amount-method text-bold">{{ (intakeReq.totalAmount | number) || 0 }} đ</div>
+        <div class="form-method">
+          <div class="form-check" *ngFor="let method of paymentMethod">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="flexRadioDefault"
+              [(ngModel)]="intakeReq.paymentMethod"
+              [id]="method.id"
+              [value]="method.value"
+              [checked]="method.value === intakeReq.paymentMethod"
+            />
+            <label class="form-check-label" [for]="method.id">
+              {{ method.name }}
+            </label>
+          </div>
+        </div>
+        <div *ngIf="!intakeReq.paymentMethod">
+          <input class="input-value form-control" [(ngModel)]="paymentMethodInput" placeholder="Nhập hình thức thanh toán" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="btn-row col-md-12 m-0 d-flex justify-content-end">
+          <button type="button" class="exit-button-dialog me-2" (click)="closeMethodModal()">
+            <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+            <span jhiTranslate="global.button.cancel"></span>
+          </button>
+          <button type="button" class="save-button-dialog" (click)="onSaveInoutward()" [disabled]="disableButton">
+            <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+            <span jhiTranslate="global.button.save"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

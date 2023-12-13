@@ -1,0 +1,133 @@
+.detail-row {
+  width: 100%;
+  border-radius: 5%;
+}
+.ng-select.ng-select-single .ng-select-container {
+  height: 37px !important;
+}
+button i {
+  margin-right: 10px;
+}
+
+.col-in-row {
+  width: 100%;
+}
+.input-value {
+  height: 37px !important;
+  font-size: 1rem !important;
+}
+.ng-select-container.ng-has-value {
+  font-size: 1rem !important;
+}
+
+.my-form-group {
+  padding: 10px 0;
+}
+
+.my-form-label {
+  word-wrap: break-word;
+  font-size: 16px;
+  font-weight: bold;
+  color: #58647a;
+}
+
+.my-form-group input {
+  width: 100%;
+  word-wrap: break-word;
+}
+
+.ng-invalid:not(form).ng-touched {
+  border-color: red !important; /* green */
+}
+
+.alert-user-input {
+  font-size: calc(1em - 1px);
+  color: red;
+}
+
+.btn-close {
+  color: #ffffff;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  font-size: 16px;
+}
+.btn-close {
+  i {
+    margin: 0 !important;
+    font-size: 20px;
+  }
+}
+#aler-name {
+  left: -20px;
+  top: 41px;
+}
+#alert-phone-number {
+  left: -18px;
+  top: 33px;
+}
+/* Tablet Styles */
+@media only screen and (max-width: 991px) {
+  .col-in-row {
+    padding-inline: 15px;
+  }
+  .col {
+    width: 100%;
+  }
+  #alert-email {
+    left: -18px;
+    top: 33px;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .col-in-row {
+    display: flex;
+    padding-inline: 5px;
+  }
+
+  .col-left {
+    padding-right: 5px;
+  }
+  .col-right {
+    padding-left: 5px;
+  }
+  #alert-email {
+    right: -18px;
+    top: 33px;
+  }
+}
+
+:host::ng-deep .ng-dropdown-panel-items {
+  max-height: 200px !important;
+}
+
+//.table-responsive {
+//  overflow: visible !important;
+//}
+.input-value {
+  height: auto !important;
+  font-size: 1rem !important;
+}
+
+.div-none-padding {
+  padding: 0px;
+}
+
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.div-input {
+  flex-basis: calc(50% - 10px); /* Đủ 2 div trên mỗi dòng, với khoảng cách 10px giữa chúng */
+  margin: 5px; /* Khoảng cách xung quanh từng div */
+}
+
+.ng-select .ng-select-container {
+  min-height: 40px !important;
+  border-radius: 6px;
+  border-color: #dadce0;
+}

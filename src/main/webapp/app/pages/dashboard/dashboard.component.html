@@ -1,0 +1,482 @@
+<h1 class="page-header" jhiTranslate="home.title">Trang chủ</h1>
+<div class="panel-custom">
+  <ul class="nav">
+    <li class="nav-item">
+      <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link active" (click)="statusTab = 0">
+        <span class="d-sm-block">Đơn hàng</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="#nav-pills-tab-3" data-bs-toggle="tab" class="nav-link" (click)="statusTab = 1">
+        <span class="d-sm-block">Hóa đơn</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="#nav-pills-tab-3" data-bs-toggle="tab" class="nav-link" (click)="statusTab = 2">
+        <span class="d-sm-block">Tồn kho</span>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<div class="row">
+  <ng-container *ngIf="revenueCommonStats">
+    <div class="col-xl-3 col-md-6">
+      <div class="widget widget-stats">
+        <div class="stats-info col-9">
+          <h4>{{ revenueCommonStats.revenue | number }}</h4>
+          <p jhiTranslate="home.info.estimateRevenue">Doanh thu ước tính</p>
+        </div>
+        <div class="stats-icon col-3">
+          <i class="fa-solid fa-chart-simple"></i>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="widget widget-stats">
+        <div class="stats-info col-9">
+          <h4>{{ revenueCommonStats.profit | number }}</h4>
+          <p jhiTranslate="home.info.estimateProfit">Lợi nhuận ước tính</p>
+        </div>
+        <div class="stats-icon col-3">
+          <span [innerHTML]="ICON_PROFIT | safeHtml"></span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="billCommonStatus">
+    <div class="col-xl-3 col-md-6">
+      <div class="widget widget-stats">
+        <div class="stats-info col-9">
+          <h4>{{ billCommonStatus.allCount | number }}</h4>
+          <p jhiTranslate="home.info.allOrder">Tổng số đơn hàng</p>
+        </div>
+        <div class="stats-icon col-3">
+          <img src="assets/img/total.png" alt="" />
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="widget widget-stats">
+        <div class="stats-info col-9">
+          <h4>{{ billCommonStatus.processingCount | number }}</h4>
+          <p jhiTranslate="home.info.processOrder">Đơn hàng đang xử lý</p>
+        </div>
+        <div class="stats-icon col-3">
+          <i class="fa-solid fa-spinner"></i>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+  <div class="list-bottom row">
+    <div [style]="utilsService.getStyleByCode('TC/BC')" class="col-xl-8 width-chart">
+      <div class="chart">
+        <div class="d-flex justify-content-start flex-wrap" style="padding-bottom: 20px">
+          <div class="d-flex flex-wrap justify-content-start" style="padding: 0 15px; width: 100%">
+            <div class="col-sm-8 col-xl-8">
+              <div class="label-chart" jhiJsonCustom="TC/BC"></div>
+            </div>
+
+            <div class="search col-sm-4 col-xl-4 d-flex justify-content-end">
+              <div class="form-select-size">
+                <ng-select
+                  class="select-value select-size"
+                  [items]="listStatistics"
+                  bindLabel="name"
+                  title="Loại thống kê"
+                  placeholder="Chọn loại thống kê"
+                  [(ngModel)]="reportInvoiceInput.suggestValue"
+                  bindValue="id"
+                  name="type"
+                  (change)="changeStatistic($event)"
+                >
+                </ng-select>
+              </div>
+              <span class="reset-button cursor-pointer">
+                <div class="wrap-reset-button" (click)="resetReportInvoiceInput()">
+                  <i class="fa-solid fa-arrows-rotate"></i>
+                </div>
+              </span>
+            </div>
+            <div class="group-form-custom mt-10px mb-25px">
+              <div class="group-item-custom">
+                <label class="form-label label-search" jhiTranslate="global.info.fromDate"></label>
+                <div class="item-search">
+                  <input
+                    class="form-control"
+                    placeholder="YYYY-MM-DD"
+                    name="d2"
+                    #c3="ngModel"
+                    [(ngModel)]="reportInvoiceInput.fromDate"
+                    ngbDatepicker
+                    #d3="ngbDatepicker"
+                    (ngModelChange)="getRevenueCommonStatus()"
+                  />
+                  <button class="btn form-control btn-datepicker" (click)="d3.toggle()" type="button">
+                    <fa-icon [icon]="'calendar-alt'"></fa-icon>
+                  </button>
+                </div>
+              </div>
+              <div class="group-item-custom">
+                <label class="form-label label-search" jhiTranslate="global.info.toDate"></label>
+                <div class="item-search">
+                  <input
+                    class="form-control"
+                    placeholder="YYYY-MM-DD"
+                    name="d2"
+                    #c2="ngModel"
+                    [(ngModel)]="reportInvoiceInput.toDate"
+                    ngbDatepicker
+                    #d2="ngbDatepicker"
+                    (ngModelChange)="getRevenueCommonStatus()"
+                  />
+                  <button class="btn form-control btn-datepicker" (click)="d2.toggle()" type="button">
+                    <fa-icon [icon]="'calendar-alt'"></fa-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 pe-15px">
+            <!-- <div class="col-xl-12">
+              <panel title="Biểu đồ đường báo cáo doanh thu và lợi nhuận">
+                <div class="h-250px">
+                  <ngx-charts-line-chart
+                    [animations]="false"
+                    [scheme]="lineChartColor"
+                    [results]="revenueCommonStatus"
+                    [xAxis]="true"
+                    [yAxis]="true"
+                    [legend]="true"
+                    [showXAxisLabel]="false"
+                    [showYAxisLabel]="false"
+                    [roundDomains]="true"
+
+                  >
+                  </ngx-charts-line-chart>
+                </div>
+              </panel>
+            </div> -->
+
+            <div class="note-chart col-12 d-flex justify-content-end">
+              <div class="wrap">
+                <div class="label revenue-label"></div>
+                <div class="revenue-value">Doanh thu</div>
+              </div>
+              <div class="wrap">
+                <div class="label profit-label"></div>
+                <div class="profit-value">Lợi nhuận</div>
+              </div>
+            </div>
+
+            <div class="col-12 overflow-auto">
+              <div class="h-450px">
+                <ngx-charts-bar-vertical-2d
+                  [scheme]="lineChartColor"
+                  [results]="revenueCommonStatusBarVertical"
+                  [xAxis]="true"
+                  [yAxis]="true"
+                  [legend]="false"
+                  [showXAxisLabel]="true"
+                  [showYAxisLabel]="true"
+                  [barPadding]="1"
+                  [groupPadding]="setPadding(revenueCommonStatusBarVertical.length)"
+                >
+                </ngx-charts-bar-vertical-2d>
+              </div>
+            </div>
+
+            <!-- <div class="col-xl-4">
+        <panel title="Analytics Details" bodyClass="p-0">
+          <div class="table-responsive">
+            <table class="table table-panel align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Source</th>
+                  <th>Total</th>
+                  <th>Trend</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td nowrap><label class="badge bg-danger">Unique Visitor</label></td>
+                  <td>
+                    13,203 <span class="text-success"><i class="fa fa-arrow-up"></i></span>
+                  </td>
+                  <td>
+                    <ngx-trend
+                      [height]="30"
+                      [autoDraw]="true"
+                      [autoDrawDuration]="0"
+                      [autoDrawEasing]="'ease-out'"
+                      [smooth]="true"
+                      [data]="[0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0]"
+                      [gradient]="[global.color.red]"
+                      [radius]="0.1"
+                      [strokeWidth]="5"
+                      [strokeLinecap]="'butt'"
+                    >
+                    </ngx-trend>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </panel>
+        <panel title="Visitors User Agent">
+          <div class="h-300px">
+            <ngx-charts-pie-chart
+              [scheme]="pieChartColor"
+              [results]="pieChartData"
+              [legend]="false"
+              [explodeSlices]="false"
+              [labels]="true"
+              [doughnut]="false"
+            >
+            </ngx-charts-pie-chart>
+          </div>
+        </panel>
+      </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div [style]="utilsService.getStyleByCode('BC/BC')" class="col-xl-4 col-lg-12 top-product group-report">
+      <div class="list-report">
+        <div class="header-top-product">
+          <h4 class="col-6"><span jhiJsonCustom="BC/BC"></span></h4>
+          <div class="search col-sm-6 col-xl-6 d-flex justify-content-start">
+            <div class="form-select-size col-10">
+              <ng-select
+                class="select-value select-size col-12"
+                [items]="listStatisticsProduct"
+                bindLabel="name"
+                title="Loại thống kê"
+                placeholder="Chọn loại thống kê"
+                bindValue="id"
+                [(ngModel)]="productHotSaleInput.type"
+                (ngModelChange)="getProductHotSaleStatus()"
+                name="type"
+              >
+              </ng-select>
+            </div>
+          </div>
+        </div>
+        <div class="group-form-custom mt-10px" *ngIf="productHotSaleInput">
+          <div class="group-item-custom">
+            <label class="form-label label-search" jhiTranslate="global.info.fromDate"></label>
+            <div class="item-search">
+              <input
+                class="form-control"
+                placeholder="YYYY-MM-DD"
+                name="productHotSaleFromDate"
+                [(ngModel)]="productHotSaleInput.fromDate"
+                ngbDatepicker
+                #productHotSaleFromDate="ngbDatepicker"
+                (ngModelChange)="getProductHotSaleStatus()"
+              />
+              <button class="btn form-control btn-datepicker" (click)="productHotSaleFromDate.toggle()" type="button">
+                <fa-icon [icon]="'calendar-alt'"></fa-icon>
+              </button>
+            </div>
+          </div>
+          <div class="group-item-custom">
+            <label class="form-label label-search" jhiTranslate="global.info.toDate"></label>
+            <div class="item-search">
+              <input
+                class="form-control"
+                placeholder="YYYY-MM-DD"
+                name="productHotSaleToDate"
+                #c2="ngModel"
+                [(ngModel)]="productHotSaleInput.toDate"
+                ngbDatepicker
+                #productHotSaleToDate="ngbDatepicker"
+                (ngModelChange)="getProductHotSaleStatus()"
+              />
+              <button class="btn form-control btn-datepicker" (click)="productHotSaleToDate.toggle()" type="button">
+                <fa-icon [icon]="'calendar-alt'"></fa-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="content-top-product">
+          <ng-container *ngFor="let product of productHotSale; let i = index">
+            <div class="box-product">
+              <div class="content col-1">
+                <label>{{ i + 1 }}</label>
+              </div>
+              <div class="content col-3">
+                <img src="{{ product.image ? product.image : 'content/icon/san-pham/products.svg' }}" alt="" />
+              </div>
+              <div class="content col-4">
+                <div class="left-content-info col-12">
+                  <p class="name-price">{{ product.name }}</p>
+                  <p class="unit-quantity">{{ product.unitName }}</p>
+                </div>
+              </div>
+              <div class="content col-4">
+                <div class="right-content-info col-12">
+                  <p class="name-price">{{ product.totalAmount | number }}</p>
+                  <p class="unit-quantity">Số lượng: {{ product.totalQuantity | number }}</p>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="list-report">
+        <div class="header-top-product">
+          <h4 class="col-6">Hoạt động gần đây</h4>
+        </div>
+        <div class="content-activity-history" #activityHistory (scroll)="loadMore($event)">
+          <div class="timeline p-4 block">
+            <div class="tl-item" *ngFor="let activity of listActivity; index as i" [class.active]="i == 0">
+              <div class="tl-dot b-primary"></div>
+              <div class="tl-content">
+                <div class="">{{ activity.description }}</div>
+                <div class="tl-date text-muted mt-1">{{ activity.updateTime | date: 'dd/MM/yyyy' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<ng-container *ngIf="statusTab == 1">
+  <div class="row">
+    <ng-container *ngIf="invoiceCommonStatus">
+      <div class="col-xl-3 col-md-6">
+        <div class="widget widget-stats">
+          <div class="stats-info col-9">
+            <h4>{{ invoiceCommonStatus.allCount | number }}</h4>
+            <p jhiTranslate="easyPos.invoice.info.allCount">Tất cả hóa đơn</p>
+          </div>
+          <div class="stats-icon col-3">
+            <i class="fa-solid fa-chart-simple"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6">
+        <div class="widget widget-stats">
+          <div class="stats-info col-9">
+            <h4>{{ invoiceCommonStatus.doneCount | number }}</h4>
+            <p jhiTranslate="easyPos.invoice.status.1">Hóa đơn hợp lệ</p>
+          </div>
+          <div class="stats-icon col-3">
+            <i class="fa-solid fa-file-circle-check"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6">
+        <div class="widget widget-stats">
+          <div class="stats-info col-9">
+            <h4>{{ invoiceCommonStatus.processingCount | number }}</h4>
+            <p jhiTranslate="easyPos.invoice.status.-1">Hóa đơn đang kiểm tra</p>
+          </div>
+          <div class="stats-icon col-3">
+            <i class="fa-solid fa-spinner"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6">
+        <div class="widget widget-stats">
+          <div class="stats-info col-9">
+            <h4>{{ invoiceCommonStatus.newCount | number }}</h4>
+            <p jhiTranslate="easyPos.invoice.status.0">Hóa đơn chưa phát hành</p>
+          </div>
+          <div class="stats-icon col-3">
+            <i class="fa-solid fa-file-circle-xmark"></i>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <!--  <div class="col-12 wrap-chart">-->
+  <!--    <div class="h-450px">-->
+  <!--      <ngx-charts-pie-chart-->
+  <!--        [scheme]="pieChartColor"-->
+  <!--        [results]="invoiceCommonStatus"-->
+  <!--        [legend]="false"-->
+  <!--        [explodeSlices]="false"-->
+  <!--        [labels]="false"-->
+  <!--        [doughnut]="false"-->
+  <!--      >-->
+  <!--      </ngx-charts-pie-chart>-->
+  <!--    </div>-->
+  <!--  </div>-->
+</ng-container>
+
+<ng-container *ngIf="statusTab == 2">
+  <div class="row">
+    <ng-container *ngIf="inventoryCommonStatus">
+      <div class="col-xl-3 col-md-6">
+        <div class="widget widget-stats">
+          <div class="stats-info col-9">
+            <h4>{{ inventoryCommonStatus.totalOnHand | number }}</h4>
+            <p jhiTranslate="easyPos.product.info.totalOnHand">Tổng số lượng tồn</p>
+          </div>
+          <div class="stats-icon col-3">
+            <i class="fa-solid fa-chart-simple"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6">
+        <div class="widget widget-stats">
+          <div class="stats-info col-9">
+            <h4>{{ inventoryCommonStatus.totalValue | number }}</h4>
+            <p jhiTranslate="easyPos.product.info.totalValue">Tổng giá trị tồn</p>
+          </div>
+          <div class="stats-icon col-3">
+            <svg width="11" height="18" viewBox="0 0 11 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M5.8 7.9C3.53 7.31 2.8 6.7 2.8 5.75C2.8 4.66 3.81 3.9 5.5 3.9C6.92 3.9 7.63 4.44 7.89 5.3C8.01 5.7 8.34 6 8.76 6H9.06C9.72 6 10.19 5.35 9.96 4.73C9.54 3.55 8.56 2.57 7 2.19V1.5C7 0.67 6.33 0 5.5 0C4.67 0 4 0.67 4 1.5V2.16C2.06 2.58 0.5 3.84 0.5 5.77C0.5 8.08 2.41 9.23 5.2 9.9C7.7 10.5 8.2 11.38 8.2 12.31C8.2 13 7.71 14.1 5.5 14.1C3.85 14.1 3 13.51 2.67 12.67C2.52 12.28 2.18 12 1.77 12H1.49C0.82 12 0.35 12.68 0.6 13.3C1.17 14.69 2.5 15.51 4 15.83V16.5C4 17.33 4.67 18 5.5 18C6.33 18 7 17.33 7 16.5V15.85C8.95 15.48 10.5 14.35 10.5 12.3C10.5 9.46 8.07 8.49 5.8 7.9Z"
+                fill="#0074BD"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  <div class="tab-content rounded-top panel rounded-0 m-0">
+    <div class="tab-pane fade active show">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="panel panel-inverse">
+            <div class="table-responsive">
+              <table class="table editing-table">
+                <thead>
+                  <tr class="table-custom-header">
+                    <th jhiTranslate="global.info.Stt">STT</th>
+                    <th jhiTranslate="easyPos.product.info.productCode">Mã sản phẩm</th>
+                    <th jhiTranslate="easyPos.product.info.productName">Tên sản phẩm</th>
+                    <th jhiTranslate="easyPos.product.info.onHand">Số lượng tồn sản phẩm</th>
+                    <th jhiTranslate="easyPos.product.info.purchasePrice">Đơn giá mua</th>
+                    <th jhiTranslate="easyPos.product.info.totalValue">Tổng giá trị tồn</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let order of inventoryCommonStatus.detail; let index = index">
+                    <tr class="table-custom-body">
+                      <td>{{ index + 1 }}</td>
+                      <td class="text-center">{{ order.code }}</td>
+                      <td>{{ order.name }}</td>
+                      <td class="text-end">{{ order.onHand | number }}</td>
+                      <td class="text-end">{{ order.purchasePrice | number }}</td>
+                      <td class="text-end">{{ order.value | number }}</td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

@@ -1,0 +1,154 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ title == 'discountAmount' ? 'Nhập giảm giá đơn hàng' : 'Thay đổi tiền thuế' }}</h4>
+  <button type="button" class="btn-close" (click)="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<div class="modal-body">
+  <!-- <div>{{productDiscountTaxOrderLocal | json}}</div> -->
+  <ng-container *ngIf="title == 'discountAmount'">
+    <div *ngIf="invoiceConfiguration.invDynamicDiscountName == 1" class="item-basic-infor input-text-custom input col-12">
+      <label class="title-info">Nội dung giảm giá</label>
+      <ng-container *ngIf="productDiscountTaxOrderLocal.productName == 'Chiết khấu'; else customerInputName">
+        <input
+          placeholder="Nhập nội dung giảm giá..."
+          #firstInput
+          class="input-value form-control"
+          type="text"
+          [(ngModel)]="productNameCustomerInput"
+        />
+      </ng-container>
+      <ng-template #customerInputName>
+        <input class="input-value form-control" type="text" [(ngModel)]="productDiscountTaxOrderLocal.productName" />
+      </ng-template>
+    </div>
+    <div class="item-basic-infor input-text-custom input">
+      <label class="title-info" jhiTranslate="easyPos.bill.info.typeDiscount">Kiểu giảm giá</label>
+      <ng-select
+        class="input-value w-100"
+        [items]="typeDiscountOrder"
+        title="Chọn kiểu giảm giá"
+        bindLabel="name"
+        placeholder="Chọn kiểu giảm giá"
+        bindValue="name"
+        [(ngModel)]="productDiscountTaxOrderLocal.typeDiscount"
+        (ngModelChange)="changeTypeDiscountOrder()"
+      >
+      </ng-select>
+    </div>
+    <div class="item-basic-infor input-text-custom input" *ngIf="productDiscountTaxOrderLocal.typeDiscount == typeDiscount.PERCENT">
+      <label class="title-info" jhiTranslate="easyPos.bill.action.typePercent">Nhập phần trăm (%)</label>
+      <input
+        class="input-value form-control"
+        type="number"
+        [(ngModel)]="productDiscountTaxOrderLocal.discountPercent"
+        (keypress)="checkDiscountTaxOrderPercent($event, 'discountPercent')"
+        (ngModelChange)="changeDiscountPercent(productDiscountTaxOrderLocal.discountPercent)"
+        (keydown)="preventIncrement($event)"
+        (click)="changeDiscountPercent(productDiscountTaxOrderLocal.discountPercent, $event)"
+      />
+    </div>
+    <div
+      class="item-basic-infor input-text-custom input"
+      *ngIf="
+        productDiscountTaxOrderLocal.typeDiscount == typeDiscount.VALUE ||
+        (productDiscountTaxOrderLocal.typeDiscount == typeDiscount.PERCENT && productDiscountTaxOrderLocal.totalPreTax)
+      "
+    >
+      <label class="title-info" jhiTranslate="easyPos.bill.info.discountAmount">Tiền giảm giá (đ)</label>
+      <input
+        class="input-value form-control"
+        type="text"
+        [disabled]="productDiscountTaxOrderLocal.typeDiscount == typeDiscount.PERCENT"
+        [(ngModel)]="productDiscountTaxOrderLocal.totalPreTax"
+        (keyup)="changeDiscountAmount($event, productDiscountTaxOrderLocal)"
+        jhiCurrencyNumber
+        [numberRound]="lastCompany.roundScaleAmount"
+      />
+    </div>
+    <ng-container *ngIf="invoiceConfiguration.invoiceType === invoiceType.invoiceMultiple">
+      <div class="item-basic-infor ng-select-custom input wrap-discount-tax" *ngIf="productDiscountTaxOrderLocal.totalPreTax">
+        <label class="title-info" jhiTranslate="easyPos.bill.info.vatRateDiscount">Thuế giảm giá (%)</label>
+        <ng-select
+          class="input-value w-100"
+          [items]="listVat"
+          bindLabel="name"
+          placeholder="Chọn giá trị thuế"
+          bindValue="value"
+          [virtualScroll]="true"
+          [(ngModel)]="productDiscountTaxOrderLocal.vatRate"
+          (ngModelChange)="changeVat(productDiscountTaxOrderLocal.vatRate)"
+        >
+        </ng-select>
+      </div>
+
+      <div class="item-basic-infor input-text-custom input col-12" [hidden]="!statusVatRateInput">
+        <label class="title-info" jhiTranslate="easyPos.bill.action.typeVatRate">Nhập thuế suất(%)</label>
+        <input
+          class="input-value form-control"
+          type="number"
+          [ngModel]="productDiscountTaxOrderLocal.vatRate < 0 ? null : productDiscountTaxOrderLocal.vatRate"
+          (keypress)="checkDiscountTaxOrderPercent($event, 'vatRate')"
+          (ngModelChange)="productDiscountTaxOrderLocal.vatRate = $event; changeVatRateOrder(productDiscountTaxOrderLocal.vatRate)"
+          (keydown)="preventIncrement($event)"
+          (click)="changeVatRateOrder(productDiscountTaxOrderLocal.vatRate, $event)"
+        />
+      </div>
+
+      <div
+        class="item-basic-infor input-text-custom input"
+        *ngIf="productDiscountTaxOrderLocal.vatRate > 0 && productDiscountTaxOrderLocal.totalPreTax"
+      >
+        <label class="title-info" jhiTranslate="easyPos.bill.info.vatRateDiscountAmount">Tiền thuế giảm giá (đ)</label>
+        <input disabled="true" class="input-value form-control" type="text" [ngModel]="productDiscountTaxOrderLocal.vatAmount | number" />
+      </div>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="title == 'vatAmount'">
+    <div class="item-basic-infor input-text-custom input">
+      <label class="title-info" jhiTranslate="easyPos.bill.action.typeOtherVatRate">Nhập tiền thuế khác (đ)</label>
+      <input
+        type="text"
+        class="input-value form-control"
+        [(ngModel)]="orderSelectedLocal.vatAmount"
+        jhiCurrencyNumber
+        [numberRound]="lastCompany.roundScaleAmount"
+      />
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="title == 'vatRate'">
+    <div class="item-basic-infor ng-select-custom input wrap-discount-tax">
+      <label class="title-info">Thuế đơn hàng (%)</label>
+      <ng-select
+        class="input-value w-100"
+        [items]="listVat"
+        bindLabel="name"
+        placeholder="Chọn giá trị thuế"
+        bindValue="value"
+        [virtualScroll]="true"
+        [(ngModel)]="orderSelectedLocal.vatRate"
+        (ngModelChange)="changeVatOrder(orderSelectedLocal.vatRate)"
+      >
+      </ng-select>
+    </div>
+    <!-- <div>{{listVat | json}}</div> -->
+    <div class="item-basic-infor input-text-custom input col-12" [hidden]="!statusVatRateInput">
+      <label class="title-info" jhiTranslate="easyPos.bill.action.typeVatRate">Nhập thuế suất(%)</label>
+      <input
+        class="input-value form-control"
+        type="number"
+        [(ngModel)]="orderSelectedLocal.vatRate"
+        (ngModelChange)="changeVatRateOrderSelectedLocal(orderSelectedLocal.vatRate)"
+      />
+    </div>
+  </ng-container>
+</div>
+<div class="modal-footer">
+  <button class="exit-button-dialog" data-bs-dismiss="modal" (click)="closeModal()">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.cancel">Hủy</span>
+  </button>
+  <button (click)="saveDiscountTaxAmount()" class="save-button-dialog">
+    <span [innerHTML]="ICON_CONFIRM | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.save">Xác nhận</span>
+  </button>
+</div>

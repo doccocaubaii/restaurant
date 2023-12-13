@@ -1,0 +1,259 @@
+<div class="card-page-header">
+  <h1 class="page-header">Danh sách thẻ</h1>
+  <div class="group-form-custom mb-25px">
+    <div class="group-item-custom">
+      <div class="item-search">
+        <input
+          name="keyword"
+          [(ngModel)]="keyword"
+          class="form-control"
+          type="search"
+          placeholder="Tìm kiếm..."
+          (ngModelChange)="onSearch()"
+          (keyup.enter)="getListCard()"
+        />
+      </div>
+    </div>
+    <div class="form-btn-search">
+      <button (click)="getListCard()" class="btn-search" appDisableButton>
+        <fa-icon icon="search"></fa-icon>
+        <span jhiTranslate="global.info.search"></span>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="card-page-content">
+  <div class="panel-action">
+    <ul class="nav">
+      <li class="nav-action" (click)="onCardAction(1)" *jhiHasAnyAuthority="authorADD">
+        <a class="nav-link nav-link-action">
+          <i class="fa-solid fa-plus"></i>
+          <span class="d-sm-block ms-2">Thêm thẻ</span>
+        </a>
+      </li>
+      <li class="nav-action" (click)="onCardAction(2)" *jhiHasAnyAuthority="authorSORT" [style]="utilsService.getStyleByCode('SXT')">
+        <a class="nav-link nav-link-action">
+          <span [innerHTML]="ICON_SORTTING_CART | safeHtml"></span>
+          <span class="d-sm-block ms-2">Sắp xếp thẻ</span>
+        </a>
+      </li>
+      <!--      <li-->
+      <!--        class="nav-action cursor-pointer"-->
+      <!--        [hidden]="paramCheckAll"-->
+      <!--        (click)="-->
+      <!--          paramCheckAll = true;-->
+      <!--          paramCheckAllPage = true;-->
+      <!--          utilsService.checkAll(lstCard, listSelected, paramCheckAll, this.paramCheckAllPage)-->
+      <!--        "-->
+      <!--      >-->
+      <!--        <a class="nav-link nav-link-action">-->
+      <!--          <fa-icon icon="check"></fa-icon>-->
+      <!--          <span class="d-sm-block ms-2">Chọn tất cả</span>-->
+      <!--        </a>-->
+      <!--      </li>-->
+      <!--      <li-->
+      <!--        class="nav-action cursor-pointer"-->
+      <!--        [hidden]="!paramCheckAll"-->
+      <!--        (click)="-->
+      <!--          paramCheckAll = false;-->
+      <!--          paramCheckAllPage = false;-->
+      <!--          utilsService.checkAll(lstCard, listSelected, paramCheckAll, this.paramCheckAllPage)-->
+      <!--        "-->
+      <!--      >-->
+      <!--        <a class="nav-link nav-link-action">-->
+      <!--          <span [innerHTML]="ICON_CANCEL | safeHtml"></span>-->
+      <!--          <span class="d-sm-block ms-2">Bỏ chọn tất cả</span>-->
+      <!--        </a>-->
+      <!--      </li>-->
+      <!--      <li class="nav-action">-->
+      <!--        <a-->
+      <!--          class="nav-link nav-link-action"-->
+      <!--          (click)="deleteMultiCard()"-->
+      <!--          [class]="paramCheckAll || listSelected?.length > 0 ? '' : 'disable-button'"-->
+      <!--        >-->
+      <!--          <i class="fa-solid fa-trash-can"></i>-->
+      <!--          <span class="d-sm-block ms-2">Xóa thẻ</span>-->
+      <!--        </a>-->
+      <!--      </li>-->
+      <!--      <li class="nav-action" (click)="onCardAction(3)">-->
+      <!--        <a class="nav-link nav-link-action">-->
+      <!--          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">-->
+      <!--            <path-->
+      <!--              d="M12 3C7.037 3 3 7.038 3 12C3 16.962 7.037 21 12 21C16.963 21 21 16.962 21 12C21 7.038 16.963 3 12 3ZM12 19C8.141 19 5 15.86 5 12C5 8.14 8.141 5 12 5C15.859 5 19 8.14 19 12C19 15.86 15.859 19 12 19ZM12.707 12L15.353 9.354C15.4462 9.25998 15.4986 9.13292 15.4986 9.0005C15.4986 8.86808 15.4462 8.74102 15.353 8.647C15.259 8.55375 15.1319 8.50143 14.9995 8.50143C14.8671 8.50143 14.74 8.55375 14.646 8.647L12 11.293L9.354 8.646C9.2597 8.55492 9.1334 8.50452 9.0023 8.50566C8.8712 8.5068 8.74579 8.55939 8.65309 8.65209C8.56039 8.74479 8.5078 8.8702 8.50666 9.0013C8.50552 9.1324 8.55592 9.2587 8.647 9.353L11.293 12L8.647 14.646C8.55311 14.7398 8.50032 14.867 8.50022 14.9996C8.50013 15.1323 8.55275 15.2596 8.6465 15.3535C8.74025 15.4474 8.86747 15.5002 9.00015 15.5003C9.13283 15.5004 9.26011 15.4478 9.354 15.354L12 12.707L14.646 15.353C14.6921 15.4008 14.7472 15.439 14.8081 15.4653C14.8691 15.4916 14.9347 15.5054 15.0011 15.5061C15.0675 15.5068 15.1333 15.4942 15.1948 15.4692C15.2563 15.4441 15.3122 15.4071 15.3592 15.3602C15.4062 15.3133 15.4434 15.2575 15.4686 15.1961C15.4938 15.1347 15.5066 15.0689 15.5061 15.0025C15.5056 14.9361 15.4919 14.8705 15.4658 14.8095C15.4397 14.7484 15.4017 14.6932 15.354 14.647L12.707 12Z"-->
+      <!--              fill="white"-->
+      <!--            />-->
+      <!--          </svg>-->
+      <!--          <span class="d-sm-block ms-2">Xoá thẻ</span>-->
+      <!--        </a>-->
+      <!--      </li>-->
+    </ul>
+  </div>
+  <div class="card-page-data">
+    <div class="tab-pane fade active show">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="panel panel-inverse">
+            <div class="table-responsive">
+              <table class="table editing-table">
+                <thead>
+                  <tr class="table-custom-header">
+                    <!--                    <th>-->
+                    <!--                      <div class="custom-checkbox custom-control col-checkbox">-->
+                    <!--                        <input-->
+                    <!--                          class="custom-control-input"-->
+                    <!--                          id="checkAllForPage"-->
+                    <!--                          type="checkbox"-->
+                    <!--                          [disabled]="paramCheckAll"-->
+                    <!--                          [(ngModel)]="paramCheckAllPage"-->
+                    <!--                          (change)="utilsService.checkAllForPage(lstCard, listSelected, paramCheckAllPage)"-->
+                    <!--                        /><label class="custom-control-label" for="checkAllForPage"></label>-->
+                    <!--                      </div>-->
+                    <!--                    </th>-->
+                    <th>STT</th>
+                    <th>Tên thẻ</th>
+                    <th style="border-right: 1px solid #b0d4eb !important">Số khách hàng</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let card of lstCard; index as i">
+                    <tr class="table-custom-body">
+                      <!--                      <td>-->
+                      <!--                        <div class="custom-checkbox custom-contro col-checkbox">-->
+                      <!--                          <input-->
+                      <!--                            class="custom-control-input"-->
+                      <!--                            id="exampleCustomCheckbox{{ i }}"-->
+                      <!--                            name="exampleCustomCheckbox{{ i }}"-->
+                      <!--                            type="checkbox"-->
+                      <!--                            [(ngModel)]="card.check"-->
+                      <!--                            (click)="getItem(card); utilsService.check(card, listSelected, paramCheckAll, selectedItem)"-->
+                      <!--                          /><label class="custom-control-label" for="exampleCustomCheckbox{{ i }}"></label>-->
+                      <!--                        </div>-->
+                      <!--                      </td>-->
+                      <td (click)="viewCard(card); utilsService.scrollToTargets()">
+                        {{ i + 1 + (filterCard.page - 1) * filterCard.size }}
+                      </td>
+                      <td (click)="viewCard(card); utilsService.scrollToTargets()" class="break-word-table">
+                        {{ card.name }}<small *ngIf="card.isDefault" class="ms-1">(Thẻ mặc định)</small>
+                      </td>
+                      <td (click)="viewCard(card); utilsService.scrollToTargets()" style="text-align: center">{{ card.count }}</td>
+                      <td>
+                        <div class="list-action">
+                          <i
+                            class="fa-solid fa-pen-to-square"
+                            ngbTooltip="{{ 'global.button.edit' | translate }}"
+                            (click)="onCardAction(4, card)"
+                            *jhiHasAnyAuthority="authorUPDATE"
+                          ></i>
+                          <div *jhiHasAnyAuthority="authorDELETE">
+                            <i
+                              *ngIf="!card.isDefault"
+                              class="fa-solid fa-trash-can"
+                              ngbTooltip="{{ 'global.button.delete' | translate }}"
+                              (click)="onCardAction(3, card)"
+                            ></i>
+                          </div>
+                          <!--                      <i class="fa-solid fa-ellipsis-vertical"></i>-->
+                        </div>
+                      </td>
+                    </tr>
+                    <tr *ngIf="card.id == idEditing && selectedCard" [class.editing-body]="idEditing == card.id" class="scroll-target">
+                      <td [attr.colspan]="10">
+                        <div class="row wrap-order-detail">
+                          <div class="col-sm-4 left-order-detail-content">
+                            <div class="form-group border-bottom form-input-custom">
+                              <label for="pattern" class="form-label with-label-name">Tên thẻ: </label>
+                              <div class="user-input-text-div">
+                                <strong id="pattern">{{ selectedCard.name }}</strong>
+                              </div>
+                            </div>
+                            <div class="form-group border-bottom form-input-custom">
+                              <label class="form-label with-label-name">Là thẻ mặc định </label>
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" [checked]="selectedCard.isDefault" disabled />
+                              </div>
+                            </div>
+                            <div class="form-group border-bottom form-input-custom">
+                              <label class="form-label with-label-name">Trạng thái hoạt động</label>
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" [checked]="selectedCard.status == 1" disabled />
+                              </div>
+                            </div>
+                            <div class="form-group border-bottom form-input-custom">
+                              <label for="paymentMethod" class="form-label with-label-name">Hạng thẻ</label>
+                              <div class="user-input-text-div">
+                                <strong id="paymentMethod">{{ selectedCard.rank }}</strong>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-sm-8 right-order-detail-content">
+                            <div class="table-responsive" style="max-height: 250px">
+                              <table class="table mb-0 editing-table caption-top">
+                                <caption>
+                                  Danh sách khách hàng
+                                </caption>
+                                <thead class="table-custom-body table-header-sticky">
+                                  <tr class="table-custom-header">
+                                    <th jhiTranslate="global.info.Stt">Stt</th>
+                                    <th style="text-align: center">Tên</th>
+                                    <th style="text-align: center">SĐT</th>
+                                    <th style="border-right: 1px solid #b0d4eb !important; text-align: center">Điểm tích luỹ</th>
+                                    <th style="text-align: center">Số dư thẻ</th>
+                                  </tr>
+                                </thead>
+                                <tbody *ngIf="selectedCard.customers && selectedCard.customers.length > 0">
+                                  <tr *ngFor="let cus of selectedCard.customers; index as i">
+                                    <td>
+                                      <label>{{ i + 1 }}</label>
+                                    </td>
+                                    <td>
+                                      <label class="long-text">{{ cus.name }}</label>
+                                    </td>
+                                    <td>
+                                      <label>{{ cus.phoneNumber }}</label>
+                                    </td>
+                                    <td style="text-align: right; padding-right: 10px !important">
+                                      <label>{{ cus.pointBalance | number }}</label>
+                                    </td>
+                                    <td style="text-align: right; padding-right: 10px !important">
+                                      <label>{{ cus.moneyBalance | number }}</label>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+                <tbody *ngIf="totalItems === 0">
+                  <tr class="table-not-data">
+                    <td colspan="8">
+                      <span jhiTranslate="easyPos.product.info.notData"></span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="group-page-size">
+        <div class="from-pagination d-flex justify-content-center">
+          <ngb-pagination
+            class="pagination"
+            [collectionSize]="totalItems || 0"
+            [pageSize]="filterCard.size"
+            [page]="filterCard.page"
+            aria-label="Default pagination"
+            [directionLinks]="true"
+            [maxSize]="5"
+            (pageChange)="loadMore($event)"
+          ></ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

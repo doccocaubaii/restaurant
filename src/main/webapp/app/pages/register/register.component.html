@@ -1,0 +1,90 @@
+<ngx-loading-bar></ngx-loading-bar>
+<div class="register__background"></div>
+<div class="register__container">
+  <div class="register__left">
+    <label class="register__title">ĐĂNG KÝ DÙNG THỬ</label>
+    <div class="register__form-input">
+      <div class="register__input-item">
+        <label for="full-name">Họ và tên <span style="color: red">(*)</span></label>
+        <div class="register__input">
+          <input placeholder="Ví dụ: Nguyễn Văn A" id="full-name" class="form-control" [(ngModel)]="registerReq.fullName" />
+          <div class="register__icon-holder">
+            <span [innerHTML]="ICON_USERNAME | safeHtml"></span>
+          </div>
+        </div>
+      </div>
+      <div class="register__input-item">
+        <label for="company-name">Tên cửa hàng <span style="color: red">(*)</span></label>
+        <div class="register__input">
+          <input placeholder="Ví dụ: Cửa hàng thức uống" id="company-name" class="form-control" [(ngModel)]="registerReq.companyName" />
+          <div class="register__icon-holder">
+            <span [innerHTML]="ICON_STORE | safeHtml"></span>
+          </div>
+        </div>
+      </div>
+      <div class="register__input-item">
+        <label for="tax-code">Mã số thuế</label>
+        <div class="register__input">
+          <input
+            placeholder="Ví dụ: 0123456789"
+            id="tax-code"
+            class="form-control"
+            [(ngModel)]="registerReq.companyTaxCode"
+            jhiTaxCode
+            maxlength="14"
+            minlength="10"
+          />
+          <div class="register__icon-holder">
+            <span [innerHTML]="ICON_TAX_CODE | safeHtml"></span>
+          </div>
+        </div>
+      </div>
+      <div class="register__input-item">
+        <label for="email">Email</label>
+        <div class="register__input">
+          <input placeholder="Ví dụ: contact@softdreams.vn" id="email" class="form-control" [(ngModel)]="registerReq.email" />
+          <div class="register__icon-holder">
+            <span [innerHTML]="ICON_EMAIL_REGISTER | safeHtml"></span>
+          </div>
+        </div>
+      </div>
+      <div class="register__input-item">
+        <label for="phone-number">Số điện thoại <span style="color: red">(*)</span></label>
+        <div class="register__input">
+          <input
+            placeholder="Ví dụ: 0981772388"
+            id="phone-number"
+            class="form-control"
+            [(ngModel)]="registerReq.phoneNumber"
+            jhiStringNumberOnly
+            maxlength="10"
+            minlength="10"
+          />
+          <div class="register__icon-holder">
+            <span [innerHTML]="ICON_PHONE_REGISTER | safeHtml"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="register__input-item">
+        <button
+          [disabled]="
+            disableBtnRegister ||
+            !registerReq.fullName ||
+            !registerReq.companyName ||
+            !isValidPhoneNumber(registerReq.phoneNumber) ||
+            !isValidTaxCode(registerReq.companyTaxCode)
+          "
+          type="submit"
+          class="save-button-dialog w-100"
+          (click)="onRegister()"
+        >
+          <span>Đăng ký</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="register__right">
+    <img src="/content/img/register/register-img.png" />
+  </div>
+</div>

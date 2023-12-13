@@ -1,0 +1,344 @@
+<div class="d-flex main-content">
+  <div class="col-xxl-6 col-xl-12 left-path" id="box1" [style]="utilsService.getStyleByCode('CCB')">
+    <div class="panel-custom">
+      <div>
+        <label class="nav-label ps-2"><span jhiJsonCustom="CCB"></span></label>
+      </div>
+      <ul class="nav">
+        <li class="nav-item">
+          <a href="#nav-pills-tab-1" (click)="changeType(1)" data-bs-toggle="tab" class="nav-link active">
+            <span class="d-sm-block">Ưu tiên</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#nav-pills-tab-2" (click)="changeType(2)" data-bs-toggle="tab" class="nav-link">
+            <span class="d-sm-block">Theo món</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#nav-pills-tab-5" (click)="changeType(3)" data-bs-toggle="tab" class="nav-link">
+            <span class="d-sm-block">Theo phòng/ bàn</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="tab-content rounded-top panel rounded-0 m-0 mb-2" style="height: 87%">
+      <div class="tab-pane fade active show" [style]="type == 3 ? 'max-height: 650px; overflow: auto' : ''">
+        <div class="row" *ngIf="type != 3">
+          <div class="col-xl-12">
+            <div class="panel panel-inverse">
+              <div class="table-responsive" style="max-height: 65vh" *ngIf="totalWaitingSize > 0">
+                <table class="table editing-table">
+                  <thead>
+                    <tr class="table-custom-header">
+                      <th><span>Món ăn</span></th>
+                      <th>Số lượng</th>
+                      <th *ngIf="type == 1" style="max-width: 150px" class="text-wrap">Hình thức</th>
+                      <th style="width: 40%">Trạng thái</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let data of waitingList; index as i">
+                      <tr class="td-border-top">
+                        <td>
+                          <div class="dish-box">
+                            <span class="dish-name long-text">{{ data.productName }}</span>
+                            <small *ngIf="data.toppings" style="color: #f4557e">{{ formatTopping(data) }}</small>
+                            <small *ngIf="type == 1" class="dish-creator"
+                              >{{ formatDateTime(data.createTime) }} <span *ngIf="data.processingRequestId != 0">- Bởi </span
+                              >{{ data.creatorName }}</small
+                            >
+                          </div>
+                        </td>
+                        <td style="text-align: center">
+                          {{ data.processingQuantity }} <span *ngIf="data.unitName"> ({{ data.unitName }})</span>
+                        </td>
+                        <td *ngIf="type == 1" style="text-align: center">
+                          <!--                          <table>-->
+                          <!--                            <tr>-->
+                          <!--                              <label style="display: block">{{ data.areaUnitName ? data.areaUnitName : data.processingRequestId != 0 ? 'Mang về' : '' }}</label>-->
+                          <!--                            </tr>-->
+                          <!--                            <tr *ngFor="let delete of data.deletes">-->
+                          <!--                              Hủy <span style="color: #eb5624; font-size: 15px">{{delete.quantity}}</span> bởi {{delete.creatorName}}, lúc {{formatDateTime(data.createTime)}}-->
+                          <!--                            </tr>-->
+                          <!--                          </table>-->
+                          <label style="display: block">{{
+                            data.areaUnitName ? data.areaUnitName : data.processingRequestId != 0 ? 'Mang về' : ''
+                          }}</label>
+                          <label *ngFor="let delete of data.deletes" style="font-size: 13px">
+                            Hủy <span style="color: #eb5624; font-size: 15px">{{ delete.canceledQuantity }}</span> bởi
+                            {{ delete.creatorName }}, lúc
+                            {{ formatDateTime(delete.createTime) }}
+                          </label>
+                        </td>
+                        <td style="font-size: 12px" *ngIf="!checkShowButton(data, 0)">
+                          <div class="d-flex justify-content-center" *jhiHasAnyAuthority="authorWAITING">
+                            <button
+                              (click)="changeSingleDish(data.id, 0, data.billId, data)"
+                              [disabled]="isLoading"
+                              class="btn btn-white btn-text-small col-4 me-1"
+                              ngbTooltip="Xong một"
+                              style="border: 1px solid #eb5624"
+                            >
+                              <span [innerHTML]="ICON_ARROW_SINGLE | safeHtml"></span>
+                            </button>
+                            <button
+                              (click)="changeAllDish(data.id, 0, data.billId, data, data.processingQuantity, false)"
+                              [disabled]="isLoading"
+                              class="btn btn-primary btn-text-small col-4 me-1 btn-done-all"
+                              ngbTooltip="Xong tất cả"
+                            >
+                              <span [innerHTML]="ICON_DOUBLE_ARROW | safeHtml"></span>
+                            </button>
+                          </div>
+                        </td>
+                        <td style="font-size: 12px" *ngIf="checkShowButton(data, 0)">
+                          <div class="d-flex justify-content-center">
+                            <button
+                              (click)="deleteDish(data)"
+                              [disabled]="isLoading"
+                              class="btn btn-red btn-text-small col-4 me-1 btn-done-all"
+                              ngbTooltip="Xoá"
+                              style="background: none !important"
+                            >
+                              <span [innerHTML]="ICON_DELETE_RED | safeHtml"></span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+              <div *ngIf="!totalWaitingSize || totalWaitingSize == 0" class="empty-dish mt-2">
+                <span [innerHTML]="ICON_PROCESSING_LG | safeHtml"></span>
+                <div class="empty-content mt-3">Chưa có đơn hàng cần chế biến</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="type == 3">
+          <div *ngFor="let data of waitingList; index as i" class="mt-3" style="border-bottom: solid 1px #b0d4eb">
+            <div class="sub-panel-custom">
+              <span class="area-name ps-3"
+                >{{ data.areaUnitName }}
+                <span class="total-count pe-3">(Tổng số: {{ data.totalQuantity }}) </span>
+              </span>
+              <button
+                class="btn btn-blue btn-text-small col-4 me-3"
+                style="width: 130px"
+                (click)="changeAllDish(data.id, 0, data.billId, data, 1, true)"
+                [disabled]="isLoading"
+                *jhiHasAnyAuthority="authorWAITING"
+              >
+                <span>Xong tất cả</span>
+              </button>
+            </div>
+            <div class="table-responsive" style="max-height: 65vh">
+              <table class="table editing-table">
+                <thead>
+                  <tr class="table-custom-header">
+                    <th><span>Món ăn</span></th>
+                    <th>Số lượng</th>
+                    <th style="width: 40%">Trạng thái</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let data of data.areaProcessing; index as i">
+                    <tr class="td-border-top" *ngIf="data.processingQuantity > 0">
+                      <td>
+                        <span class="dish-name long-text" style="display: block">{{ data.productName }}</span>
+                        <small *ngIf="data.toppings" style="color: #f4557e">{{ formatTopping(data) }}</small>
+                      </td>
+                      <td style="text-align: center">
+                        {{ data.processingQuantity }} <span *ngIf="data.unitName"> ({{ data.unitName }})</span>
+                      </td>
+                      <td style="font-size: 12px">
+                        <div class="d-flex justify-content-center" *jhiHasAnyAuthority="authorWAITING">
+                          <button
+                            (click)="changeSingleDish(data.id, 0, data.billId, data)"
+                            [disabled]="isLoading"
+                            ngbTooltip="Xong một"
+                            class="btn btn-white btn-text-small col-4 me-1"
+                            style="border: 1px solid #eb5624"
+                          >
+                            <span [innerHTML]="ICON_ARROW_SINGLE | safeHtml"></span>
+                          </button>
+                          <button
+                            (click)="changeAllDish(data.id, 0, data.billId, data, data.processingQuantity, false)"
+                            [disabled]="isLoading"
+                            class="btn btn-blue btn-text-small col-4 me-1 btn-done-all"
+                            ngbTooltip="Xong tất cả"
+                          >
+                            <span [innerHTML]="ICON_DOUBLE_ARROW | safeHtml"></span>
+                          </button>
+                        </div>
+                      </td>
+                      <td style="font-size: 12px" *ngIf="data.processingRequestId == 0"></td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div *ngIf="!totalWaitingSize || totalWaitingSize == 0" class="empty-dish mt-2">
+            <span [innerHTML]="ICON_PROCESSING_LG | safeHtml"></span>
+            <div class="empty-content mt-3">Chưa có đơn hàng cần chế biến</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="from-pagination d-flex justify-content-center" *ngIf="totalWaitingSize > 0">
+      <ngb-pagination
+        class="pagination"
+        [collectionSize]="totalWaitingSize"
+        [(page)]="waitingPage"
+        [pageSize]="pageSize"
+        [maxSize]="5"
+        [rotate]="true"
+        [boundaryLinks]="true"
+        (pageChange)="getWaitingList()"
+      ></ngb-pagination>
+    </div>
+  </div>
+  <div class="col-xxl-6 col-xl-12 right-path" id="box2" [style]="utilsService.getStyleByCode('CCU')">
+    <div class="panel-custom" style="height: 47px">
+      <div>
+        <label class="nav-label ps-2"><span jhiJsonCustom="CCU"></span></label>
+      </div>
+      <ul class="nav me-3" style="gap: 12px">
+        <li class="pointer notification-container" (click)="changeShowNoti()" id="notification-icon">
+          <span [innerHTML]="ICON_SHOW_NOTICE | safeHtml"></span>
+        </li>
+        <li class="pointer" (click)="changeShowAction()" id="action-icon">
+          <span [innerHTML]="ICON_SHOW_ACTION | safeHtml"></span>
+        </li>
+      </ul>
+    </div>
+    <div class="overlay-container">
+      <div class="overlay" *ngIf="showNoti">
+        <div class="overlay-item pointer" (click)="changeNotification(0)">
+          <span>Yêu cầu chế biến</span>
+          <span *ngIf="!waitingNotification" [innerHTML]="ICON_PROCESSING_DONE | safeHtml"></span>
+          <span *ngIf="waitingNotification" [innerHTML]="ICON_WAIT_PROCESSING | safeHtml"></span>
+        </div>
+        <div class="overlay-item pointer" (click)="changeNotification(1)">
+          <span>Đã chế biến xong</span>
+          <span *ngIf="processNotification" [innerHTML]="ICON_WAIT_PROCESSING | safeHtml"></span>
+          <span *ngIf="!processNotification" [innerHTML]="ICON_PROCESSING_DONE | safeHtml"></span>
+        </div>
+        <div class="overlay-item pointer" (click)="changeNotification(2)">
+          <span>Đã cung ứng</span>
+          <span *ngIf="supplyNotification" [innerHTML]="ICON_WAIT_PROCESSING | safeHtml"></span>
+          <span *ngIf="!supplyNotification" [innerHTML]="ICON_PROCESSING_DONE | safeHtml"></span>
+        </div>
+      </div>
+    </div>
+    <div class="overlay-container">
+      <div class="overlay" *ngIf="showAction">
+        <div
+          class="overlay-item pointer"
+          style="justify-content: normal"
+          (click)="getLink()"
+          (click)="getLink()"
+          *jhiHasAnyAuthority="authorBILL_ADD"
+        >
+          <span [innerHTML]="ICON_BILL_ORDER | safeHtml"></span>
+          <span>Bán hàng</span>
+        </div>
+        <div class="overlay-item pointer" style="justify-content: normal" (click)="back()">
+          <span [innerHTML]="ICON_GO_BACK | safeHtml"></span>
+          <span>Thoát</span>
+        </div>
+      </div>
+    </div>
+    <div class="tab-content rounded-top panel rounded-0 m-0 mb-2" style="height: 87%">
+      <div class="tab-pane fade active show" style="height: 100%">
+        <div class="row" style="height: 100%">
+          <div class="col-xl-12">
+            <div class="panel panel-inverse" style="height: 100%">
+              <div class="table-responsive" style="max-height: 65vh" *ngIf="totalDoneSize > 0">
+                <table class="table editing-table">
+                  <thead>
+                    <tr class="table-custom-header">
+                      <th><span>Món ăn</span></th>
+                      <th>Số lượng</th>
+                      <th style="max-width: 150px" class="text-wrap">Hình thức</th>
+                      <th style="width: 40%">Trạng thái</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let data of doneList; index as i">
+                      <tr class="td-border-top">
+                        <td>
+                          <div class="dish-box">
+                            <span class="dish-name long-text">{{ data.productName }}</span>
+                            <small *ngIf="data.toppings" style="color: #f4557e">{{ formatTopping(data) }}</small>
+                            <small class="dish-creator"
+                              >{{ formatDateTime(data.createTime) }} <span *ngIf="data.processingRequestId != 0">- Bởi </span>
+                              {{ data.creatorName }}</small
+                            >
+                          </div>
+                        </td>
+                        <td style="text-align: center">
+                          {{ data.processedQuantity }} <span *ngIf="data.unitName"> ({{ data.unitName }})</span>
+                        </td>
+                        <td style="text-align: center">
+                          <label style="display: block">{{
+                            data.areaUnitName ? data.areaUnitName : data.processingRequestId != 0 ? 'Mang về' : ''
+                          }}</label>
+                          <label *ngFor="let delete of data.deletes" style="font-size: 13px">
+                            Hủy <span style="color: #eb5624; font-size: 15px">{{ delete.canceledQuantity }}</span> bởi
+                            {{ delete.creatorName }}, lúc
+                            {{ formatDateTime(delete.createTime) }}
+                          </label>
+                        </td>
+                        <td style="font-size: 12px" *ngIf="data.processingRequestId != 0">
+                          <div class="d-flex justify-content-center" *jhiHasAnyAuthority="authorDONE">
+                            <button
+                              (click)="changeSingleDish(data.id, 1, data.billId, data)"
+                              [disabled]="isLoading"
+                              class="btn btn-white btn-text-small col-4 me-1"
+                              ngbTooltip="Cung ứng một"
+                              style="border: 1px solid #0074bd"
+                            >
+                              <span [innerHTML]="ICON_ARROW_SINGLE_BLUE | safeHtml"></span>
+                            </button>
+                            <button
+                              (click)="changeAllDish(data.id, 1, data.billId, data, data.processedQuantity, false)"
+                              [disabled]="isLoading"
+                              class="btn btn-blue btn-text-small col-4 me-1"
+                              ngbTooltip="Cung ứng tất cả"
+                            >
+                              <span [innerHTML]="ICON_DOUBLE_ARROW | safeHtml"></span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+              <div *ngIf="!totalDoneSize || totalDoneSize == 0" class="empty-dish mt-2">
+                <span [innerHTML]="ICON_PROCESSING_LG | safeHtml"></span>
+                <div class="empty-content mt-3">Chưa có đơn hàng cần cung ứng</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="from-pagination d-flex justify-content-center" *ngIf="totalDoneSize > 0">
+      <ngb-pagination
+        class="pagination"
+        [collectionSize]="totalDoneSize"
+        [(page)]="donePage"
+        [pageSize]="pageSize"
+        [maxSize]="5"
+        [rotate]="true"
+        [boundaryLinks]="true"
+        (pageChange)="getDoneList()"
+      ></ngb-pagination>
+    </div>
+  </div>
+</div>

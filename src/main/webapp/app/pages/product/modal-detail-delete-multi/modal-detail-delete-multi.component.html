@@ -1,0 +1,56 @@
+<div class="modal-header" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+  <h5 class="modal-title" *ngIf="!isCategory">Chi tiết xóa sản phẩm</h5>
+  <h5 class="modal-title" *ngIf="isCategory">Chi tiết xóa nhóm sản phẩm</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true" (click)="dismiss()"></button>
+</div>
+<div class="modal-body">
+  <div>
+    <div class="custom-label-response">
+      <label class="label-info">Dữ liệu được xử lý: </label><label class="value-info ms-1">&nbsp;{{ countAll }}</label>
+    </div>
+    <div class="custom-label-response">
+      <label class="label-info">Dữ liệu xử lý thành công: </label><label class="value-info ms-1">{{ countSuccess }}</label>
+    </div>
+    <div class="custom-label-response">
+      <label class="label-info">Dữ liệu xử lý không thành công: </label>
+      <label class="value-info ms-1"> {{ countFalse }} </label>
+    </div>
+  </div>
+  <div *ngIf="countFalse > 0">
+    <div class="table-responsive" style="max-height: 350px; overflow-y: auto">
+      <table class="table mb-0 editing-table">
+        <thead class="table-custom-body table-header-sticky">
+          <tr class="table-custom-header">
+            <th jhiTranslate="global.info.Stt">Stt</th>
+            <th>{{ isCategory ? 'Mã nhóm sản phẩm' : 'Mã sản phẩm' }}</th>
+            <th>{{ isCategory ? 'Tên sản phẩm' : 'Tên sản phẩm' }}</th>
+            <th>Nguyên nhân</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of data; index as i">
+            <td>
+              <label> {{ i + 1 }}</label>
+            </td>
+            <td>
+              <label> {{ item.code2 }}</label>
+            </td>
+
+            <td>
+              <label> {{ item.name }}</label>
+            </td>
+            <td>
+              <label> {{ item.note }}</label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="exit-button-dialog" data-bs-dismiss="modal" (click)="dismiss()">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <span>Thoát</span>
+  </button>
+</div>

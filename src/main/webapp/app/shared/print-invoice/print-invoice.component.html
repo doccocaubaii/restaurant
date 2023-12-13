@@ -1,0 +1,100 @@
+<div class="modal-header" *ngIf="!statusPrint">
+  <h4 class="modal-title">Chi tiết hóa đơn</h4>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true" (click)="closeModal()"></button>
+</div>
+<div id="print">
+  <div [class.layout-invoice]="!statusPrint" class="wrap-invoice">
+    <div class="header">
+      <h3>Công ty cổ phần SoftDreams</h3>
+      <div class="hotline-address">Hotline: 0123.456.789</div>
+      <div class="hotline-address">Số 8 Phạm Hùng</div>
+      <h3>Hóa đơn bán hàng</h3>
+    </div>
+    <div class="wrap-content-common-info">
+      <div class="item-content-common-info">
+        <div>{{ orderSelected.code }}</div>
+        <div>{{ orderSelected.createTime }}</div>
+      </div>
+      <div class="item-content-common-info">
+        <div>Mã cơ quan thuế</div>
+        <div>{{ orderSelected.taxAuthorityCode }}</div>
+      </div>
+      <div class="item-content-common-info">
+        <div class="customer-label">Khách hàng</div>
+        <div class="customer-name">{{ orderSelected.customerName }}</div>
+      </div>
+      <div class="product-invoice">
+        <div class="header-product-invoice">
+          <div class="col-4">SẢN PHẨM</div>
+          <div class="col-4">SỐ LƯỢNG</div>
+          <div class="col-4 amount">THÀNH TIỀN</div>
+        </div>
+        <ng-container *ngFor="let product of orderSelected.products">
+          <div class="content-product-invoice">
+            <div class="col-4">
+              <div>{{ product.productName }}</div>
+              <div>{{ product.unitPrice | number }}</div>
+              <div *ngIf="product.discountAmount">Giảm giá</div>
+              <div *ngIf="product.vatRate">{{ product.vatRateName }}</div>
+            </div>
+            <div class="among-product col-4">
+              <div class="visibility-hidden">.</div>
+              <div class="quantity">x{{ product.quantity }}</div>
+            </div>
+            <div class="right-content-product col-4">
+              <div class="visibility-hidden">.</div>
+              <div>{{ product.amount | number }}</div>
+              <div *ngIf="product.discountAmount">-{{ product.discountAmount | number }}</div>
+              <div *ngIf="product.vatAmount">{{ product.vatAmount | number }}</div>
+              <div *ngIf="product.discountAmount || product.vatAmount">{{ product.totalAmount | number }}</div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="wrap-amount-invoice">
+        <div>Tạm tính</div>
+        <div>{{ orderSelected.amount | number }}</div>
+      </div>
+      <div class="wrap-amount-invoice">
+        <div>Giảm giá đơn hàng</div>
+        <div>{{ orderSelected.discountAmount | number }}</div>
+      </div>
+      <div class="wrap-amount-invoice">
+        <div>Tổng tiền thuế</div>
+        <div>{{ orderSelected.vatAmount | number }}</div>
+      </div>
+      <div class="wrap-amount-invoice">
+        <div>Khách phải trả</div>
+        <div>{{ orderSelected.totalAmount | number }}</div>
+      </div>
+      <div class="wrap-amount-invoice">
+        <div>Khách trả</div>
+        <div>{{ orderSelected.payment.amount | number }}</div>
+      </div>
+      <div *ngIf="orderSelected.payment.refund" class="wrap-amount-invoice">
+        <div>Tiền thừa</div>
+        <div>{{ orderSelected.payment.refund | number }}</div>
+      </div>
+      <div *ngIf="orderSelected.payment.debt" class="wrap-amount-invoice">
+        <div>Dư nợ</div>
+        <div>{{ orderSelected.payment.debt | number }}</div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="head-footer">
+        <div>
+          Thanh toán <span class="paymentMethod">{{ orderSelected.payment.paymentMethod }}</span>
+        </div>
+        <div>CẢM ƠN QUÝ KHÁCH</div>
+      </div>
+      <div>Mã QR tra cứu</div>
+      <img class="qrcode" src="/assets/img/pos/qrcode.PNG" alt="" />
+      <div>Tra cứu hóa đơn tại</div>
+      <div>0123456789hd.softdreams.vn</div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer" *ngIf="!statusPrint">
+  <a href="javascript:;" class="btn btn-default" data-bs-dismiss="modal" (click)="closeModal()">Hủy</a>
+  <a (click)="printInvoid()" href="javascript:;" class="btn btn-success"><fa-icon [icon]="'print'"></fa-icon>In hóa đơn</a>
+</div>

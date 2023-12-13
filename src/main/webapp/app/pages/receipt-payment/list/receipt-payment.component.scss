@@ -1,0 +1,198 @@
+.img-sidebar {
+  margin: 0px;
+  width: 100%;
+}
+#panel-payment {
+  background-color: var(--bs-gray-100);
+  border-radius: 10px 10px 10px 10px;
+}
+
+.nav {
+  --bs-nav-link-padding-y: 0.5rem !important;
+}
+.input-search {
+  padding-left: 33px;
+  background: transparent
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E")
+    no-repeat 13px center;
+}
+
+.option-group {
+  margin: 0rem 0rem 1rem;
+}
+.receipt-payment-container {
+  padding-right: 0;
+}
+
+.icon-receipt {
+  background: #d9eaf5;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.icon-payment {
+  background: #fce6de;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.surplus {
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 150%;
+  color: #004671;
+}
+
+.receipt-box:first-child {
+  border-right: solid #d5d8dd 1px;
+}
+
+.total-money-receipt,
+.total-money-payment {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 150%;
+  display: flex;
+  align-items: center;
+  color: #eb5624;
+}
+
+.total-money-receipt {
+  color: #0074bd;
+}
+
+.total-text {
+  font-family: 'San Francisco Display';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 150%;
+  display: flex;
+  align-items: center;
+  color: #58647a;
+}
+
+.panel-1 {
+  background: #ffffff;
+  box-shadow: 2px 5px 11px rgba(0, 116, 189, 0.15);
+  border-radius: 4px;
+}
+
+.nav-receipt {
+  width: 12rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.detail-custom {
+  flex-direction: column;
+  align-items: baseline !important;
+}
+
+.icon-right {
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  width: 20px;
+  z-index: 1001;
+}
+
+.btn-export {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 1168.98px) {
+  .total-money-payment,
+  .total-money-receipt {
+    font-size: 24px;
+  }
+
+  .btn-export {
+    padding: var(--bs-btn-padding-y) 0.45rem;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .receipt-payment-container {
+    flex-direction: column;
+    padding-right: 0;
+  }
+
+  .panel-1 {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .stats-icon {
+    font-size: 27px !important;
+    top: 1.3rem !important;
+    right: 0.1rem !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .export {
+    display: none !important;
+  }
+
+  .search-text {
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .total-box {
+    flex-direction: column;
+  }
+
+  .date-search {
+    margin-bottom: 0.7rem !important;
+  }
+
+  .receipt-box:first-child {
+    border-right: none;
+    border-bottom: solid #d5d8dd 1px;
+  }
+
+  .stats-icon {
+    font-size: 27px !important;
+    top: 1.3rem !important;
+    right: 0.1rem !important;
+  }
+
+  .total-money-receipt,
+  .total-money-payment {
+    font-size: 25px;
+  }
+
+  .receipt-box {
+    padding-bottom: 0.6rem;
+    padding-top: 0.4rem;
+  }
+
+  .box-left {
+    margin-right: 0 !important;
+  }
+
+  .receipt-to-date {
+    margin-top: 5px;
+  }
+
+  .panel-1 {
+    padding-bottom: 0 !important;
+  }
+}
+
+.disable-button {
+  opacity: 0.6;
+}

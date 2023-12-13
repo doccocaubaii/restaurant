@@ -1,0 +1,10 @@
+<div *ngIf="sanitizedUrl" class="policy__container row" id="pdfContainer">
+  <!--  <div class="col-md-4">-->
+  <!--    <div class="policy__items">-->
+  <!--      <label>Chính sách bảo mật dữ liệu</label>-->
+  <!--    </div>-->
+  <!--  </div>-->
+  <div>
+    <iframe [src]="sanitizedUrl" style="width: 100%; height: 1125px" frameborder="0"></iframe>
+  </div>
+</div>

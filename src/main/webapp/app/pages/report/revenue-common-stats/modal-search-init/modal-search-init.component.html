@@ -1,0 +1,133 @@
+<div class="modal-header header-product">
+  <h3 class="modal-title text-bold" id="exampleModalPopoversLabel">Bảng kê Lợi nhuận (Ước tính)</h3>
+  <button type="button" class="btn-close" (click)="onBack($event)">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+
+<div class="modal-body">
+  <div class="group-item-search">
+    <div class="item-search">
+      <label class="title-info">Kỳ báo cáo</label>
+      <ng-select
+        [items]="periods"
+        class="field-search"
+        bindLabel="name"
+        bindValue="id"
+        placeholder="Chọn kỳ báo cáo"
+        [(ngModel)]="period"
+        (ngModelChange)="updateDates($event)"
+      >
+      </ng-select>
+    </div>
+    <div class="item-search">
+      <label class="title-info">Loại báo cáo</label>
+      <ng-select
+        [items]="listType"
+        class="field-search"
+        bindLabel="name"
+        bindValue="id"
+        placeholder="Chọn trạng thái"
+        [(ngModel)]="type"
+      >
+      </ng-select>
+    </div>
+  </div>
+  <div class="group-item-search">
+    <div class="input-text-custom item-search">
+      <label class="title-info">Từ ngày</label>
+      <input
+        class="form-control field-search"
+        placeholder="DD/MM/YYYY"
+        name="d2"
+        #c3="ngModel"
+        [maxDate]="utilsService.getFromToMoment(toDate)"
+        [minDate]="utilsService.getFromToMoment(minDate, true)"
+        [(ngModel)]="fromDate"
+        ngbDatepicker
+        #d3="ngbDatepicker"
+        dateFormat
+        (ngModelChange)="changeFromDate($event)"
+        maxlength="10"
+      />
+      <button class="btn form-control btn-datepicker" (click)="d3.toggle()" type="button">
+        <fa-icon [icon]="'calendar-alt'"></fa-icon>
+      </button>
+    </div>
+    <div class="input-text-custom item-search">
+      <label class="title-info">Đến ngày</label>
+      <input class="form-control field-search"
+             placeholder="DD/MM/YYYY"
+             [minDate]="utilsService.getFromToMoment(fromDate, true)"
+             [maxDate]="utilsService.getCurrentDate()"
+             name="d2" #c2="ngModel"
+             [(ngModel)]="toDate"
+             ngbDatepicker
+             #d2="ngbDatepicker"
+             dateFormat
+             (ngModelChange)="changeToDate($event)"
+             maxlength="10"
+      />
+      <button class="btn form-control btn-datepicker" (click)="d2.toggle()" type="button">
+        <fa-icon [icon]="'calendar-alt'"></fa-icon>
+      </button>
+    </div>
+  </div>
+  <div class="group-time" *ngIf="type === 3">
+    <div class="item-time">
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"
+               [value]="1" [checked]="checkHours==1"
+               (change)="onRadioChange(1)"
+               (click)="checkHoursValidity(1)">
+        <label class="form-check-label ms-3" for="flexRadioDefault1">
+          Cả ngày
+        </label>
+      </div>
+      <div class="form-check ms-3">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2"
+               [value]="2" [checked]="checkHours==2"
+               (change)="onRadioChange(2)"
+               (click)="checkHoursValidity(2)">
+        <label class="form-check-label ms-3" for="flexRadioDefault2">
+          Khung giờ
+        </label>
+      </div>
+    </div>
+    <div *ngIf="checkHours==2" class="group-time-picker">
+      <div class="d-flex w-100">
+        <div class="item-search item-time-picker">
+          <input
+            name="fromTimeSlot"
+            class="form-control"
+            placeholder="Từ giờ"
+            [(ngModel)]="fromHour"
+            jhiTimeFormat
+          />
+        </div>
+        <div class="item-search item-time-picker">
+          <input
+            name="toTimeSlot"
+            class="form-control"
+            placeholder="Đến giờ"
+            [(ngModel)]="toHour"
+            jhiTimeFormat
+          />
+        </div>
+      </div>
+  </div>
+</div>
+
+  <div class="modal-footer">
+    <div class="btn-row col-md-12">
+      <button type="button" class="exit-button-dialog me-2" (click)="onBack($event)">
+        <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+        <span >Thoát</span>
+      </button>
+      <button type="button" class="save-button-dialog" (click)="onSave()">
+        <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+        <span>Xem báo cáo</span>
+      </button>
+    </div>
+  </div>
+</div>

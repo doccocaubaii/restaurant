@@ -1,0 +1,182 @@
+<div class="modal-header">
+  <h4 *ngIf="!isCancelOrder && !returnOrder" class="modal-title" jhiTranslate="easyPos.bill.checkout.confirmCheckout">
+    Xác nhận thanh toán
+  </h4>
+  <h4 *ngIf="isCancelOrder" class="modal-title">Xác nhận hủy hàng</h4>
+  <h4 *ngIf="returnOrder" class="modal-title">Xác nhận trả hàng</h4>
+  <button type="button" class="btn-close" (click)="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<div class="wrap p-20px">
+  <h4 *ngIf="!isCancelOrder && !returnOrder" class="totalAmout d-flex justify-content-center">
+    {{ orderSelected.status ? (debtMoney | number) : (orderSelected.totalAmount | number) }} đ
+  </h4>
+  <h4 *ngIf="isCancelOrder" class="totalAmout d-flex justify-content-center text-bold">{{ cancelPayment | number }} đ</h4>
+  <h4 *ngIf="returnOrder" class="totalAmout d-flex justify-content-center text-bold">{{ orderSelected.totalAmount | number }} đ</h4>
+  <!-- <div>{{ debtMoney | json }}{{ orderSelected.totalAmount | json }}</div> -->
+  <div *ngIf="orderSelected.cardCustomerInfo && orderSelected.moneyBalanceCustomer">
+    <div class="option-row d-flex justify-content-end">
+      <div class="option-title d-flex title-info">Thanh toán qua thẻ</div>
+      <div class="option-input">
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input m-0"
+            type="checkbox"
+            name=""
+            id="debtCustomer"
+            [checked]="orderSelected.statusPaymentBycard"
+            (click)="checkMoneyBalanceCustomer($event)"
+          />
+          <label class="form-check-label" for="cardCustomer"></label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-container *ngIf="orderSelected.statusPaymentBycard">
+    <div class="mb-5px col-8">
+      <div class="title-info">Tiền thanh toán qua thẻ:</div>
+      <div class="input-text-custom">
+        <input
+          #focus
+          class="input-value form-control"
+          type="text"
+          [(ngModel)]="orderSelected.payment.cardAmount"
+          jhiCurrencyNumber
+          [numberRound]="lastCompany.roundScaleAmount"
+          [maxvalue]="
+            orderSelected.moneyBalanceCustomer > (orderSelected.status ? debtMoney : orderSelected.totalAmount)
+              ? orderSelected.status
+                ? debtMoney
+                : orderSelected.totalAmount
+              : orderSelected.moneyBalanceCustomer
+          "
+          (ngModelChange)="changeMoneybalanceCustomerAmount()"
+        />
+      </div>
+    </div>
+  </ng-container>
+  <div class="wrap-customer-price">
+    <div class="d-flex justify-content-end align-items-center flex-wrap mb-10px">
+      <div class="text w-100 mb-10px title-info" jhiTranslate="global.info.paymentMethod">Phương thức thanh toán:</div>
+      <div class="d-flex justify-content-between align-items-center w-100">
+        <div class="d-flex justify-content-start align-items-center col-3">
+          <input
+            type="radio"
+            [(ngModel)]="orderSelected.payment.paymentMethod"
+            (ngModelChange)="hideReasonInput()"
+            id="cash"
+            name="type_payment"
+            value="Tiền mặt"
+            class="me-10px"
+          />
+          <label for="cash" class="title-info" jhiTranslate="easyPos.bill.checkout.cash">Tiền mặt</label><br />
+        </div>
+        <div class="d-flex justify-content-start align-items-center col-3">
+          <input
+            type="radio"
+            [(ngModel)]="orderSelected.payment.paymentMethod"
+            (ngModelChange)="hideReasonInput()"
+            id="banking"
+            name="type_payment"
+            value="Chuyển khoản"
+            class="me-10px"
+          />
+          <label for="banking" class="title-info" jhiTranslate="easyPos.bill.checkout.transfer">Chuyển khoản</label><br />
+        </div>
+        <div class="d-flex justify-content-start align-items-center col-3">
+          <input
+            type="radio"
+            [checked]="
+              orderSelected.payment.paymentMethod !== paymentMethod.cash &&
+              orderSelected.payment.paymentMethod !== paymentMethod.transfer &&
+              orderSelected.payment.paymentMethod !== paymentMethod.card
+            "
+            (click)="showReasonInput()"
+            id="other"
+            name="type_payment"
+            value=""
+            class="me-10px"
+          />
+          <label for="other" class="title-info" jhiTranslate="easyPos.bill.checkout.other">Khác</label><br />
+        </div>
+      </div>
+    </div>
+    <div class="pb-10px input-text-custom" *ngIf="togglePaymentMethod">
+      <input
+        class="form-control input-value"
+        type="text"
+        placeholder="Nhập phương thức thanh toán khác"
+        [(ngModel)]="orderSelected.payment.paymentMethod"
+      />
+    </div>
+    <div *ngIf="!isCancelOrder" class="pb-10px row customer-amount">
+      <div class="col-8">
+        <div *ngIf="!returnOrder" class="title-info" jhiTranslate="easyPos.bill.checkout.customerPay">Khách trả:</div>
+        <div *ngIf="returnOrder" class="title-info">Tiền trả:</div>
+        <div class="input-text-custom" *ngIf="!returnOrder">
+          <input
+            #focus
+            class="input-value form-control"
+            type="text"
+            [(ngModel)]="orderSelected.payment.amount"
+            (ngModelChange)="changeCustomerAmount()"
+            jhiCurrencyNumber
+            [numberRound]="lastCompany.roundScaleAmount"
+          />
+        </div>
+        <div class="input-text-custom" *ngIf="returnOrder">
+          <input
+            #focus
+            class="input-value form-control"
+            type="text"
+            [(ngModel)]="orderSelected.totalAmount"
+            jhiCurrencyNumber
+            [numberRound]="lastCompany.roundScaleAmount"
+          />
+        </div>
+      </div>
+
+      <div class="wrap-debt-refund col-4" *ngIf="!returnOrder">
+        <div *ngIf="orderSelected.payment.refund">
+          <div class="refund">
+            <span jhiTranslate="easyPos.bill.checkout.moneyRefund">Tiền thừa</span>: {{ orderSelected.payment.refund | number }} đ
+          </div>
+        </div>
+        <div class="text-bold" *ngIf="orderSelected.payment.debt">
+          <div class="debt">
+            <span jhiTranslate="easyPos.bill.checkout.moneyDebt">Tiền nợ</span>: {{ orderSelected.payment.debt | number }} đ
+          </div>
+        </div>
+        <div>
+          <div class="option-row d-flex justify-content-end">
+            <div class="option-title d-flex title-info" jhiTranslate="easyPos.bill.checkout.debt">Ghi nợ</div>
+            <div class="option-input">
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input m-0"
+                  type="checkbox"
+                  name=""
+                  id="cardCustomer"
+                  [checked]="orderSelected.payment.debt"
+                  (click)="onCheckboxChange($event)"
+                />
+                <label class="form-check-label" for="debtCustomer"></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button class="exit-button-dialog" data-bs-dismiss="modal" (click)="closeModal()">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.cancel">Hủy</span>
+  </button>
+  <button [disabled]="isLoading" (click)="checkout()" class="save-button-dialog">
+    <fa-icon [icon]="'dollar'"></fa-icon>
+    <span *ngIf="!isCancelOrder" jhiTranslate="global.entity.action.pay">Thanh toán</span>
+    <span *ngIf="isCancelOrder">Xác nhận</span>
+  </button>
+</div>

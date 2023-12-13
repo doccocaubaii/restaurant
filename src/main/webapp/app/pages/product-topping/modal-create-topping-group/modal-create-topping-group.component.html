@@ -1,0 +1,91 @@
+<div class="modal-header">
+  <div class="group-header">
+    <h5 *ngIf="!groupSelected.id" class="modal-title" jhiTranslate="easyPos.topping.info.createToppingGroup"></h5>
+    <h5 *ngIf="groupSelected.id" class="modal-title" jhiTranslate="easyPos.topping.info.updateToppingGroup"></h5>
+    <button type="button" class="btn-close" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    </button>
+  </div>
+</div>
+<div class="border-header"></div>
+<div class="modal-body body-category">
+  <div class="group-topping-info mt-0 input-text-custom">
+    <label class="title-info">
+      <span jhiTranslate="easyPos.topping.info.groupName"></span> <span style="color: red; margin: 0px">*</span></label
+    >
+    <input
+      class="option-title input-value form-control"
+      placeholder="Nhập tên danh mục"
+      [(ngModel)]="groupSelected.name"
+      (keyup.enter)="onSave()"
+      (blur)="onBlurGroupName()"
+    />
+  </div>
+  <div class="group-topping-info group-checkbox input-text-custom">
+    <label class="title-info" jhiTranslate="easyPos.topping.info.requiredTopping"></label>
+    <div class="form-check form-switch">
+      <input
+        class="form-check-input"
+        id="requiredOptional"
+        type="checkbox"
+        style="margin: 0px"
+        [checked]="groupSelected.requiredOptional"
+        [(ngModel)]="groupSelected.requiredOptional"
+        (click)="onChangeRequiredOptional()"
+      />
+      <label class="form-check-label" for="requiredOptional"></label>
+    </div>
+  </div>
+  <div class="group-topping-info input-text-custom">
+    <label class="title-info">
+      <span jhiTranslate="easyPos.topping.info.productTopping"></span> <span style="color: red; margin: 0px">*</span></label
+    >
+    <div class="ng-select-custom">
+      <ng-select
+        [items]="listProductTopping"
+        class="select-value"
+        bindLabel="name"
+        bindValue="id"
+        [multiple]="true"
+        [selectableGroup]="true"
+        placeholder="Chọn sản phẩm bán kèm"
+        [(ngModel)]="listProducts"
+        (change)="onProductToppingSelected($event)"
+        (scrollToEnd)="loadMoreToppings()"
+        [typeahead]="keywordToppings$"
+        [closeOnSelect]="false"
+      >
+      </ng-select>
+    </div>
+  </div>
+
+  <div class="group-topping-info input-text-custom" *ngIf="id">
+    <label class="title-info"> <span jhiTranslate="easyPos.topping.info.productLink"></span></label>
+    <div class="ng-select-custom">
+      <ng-select
+        [items]="groupSelected.productLinks"
+        class="select-value"
+        bindLabel="name"
+        bindValue="id"
+        [multiple]="true"
+        [selectableGroup]="true"
+        placeholder="Chưa có sản phẩm liên kết"
+        [(ngModel)]="listProductLinks"
+        disabled="true"
+      >
+      </ng-select>
+    </div>
+  </div>
+</div>
+<div class="modal-footer d-flex">
+  <div class="btn-row col-md-12">
+    <button type="button" class="exit-button-dialog me-2 mb-1" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <span jhiTranslate="global.button.cancel"></span>
+    </button>
+    <button type="button" class="save-button-dialog me-1 mb-1" (click)="onSave()" [disabled]="disableButton">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span jhiTranslate="global.button.save"></span>
+    </button>
+  </div>
+</div>

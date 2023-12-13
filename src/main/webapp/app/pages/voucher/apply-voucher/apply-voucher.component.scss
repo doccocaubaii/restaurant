@@ -1,0 +1,85 @@
+$color-default: #0074bd;
+$label-color: #9ba3b1;
+$text-color: #58647a;
+input[type='radio'] {
+  height: 20px;
+  width: 20px;
+}
+
+.delivery-item {
+  cursor: pointer !important;
+}
+
+.btn-close {
+  color: #ffffff;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  font-size: 16px;
+}
+.btn-close {
+  i {
+    margin: 0 !important;
+    font-size: 20px;
+  }
+}
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.td-ma-khach-hang {
+  max-width: 20ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.td-ten-khach-hang {
+  max-width: 40ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.card-action {
+  position: absolute;
+  background: #ffffff;
+  top: 100%;
+  z-index: 2;
+  width: 100%;
+}
+.enable-card-action {
+  border-radius: 8px;
+  box-shadow: 1px 3px 6px 0px rgba(0, 116, 189, 0.5);
+  span {
+    font-size: 16px !important;
+    color: $text-color;
+
+    &:hover {
+      color: $color-default !important;
+    }
+  }
+  //ul {
+  //  list-style-type: none;
+  //  padding: 8px !important;
+  //  margin-bottom: 0 !important;
+  //  li a {
+  //    padding: 8px;
+  //    svg path {
+  //      //fill: $text-color;
+  //    }
+  //
+  //  }
+  //}
+}
+ul li a.active {
+  font-size: 16px !important;
+  border-bottom: 2px solid $color-default !important;
+}
+
+table thead {
+  position: sticky;
+  top: 0;
+}

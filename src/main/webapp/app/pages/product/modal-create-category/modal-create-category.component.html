@@ -1,0 +1,47 @@
+<div class="modal-header">
+  <div class="group-header">
+    <h5 *ngIf="!categorySelected.id" class="modal-title" jhiTranslate="easyPos.product.info.createCategory"></h5>
+    <h5 *ngIf="categorySelected.id" class="modal-title" jhiTranslate="easyPos.product.info.updateCategory"></h5>
+    <button type="button" class="btn-close" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    </button>
+  </div>
+</div>
+<div class="border-header"></div>
+<div class="modal-body body-category">
+  <div class="pos-infor mt-0 input-text-custom">
+    <label class="title-info">
+      <span jhiTranslate="easyPos.product.info.categoryName"></span> <span style="color: red; margin: 0px">*</span></label
+    >
+    <input
+      class="option-title input-value form-control"
+      placeholder="Nhập tên danh mục"
+      [(ngModel)]="categorySelected.name"
+      (keyup.enter)="onSaveUpdateCategory()"
+      (blur)="onTrimSpace()"
+    />
+  </div>
+
+  <div class="pos-infor mb-0 input-text-custom">
+    <label class="title-info"> <span jhiTranslate="easyPos.product.info.desc"></span></label>
+    <input
+      placeholder="Nhập mô tả"
+      class="form-control"
+      id="description"
+      [(ngModel)]="categorySelected.description"
+      (keyup.enter)="onSaveUpdateCategory()"
+    />
+  </div>
+</div>
+<div class="modal-footer d-flex">
+  <div class="btn-row col-md-12">
+    <button type="button" class="exit-button-dialog me-2 mb-1" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <span jhiTranslate="global.button.cancel"></span>
+    </button>
+    <button type="button" class="save-button-dialog me-1 mb-1" (click)="onSaveUpdateCategory()" [disabled]="disableButton">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span  jhiTranslate="global.button.save"></span>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+<div class="row col-md-12">
+  <ckeditor [ngModel]="content"
+            class="col-md-6"
+            style="border-right: 1px solid #cccccc"
+            [config]="ckEditorConfig"
+            (change)="onEditorChange($event.editor.getData())"></ckeditor>
+  <div class="col-md-6">
+    <div class="title-review">
+      <span>Xem trước mẫu in</span>
+    </div>
+    <div class="col-md-12" style="background-color: #FFFFFF; padding: 0px 8px" ngNonBindable [innerHTML]="content2 | safeHtml">
+    </div>
+  </div>
+</div>
+
+<!--<button (click)="createPrintConfig()"></button>-->

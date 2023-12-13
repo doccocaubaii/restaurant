@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>easyPosFrontEnd</title>
+    <meta name="description" content="Description for easyPosFrontEnd" />
+    <meta name="google" content="notranslate" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000" />
+    <base href="/" />
+    <link rel="icon" type="image/png" href="/content/img/logo/favicon-32x32.png" />
+    <!--    <link rel="manifest" href="manifest.webapp" />-->
+    <link rel="stylesheet" href="content/css/loading.css" />
+    <link rel="stylesheet" href="content/css/font.css" />
+    <!--    <link href="src/main/webapp/assets/default/plugins/_bootstrap-datepicker.scss" rel="stylesheet" />-->
+    <!--    <script src="src/main/webapp/assets/bootstrap-datepicker.js"></script>-->
+    <!-- jhipster-needle-add-resources-to-root - JHipster will add new res  ources here -->
+  </head>
+  <body style="background-color: var(--background-color-form)">
+    <!--[if lt IE 9]>
+      <p class="browserupgrade">
+        You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve
+        your experience.
+      </p>
+    <![endif]-->
+    <jhi-main> </jhi-main>
+    <noscript>
+      <h1>You must enable JavaScript to view this page.</h1>
+    </noscript>
+    <script type="text/javascript">
+      // show an error message if the app loading takes more than 4 sec
+      window.onload = function () {
+        setTimeout(showError, 4000);
+      };
+      function showError() {
+        var errorElm = document.getElementById('jhipster-error');
+        if (errorElm && errorElm.style) {
+          errorElm.style.display = 'block';
+        }
+      }
+    </script>
+    <!-- Google Analytics: uncomment and change UA-XXXXX-X to be your site's ID.
+    <script>
+      (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+      function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+      e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+      e.src='//www.google-analytics.com/analytics.js';
+      r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+      ga('create','UA-XXXXX-X');ga('send','pageview');
+    </script>-->
+  </body>
+</html>

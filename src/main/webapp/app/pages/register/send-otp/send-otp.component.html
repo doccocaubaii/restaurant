@@ -1,0 +1,43 @@
+<div class="modal-header">
+  <div class="group-header">
+    <h3 *ngIf="!registerSuccess" class="modal-title text-bold">Nhập mã xác nhận</h3>
+    <button type="button" class="btn-close" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    </button>
+  </div>
+</div>
+<div *ngIf="!registerSuccess" class="border-header"></div>
+<div class="modal-body pb-0">
+  <div *ngIf="registerSuccess" class="send-otp-body">
+    <img style="width: 143px; height: 114px" src="/content/icon/import/completed.png" />
+    <span style="font-weight: bold; margin-top: 1rem; color: #0074bd">Đăng ký thành công!</span>
+  </div>
+
+  <div *ngIf="!registerSuccess" class="send-otp-body">
+    <label class="otp__label">Vui lòng kiểm tra SMS hoặc Email và nhập mã xác nhận</label>
+    <ng-otp-input #ngOtpInput (keyup.enter)="onConfirmOTP()" (onInputChange)="onOtpChange($event)" [config]="config"></ng-otp-input>
+    <span id="countdown" style="font-weight: bold; color: red; opacity: 0.9; margin-top: 1rem">{{ countdown }}</span>
+  </div>
+</div>
+<div class="modal-footer d-flex">
+  <button *ngIf="!registerSuccess" [disabled]="disabledConfirm" type="submit" class="save-button-dialog w-100" (click)="onConfirmOTP()">
+    <span>Xác nhận</span>
+  </button>
+  <label *ngIf="!registerSuccess" class="otp__label"
+    >Bạn không nhận được mã?
+    <span *ngIf="disabledResendOtp">
+      Gửi lại mã sau <span class="otp__label--bold">{{ countDownResend }}</span> giây
+    </span>
+    <span
+      [ngStyle]="isResendOtp ? { opacity: '.5' } : {}"
+      *ngIf="!disabledResendOtp"
+      class="cursor-pointer otp__label--bold"
+      (click)="onResendOtp()"
+      >Gửi lại</span
+    >
+  </label>
+  <label *ngIf="registerSuccess" class="otp__label">Tên đăng nhập và mật khẩu đã được gửi về SĐT hoặc Email của bạn! </label>
+  <button *ngIf="registerSuccess" [disabled]="disabledBackToLogin" type="submit" class="save-button-dialog" (click)="onBackToLogin()">
+    <span>Đăng nhập</span>
+  </button>
+</div>

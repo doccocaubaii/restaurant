@@ -1,0 +1,45 @@
+<div class="modal-header">
+  <h5 class="modal-title" jhiTranslate="easyPos.area-unit.detail.title">Chọn đơn hàng để xử lý</h5>
+  <button type="button" class="btn-close" (click)="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<div style="padding: 10px">
+  <div class="div-bill">
+    <div
+      *ngFor="let bill of unitDetail.usingBills; let index = index"
+      class="d-flex bill"
+      [class.active]="bill.active"
+      style="box-shadow: inset 0 0 0 1px var(--app-component-border-color-transparent)"
+      (click)="getOrder(bill.id)"
+    >
+      <div style="width: 50%">
+        <div class="form-group form-input-custom me-auto" style="max-width: 100px">
+          <div class="user-input-text-div" style="padding-left: 10px">
+            <strong id="stt">Đơn hàng {{ index + 1 }}</strong>
+          </div>
+        </div>
+        <div class="form-group form-input-custom me-auto" style="flex: 1">
+          <div class="user-input-text-div" style="padding-left: 10px">
+            <strong id="createTime" style="font-weight: 400; font-size: 15px">{{ bill.createTime }}</strong>
+          </div>
+        </div>
+      </div>
+      <div style="width: 50%; padding-right: 10px">
+        <div class="form-group form-input-custom d-flex justify-content-end">
+          <div class="user-input-text-div">
+            <strong id="amount" style="color: #0074bd">{{ bill.totalAmount | number }}đ</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="exit-button-dialog" data-bs-dismiss="modal" (click)="closeModal()">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.cancel">Hủy</span>
+  </button>
+  <button (click)="createNewOrder()" class="save-button-dialog">
+    <span [innerHTML]="ICON_CONFIRM | safeHtml"></span>
+    <span>Tạo mới đơn</span>
+  </button>
+</div>

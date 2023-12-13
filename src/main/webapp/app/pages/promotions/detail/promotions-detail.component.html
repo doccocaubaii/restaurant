@@ -1,0 +1,375 @@
+<div>
+  <div class="promotion-detail">
+    <div class="panel-custom promotion-detail__tab mb-2">
+      <ul class="nav">
+        <li class="nav-item" (click)="indexPromotionInfo = 0; this.convertDataDetail()">
+          <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link active">
+            <span class="d-sm-block">Thông tin</span>
+          </a>
+        </li>
+        <li class="nav-item" (click)="indexPromotionInfo = 1">
+          <a href="#nav-pills-tab-2" data-bs-toggle="tab" class="nav-link">
+            <span class="d-sm-block">Điều kiện khuyến mại</span>
+          </a>
+        </li>
+        <li class="nav-item" (click)="indexPromotionInfo = 2">
+          <a href="#nav-pills-tab-3" data-bs-toggle="tab" class="nav-link">
+            <span class="d-sm-block">Lịch sử khuyến mại</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div *ngIf="indexPromotionInfo === 0" class="promotion-detail__information row wrap-order-detail">
+      <div class="col-6 left-order-detail-content">
+        <div class="form-group border-bottom form-input-custom">
+          <label for="promotion-code" class="form-label">
+            <span>Mã chương trình KM</span>
+          </label>
+          <div class="user-input-text-div">
+            <strong id="promotion-code">{{ promotion.code }}</strong>
+          </div>
+        </div>
+        <div class="form-group border-bottom form-input-custom">
+          <label for="promotion-name" class="form-label"><span>Tên chuơng trình</span> </label>
+          <div class="user-input-text-div">
+            <strong id="promotion-name">{{ promotion.name }}</strong>
+          </div>
+        </div>
+        <div class="form-group border-bottom form-input-custom">
+          <label for="promotion-ext-time--month" class="form-label"><span>Tháng áp dụng</span> </label>
+          <div class="user-input-text-div">
+            <strong id="promotion-ext-time--month">{{ extMonth }}</strong>
+          </div>
+        </div>
+
+        <!--days of the week-->
+        <div class="form-group border-bottom form-input-custom">
+          <label for="promotion-ext-time--dow" class="form-label"><span>Thứ áp dụng</span> </label>
+          <div class="user-input-text-div">
+            <strong id="promotion-ext-time--dow">{{ extDayOfWeek }}</strong>
+          </div>
+        </div>
+
+        <div class="form-group border-bottom form-input-custom">
+          <div class="user-input-text-div me-3">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              style="width: 1rem; height: 1rem; margin-top: 4px"
+              [checked]="extBirthDay"
+              onclick="return false;"
+            />
+          </div>
+          <label for="promotion-ext-time--ignore" class="form-label"><span>Áp dụng ngày sinh nhật</span> </label>
+        </div>
+      </div>
+      <div class="col-6 left-order-detail-content" style="">
+        <div class="form-group border-bottom form-input-custom">
+          <label class="form-label" for="promotion-start-end"><span>Thời gian áp dụng</span> </label>
+          <div class="user-input-text-div">
+            <strong id="promotion-start-end">
+              <span *ngIf="promotion.endTime">
+                {{ convertDate(promotion.startTime, 'dd/MM/yyyy') }}
+                - {{ convertDate(promotion.endTime, 'dd/MM/yyyy') }}
+              </span>
+              <span *ngIf="!promotion.endTime"> Từ {{ convertDate(promotion.startTime, 'dd/MM/yyyy') }} </span>
+            </strong>
+          </div>
+        </div>
+        <div class="form-group border-bottom form-input-custom">
+          <label class="form-label"><span>Trạng thái</span> </label>
+          <div class="user-input-text-div">
+            <strong *ngIf="promotion.status == 0" style="color: #00d931">Chưa chạy</strong>
+            <strong *ngIf="promotion.status == 1" style="color: #0aa7e5">Đang chạy</strong>
+            <strong *ngIf="promotion.status == 2" style="color: #dd8514">Tạm ngừng</strong>
+            <strong *ngIf="promotion.status == 3" style="color: #d90000">Đã xong</strong>
+          </div>
+        </div>
+        <div class="form-group border-bottom form-input-custom">
+          <label for="promotion-ext-time--days" class="form-label"><span>Ngày áp dụng</span> </label>
+          <div class="user-input-text-div">
+            <strong id="promotion-ext-time--days">{{ extDays }}</strong>
+          </div>
+        </div>
+        <div class="form-group border-bottom form-input-custom">
+          <label for="promotion-ext-time--hour" class="form-label"><span>Khung giờ áp dụng</span> </label>
+          <div class="user-input-text-div">
+            <strong id="promotion-ext-time--hour">{{ extHour }}</strong>
+          </div>
+        </div>
+        <div class="form-group border-bottom form-input-custom">
+          <label for="promotion-ext-time--ignore" class="form-label"><span>Không áp dụng</span> </label>
+          <div class="user-input-text-div">
+            <strong id="promotion-ext-time--ignore">{{ extIgnore }}</strong>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="promotionType !== VoucherConstants.VOUCHER_DISCOUNT_BILL_BONUS_PRODUCT" class="col-12 left-order-detail-content">
+        <div
+          *ngIf="promotionType === VoucherConstants.VOUCHER_DISCOUNT_BILL_TOTAL_AMOUNT"
+          class="form-group border-bottom form-input-custom"
+        >
+          <div class="user-input-text-div me-3">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              style="width: 1rem; height: 1rem; margin-top: 4px"
+              [checked]="differentExtConditions.autoApplyVoucher"
+              onclick="return false;"
+            />
+          </div>
+          <label style="width: 100% !important" for="promotion-ext-time--ignore" class="form-label"
+            ><span>Tự động áp dụng khuyến mại này khi tạo đơn</span>
+          </label>
+        </div>
+
+        <div
+          *ngIf="promotionType === VoucherConstants.VOUCHER_DISCOUNT_BILL_BUY_AND_BONUS_PRODUCT"
+          class="form-group border-bottom form-input-custom"
+        >
+          <div class="user-input-text-div me-3">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              style="width: 1rem; height: 1rem; margin-top: 4px"
+              [checked]="differentExtConditions.isFixedQuantity"
+              onclick="return false;"
+            />
+          </div>
+          <label style="width: 100% !important" for="promotion-ext-time--ignore" class="form-label"
+            ><span>Số lượng hàng khuyến mại không tăng theo số lượng hàng được mua</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="promotion-detail__conditions" *ngIf="indexPromotionInfo === 1 && conditions && conditions.length > 0">
+      <ng-container
+        class="promotion-detail__conditions--bill-total-amount"
+        *ngIf="promotionType === VoucherConstants.VOUCHER_DISCOUNT_BILL_TOTAL_AMOUNT"
+      >
+        <strong>Theo đơn hàng - Giảm giá theo tổng tiền</strong>
+        <div class="tab-content rounded-top panel rounded-0 m-0">
+          <div class="tab-pane fade active show">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="panel panel-inverse m-0" style="height: 300px">
+                  <div class="table-responsive">
+                    <table class="table editing-table">
+                      <thead>
+                        <tr class="table-custom-header">
+                          <th class="text-break main-table-th-1" jhiTranslate="global.info.Stt">STT</th>
+                          <th class="main-table-th-2">Giá trị đơn hàng tối thiểu</th>
+                          <th class="main-table-th-3" style="border-right: 1px solid #b0d4eb !important">Giá trị đơn hàng tối đa</th>
+                          <th class="main-table-th-4">Giá trị giảm giá</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <ng-container *ngFor="let condition of conditions; index as j">
+                          <tr>
+                            <td style="text-align: center; padding: 10px 15px !important">{{ j + 1 }}</td>
+                            <td style="text-align: center">{{ condition.minValue | number }}</td>
+                            <td style="text-align: center">{{ condition.maxValue | number }}</td>
+                            <td style="text-align: center">
+                              {{
+                                condition.discountValue > 0
+                                  ? (condition.discountValue | number) + 'VND'
+                                  : (condition.discountPercent | number) + '%'
+                              }}
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container
+        class="promotion-detail__conditions--bill-total-amount"
+        *ngIf="promotionType === VoucherConstants.VOUCHER_DISCOUNT_BILL_BONUS_PRODUCT"
+      >
+        <strong> Theo đơn hàng - Tặng hàng hoá </strong>
+        <div class="tab-content rounded-top panel rounded-0 m-0">
+          <div class="tab-pane fade active show">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="panel panel-inverse m-0" style="height: 300px">
+                  <div class="table-responsive">
+                    <table class="table editing-table">
+                      <thead>
+                        <tr class="table-custom-header">
+                          <th class="text-break main-table-th-1" jhiTranslate="global.info.Stt">STT</th>
+                          <th class="main-table-th-2">Giá trị đơn hàng tối thiểu</th>
+                          <th class="main-table-th-3">Giá trị đơn hàng tối đa</th>
+                          <th class="main-table-th-4" style="border-right: 1px solid #b0d4eb !important">Số lượng khuyến mại</th>
+                          <th class="main-table-th-4" style="width: 400px">Nhóm/Sản phẩm khuyến mại</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <ng-container *ngFor="let condition of conditions; index as j">
+                          <tr>
+                            <td style="text-align: center; padding: 10px 15px !important">{{ j + 1 }}</td>
+                            <td style="text-align: center">{{ condition.minValue | number }}</td>
+                            <td style="text-align: center">{{ condition.maxValue | number }}</td>
+                            <td style="text-align: center">{{ condition.getQuantity }}</td>
+                            <td style="overflow: auto; text-align: left">
+                              <div class="d-grid" *ngIf="condition.getProductProductUnitId">
+                                <ng-container *ngFor="let prodId of condition.getProductProductUnitId; let odd = odd">
+                                  <label [ngClass]="odd ? 'py-2' : ''" *ngIf="prodResultMap.has(prodId)">
+                                    {{ prodResultMap.get(prodId).productCode }}
+                                    - {{ prodResultMap.get(prodId).productName }}
+                                    <span *ngIf="prodResultMap.get(prodId).unit"> - {{ prodResultMap.get(prodId).unit }} </span>
+                                  </label>
+                                </ng-container>
+                              </div>
+                              <div class="d-grid" *ngIf="condition.getProductGroupId">
+                                <ng-container *ngFor="let groupId of condition.getProductGroupId">
+                                  <span *ngIf="groupResultMap.has(groupId)">{{ groupResultMap.get(groupId) }}</span>
+                                </ng-container>
+                              </div>
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container
+        class="promotion-detail__conditions--bill-total-amount"
+        *ngIf="promotionType === VoucherConstants.VOUCHER_DISCOUNT_BILL_BUY_AND_BONUS_PRODUCT"
+      >
+        <strong> Theo sản phẩm - Mua sản phẩm khuyến mại sản phẩm </strong>
+        <div class="tab-content rounded-top panel rounded-0 m-0">
+          <div class="tab-pane fade active show">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="panel panel-inverse m-0" style="height: 300px">
+                  <div class="table-responsive">
+                    <table class="table editing-table">
+                      <thead>
+                        <tr class="table-custom-header">
+                          <th class="text-break main-table-th-1" jhiTranslate="global.info.Stt">STT</th>
+                          <th class="main-table-th-2">Nhóm/Sản phẩm mua</th>
+                          <th class="main-table-th-3">Số lượng mua</th>
+                          <th class="main-table-th-3" style="width: 400px">Nhóm/Sản phẩm khuyến mại</th>
+                          <th class="main-table-th-3" style="border-right: 1px solid #b0d4eb !important">Số lượng khuyến mại</th>
+                          <th class="main-table-th-3">Giá trị giảm giá</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <ng-container *ngFor="let condition of conditions; index as j">
+                          <tr>
+                            <td style="text-align: center; padding: 10px 15px !important">{{ j + 1 }}</td>
+                            <td style="overflow: auto; text-align: left">
+                              <div class="d-grid" *ngIf="condition.buyProductProductUnitId">
+                                <ng-container *ngFor="let buyId of condition.buyProductProductUnitId; let odd = odd">
+                                  <label [ngClass]="odd ? 'py-2' : ''" *ngIf="prodResultMap.has(buyId)">
+                                    {{ prodResultMap.get(buyId).productCode }}
+                                    - {{ prodResultMap.get(buyId).productName }}
+                                    <span *ngIf="prodResultMap.get(buyId).unit"> - {{ prodResultMap.get(buyId).unit }} </span>
+                                  </label>
+                                </ng-container>
+                              </div>
+                              <div class="d-grid" *ngIf="condition.buyProductGroupId">
+                                <ng-container *ngFor="let groupId of condition.buyProductGroupId">
+                                  <span *ngIf="groupResultMap.has(groupId)">{{ groupResultMap.get(groupId) }}</span>
+                                </ng-container>
+                              </div>
+                            </td>
+                            <td style="text-align: center">{{ condition.buyQuantity }}</td>
+                            <td style="overflow: auto; text-align: left">
+                              <div class="d-grid" *ngIf="condition.getProductProductUnitId">
+                                <ng-container *ngFor="let prodId of condition.getProductProductUnitId; let odd = odd">
+                                  <label [ngClass]="odd ? 'py-2' : ''" *ngIf="prodResultMap.has(prodId)">
+                                    {{ prodResultMap.get(prodId).productCode }}
+                                    - {{ prodResultMap.get(prodId).productName }}
+                                    <span *ngIf="prodResultMap.get(prodId).unit"> - {{ prodResultMap.get(prodId).unit }} </span>
+                                  </label>
+                                </ng-container>
+                              </div>
+                              <div class="d-grid" *ngIf="condition.getProductGroupId">
+                                <ng-container *ngFor="let groupId of condition.getProductGroupId">
+                                  <span *ngIf="groupResultMap.has(groupId)">{{ groupResultMap.get(groupId) }}</span>
+                                </ng-container>
+                              </div>
+                            </td>
+                            <td style="text-align: center">{{ condition.getQuantity }}</td>
+                            <td style="text-align: center">
+                              {{
+                                condition.discountValue > 0
+                                  ? (condition.discountValue | number) + 'VND'
+                                  : (condition.discountPercent | number) + '%'
+                              }}
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div class="promotion-detail__history" *ngIf="indexPromotionInfo === 2">
+      <div class="promotion-detail__conditions--bill-total-amount" *ngIf="promotion.historyUsage && promotion.historyUsage.length > 0">
+        <div class="tab-content rounded-top panel rounded-0 m-0">
+          <div class="tab-pane fade active show">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="panel panel-inverse m-0" style="height: 300px">
+                  <div class="table-responsive">
+                    <table class="table editing-table">
+                      <thead>
+                        <tr class="table-custom-header">
+                          <th class="text-break main-table-th-1" jhiTranslate="global.info.Stt">STT</th>
+                          <th class="main-table-th-2">Mã đơn hàng</th>
+                          <th class="main-table-th-3">Thời gian</th>
+                          <th class="main-table-th-4">Khách hàng</th>
+                          <th class="main-table-th-5">Chi nhánh sử dụng</th>
+                          <th class="main-table-th-6" style="border-right: 1px solid #b0d4eb !important">Tổng tiền đơn hàng</th>
+                          <th class="main-table-th-7">Giá trị khuyến mại</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <ng-container *ngFor="let usage of promotion.historyUsage; index as j">
+                          <tr>
+                            <td style="text-align: center; padding: 10px 15px !important">{{ j + 1 }}</td>
+                            <td style="text-align: center">{{ usage.billCode }}</td>
+                            <td style="text-align: center">{{ usage.createTime }}</td>
+                            <td style="text-align: center">{{ usage.customerName }}</td>
+                            <td style="text-align: center">{{ usage.companyName }}</td>
+                            <td style="text-align: right">{{ usage.billValue | number }}</td>
+                            <td style="text-align: right">{{ usage.voucherValue | number }}</td>
+                          </tr>
+                        </ng-container>
+                      </tbody>
+                    </table>
+                  </div>
+                  <ng-container *ngIf="promotion.historyUsage.length >= 10">
+                    <label (click)="viewMoreUsage(promotion.id)" class="view-more">Xem thêm</label>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="text-center" *ngIf="!promotion.historyUsage || promotion.historyUsage.length < 1">
+        <label>Không có dữ liệu</label>
+      </div>
+    </div>
+  </div>
+</div>

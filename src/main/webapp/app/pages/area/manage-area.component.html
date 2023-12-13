@@ -1,0 +1,348 @@
+<div>
+  <h1 class="page-header" jhiTranslate="easyPos.area-unit.title">Danh sách bàn</h1>
+  <div class="d-flex receipt-payment-container">
+    <div class="col-sm-12 col-lg-12 me-3 box-left">
+      <div class="tab-content pt-7px pb-7px panel-1">
+        <div class="d-flex total-box">
+          <div class="d-flex col-12 col-sm-6 align-items-center justify-content-center receipt-box">
+            <div class="stats-icon col-3 icon-receipt me-3 d-flex align-items-center justify-content-center">
+              <span [innerHTML]="ICON_TABLE_SM | safeHtml"></span>
+            </div>
+            <div class="d-flex" style="flex-direction: column">
+              <div class="total-money-receipt">{{ emptyArea }}</div>
+              <div>
+                <label class="total-text">Tổng số bàn trống</label>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex col-12 col-sm-6 align-items-center justify-content-center receipt-box">
+            <div class="stats-icon col-3 icon-payment me-3 d-flex align-items-center justify-content-center">
+              <span [innerHTML]="ICON_DATE | safeHtml"></span>
+            </div>
+            <div class="d-flex" style="flex-direction: column">
+              <div class="total-money-payment">{{ totalArea - emptyArea }}</div>
+              <div>
+                <label class="total-text">Tổng số bàn đang sử dụng </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="group-form-custom mt-10px mb-15px row">
+    <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+      <label class="form-label label-search">Khu vực:</label>
+      <div class="item-search from-select">
+        <ng-select
+          style="width: 100%; padding: 0; font-size: inherit"
+          class="form-control"
+          name="selectArea"
+          id="selectArea"
+          [(ngModel)]="selectArea"
+          (ngModelChange)="changeAreaApi()"
+          [clearable]="false"
+        >
+          <ng-option [value]="-1" jhiTranslate="easyPos.area.all-area">Tất cả khu vực</ng-option>
+          <ng-option *ngFor="let area of areaArray" [value]="area.id"
+            ><span class="whitespace-pre">{{ area.name }}</span></ng-option
+          >
+        </ng-select>
+        <div class="icon-right" (click)="openCreate()">
+          <i class="icon-add fa-sharp fa-solid fa-plus"></i>
+        </div>
+      </div>
+    </div>
+    <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+      <!--      <div class="group-item-custom mb-0">-->
+      <label class="form-label label-search" jhiTranslate="global.info.keyword"></label>
+      <div class="item-search">
+        <input
+          name="keyword"
+          style="font-size: inherit"
+          (keyup.enter)="getAreas()"
+          [(ngModel)]="keyword"
+          class="form-control"
+          type="search"
+          placeholder="Tìm kiếm..."
+          (ngModelChange)="onDeleteKeywordSearch()"
+        />
+      </div>
+      <!--      </div>-->
+    </div>
+    <!--    <div class="form-btn-search">-->
+    <!--      <button (click)="getAreas()" class="btn-search">-->
+    <!--        <fa-icon icon="search"></fa-icon>-->
+    <!--        <span jhiTranslate="global.info.search"></span>-->
+    <!--      </button>-->
+    <!--    </div>-->
+    <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+      <label class="form-label label-search"></label>
+      <div class="form-label label-search d-block mb-0">
+        <button (click)="getAreas()" class="btn-search" style="height: 42px">
+          <fa-icon icon="search"></fa-icon>
+          <span jhiTranslate="global.info.search"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-action">
+    <ul class="nav" *jhiHasAnyAuthority="authorAdd">
+      <li class="nav-action" (click)="createUnit()">
+        <a class="nav-link nav-link-action">
+          <i class="fa-solid fa-plus"></i>
+          <span class="d-sm-block ms-2" jhiTranslate="easyPos.area-unit.button.add">Thêm bàn</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="d-flex justify-content-end align-items-center" style="margin-left: auto; height: 45px">
+      <div class="form-page-size">
+        <label
+          class="form-label label-search me-2 mb-0 text-bold"
+          jhiTranslate="global.info.totalParam"
+          [translateValues]="{ count: totalSize || 0 }"
+        ></label>
+        <div class="form-select-size">
+          <ng-select
+            [items]="sizes"
+            class="select-value select-size"
+            bindLabel="name"
+            bindValue="id"
+            placeholder="Tất cả"
+            [(ngModel)]="pageSize"
+            (ngModelChange)="getAreas(true)"
+          >
+          </ng-select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content rounded-top panel rounded-0 m-0">
+    <div class="tab-pane fade active show">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="table-responsive" style="height: calc(100vh - 410px)">
+            <table class="table editing-table">
+              <thead>
+                <tr class="table-custom-header">
+                  <th style="width: 10%">STT</th>
+                  <th class="not-too-big" jhiTranslate="easyPos.area-unit.create.tableName">Tên bàn</th>
+                  <th jhiTranslate="easyPos.area.table-th.area-name">Tên khu vực</th>
+                  <th jhiTranslate="easyPos.area.table-th.bill-count">Số đơn hàng</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody *ngIf="unitArray && unitArray.length >= (currentPage - 1) * pageSize">
+                <ng-container *ngFor="let unit of unitArray.slice((currentPage - 1) * pageSize, currentPage * pageSize); index as i">
+                  <tr class="table-custom-body">
+                    <td style="width: 10%">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                    <td>
+                      <div class="truncate not-too-big">
+                        <span class="whitespace-pre"> {{ unit.name }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="truncate">
+                        <span class="whitespace-pre"> {{ unit.areaName }}</span>
+                      </div>
+                    </td>
+                    <td class="text-end">{{ unit.usingBills?.length }}</td>
+                    <td>
+                      <div class="list-action">
+                        <i
+                          (click)="openDetail(unit)"
+                          *ngIf="(unit.usingBills?.length ?? 0) >= 1"
+                          class="fa-solid fas fa-arrow-up-wide-short"
+                          ngbTooltip="{{ 'global.entity.action.detail' | translate }}"
+                        ></i>
+                        <div *jhiHasAnyAuthority="authorADDBill">
+                          <i
+                            (click)="getLinkTable(BILL_ORDER, unit.id)"
+                            *ngIf="(unit.usingBills?.length ?? 0) < 1"
+                            class="fa-solid icon-add fa-sharp fa-plus"
+                            ngbTooltip="{{ 'global.entity.action.addBill' | translate }}"
+                          ></i>
+                        </div>
+                        <i
+                          (click)="openUpdateUnit(unit)"
+                          class="fa-solid fa-edit"
+                          ngbTooltip="{{ 'global.entity.action.edit' | translate }}"
+                          *jhiHasAnyAuthority="authorUpdate"
+                        >
+                        </i>
+                        <i
+                          (click)="openModalDeleteUnit(unit)"
+                          class="fa-solid fa-trash-can"
+                          ngbTooltip="{{ 'easyPos.bill.action.delete' | translate }}"
+                          *jhiHasAnyAuthority="authorDelete"
+                        >
+                        </i>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  <div>-->
+  <!--    <div *ngFor="let area of tmpArray" class="area-div">-->
+  <!--      <jhi-manage-area-unit [area]="area" (newItemEvent)="getAreas(true)"></jhi-manage-area-unit>-->
+  <!--    </div>-->
+  <!--  </div>-->
+
+  <br />
+  <div>
+    <!--    <div class="tab-pane fade active show">-->
+    <!--      <div class="d-flex justify-content-center">-->
+    <!--        <ngb-pagination-->
+    <!--          [collectionSize]="totalSize"-->
+    <!--          [(page)]="currentPage"-->
+    <!--          [pageSize]="pageSize"-->
+    <!--          [maxSize]="5"-->
+    <!--          [rotate]="true"-->
+    <!--          [boundaryLinks]="true"-->
+    <!--        ></ngb-pagination>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <div class="group-page-size">
+      <!--      <div class="form-page-size">-->
+      <!--        <label class="label-total mr-5px" jhiTranslate="global.info.totalParam" [translateValues]="{ count: totalSize || 0 }"></label>-->
+      <!--        <div class="form-select-size">-->
+      <!--          <ng-select-->
+      <!--            [items]="sizes"-->
+      <!--            class="select-value select-size"-->
+      <!--            bindLabel="name"-->
+      <!--            bindValue="id"-->
+      <!--            placeholder="Tất cả"-->
+      <!--            [(ngModel)]="pageSize"-->
+      <!--            (ngModelChange)="getAreas(true)"-->
+      <!--          >-->
+      <!--          </ng-select>-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <div class="from-pagination d-flex justify-content-center" *ngIf="totalSize > 0">
+        <ngb-pagination
+          class="pagination"
+          [collectionSize]="totalSize"
+          [(page)]="currentPage"
+          [pageSize]="pageSize"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+        ></ngb-pagination>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #updateUnitModel let-dctt="dismiss">
+  <div class="modal-header">
+    <h5 class="modal-title">Chỉnh sửa bàn</h5>
+    <button type="button" class="btn-close" (click)="dctt('Close')" aria-label="Close" name="btnCloseCheckModal"></button>
+  </div>
+  <div class="modal-body">
+    <form class="detail-row" #cusForm="ngForm">
+      <div class="form-group">
+        <label for="name" class="form-label"
+          ><span jhiTranslate="easyPos.area-unit.create.tableName">Tên bàn </span><span style="color: red">*</span>
+        </label>
+        <div class="mt-10px input-text-custom">
+          <input
+            id="name"
+            class="input-value form-control"
+            name="name"
+            placeholder="Nhập tên bàn"
+            required
+            maxLength="50"
+            [(ngModel)]="nameTmp.name"
+          />
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="exit-button-dialog" (click)="dctt('Close')">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <label jhiTranslate="global.entity.action.cancel">Hủy</label>
+    </button>
+    <button
+      type="button"
+      class="save-button-dialog"
+      [disabled]="!cusForm.form.valid || loading.isLoading"
+      (click)="updateNameUnit(nameTmp)"
+    >
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span jhiTranslate="global.entity.action.save">Lưu</span>
+    </button>
+    <!--    <button type="button" class="btn btn-sm btn-secondary" (click)="dctt('Close')">-->
+    <!--      <fa-icon icon="cancel"></fa-icon>-->
+    <!--      <label jhiTranslate="global.entity.action.cancel">Hủy</label>-->
+    <!--    </button>-->
+    <!--    <button-->
+    <!--      type="button"-->
+    <!--      class="btn btn-sm btn-success"-->
+    <!--      [disabled]="!cusForm.form.valid || loading.isLoading"-->
+    <!--      (click)="updateNameUnit(nameTmp)"-->
+    <!--    >-->
+    <!--      <fa-icon icon="edit" class="me-3px"></fa-icon><label jhiTranslate="global.entity.action.update">Cập nhật</label>-->
+    <!--    </button>-->
+  </div>
+</ng-template>
+
+<ng-template #detailUnit let-dctt="dismiss">
+  <div class="modal-header">
+    <h5 class="modal-title" jhiTranslate="easyPos.area-unit.detail.title">Chọn đơn hàng để xử lý</h5>
+    <button type="button" class="btn-close" (click)="dctt('Close')" aria-label="Close" name="btnCloseCheckModal"></button>
+  </div>
+  <div style="padding: 30px 10px 30px 10px">
+    <div class="div-bill" style="margin-left: auto; margin-right: auto">
+      <div
+        *ngFor="let bill of unitDetail.usingBills; index as l"
+        class="d-flex bill"
+        style="box-shadow: inset 0 0 0 1px var(--app-component-border-color-transparent)"
+      >
+        <div style="width: 50%">
+          <div class="form-group form-input-custom me-auto" style="max-width: 100px">
+            <div class="user-input-text-div" style="padding-left: 10px">
+              <strong id="stt" jhiTranslate="easyPos.area-unit.detail.bill">Đơn hàng {{ l + 1 }}</strong>
+            </div>
+          </div>
+          <div class="form-group form-input-custom me-auto" style="flex: 1">
+            <div class="user-input-text-div" style="padding-left: 10px">
+              <strong id="createTime" style="font-weight: 400; font-size: 15px">{{ bill.createTime }}</strong>
+            </div>
+          </div>
+        </div>
+        <div style="width: 50%; padding-right: 10px">
+          <div class="form-group form-input-custom d-flex justify-content-end">
+            <div class="user-input-text-div">
+              <strong id="amount" style="color: #6697d6">{{ bill.totalAmount | number }}</strong>
+            </div>
+          </div>
+          <div class="form-group form-input-custom d-flex justify-content-end" style="min-width: 87px">
+            <button (click)="dctt('Close'); getLinkBill(BILL_ORDER, bill.id)" class="btn btn-success btn-sm">
+              <i class="fas fa-arrow-up-wide-short"></i>
+              <span jhiTranslate="global.entity.action.detail">Chi tiết</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-secondary" (click)="dctt('Close')">
+      <fa-icon icon="cancel"></fa-icon>
+      <label jhiTranslate="global.entity.action.cancel">Hủy</label>
+    </button>
+    <button (click)="dctt('Close'); getLinkTable(BILL_ORDER, unitDetail.id)" type="button" class="btn btn-sm btn-success">
+      <i class="icon-add fa-sharp fa-solid fa-plus"></i><span jhiTranslate="easyPos.area-unit.detail.create-bill">Tạo đơn mới</span>
+    </button>
+  </div>
+</ng-template>

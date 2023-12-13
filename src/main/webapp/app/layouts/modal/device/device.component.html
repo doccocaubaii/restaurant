@@ -1,0 +1,40 @@
+<div class="modal-header">
+  <h3 class="modal-title">Thông tin thiết bị</h3>
+  <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close" name="btnCloseCheckModal"></button>
+</div>
+<div class="modal-body">
+  <label class="form-label">Nhập tên thiết bị</label>
+  <input
+    type="text"
+    class="form-control h-45px fs-13px"
+    placeholder="Nhập tên thiết bị ..."
+    id="email"
+    [(ngModel)]="deviceName"
+    name="email"
+  />
+  <div *ngIf="available" class="panel panel-default mt-10px p-15px">
+    <h5>Thông tin thiết bị đã đăng ký</h5>
+    <div class="border-bottom">
+      <label class="pt-2">Mã số thuế: </label><span class="px-2">{{ deviceInfo.taxCode }}</span>
+    </div>
+    <div class="border-bottom">
+      <label class="pt-2">Tên thiết bị: </label><span class="px-2">{{ deviceInfo.name }}</span>
+    </div>
+    <div>
+      <label class="pt-2">Mã thiết bị: </label><span class="px-2">{{ deviceInfo.deviceCode }}</span>
+    </div>
+  </div>
+  <div *ngIf="!available" class="my-2">
+    <span>Bạn vui lòng đặt tên cho thiết bị đang sử dụng này để đăng ký với EasyPos.</span>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="exit-button-dialog me-2" (click)="closeModal()">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <label jhiTranslate="global.entity.action.cancel">Hủy</label>
+  </button>
+  <button type="button" class="save-button-dialog" (click)="saveDevice()">
+    <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+    Cập nhật
+  </button>
+</div>

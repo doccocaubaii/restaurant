@@ -1,0 +1,282 @@
+<article>
+  <h1 class="page-header" jhiTranslate="easyPos.voucher.title">Danh sách Voucher</h1>
+
+  <div class="group-form-custom mb-25px">
+    <div class="group-item-custom" style="flex: 1">
+      <!--      <label class="form-label label-search" jhiTranslate="global.info.keyword"></label>-->
+      <div class="item-search">
+        <input
+          name="keyword"
+          [(ngModel)]="keyword"
+          class="form-control"
+          type="search"
+          placeholder="Nhập để tìm kiếm..."
+          (ngModelChange)="onDeleteKeywordSearch()"
+          (keyup.enter)="getVouchers()"
+        />
+      </div>
+    </div>
+    <div class="form-btn-search">
+      <button (click)="getVouchers()" class="btn-search">
+        <fa-icon icon="search"></fa-icon>
+        <span jhiTranslate="global.info.search"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="panel-action">
+    <ul class="nav">
+      <!--      <li class="nav-action" (click)="openCreate()">-->
+      <li class="nav-action" (click)="openCreate()" *jhiHasAnyAuthority="authorADD">
+        <a class="nav-link nav-link-action">
+          <i class="fa-solid fa-plus"></i>
+          <span class="d-sm-block ms-2" jhiTranslate="easyPos.voucher.action.add">Thêm mới</span>
+        </a>
+      </li>
+      <!--      <li class="nav-action" (click)="onImportExcel()">-->
+      <!--      <li class="nav-action">-->
+      <!--        <a class="nav-link nav-link-action">-->
+      <!--          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">-->
+      <!--            <g clip-path="url(#clip0_845_12318)">-->
+      <!--              <path-->
+      <!--                d="M21.26 12.8179H17.4431V10.9095H21.26V12.8179ZM21.26 13.9084H17.4431V15.8169H21.26V13.9084ZM21.26 4.91151H17.4431V6.81994H21.26V4.91151ZM21.26 7.91048H17.4431V9.8189H21.26V7.91048ZM21.26 16.9074H17.4431V18.8159H21.26V16.9073V16.9074ZM23.8964 20.6698C23.7873 21.2369 23.1057 21.2505 22.6504 21.2696H14.1715V23.7232H12.4785L0 21.5422V2.46056L12.5521 0.276749H14.1715V2.44964H22.3587C22.8195 2.46872 23.3266 2.436 23.7273 2.71134C24.0082 3.11484 23.9809 3.62742 24 4.09087L23.9891 18.2842C23.9755 19.0776 24.0627 19.8873 23.8964 20.6698ZM9.99745 16.3921C9.24502 14.8654 8.47894 13.3495 7.72917 11.8228C8.47073 10.3369 9.20142 8.84564 9.92934 7.35431C9.31045 7.38431 8.69156 7.42247 8.07544 7.46611C7.61466 8.58661 7.07756 9.67715 6.7177 10.8359C6.38236 9.74259 5.93798 8.6902 5.53177 7.62422C4.93195 7.65694 4.33214 7.69237 3.73238 7.72781C4.36486 9.12375 5.03831 10.5005 5.65172 11.9046C4.92923 13.2677 4.25311 14.65 3.55242 16.0214C4.14947 16.0459 4.74656 16.0704 5.34361 16.0786C5.76895 14.9935 6.29784 13.9493 6.66863 12.8424C7.00125 14.0311 7.56558 15.1298 8.02908 16.2667C8.68612 16.3131 9.34041 16.354 9.99745 16.3921ZM22.6997 3.74447H14.1715V4.91151H16.3526V6.81994H14.1715V7.91048H16.3526V9.8189H14.1715V10.9095H16.3526V12.8179H14.1715V13.9084H16.3526V15.8169H14.1715V16.9074H16.3526V18.8159H14.1715V20.0767H22.6997V3.74447Z"-->
+      <!--                fill="white"-->
+      <!--              />-->
+      <!--            </g>-->
+      <!--            <defs>-->
+      <!--              <clipPath id="clip0_845_12318">-->
+      <!--                <rect width="24" height="24" fill="white" />-->
+      <!--              </clipPath>-->
+      <!--            </defs>-->
+      <!--          </svg>-->
+      <!--          <span class="d-sm-block ms-2">Nhập từ excel</span>-->
+      <!--        </a>-->
+      <!--      </li>-->
+    </ul>
+    <div class="d-flex justify-content-end align-items-center" style="margin-left: auto; height: 45px">
+      <div class="form-page-size">
+        <label
+          class="form-label form-label label-search me-2 mb-0 text-bold"
+          jhiTranslate="global.info.totalParam"
+          [translateValues]="{ count: totalSize || 0 }"
+        ></label>
+        <div class="form-select-size">
+          <ng-select
+            [items]="sizes"
+            class="select-value select-size"
+            bindLabel="name"
+            bindValue="id"
+            placeholder="Tất cả"
+            [(ngModel)]="pageSize"
+            (ngModelChange)="getVouchers()"
+          >
+          </ng-select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content rounded-top panel rounded-0 m-0">
+    <div class="tab-pane fade active show">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="panel panel-inverse">
+            <div class="table-responsive">
+              <table class="table editing-table">
+                <thead>
+                  <tr class="table-custom-header">
+                    <th><span jhiTranslate="global.info.Stt">STT</span></th>
+                    <th jhiTranslate="easyPos.voucher.info.table-th.voucherCode">Mã voucher</th>
+                    <th jhiTranslate="easyPos.voucher.info.voucherName" style="max-width: 150px" class="text-wrap">Tên voucher</th>
+                    <th jhiTranslate="easyPos.voucher.info.table-th.startTime">Từ ngày</th>
+                    <th jhiTranslate="easyPos.voucher.info.table-th.endTime" style="min-width: 130px">Đến ngày</th>
+                    <th jhiTranslate="easyPos.voucher.info.table-th.applyType" style="min-width: 130px">Áp dụng</th>
+                    <th jhiTranslate="easyPos.voucher.info.table-th.active" style="min-width: 130px">Trạng thái</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let voucher of voucherArray; index as i">
+                    <tr class="table-custom-body" [class.editing-head]="idEditing == voucher.id">
+                      <td (click)="idEditing = idEditing == voucher.id ? -1 : voucher.id">{{ i + 1 + (page - 1) * pageSize }}</td>
+                      <td (click)="idEditing = idEditing == voucher.id ? -1 : voucher.id">
+                        <div class="td-ma-khach-hang">{{ voucher.code }}</div>
+                      </td>
+                      <td (click)="idEditing = idEditing == voucher.id ? -1 : voucher.id">
+                        <div class="td-ten-khach-hang" placement="top" [ngbTooltip]="voucher.name">{{ voucher.name }}</div>
+                      </td>
+                      <td (click)="idEditing = idEditing == voucher.id ? -1 : voucher.id">{{ voucher.startTime }}</td>
+                      <td (click)="idEditing = idEditing == voucher.id ? -1 : voucher.id">{{ voucher.endTime }}</td>
+                      <td (click)="idEditing = idEditing == voucher.id ? -1 : voucher.id">{{ voucher.applyType }}</td>
+                      <td (click)="idEditing = idEditing == voucher.id ? -1 : voucher.id">
+                        <span *ngIf="voucher.status == 0" style="color: #00d931">Chưa chạy</span>
+                        <span *ngIf="voucher.status == 1" style="color: #0aa7e5">Đang chạy</span>
+                        <span *ngIf="voucher.status == 2" style="color: #dd8514">Tạm ngừng</span>
+                        <span *ngIf="voucher.status == 3" style="color: #d90000">Đã xong</span>
+                      </td>
+                      <td>
+                        <div class="list-action">
+                          <span style="visibility: visible; width: 22px; height: 22px" class="apply">
+                            <svg
+                              class="apply-icon2"
+                              (click)="openApply(voucher)"
+                              ngbTooltip="Áp dụng"
+                              width="22"
+                              height="22"
+                              viewBox="0 0 22 22"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <g clip-path="url(#clip0_2181_8058)">
+                                <path
+                                  d="M15.8333 3.33203C16.471 3.332 17.0846 3.57564 17.5485 4.0131C18.0125 4.45057 18.2917 5.04879 18.3292 5.68536L18.3333 5.83203V7.3462C18.3314 7.57127 18.2708 7.79194 18.1574 7.98635C18.0439 8.18075 17.8817 8.34215 17.6867 8.45453L17.5975 8.50286C17.3279 8.6352 17.099 8.83793 16.9352 9.08961C16.7713 9.3413 16.6785 9.63259 16.6665 9.93269C16.6546 10.2328 16.7239 10.5305 16.8673 10.7945C17.0106 11.0584 17.2226 11.2787 17.4808 11.432L17.5975 11.4945C17.9583 11.6729 18.2808 12.0412 18.3275 12.5279L18.3333 12.6512V14.1654C18.3334 14.803 18.0897 15.4166 17.6523 15.8806C17.2148 16.3445 16.6166 16.6238 15.98 16.6612L15.8333 16.6654H4.16666C3.52898 16.6654 2.91539 16.4218 2.45144 15.9843C1.98748 15.5468 1.70823 14.9486 1.67082 14.312L1.66666 14.1654V12.6512C1.66666 12.1462 1.95999 11.7529 2.31332 11.5429L2.40249 11.4945C2.6721 11.3622 2.90094 11.1595 3.06482 10.9078C3.22869 10.6561 3.32152 10.3648 3.33347 10.0647C3.34542 9.76461 3.27606 9.46685 3.13272 9.20293C2.98938 8.93901 2.77739 8.71872 2.51916 8.56536L2.40249 8.50286C2.04166 8.32453 1.71916 7.9562 1.67249 7.46953L1.66666 7.34703V5.83203C1.66662 5.19436 1.91026 4.58077 2.34773 4.11681C2.78519 3.65286 3.38341 3.37361 4.01999 3.3362L4.16666 3.33203H15.8333ZM15.8333 4.9987H4.16666C3.96255 4.99872 3.76554 5.07366 3.61301 5.20929C3.46048 5.34493 3.36304 5.53182 3.33916 5.73453L3.33332 5.83203V7.1112C3.82723 7.39587 4.23985 7.80248 4.53173 8.29215C4.82362 8.78182 4.98501 9.33818 5.00048 9.90804C5.01595 10.4779 4.88497 11.0422 4.62008 11.547C4.35518 12.0518 3.96522 12.4802 3.48749 12.7912L3.33332 12.8862V14.1654C3.33335 14.3695 3.40829 14.5665 3.54392 14.719C3.67955 14.8715 3.86645 14.969 4.06916 14.9929L4.16666 14.9987H15.8333C16.0374 14.9987 16.2344 14.9237 16.387 14.7881C16.5395 14.6525 16.6369 14.4656 16.6608 14.2629L16.6667 14.1654V12.8862C16.1728 12.6015 15.7601 12.1949 15.4682 11.7052C15.1764 11.2156 15.015 10.6592 14.9995 10.0894C14.984 9.5195 15.115 8.9552 15.3799 8.45042C15.6448 7.94563 16.0348 7.51724 16.5125 7.2062L16.6667 7.1112V5.83203C16.6666 5.62792 16.5917 5.43092 16.4561 5.27839C16.3204 5.12586 16.1335 5.02841 15.9308 5.00453L15.8333 4.9987ZM8.33332 7.4987C8.53743 7.49872 8.73444 7.57366 8.88697 7.70929C9.0395 7.84493 9.13694 8.03182 9.16082 8.23453L9.16666 8.33203V11.6654C9.16642 11.8778 9.08509 12.0821 8.93928 12.2365C8.79348 12.391 8.5942 12.4839 8.38216 12.4963C8.17013 12.5088 7.96134 12.4398 7.79846 12.3035C7.63559 12.1672 7.53091 11.9738 7.50582 11.7629L7.49999 11.6654V8.33203C7.49999 8.11102 7.58779 7.89906 7.74407 7.74278C7.90035 7.5865 8.11231 7.4987 8.33332 7.4987Z"
+                                  fill="#4BA158"
+                                />
+                              </g>
+                              <defs>
+                                <clipPath id="clip0_2181_8058">
+                                  <rect width="20" height="20" fill="white" />
+                                </clipPath>
+                              </defs>
+                            </svg>
+                          </span>
+
+                          <i
+                            (click)="openCreate(voucher)"
+                            class="fa-solid fa-edit"
+                            ngbTooltip="{{ 'global.entity.action.edit' | translate }}"
+                          >
+                          </i>
+                          <i
+                            (click)="idDel = voucher.id; openDelete()"
+                            class="fa-solid fa-trash-can"
+                            ngbTooltip="{{ 'easyPos.bill.action.delete' | translate }}"
+                          >
+                          </i>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr *ngIf="voucher.id == idEditing" [class.editing-body]="idEditing == voucher.id">
+                      <td class="td-chi-tiet-kh" colspan="8">
+                        <div class="row wrap-order-detail">
+                          <div class="col-6 left-order-detail-content">
+                            <div class="form-group border-bottom form-input-custom">
+                              <label for="ma-khach-hang" class="form-label">
+                                <span jhiTranslate="easyPos.voucher.info.voucher-code">Mã voucher</span>
+                              </label>
+                              <div class="user-input-text-div">
+                                <strong id="ma-khach-hang">{{ voucher.code }}</strong>
+                              </div>
+                            </div>
+                            <div class="form-group border-bottom form-input-custom">
+                              <label for="ten-khach-hang" class="form-label"
+                                ><span jhiTranslate="easyPos.voucher.info.voucherName">Tên voucher</span>
+                              </label>
+                              <div class="user-input-text-div">
+                                <strong id="ten-khach-hang">{{ voucher.name }}</strong>
+                              </div>
+                            </div>
+                            <div class="form-group border-bottom form-input-custom">
+                              <label for="nhom-khach-hang" class="form-label"
+                                ><span jhiTranslate="easyPos.voucher.info.type">Loại voucher</span>
+                              </label>
+                              <div class="user-input-text-div">
+                                <strong id="nhom-khach-hang">{{ voucher.applyType }}</strong>
+                                <!--                                <strong id="nhom-khach-hang" [ngSwitch]="voucher.applyType">-->
+                                <!--                                  <span *ngSwitchCase="1" jhiTranslate="easyPos.voucher.info.type-1">Theo phần trăm</span>-->
+                                <!--                                  <span *ngSwitchCase="2" jhiTranslate="easyPos.voucher.info.type-2">Theo giá tiền</span>-->
+                                <!--                                </strong>-->
+                              </div>
+                            </div>
+                            <div class="form-group border-bottom form-input-custom">
+                              <label for="nhom-khach-hang" class="form-label"><span>Giá trị giảm</span> </label>
+                              <div class="user-input-text-div">
+                                <strong *ngIf="voucher.discountPercent > 0" id="gia-tri-giam-phan-tram"
+                                  >{{ voucher.discountPercent }} %</strong
+                                >
+                                <strong *ngIf="voucher.discountValue > 0" id="gia-tri-giam-truc-tiep"
+                                  >{{ voucher.discountValue | number }} VND</strong
+                                >
+                                <strong *ngIf="!voucher.discountValue && !voucher.discountPercent">{{ 0 }}</strong>
+                                <!--                                <strong id="nhom-khach-hang" [ngSwitch]="voucher.applyType">-->
+                                <!--                                  <span *ngSwitchCase="1" jhiTranslate="easyPos.voucher.info.type-1">Theo phần trăm</span>-->
+                                <!--                                  <span *ngSwitchCase="2" jhiTranslate="easyPos.voucher.info.type-2">Theo giá tiền</span>-->
+                                <!--                                </strong>-->
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-6 left-order-detail-content" style="">
+                            <div class="form-group border-bottom form-input-custom">
+                              <label class="form-label" for="so-can-cuoc"
+                                ><span jhiTranslate="easyPos.voucher.info.startTime">Từ ngày</span>
+                              </label>
+                              <div class="user-input-text-div">
+                                <strong id="so-can-cuoc">{{ voucher.startTime }}</strong>
+                              </div>
+                            </div>
+                            <div class="form-group border-bottom form-input-custom">
+                              <label class="form-label" for="ma-so-thue"
+                                ><span jhiTranslate="easyPos.voucher.info.endTime">Đến ngày</span>
+                              </label>
+                              <div class="user-input-text-div">
+                                <strong id="ma-so-thue">{{ voucher.endTime }}</strong>
+                              </div>
+                            </div>
+                            <div class="form-group border-bottom form-input-custom">
+                              <label class="form-label"><span jhiTranslate="easyPos.voucher.info.table-th.active">Trạng thái</span> </label>
+                              <div class="user-input-text-div">
+                                <strong *ngIf="voucher.status == 0" style="color: #00d931">Chưa chạy</strong>
+                                <strong *ngIf="voucher.status == 1" style="color: #0aa7e5">Đang chạy</strong>
+                                <strong *ngIf="voucher.status == 2" style="color: #dd8514">Tạm ngừng</strong>
+                                <strong *ngIf="voucher.status == 3" style="color: #d90000">Đã xong</strong>
+                              </div>
+                            </div>
+                            <div class="form-group border-bottom form-input-custom">
+                              <label class="form-label"> </label>
+                              <div class="user-input-text-div"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br />
+
+  <div class="group-page-size">
+    <!--    <div class="form-page-size">-->
+    <!--      <label class="label-total mr-5px" jhiTranslate="global.info.totalParam" [translateValues]="{ count: totalSize || 0 }"></label>-->
+    <!--      <div class="form-select-size">-->
+    <!--        <ng-select-->
+    <!--          [items]="sizes"-->
+    <!--          class="select-value select-size"-->
+    <!--          bindLabel="name"-->
+    <!--          bindValue="id"-->
+    <!--          placeholder="Tất cả"-->
+    <!--          [(ngModel)]="pageSize"-->
+    <!--          (ngModelChange)="getVouchers()"-->
+    <!--        >-->
+    <!--        </ng-select>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <div class="from-pagination d-flex justify-content-center" *ngIf="totalSize > 0">
+      <ngb-pagination
+        class="pagination"
+        [collectionSize]="totalSize"
+        [(page)]="page"
+        [pageSize]="pageSize"
+        [maxSize]="5"
+        [rotate]="true"
+        [boundaryLinks]="true"
+        (pageChange)="getVouchers()"
+      ></ngb-pagination>
+    </div>
+  </div>
+</article>

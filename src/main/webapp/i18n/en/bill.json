@@ -1,0 +1,89 @@
+{
+  "easyPos": {
+    "bill": {
+      "title": "Danh sách đơn hàng",
+      "titleOffline": "Danh sách đơn hàng offline",
+      "info": {
+        "name": "Đơn hàng",
+        "billCode": "Mã đơn hàng",
+        "menu": "Thực đơn",
+        "areaTable": "Phòng bàn",
+        "search": "Tìm món...",
+        "customer": "Khách hàng:",
+        "warehouse": "kho",
+        "unit": "Đơn vị",
+        "qr": "Mã QR tra cứu",
+        "searchInvoice": "Tra cứu hóa đơn tại",
+        "thankCustomer": "CẢM ƠN QUÝ KHÁCH",
+        "area": "Phòng: ",
+        "table": "Bàn: ",
+        "pickTable": "Chọn bàn",
+        "pickTableAgain": "Chọn lại bàn",
+        "emptyTable": "Chưa có bàn được chọn",
+        "discount": "Giảm giá",
+        "typeDiscount": "Kiểu giảm giá",
+        "discountAmount": "Tiền giảm giá (đ)",
+        "vatRateDiscount": "Thuế giảm giá (%)",
+        "vatRateDiscountAmount": "Tiền thuế giảm giá (đ)",
+        "discountVatAmount": "Đã giảm {{param}} đồng tương ứng 20% mức tỷ lệ {{param}} để tính thuế giá trị gia tăng theo Nghị quyết số 101/2023/QH15"
+      },
+      "offline": {
+        "notify1": "Bạn có {{quantity}} đơn hàng chưa đồng bộ",
+        "notify2": "Đơn này sẽ không thống kê ở mục báo cáo",
+        "notify3": "Xem chi tiết"
+      },
+      "action": {
+        "add": "Thêm mới đơn",
+        "printAgain": "In lại đơn",
+        "printInvoice": "In hóa đơn",
+        "edit": "Sửa",
+        "cancel": "Hủy",
+        "delete": "Xóa",
+        "save": "Lưu đơn",
+        "pay": "Thanh toán",
+        "sync": "Đồng bộ",
+        "syncAll": "Đồng bộ tất cả",
+        "createOrder": "Tạo đơn hàng mới",
+        "createProduct": "Thêm sản phẩm",
+        "typePercent": "Nhập phần trăm (%)",
+        "typeVatRate": "Nhập thuế suất (%)",
+        "typeOtherVatRate": "Nhập tiền thuế khác (đ)",
+        "return": "Trả hàng"
+      },
+      "status": {
+        "all": "Tất cả",
+        "0": "Chưa hoàn thành",
+        "1": "Đã hoàn thành",
+        "2": "Đã hủy",
+        "3": "Bị trả hàng",
+        "4": "Trả hàng"
+      },
+      "deliveryType": {
+        "title": "Kiểu giao đơn:",
+        "status": {
+          "atTable": "Ăn tại bàn",
+          "takeAway": "Mang về",
+          "shipping": "Giao hàng"
+        }
+      },
+      "checkout": {
+        "detail": "Chi tiết thanh toán",
+        "amount": "Tạm tính",
+        "totalPreTax": "Tổng tiền trước thuế",
+        "discountAmount": "Giảm giá",
+        "vatAmount": "Tổng tiền thuế",
+        "totalAmount": "Tổng tiền thanh toán",
+        "confirmCheckout": "Xác nhận thanh toán",
+        "cash": "Tiền mặt",
+        "transfer": "Chuyển khoản",
+        "other": "Khác",
+        "debt": "Ghi nợ",
+        "moneyDebt": "Tiền nợ",
+        "moneyRefund": "Tiền thừa",
+        "customerPay": "Khách trả",
+        "discountVatAmount": "Giảm trừ thuế",
+        "customerMustPay": "Khách phải trả"
+      }
+    }
+  }
+}

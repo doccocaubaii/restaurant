@@ -1,0 +1,261 @@
+<div class="modal-header" style="display: block">
+  <div style="display: flex; align-items: center">
+    <span>Nhập sản phẩm từ excel</span>
+    <!--    <span *ngIf="fileName" >{{ fileName }}</span>-->
+    <button type="button" class="btn-close" (click)="dismiss($event)">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+</div>
+<div class="modal-body">
+  <div class="nav-wizards-container">
+    <nav class="nav nav-wizards-1 mb-2">
+      <div class="nav-item col">
+        <div class="nav-link" (click)="chooseFile()" [ngClass]="!isCompleted ? 'active' : 'disabled'">
+          <div class="nav-no">1</div>
+          <div class="nav-text">Chọn tệp nguồn</div>
+        </div>
+      </div>
+
+      <div class="nav-item col">
+        <div class="nav-link" [ngClass]="selectedFile && !countSuccess ? 'active' : 'disabled'" (click)="checkFile()">
+          <div class="nav-no">2</div>
+          <div class="nav-text">Kiểm tra dữ liệu</div>
+        </div>
+      </div>
+
+      <div class="nav-item col">
+        <div class="nav-link" [ngClass]="selectedFile && isCompleted ? 'active' : 'disabled'">
+          <div class="nav-no">3</div>
+          <div class="nav-text">Hoàn thành</div>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="card">
+    <!--    step1-->
+    <div *ngIf="!selectedFile && !isCompleted" class="card-body">
+      <label class="import-info">Nhập sản phẩm đáp ứng nhu cầu:</label>
+      <label class="import-sub-info">
+        <ul>
+          <li>Nhập danh sách sản phẩm vào hệ thống EasyPos.</li>
+          <li>Sinh chứng từ nhập kho với những sản phẩm theo dõi tồn kho.</li>
+          <li style="color: red">Lưu ý: Vui lòng import tệp Excel có tối đa 2000 sản phẩm.</li>
+        </ul>
+      </label>
+
+      <import-excel-choose-file
+        (importTypeChangeEvent)="typeChangeEvent($event)"
+        (openFileEvent)="openFileEvent($event)"
+        (sheetChangeEvent)="sheetChangeEvent($event)"
+        [urlFileTemplate]="urlFileTemplate"
+      >
+      </import-excel-choose-file>
+    </div>
+    <!--    step2-->
+    <div *ngIf="selectedFile && !isCompleted" class="card-body">
+      <div class="import-file-status">
+        <div>
+          <span *ngIf="validateResponse?.countInvalid" class="text-danger">
+            {{ validateResponse?.countInvalid }} dòng dữ liệu không hợp lệ
+            <a class="ms-2 cursor-pointer" (click)="downloadErrorData()">Tải tệp kiểm tra</a>
+          </span>
+        </div>
+
+        <div class="item-search from-select">
+          <ng-select
+            class="form-control"
+            name="importType"
+            [(ngModel)]="importStatusValue"
+            (ngModelChange)="changeStatus(importStatusValue)"
+            placeholder="Lọc tình trạng"
+          >
+            [clearable]="false" >
+            <ng-option *ngFor="let type of importStatus" [value]="type.id">
+              {{ type.name }}
+            </ng-option>
+          </ng-select>
+        </div>
+      </div>
+      <!--      <div class="card-header">-->
+      <!--        <label class="me-5" (click)="filterType('all')"-->
+      <!--        >Tổng số<b >{{ countTotal }}</b></label-->
+      <!--        >-->
+      <!--        <label class="mx-5" (click)="filterType('valid')">-->
+      <!--          <fa-icon icon="check" class="text-success me-2"></fa-icon>-->
+      <!--          Hợp lệ<b >{{ validateResponse?.countValid }}</b>-->
+      <!--        </label>-->
+      <!--        <label class="ms-5" (click)="filterType('invalid')">-->
+      <!--          <fa-icon icon="xmark" class="text-danger me-2"></fa-icon>-->
+      <!--          Không hợp lệ<b >{{ validateResponse?.countInvalid }}</b>-->
+      <!--        </label>-->
+      <!--      </div>-->
+      <div class="card-body">
+        <div *ngIf="isLoading" class="loader-custom">
+          <div class="spinner"></div>
+          <div class="text">Đang tải dữ liệu...</div>
+        </div>
+        <div *ngIf="!isLoading && dataValidateResponse">
+          <div class="tab-content rounded-top panel rounded-0 m-0">
+            <div class="tab-pane fade active show">
+              <div class="row">
+                <div class="col-xl-12">
+                  <div class="panel panel-inverse">
+                    <div class="table-responsive">
+                      <table class="table editing-table">
+                        <thead>
+                          <tr class="thead-parent" style="color: #0074bd">
+                            <th>STT</th>
+                            <th>Trạng thái</th>
+                            <th>Chi tiết lỗi</th>
+                            <th>Mã sản phẩm</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Barcode</th>
+                            <th>Nhóm sản phẩm</th>
+                            <th>Giá bán</th>
+                            <th>Đơn vị tính</th>
+                            <th>Theo dõi tồn kho</th>
+                            <th>Giá nhập</th>
+                            <th>Số lượng</th>
+                            <th>Áp dụng thuế</th>
+                            <th>Mô tả</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <ng-container *ngFor="let item of dataValidateResponse; let index = index">
+                            <tr class="tbody-parent">
+                              <td>{{ index + 1 }}</td>
+                              <td>
+                                <fa-icon
+                                  [icon]="item.status ? 'circle-check' : 'circle-xmark'"
+                                  [ngStyle]="item.status ? { color: '#4BA158' } : { color: '#D82222' }"
+                                  [ngbTooltip]="item.status ? 'Hợp lệ' : 'Không hợp lệ'"
+                                  style="font-size: 18px"
+                                ></fa-icon>
+                              </td>
+                              <td style="text-align: left">{{ item.messageResponse }}</td>
+                              <td>{{ item.code2 }}</td>
+                              <td>{{ item.name }}</td>
+                              <td>{{ item.barCode }}</td>
+                              <td>{{ item.groupName }}</td>
+                              <td>{{ item.outPrice }}</td>
+                              <td>{{ item.unit }}</td>
+                              <td>{{ item.inventoryTracking ? 'Có' : 'Không' }}</td>
+                              <td>{{ item.inPrice }}</td>
+                              <td>{{ item.inventoryCount }}</td>
+                              <td>{{ item.vatRate }}</td>
+                              <td>{{ item.description }}</td>
+                            </tr>
+                          </ng-container>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!isLoading && !dataValidateResponse" class="m-auto">
+          <b style="color: red">Danh sách không hợp lệ</b>
+        </div>
+      </div>
+      <!--      <div *ngIf="viewMessage" class="card-footer">-->
+      <!--        <ul>-->
+      <!--          <ng-container *ngFor="let message of detailMessage">-->
+      <!--            <li>{{ message }}</li>-->
+      <!--          </ng-container>-->
+      <!--        </ul>-->
+      <!--        <div class="hide-detail-message" (click)="hideMessage()" ngbTooltip="Ẩn">-->
+      <!--          <fa-icon icon="minus"></fa-icon>-->
+      <!--        </div>-->
+      <!--      </div>-->
+
+      <div *ngIf="countTotal" class="import-file-count">
+        <span>Tổng số: {{ countTotal }}</span>
+      </div>
+    </div>
+
+    <!--    step3-->
+    <div *ngIf="selectedFile && isCompleted" class="card-body">
+      <div *ngIf="isLoading" class="loader-custom">
+        <div class="spinner"></div>
+        <div class="text">Đang tải...</div>
+      </div>
+      <div *ngIf="!isLoading" class="completed">
+        <div class="icon-completed">
+          <img *ngIf="countSuccess" style="width: 143px; height: 114px" src="/content/icon/import/completed.png" />
+          <img *ngIf="!countSuccess" style="width: 143px; height: 114px" src="/content/icon/import/failed.png" />
+        </div>
+        <div *ngIf="countSuccess" class="completed-data">
+          <label>Nhập hàng thành công!</label>
+          <span
+            >Sản phẩm hợp lệ: <b>{{ countSuccess }}</b></span
+          >
+          <span
+            >Sản phẩm không hợp lệ: <b>{{ validateResponse?.countInvalid }}</b></span
+          >
+        </div>
+        <div *ngIf="!countSuccess" class="fail-data">
+          <label>Nhập hàng không thành công!</label>
+          <span
+            ><b>{{ messageError }}</b></span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer justify-content-end">
+  <!--  <span class="fs-14px fst-italic" *ngIf="selectedFile && !isCompleted"-->
+  <!--  >Hệ thống sẽ mặc định nhập những sản phẩm hợp lệ và bỏ qua nếu không hợp lệ.-->
+  <!--  </span>-->
+  <div class="button-group-footer">
+    <button
+      *ngIf="!selectedFile"
+      type="button"
+      class="exit-button-dialog me-2"
+      (click)="dismiss($event)"
+    >
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <label jhiTranslate="global.entity.action.cancel"></label>
+    </button>
+    <button
+      *ngIf="selectedFile && !isCompleted"
+      type="button"
+      class="exit-button-dialog me-2"
+      (click)="chooseFile()"
+    >
+      <span [innerHTML]="ICON_GO_BACK | safeHtml"></span>
+      <span>Quay lại</span>
+    </button>
+    <button
+      *ngIf="!selectedFile && !isCompleted"
+      type="button"
+      class="save-button-dialog"
+      (click)="validateData()"
+    >
+      <span>Tiếp tục</span>
+      <span [innerHTML]="ICON_ARROW_RIGHT | safeHtml"></span>
+    </button>
+    <button
+      *ngIf="selectedFile && !isCompleted"
+      type="button"
+      class="save-button-dialog"
+      (click)="completed()"
+    >
+      <span>Tiếp tục</span>
+      <span [innerHTML]="ICON_ARROW_RIGHT | safeHtml"></span>
+    </button>
+    <button
+      *ngIf="isCompleted"
+      type="button"
+      class="exit-button-dialog"
+      (click)="dismiss($event)"
+    >
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <label>Thoát</label>
+    </button>
+  </div>
+</div>

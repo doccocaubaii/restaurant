@@ -1,0 +1,53 @@
+<div class="modal-header">
+  <h5 class="modal-title" jhiTranslate="easyPos.area-unit.create.title">Tạo bàn mới</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true" (click)="dismiss()"></button>
+</div>
+<div class="modal-body">
+  <div class="form-group">
+    <label class="form-label" for="name"
+      ><span jhiTranslate="easyPos.area-unit.create.tableName">Tên bàn </span><span style="color: red">*</span></label
+    >
+    <div class="user-input-text-div input-text-custom">
+      <input
+        id="name"
+        class="input-box input-value form-control"
+        name="name"
+        placeholder="Nhập tên bàn"
+        required
+        maxLength="50"
+        [(ngModel)]="name"
+      />
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">
+      <span jhiTranslate="easyPos.area-unit.create.areaName">Khu vực</span><span style="color: red">*</span></label
+    >
+    <div class="item-search from-select">
+      <ng-select
+        placeholder="Chọn khu vực"
+        class="css-ng-select select-value form-control"
+        style="font-size: 0.875rem"
+        id="selectAreaId"
+        [items]="parent"
+        bindValue="intValue"
+        bindLabel="strValue"
+        [(ngModel)]="area.id"
+        [disabled]="parent.length <= 1"
+        [clearable]="true"
+        #areaSelect="ngModel"
+      >
+      </ng-select>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="exit-button-dialog" (click)="dismiss()">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <label jhiTranslate="global.entity.action.cancel">Hủy</label>
+  </button>
+  <button type="button" class="save-button-dialog" [disabled]="name == '' || area.id == null || loading.isLoading" (click)="close(name)">
+    <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.save">Lưu</span>
+  </button>
+</div>

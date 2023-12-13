@@ -1,0 +1,43 @@
+<div class="modal-header">
+  <h5 class="modal-title">Hủy món</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true" (click)="decline()">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+<div class="modal-body">
+  <ng-container *ngIf="cancelOrderSelected; else cancelProductSelected">
+    <p class="title-info text-center">
+      Huỷ món <span>{{ productSelected.productName }}</span> đồng thời sẽ hủy đơn hàng. Bạn có muốn tiếp tục?
+    </p>
+  </ng-container>
+  <ng-template #cancelProductSelected>
+    <p class="title-info text-center">
+      Bạn có chắc chắn muốn hủy món: <span>{{ productSelected.productName }}</span>
+    </p>
+  </ng-template>
+  <p class="title-info">
+    Số lượng hủy: <span>{{ productQuantityRemove || 0 }}/{{ productSelected.quantityInitial }}</span>
+  </p>
+  <div class="input-text-custom">
+    <input
+      type="text"
+      class="input-value form-control"
+      #inputQuantity
+      [(ngModel)]="productQuantityRemove"
+      (ngModelChange)="checkCancelOrderSelected()"
+      jhiCurrencyNumber
+      [maxvalue]="productSelected.quantityInitial"
+      [numberRound]="lastCompany.roundScaleQuantity"
+    />
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="exit-button-dialog" data-bs-dismiss="modal" (click)="decline()">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.cancel">Hủy</span>
+  </button>
+  <button (click)="accept()" class="ep-btn-custom btn-delete">
+    <span [innerHTML]="ICON_DELETE | safeHtml"></span>
+    <span>Hủy món</span>
+  </button>
+</div>

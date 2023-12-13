@@ -1,0 +1,201 @@
+<h1 class="page-header mb-0">Danh sách khu vực chế biến</h1>
+
+<div class="group-form-custom mb-25px">
+  <div class="group-item-custom" style="flex: 1">
+    <div class="item-search">
+      <input
+        [(ngModel)]="filterProcessingArea.name"
+        name="keyword"
+        class="form-control"
+        type="search"
+        placeholder="Nhập tên khu vực ..."
+        appEnterKeyFocus
+        (ngModelChange)="onDeleteKeyWord()"
+        (keyup.enter)="onSearch()"
+      />
+    </div>
+  </div>
+  <div class="form-btn-search">
+    <button (click)="getProcessingArea()" class="btn-search" appDisableButton>
+      <fa-icon icon="search"></fa-icon>
+      <span jhiTranslate="global.info.search"></span>
+    </button>
+  </div>
+</div>
+
+<div class="panel-action">
+  <ul class="nav" *jhiHasAnyAuthority="authorADD">
+    <li class="nav-action" (click)="onCreateProcessingArea()">
+      <a class="nav-link nav-link-action">
+        <i class="fa-solid fa-plus"></i>
+        <span class="d-sm-block ms-2">Thêm mới</span>
+      </a>
+    </li>
+  </ul>
+
+  <div class="d-flex justify-content-end align-items-center" style="margin-left: auto; height: 45px">
+    <div class="form-page-size">
+      <label
+        class="form-label form-label label-search me-2 mb-0 text-bold"
+        jhiTranslate="global.info.totalParam"
+        [translateValues]="{ count: totalItems || 0 }"
+      ></label>
+      <div class="form-select-size">
+        <ng-select
+          [items]="sizes"
+          class="select-value select-size"
+          bindLabel="name"
+          bindValue="id"
+          placeholder="Tất cả"
+          [(ngModel)]="filterProcessingArea.size"
+          (ngModelChange)="getProcessingArea()"
+        >
+        </ng-select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-pane fade active show">
+  <div class="row">
+    <div class="col-xl-12">
+      <div class="panel panel-inverse">
+        <div class="table-responsive">
+          <table class="table editing-table">
+            <thead class="table-header-sticky">
+              <tr class="table-custom-header">
+                <th style="width: 100px">STT</th>
+                <th style="border-right: 1px solid #b0d4eb !important">Tên khu vực</th>
+                <!--                <th>Thiết bị sử dụng</th>-->
+                <!--                <th>Trạng thái</th>-->
+                <th style="width: 150px"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let processingArea of processingAreas; index as i">
+                <tr class="table-custom-body">
+                  <td class="text-center" (click)="viewProcessingArea(processingArea.id)">
+                    {{ filterProcessingArea.size * (filterProcessingArea.page - 1) + i + 1 }}
+                  </td>
+                  <td class="break-word-table td-text-overflow" (click)="viewProcessingArea(processingArea.id)">
+                    {{ processingArea.name }}
+                  </td>
+                  <!--                  <td class="break-word-table" (click)="viewProcessingArea(processingArea.id)">-->
+                  <!--                    {{ processingArea.setting == 1 ? 'Nhà bếp' : processingArea.setting == 0 ? 'Quản lý máy in' : 'Cả 2' }}-->
+                  <!--                  </td>-->
+                  <!--                  <td-->
+                  <!--                    [ngClass]="{-->
+                  <!--                      processing: processingArea.active == -1,-->
+                  <!--                      canceled: processingArea.active == 0,-->
+                  <!--                      done: processingArea.active == 1-->
+                  <!--                    }"-->
+                  <!--                    (click)="viewProcessingArea(processingArea.id)"-->
+                  <!--                  >-->
+                  <!--                    {{ processingArea.active == 1 ? 'Đang hoạt động' : processingArea.active == 0 ? 'Ngừng hoạt động' : 'Đã xoá' }}-->
+                  <!--                  </td>-->
+                  <td>
+                    <div class="list-action">
+                      <i
+                        class="fa-solid fa-pen-to-square"
+                        ngbTooltip="{{ 'global.button.edit' | translate }}"
+                        style="color: #004671"
+                        (click)="onDetailProcessingArea(processingArea.id)"
+                        *jhiHasAnyAuthority="authorUPDATE"
+                      ></i>
+                      <i
+                        class="fa-solid fa-trash-can"
+                        ngbTooltip="{{ 'global.button.delete' | translate }}"
+                        (click)="onConfirmDeleteCategory(processingArea.id)"
+                        *jhiHasAnyAuthority="authorDELETE"
+                      ></i>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr
+                  *ngIf="processingArea.id == idEditing && processingAreaSelect"
+                  [class.editing-body]="idEditing == processingArea.id"
+                  [hidden]="isHidden"
+                  #hiddenDiv
+                  (click)="hideDiv()"
+                  class="scroll-target"
+                >
+                  <td [attr.colspan]="getColspan()">
+                    <div class="row wrap-order-detail">
+                      <div class="col-sm-12 col-lg-12 col-xl-4 left-order-detail-content">
+                        <div class="form-group border-bottom form-input-custom">
+                          <label for="processingAreaName" class="form-label with-label-name" style="margin-bottom: 0">Tên khu vực</label>
+                          <div class="user-input-text-div td-text-overflow">
+                            <strong id="processingAreaName">{{ processingAreaSelect.processingArea.name }}</strong>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-12 col-lg-12 col-xl-8 right-order-detail-content">
+                        <div class="table-responsive" style="max-height: 250px">
+                          <table class="table mb-0 editing-table caption-top">
+                            <caption>
+                              Danh sách sản phẩm
+                            </caption>
+                            <thead class="table-custom-body table-header-sticky">
+                              <tr class="table-custom-header">
+                                <th>Mã sản phẩm</th>
+                                <th
+                                  jhiTranslate="easyPos.product.info.productName"
+                                  style="border-left: 1px solid #b0d4eb; text-align: center; padding: 15px 10px !important"
+                                >
+                                  Tên sản phẩm
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let product of processingAreaSelect.processingAreaProductItemResponses; index as i">
+                                <td>
+                                  {{ product.code2 }}
+                                </td>
+                                <td class="td-text-overflow">
+                                  {{ product.name }}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <span
+                          *ngIf="totalItemDetails > 10"
+                          (click)="openModalCreateProductProcessingArea(processingArea.id)"
+                          class="me-2 show-more"
+                          >Xem thêm</span
+                        >
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+            <tbody *ngIf="totalItems === 0">
+              <tr class="table-not-data">
+                <td colspan="8">
+                  <span jhiTranslate="easyPos.product.info.notData"></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-page-size">
+    <div class="from-pagination d-flex justify-content-center" *ngIf="totalItems > 0">
+      <ngb-pagination
+        class="pagination"
+        [collectionSize]="totalItems || 0"
+        [pageSize]="filterProcessingArea.size"
+        [page]="filterProcessingArea.page"
+        aria-label="Default pagination"
+        [directionLinks]="true"
+        [maxSize]="5"
+        (pageChange)="onChangedPage($event)"
+      ></ngb-pagination>
+    </div>
+  </div>
+</div>

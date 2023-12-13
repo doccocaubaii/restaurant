@@ -1,0 +1,334 @@
+$background-color: #0074bd;
+$disabled-color: #9ba3b1;
+$color-default: #ffffff;
+$text-color: #58647a;
+$font-size-title: 16px;
+$font-weight-title: 700;
+$font-title-bottom: 8px;
+
+.modal-header {
+  background: $background-color;
+  color: $color-default;
+  height: 56px;
+  padding: 16px 24px !important;
+
+  span:first-child {
+    font-weight: $font-weight-title;
+    font-size: 20px;
+    line-height: 24px;
+  }
+
+  .btn-close {
+    color: $color-default;
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    font-size: 20px;
+  }
+}
+
+.modal-body {
+  .nav-wizards-container {
+    nav .nav-item .nav-link {
+      cursor: pointer;
+
+      .nav-no {
+        color: $color-default;
+      }
+
+      .nav-text {
+        font-weight: 500;
+        font-size: $font-size-title;
+      }
+    }
+
+    .nav-link.active {
+      color: $background-color;
+
+      .nav-no {
+        border-color: $background-color;
+        background: $background-color;
+      }
+
+      .nav-text {
+        color: $background-color;
+      }
+    }
+
+    .nav-link.disabled {
+      color: $disabled-color;
+
+      .nav-no {
+        border-color: $disabled-color;
+        background: $disabled-color;
+      }
+
+      .nav-text {
+        color: $disabled-color;
+      }
+    }
+  }
+
+  .card {
+    .card-header {
+      label {
+        cursor: pointer;
+      }
+    }
+
+    .card-body {
+      display: flex;
+      flex-direction: column;
+
+      label.import-info {
+        color: $text-color;
+        font-weight: $font-weight-title;
+        font-size: $font-size-title;
+        padding-bottom: $font-title-bottom;
+      }
+
+      .loader-custom {
+        color: $text-color;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .text {
+          margin-top: 10px;
+        }
+      }
+
+      .import-sub-info {
+        color: $text-color;
+        font-weight: 500;
+        font-size: $font-size-title;
+
+        ul > li {
+          padding-bottom: 10px;
+        }
+      }
+
+      .import-file-status {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 0 16px;
+
+        span.text-danger {
+          width: 80%;
+
+          a {
+            text-decoration: none;
+            color: $background-color;
+          }
+
+          a:hover {
+            opacity: 0.8;
+          }
+        }
+
+        .item-search {
+          width: 20%;
+        }
+      }
+
+      .import-file-count {
+        span {
+          color: $background-color;
+          font-weight: $font-weight-title;
+          font-size: $font-size-title;
+          padding-left: 16px;
+        }
+      }
+
+      .import-check-exists {
+        margin-bottom: 20px;
+
+        .existsUpdate {
+          margin-left: 20px;
+          margin-right: 20px;
+        }
+      }
+
+      .completed {
+        .icon-completed {
+          color: white;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 30px;
+
+          fa-icon {
+            font-size: 36px;
+            color: white !important;
+          }
+        }
+
+        .completed-data,
+        .fail-data {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding-top: 8px;
+        }
+
+        .fail-data {
+          label {
+            color: #f20000 !important;
+          }
+        }
+
+        label {
+          padding: 10px 0;
+          font-weight: $font-weight-title;
+          color: $background-color;
+          font-size: 20px;
+        }
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+
+    .card-footer {
+      display: flex;
+      font-size: 14px;
+      justify-content: space-between;
+
+      ul {
+        margin-bottom: 0 !important;
+
+        li {
+          padding: 4px 0;
+        }
+      }
+
+      .hide-detail-message {
+        cursor: pointer;
+        //display: flex;
+        //justify-content: center;
+        //align-items: center;
+        //width: 20px;
+        //height: 20px;
+        //color: #0074bd;
+        //border-radius: 10px;
+        //border: 1px solid #0074bd;
+        //
+        //fa-icon {
+        //  font-size: $font-size-title;
+        //}
+      }
+
+      .hide-message:hover {
+        background: #0074bd;
+        padding: 5px !important;
+        border-radius: 12px;
+        color: white;
+      }
+    }
+  }
+}
+
+.panel {
+  margin-bottom: 0 !important;
+
+  .table-responsive {
+    overflow-x: scroll;
+
+    table {
+      width: max-content;
+
+      thead {
+        top: 0;
+        position: sticky;
+        z-index: 1;
+
+        tr > th {
+          border-right: 1px solid #b0d4eb;
+        }
+      }
+
+      tbody {
+        z-index: 0;
+      }
+
+      th,
+      td {
+        padding: 15px 10px !important;
+        text-align: center;
+      }
+
+      td {
+        .icon-success,
+        .icon-fail {
+          width: 20px;
+          height: 20px;
+          margin: auto;
+          border-radius: 12px;
+          justify-content: center;
+          display: flex;
+
+          fa-icon {
+            color: white !important;
+            font-size: 12px;
+            margin: auto;
+          }
+        }
+
+        .icon-success {
+          background: green;
+        }
+
+        .icon-fail {
+          background: red;
+        }
+      }
+
+      th:last-child {
+        border-left: 1px solid #b0d4eb;
+      }
+    }
+  }
+}
+
+.tooltip {
+  z-index: 2;
+  position: relative;
+}
+
+.modal-footer {
+  border-top: none;
+  padding-top: 0 !important;
+  .button-group-footer {
+    margin: 0;
+    justify-content: end;
+    display: flex;
+  }
+}
+
+.ng-select span {
+  color: $text-color !important;
+}
+
+.ng-select .ng-has-value .ng-placeholder {
+  display: block !important;
+}
+
+@media only screen and (max-height: 650px) {
+  .table-responsive {
+    height: 236px;
+  }
+}
+
+@media only screen and (min-height: 649px) {
+  .table-responsive {
+    height: 296px;
+  }
+}

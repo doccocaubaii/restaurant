@@ -1,0 +1,402 @@
+<div class="order-detail">
+  <div class="panel-custom order-detail__tab mb-2">
+    <ul class="nav">
+      <li class="nav-item" (click)="indexTab = 0">
+        <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link active">
+          <span class="d-sm-block">Thông tin</span>
+        </a>
+      </li>
+      <li class="nav-item" (click)="indexTab = 1">
+        <a href="#nav-pills-tab-3" data-bs-toggle="tab" class="nav-link">
+          <span class="d-sm-block">Lịch sử trả hàng</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="order-detail__information row wrap-order-detail" *ngIf="orderDetail && indexTab == 0">
+    <div class="col-5 col-sm-12 col-lg-12 col-xl-4 left-order-detail-content">
+      <div class="form-group border-bottom form-input-custom">
+        <label for="pattern" class="form-label"><strong jhiTranslate="global.info.taxCode">Mã cơ quan thuế: </strong></label>
+        <div class="user-input-text-div">
+          <strong id="pattern">{{ orderDetail.taxAuthorityCode }}</strong>
+        </div>
+      </div>
+      <div class="form-group form-input-custom">
+        <label for="taxAuthorityCode" class="form-label"><strong jhiTranslate="global.info.customerName">Tên khách hàng</strong></label>
+        <div class="user-input-text-div">
+          <strong id="taxAuthorityCode">{{ orderDetail.customerName }}</strong>
+        </div>
+      </div>
+      <div class="form-group form-input-custom">
+        <label for="paymentMethod" class="form-label"><strong jhiTranslate="global.info.paymentMethod">Hình thức thanh toán</strong></label>
+        <div class="user-input-text-div">
+          <strong id="paymentMethod">{{ orderDetail.payment.paymentMethod }}</strong>
+        </div>
+      </div>
+      <div class="form-group form-input-custom">
+        <label for="billCode" class="form-label"><strong jhiTranslate="easyPos.bill.info.billCode">Mã đơn hàng</strong></label>
+        <div class="user-input-text-div">
+          <strong id="billCode">{{ orderDetail.code }}</strong>
+        </div>
+      </div>
+      <div class="form-group form-input-custom">
+        <label for="arisingDate" class="form-label"><strong jhiTranslate="global.info.createDate">Ngày tạo đơn</strong></label>
+        <div class="user-input-text-div">
+          <strong id="arisingDate">{{ orderDetail.billDate | shortDateFormat }}</strong>
+        </div>
+      </div>
+    </div>
+    <div class="col-7 col-sm-12 col-lg-12 col-xl-8 right-order-detail-content">
+      <div class="table-responsive col-12" style="max-height: 250px">
+        <table class="table mb-0 editing-table">
+          <thead>
+            <tr>
+              <th jhiTranslate="global.info.Stt">Stt</th>
+              <th jhiTranslate="easyPos.product.info.productName">Tên sản phẩm</th>
+              <th>ĐVT</th>
+              <th>SL</th>
+              <th jhiTranslate="easyPos.product.info.unitPrice">Đơn giá</th>
+              <th>Thành tiền</th>
+              <th>Chiết khấu</th>
+              <th *ngIf="![0, 1].includes(orderDetail.typeInv)">Thuế</th>
+              <th *ngIf="![0, 1].includes(orderDetail.typeInv)">Tiền thuế</th>
+              <th jhiTranslate="global.info.total">Tổng</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let product of orderDetail.products; index as i">
+              <ng-container *ngIf="product.feature !== 3">
+                <tr>
+                  <td>
+                    <label> {{ product.index }}</label>
+                  </td>
+                  <td>
+                    <label> {{ product.productName }}</label>
+                  </td>
+                  <td>
+                    <label>{{ product.unit }}</label>
+                  </td>
+                  <td>
+                    <label> {{ product.quantity ? (product.quantity | number) : '' }} </label>
+                  </td>
+                  <td>
+                    <label> {{ product.unitPrice ? (product.unitPrice | number) : '' }}</label>
+                  </td>
+                  <td>
+                    <label *ngIf="product.feature !== 4"> {{ product.amount ? (product.amount | number) : '' }}</label>
+                  </td>
+                  <td>
+                    <label> {{ product.discountAmount ? (product.discountAmount | number) : '' }}</label>
+                  </td>
+                  <td *ngIf="![0, 1].includes(orderDetail.typeInv)">
+                    <label *ngIf="[-1, -2, -3, -4].includes(product.vatRate)" jhiTranslate="global.vatRate.{{ product.vatRate }}"> </label>
+                    <label *ngIf="![-1, -2, -3, -4].includes(product.vatRate)"> {{ product.vatRate }} %</label>
+                  </td>
+                  <td *ngIf="![0, 1].includes(orderDetail.typeInv)">
+                    <label> {{ product.vatAmount ? (product.vatAmount | number) : '' }}</label>
+                  </td>
+                  <td>
+                    <label *ngIf="product.productCode === 'SPGC'" class="text-danger"
+                      >({{ orderDetail.discountVatAmount ? (orderDetail.discountVatAmount | number) : '' }})</label
+                    >
+                    <label *ngIf="!(product.productCode === 'SPGC')"> {{ product.totalAmount ? (product.totalAmount | number) : 0 }}</label>
+                  </td>
+                </tr>
+              </ng-container>
+              <ng-container *ngFor="let productTopping of product.toppings; index as indexTopping">
+                <tr>
+                  <td>
+                    <label> {{ productTopping.index }}</label>
+                  </td>
+                  <td>
+                    <label> {{ productTopping.productName }}</label>
+                  </td>
+                  <td>
+                    <label>{{ productTopping.unit }}</label>
+                  </td>
+                  <td>
+                    <label> {{ productTopping.quantity ? (productTopping.quantity | number) : '' }} </label>
+                  </td>
+                  <td>
+                    <label> {{ productTopping.unitPrice ? (productTopping.unitPrice | number) : '' }}</label>
+                  </td>
+                  <td>
+                    <label *ngIf="productTopping.feature !== 4"> {{ productTopping.amount ? (productTopping.amount | number) : '' }}</label>
+                  </td>
+                  <td>
+                    <label> {{ productTopping.discountAmount ? (productTopping.discountAmount | number) : '' }}</label>
+                  </td>
+                  <td *ngIf="![0, 1].includes(orderDetail.typeInv)">
+                    <label
+                      *ngIf="[-1, -2, -3, -4].includes(productTopping.vatRate)"
+                      jhiTranslate="global.vatRate.{{ productTopping.vatRate }}"
+                    >
+                    </label>
+                    <label *ngIf="![-1, -2, -3, -4].includes(productTopping.vatRate)"> {{ productTopping.vatRate }} %</label>
+                  </td>
+                  <td *ngIf="![0, 1].includes(orderDetail.typeInv)">
+                    <label> {{ productTopping.vatAmount ? (productTopping.vatAmount | number) : '' }}</label>
+                  </td>
+                  <td>
+                    <label *ngIf="productTopping.productToppingCode === 'SPGC'" class="text-danger"
+                      >({{ orderDetail.discountVatAmount ? (orderDetail.discountVatAmount | number) : '' }})</label
+                    >
+                    <label *ngIf="!(productTopping.productToppingCode === 'SPGC')">
+                      {{ productTopping.totalAmount ? (productTopping.totalAmount | number) : 0 }}</label
+                    >
+                  </td>
+                </tr>
+              </ng-container>
+              <ng-container *ngFor="let productVoucher of product.voucherProducts; index as indexVoucher">
+                <tr>
+                  <td>
+                    <label> {{ productVoucher.index }}</label>
+                  </td>
+                  <td>
+                    <label> {{ productVoucher.productName }}</label>
+                  </td>
+                  <td>
+                    <label>{{ productVoucher.unit }}</label>
+                  </td>
+                  <td>
+                    <label> {{ productVoucher.quantity ? (productVoucher.quantity | number) : '' }} </label>
+                  </td>
+                  <td>
+                    <label> {{ productVoucher.unitPrice ? (productVoucher.unitPrice | number) : '' }}</label>
+                  </td>
+                  <td>
+                    <label> {{ productVoucher.amount ? (productVoucher.amount | number) : '' }}</label>
+                  </td>
+                  <td>
+                    <label> {{ productVoucher.discountAmount ? (productVoucher.discountAmount | number) : '' }}</label>
+                  </td>
+                  <td *ngIf="![0, 1].includes(orderDetail.typeInv)">
+                    <label
+                      *ngIf="[-1, -2, -3, -4].includes(productVoucher.vatRate)"
+                      jhiTranslate="global.vatRate.{{ productVoucher.vatRate }}"
+                    >
+                    </label>
+                    <label *ngIf="![-1, -2, -3, -4].includes(productVoucher.vatRate)"> {{ productVoucher.vatRate }} %</label>
+                  </td>
+                  <td *ngIf="![0, 1].includes(orderDetail.typeInv)">
+                    <label> {{ productVoucher.vatAmount ? (productVoucher.vatAmount | number) : 0 }}</label>
+                  </td>
+                  <td>
+                    <label *ngIf="!(productVoucher.productCode === 'SPGC')">
+                      {{ productVoucher.totalAmount ? (productVoucher.totalAmount | number) : 0 }}</label
+                    >
+                  </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel-payment col-12">
+        <div class="pos-sidebar-footer p-15px">
+          <div class="wrap-item text-bold col-6">
+            <span class="text mb-10px" jhiTranslate="easyPos.bill.checkout.amount">Tạm tính</span>
+            <span class="mb-10px"> {{ orderDetail.amount | number }} đ</span>
+          </div>
+          <div class="wrap-item text-bold col-5">
+            <span class="text mb-10px" jhiTranslate="easyPos.bill.checkout.customerPay">Khách thanh toán</span>
+            <span> {{ orderDetail.payment.amount | number }} đ </span>
+          </div>
+          <div class="wrap-item text-bold col-6">
+            <span class="text mb-10px" jhiTranslate="easyPos.bill.checkout.discountAmount">Giảm giá đơn hàng</span>
+            <span class="mb-10px">{{ orderDetail.discountAmount | number }} đ </span>
+          </div>
+          <div class="wrap-item text-bold col-5">
+            <span class="text mb-10px" jhiTranslate="easyPos.bill.checkout.moneyDebt">Khách còn nợ</span>
+            <span> {{ orderDetail.payment.debt || 0 | number }} đ </span>
+          </div>
+          <div class="wrap-item text-bold col-6">
+            <span class="text mb-10px" jhiTranslate="easyPos.bill.checkout.totalPreTax">Tổng tiền</span>
+            <span class="mb-10px"> {{ orderDetail.totalPreTax | number }} đ </span>
+          </div>
+          <div class="wrap-item text-bold col-5">
+            <span class="text mb-10px" jhiTranslate="easyPos.bill.checkout.moneyRefund">Tiền thừa</span>
+            <span> {{ orderDetail.payment.refund || 0 | number }} đ </span>
+          </div>
+          <ng-container *ngIf="orderDetail.discountVatAmount">
+            <div class="wrap-item text-bold col-6">
+              <span class="text mb-10px">Tổng giảm trừ thuế</span>
+              <span> {{ orderDetail.discountVatAmount | number }} đ </span>
+            </div>
+            <div class="col-5"></div>
+          </ng-container>
+          <ng-container *ngIf="orderDetail.extraConfig?.svc5">
+            <div class="wrap-item text-bold col-6">
+              <span class="text mb-10px">Tổng tiền phí dịch vụ</span>
+              <span> {{ orderDetail.extraConfig.svc5 | number }} đ </span>
+            </div>
+            <div class="col-5"></div>
+          </ng-container>
+          <ng-container *ngIf="orderDetail.typeInv !== 0 && orderDetail.vatAmount">
+            <div class="wrap-item text-bold col-6">
+              <span class="text mb-10px"
+                >Tổng tiền Thuế
+                <span *ngIf="orderDetail.typeInv == 1"> ({{ orderDetail.vatRate }}%)</span>
+              </span>
+              <span class="mb-10px"> {{ orderDetail.vatAmount || 0 | number }} đ </span>
+            </div>
+            <div class="col-5"></div>
+          </ng-container>
+          <div class="wrap-item total-amount text-bold text-info col-6">
+            <span class="text mb-10px" jhiTranslate="easyPos.bill.checkout.totalAmount">Tổng tiền thanh toán</span>
+            <span class="mb-10px"> {{ orderDetail.totalAmount | number }} đ </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="order-detail_conditions row wrap-order-detail" *ngIf="orderDetail && indexTab == 1">
+    <!-- <div class="col-12 right-order-detail-content">
+      <div class="table-responsive col-12" style="max-height: 250px">
+        <table class="table mb-0 editing-table">
+          <thead>
+            <tr>
+              <th jhiTranslate="global.info.Stt">Stt</th>
+              <th jhiTranslate="easyPos.product.info.productName">Mã </th>
+              <th>ĐVT</th>
+              <th>SL</th>
+              <th jhiTranslate="easyPos.product.info.unitPrice">Đơn giá</th>
+              <th>Thành tiền</th>
+              <th>Chiết khấu</th>
+              <th *ngIf="![0, 1].includes(orderDetail.typeInv)">Thuế</th>
+              <th *ngIf="![0, 1].includes(orderDetail.typeInv)">Tiền thuế</th>
+              <th jhiTranslate="global.info.total">Tổng</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let product of orderDetail.products; index as i">
+              <ng-container *ngIf="product.feature !== 3">
+                <tr>
+                  <td>
+                    <label> {{ product.index }}</label>
+                  </td>
+                  <td>
+                    <label> {{ product.productName }}</label>
+                  </td>
+                  <td>
+                    <label>{{ product.unit }}</label>
+                  </td>
+                  <td>
+                    <label> {{ product.quantity ? (product.quantity | number) : '' }} </label>
+                  </td>
+                  <td>
+                    <label> {{ product.unitPrice ? (product.unitPrice | number) : '' }}</label>
+                  </td>
+                  <td>
+                    <label *ngIf="product.feature !== 4"> {{ product.amount ? (product.amount | number) : '' }}</label>
+                  </td>
+                  <td>
+                    <label> {{ product.discountAmount ? (product.discountAmount | number) : '' }}</label>
+                  </td>
+                  <td *ngIf="![0, 1].includes(orderDetail.typeInv)">
+                    <label *ngIf="[-1, -2, -3, -4].includes(product.vatRate)" jhiTranslate="global.vatRate.{{ product.vatRate }}"> </label>
+                    <label *ngIf="![-1, -2, -3, -4].includes(product.vatRate)"> {{ product.vatRate }} %</label>
+                  </td>
+                  <td *ngIf="![0, 1].includes(orderDetail.typeInv)">
+                    <label> {{ product.vatAmount ? (product.vatAmount | number) : '' }}</label>
+                  </td>
+                  <td>
+                    <label *ngIf="product.productCode === 'SPGC'" class="text-danger"
+                      >({{ orderDetail.discountVatAmount ? (orderDetail.discountVatAmount | number) : '' }})</label
+                    >
+                    <label *ngIf="!(product.productCode === 'SPGC')"> {{ product.totalAmount ? (product.totalAmount | number) : 0 }}</label>
+                  </td>
+                </tr>
+              </ng-container>
+              <ng-container *ngFor="let productTopping of product.toppings; index as indexTopping">
+                <tr>
+                  <td>
+                    <label> {{ productTopping.index }}</label>
+                  </td>
+                  <td>
+                    <label> {{ productTopping.productName }}</label>
+                  </td>
+                  <td>
+                    <label>{{ productTopping.unit }}</label>
+                  </td>
+                  <td>
+                    <label> {{ productTopping.quantity ? (productTopping.quantity | number) : '' }} </label>
+                  </td>
+                  <td>
+                    <label> {{ productTopping.unitPrice ? (productTopping.unitPrice | number) : '' }}</label>
+                  </td>
+                  <td>
+                    <label *ngIf="productTopping.feature !== 4"> {{ productTopping.amount ? (productTopping.amount | number) : '' }}</label>
+                  </td>
+                  <td>
+                    <label> {{ productTopping.discountAmount ? (productTopping.discountAmount | number) : '' }}</label>
+                  </td>
+                  <td *ngIf="![0, 1].includes(orderDetail.typeInv)">
+                    <label
+                      *ngIf="[-1, -2, -3, -4].includes(productTopping.vatRate)"
+                      jhiTranslate="global.vatRate.{{ productTopping.vatRate }}"
+                    >
+                    </label>
+                    <label *ngIf="![-1, -2, -3, -4].includes(productTopping.vatRate)"> {{ productTopping.vatRate }} %</label>
+                  </td>
+                  <td *ngIf="![0, 1].includes(orderDetail.typeInv)">
+                    <label> {{ productTopping.vatAmount ? (productTopping.vatAmount | number) : '' }}</label>
+                  </td>
+                  <td>
+                    <label *ngIf="productTopping.productToppingCode === 'SPGC'" class="text-danger"
+                      >({{ orderDetail.discountVatAmount ? (orderDetail.discountVatAmount | number) : '' }})</label
+                    >
+                    <label *ngIf="!(productTopping.productToppingCode === 'SPGC')">
+                      {{ productTopping.totalAmount ? (productTopping.totalAmount | number) : 0 }}</label
+                    >
+                  </td>
+                </tr>
+              </ng-container>
+              <ng-container *ngFor="let productVoucher of product.voucherProducts; index as indexVoucher">
+                <tr>
+                  <td>
+                    <label> {{ productVoucher.index }}</label>
+                  </td>
+                  <td>
+                    <label> {{ productVoucher.productName }}</label>
+                  </td>
+                  <td>
+                    <label>{{ productVoucher.unit }}</label>
+                  </td>
+                  <td>
+                    <label> {{ productVoucher.quantity ? (productVoucher.quantity | number) : '' }} </label>
+                  </td>
+                  <td>
+                    <label> {{ productVoucher.unitPrice ? (productVoucher.unitPrice | number) : '' }}</label>
+                  </td>
+                  <td>
+                    <label> {{ productVoucher.amount ? (productVoucher.amount | number) : '' }}</label>
+                  </td>
+                  <td>
+                    <label> {{ productVoucher.discountAmount ? (productVoucher.discountAmount | number) : '' }}</label>
+                  </td>
+                  <td *ngIf="![0, 1].includes(orderDetail.typeInv)">
+                    <label
+                      *ngIf="[-1, -2, -3, -4].includes(productVoucher.vatRate)"
+                      jhiTranslate="global.vatRate.{{ productVoucher.vatRate }}"
+                    >
+                    </label>
+                    <label *ngIf="![-1, -2, -3, -4].includes(productVoucher.vatRate)"> {{ productVoucher.vatRate }} %</label>
+                  </td>
+                  <td *ngIf="![0, 1].includes(orderDetail.typeInv)">
+                    <label> {{ productVoucher.vatAmount ? (productVoucher.vatAmount | number) : 0 }}</label>
+                  </td>
+                  <td>
+                    <label *ngIf="!(productVoucher.productCode === 'SPGC')">
+                      {{ productVoucher.totalAmount ? (productVoucher.totalAmount | number) : 0 }}</label
+                    >
+                  </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div> -->
+  </div>
+</div>

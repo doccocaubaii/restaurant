@@ -1,0 +1,179 @@
+<h1 class="page-header mb-0">Danh sách đơn vị tính</h1>
+
+<!-- BEGIN pos-stock-body -->
+<div class="group-form-custom mb-25px">
+  <div class="group-item-custom">
+    <label class="form-label label-search" jhiTranslate="global.info.keyword"></label>
+    <div class="item-search input-text-custom">
+      <input
+        name="keyword"
+        (keyup.enter)="onSearch()"
+        [(ngModel)]="filterUnit.keyword"
+        (ngModelChange)="onDeleteKeywordSearch()"
+        class="form-control"
+        type="search"
+        placeholder="Tìm kiếm..."
+        autocomplete="off"
+      />
+    </div>
+  </div>
+  <div class="group-item-custom">
+    <label></label>
+    <button (click)="onSearch()" class="btn-search">
+      <fa-icon icon="search"></fa-icon>
+      <span jhiTranslate="global.info.search"></span>
+    </button>
+  </div>
+</div>
+<div class="panel-action">
+  <ul class="nav">
+    <li class="nav-action" (click)="onCreateUnit()">
+      <a class="nav-link nav-link-action">
+        <i class="fa-solid fa-plus"></i>
+        <span class="d-sm-block ms-2">Thêm đơn vị tính</span>
+      </a>
+    </li>
+    <li
+      class="nav-action cursor-pointer"
+      [hidden]="paramCheckAll"
+      (click)="
+        paramCheckAll = true;
+        paramCheckAllPage = true;
+        utilsService.checkAll(lstUnit, listSelected, paramCheckAll, this.paramCheckAllPage)
+      "
+    >
+      <a class="nav-link nav-link-action">
+        <fa-icon icon="check"></fa-icon>
+        <span class="d-sm-block ms-2">Chọn tất cả</span>
+      </a>
+    </li>
+    <li
+      class="nav-action cursor-pointer"
+      [hidden]="!paramCheckAll"
+      (click)="
+        paramCheckAll = false;
+        paramCheckAllPage = false;
+        utilsService.checkAll(lstUnit, listSelected, paramCheckAll, this.paramCheckAllPage)
+      "
+    >
+      <a class="nav-link nav-link-action">
+        <span class="d-flex align-items-center" [innerHTML]="ICON_CANCEL_WHITE | safeHtml"></span>
+        <span class="d-sm-block ms-2">Bỏ chọn tất cả</span>
+      </a>
+    </li>
+    <li class="nav-action" (click)="deleteMultiUnit()">
+      <a class="nav-link nav-link-action" [class]="paramCheckAll || (listSelected?.length > 0 && totalItems > 0) ? '' : 'disable-button'">
+        <i class="fa-solid fa-trash-can"></i>
+        <span class="d-sm-block ms-2">Xóa đơn vị tính</span>
+      </a>
+    </li>
+  </ul>
+  <div class="form-page-size">
+    <label class="label-total mr-5px"  style="color: #FFFFFF;" jhiTranslate="global.info.totalParam"
+           [translateValues]="{ count: totalItems || 0 }"></label>
+    <div class="d-flex justify-content-end align-items-center">
+      <div class="form-select-size" *ngIf="totalItems > 0">
+        <ng-select
+          [items]="sizes"
+          class="select-value select-size"
+          bindLabel="name"
+          bindValue="id"
+          placeholder="Tất cả"
+          [(ngModel)]="filterUnit.size"
+          (ngModelChange)="getLstUnit()"
+        >
+        </ng-select>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="tab-pane fade active show">
+  <div class="row">
+    <div class="col-xl-12">
+      <div class="panel panel-inverse">
+        <div class="table-responsive">
+          <table class="table editing-table">
+            <thead>
+            <tr class="table-custom-header">
+              <th>
+                <div class="custom-checkbox custom-control col-checkbox">
+                  <input
+                    class="custom-control-input"
+                    id="checkAllForPage"
+                    type="checkbox"
+                    [disabled]="paramCheckAll"
+                    [(ngModel)]="paramCheckAllPage"
+                    (change)="utilsService.checkAllForPage(lstUnit, listSelected, paramCheckAllPage)"
+                  /><label class="custom-control-label" for="checkAllForPage"></label>
+                </div>
+              </th>
+              <th jhiTranslate="easyPos.product.info.stt"></th>
+              <th>Tên ĐVT</th>
+              <th>Ngày tạo</th>
+              <th>Diễn giải</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody *ngIf="totalItems > 0">
+            <ng-container *ngFor="let item of lstUnit; index as i">
+              <tr class="table-custom-body" (dblclick)="onUpdateUnit(item)">
+                <td>
+                  <div class="custom-checkbox custom-control mb-3 col-checkbox">
+                    <input
+                      class="custom-control-input"
+                      id="exampleCustomCheckbox{{ i }}"
+                      name="exampleCustomCheckbox{{ i }}"
+                      type="checkbox"
+                      [(ngModel)]="item.check"
+                      (click)="getItem(item); utilsService.check(item, listSelected, paramCheckAll, selectedItem)"
+                    /><label class="custom-control-label" for="exampleCustomCheckbox{{ i }}"></label>
+                  </div>
+                </td>
+                <td class="text-center">{{ i + 1 + (filterUnit.page - 1) * filterUnit.size }}</td>
+                <td class="break-word-table">{{ item.name }}</td>
+                <td class="break-word-table text-center">{{ item.createTime | date: 'dd/MM/YYYY HH:mm:ss'  }}</td>
+                <td class="break-word-table">{{ item.description }}</td>
+                <td>
+                  <div class="list-action">
+                    <i
+                      class="fa-solid fa-pen-to-square"
+                      ngbTooltip="{{ 'global.button.edit' | translate }}"
+                      (click)="onUpdateUnit(item)"
+                    ></i>
+                    <i
+                      class="fa-solid fa-trash-can"
+                      ngbTooltip="{{ 'global.button.delete' | translate }}"
+                      (click)="onConfirmDeleteUnit(item.id)"
+                    ></i>
+                    <!--                      <i class="fa-solid fa-ellipsis-vertical"></i>-->
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+            <tbody *ngIf="totalItems === 0">
+            <tr class="table-not-data">
+              <td colspan="8">
+                <span jhiTranslate="easyPos.product.info.notData"></span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="from-pagination d-flex justify-content-center" *ngIf="totalItems > 0">
+    <ngb-pagination
+      class="pagination"
+      [collectionSize]="totalItems || 0"
+      [pageSize]="filterUnit.size"
+      [page]="filterUnit.page"
+      aria-label="Default pagination"
+      [directionLinks]="true"
+      [maxSize]="5"
+      (pageChange)="loadMore($event)"
+    ></ngb-pagination>
+  </div>
+</div>
+<!-- END pos-stock-body -->

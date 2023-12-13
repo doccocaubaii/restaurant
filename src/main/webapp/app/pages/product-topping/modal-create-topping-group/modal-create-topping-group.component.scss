@@ -1,0 +1,82 @@
+.modal-header {
+  max-height: 56px;
+  display: flex;
+  justify-content: center;
+  border: none;
+  text-align: center;
+}
+
+.border-header {
+  width: 85%;
+  border-bottom: 1px solid #d9eaf5;
+  margin-left: 7.5%;
+}
+
+.btn-close {
+  color: #ffffff;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  font-size: 16px;
+  position: absolute;
+  right: 0;
+  top: 8px;
+}
+.modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #004671;
+}
+.group-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+}
+:host::ng-deep .form-control {
+  border-radius: 8px;
+}
+.modal-footer {
+  border: none !important;
+}
+.btn-row {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  margin: 0;
+}
+:host::ng-deep .btn.disabled,
+.btn:disabled,
+fieldset:disabled .btn {
+  color: #ffffff;
+  pointer-events: none;
+  background-color: #1484c6;
+  border-color: #1484c6;
+  opacity: 0.5;
+}
+.title-info {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #58647a;
+}
+.group-topping-info {
+  margin: 1rem 0rem;
+}
+.group-checkbox {
+  display: flex;
+  align-items: center;
+}
+.form-check {
+  margin: 0px !important;
+}
+.form-switch {
+  padding-left: 16px;
+  .form-check-input {
+    width: 45px;
+    height: 22px;
+  }
+}

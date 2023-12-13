@@ -1,0 +1,14 @@
+{
+  "processingArea": {
+    "message": {
+      "deleteProcessingAreaHaveProduct": "Sản phẩm đang thiết lập ở khu vực chế biến này sẽ không được in ra nữa.",
+      "deleteProcessingAreaNotProduct": "Bạn có chắc chắn muốn xóa khu vực chế biến này không?",
+      "emptyListProduct": "Khu vực phải có ít nhất 1 sản phẩm.",
+      "exit": "Dữ liệu khu vực chưa được lưu, bạn có chắc chắn muốn thoát không?"
+    },
+    "title": {
+      "error": "Lỗi",
+      "notification": "Thông báo"
+    }
+  }
+}

@@ -1,0 +1,50 @@
+.master-div {
+  padding: 0 20px 10px 20px;
+}
+.divbtn-editting-zone {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-space-right {
+  margin-left: 10px;
+}
+
+.title {
+  display: flex;
+  justify-content: center;
+  color: #0550f7;
+  padding-top: 20px;
+  font-size: 1.5em;
+}
+.input-value:hover {
+  background-color: #e8e8e8;
+  border-opacity: 0.4;
+}
+.form-group {
+  margin-bottom: 35px;
+  margin-top: 15px;
+}
+.form-label {
+  font-weight: bold;
+  font-size: 16px;
+  color: #58647a;
+}
+.input-value {
+  font-weight: 500;
+  font-size: 14px;
+  color: #16243d;
+}
+.input-box {
+  background: #ffffff;
+  border: 1px solid #9ba3b1;
+  border-radius: 8px;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 9px 16px;
+}
+.input-box::placeholder {
+  font-weight: 300;
+  font-size: 14px;
+  color: #9ba3b1;
+}

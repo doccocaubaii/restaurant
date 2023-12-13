@@ -1,0 +1,198 @@
+<div class="modal-header header-product">
+  <h3 *ngIf="!showMore" class="modal-title text-bold" id="ModaCreateProduct">
+    {{ 'Thêm sản phẩm cho khu vực chế biến' }}
+  </h3>
+  <h3 *ngIf="showMore" class="modal-title text-bold">Danh sách sản phẩm</h3>
+  <button type="button" class="btn-close" (click)="dismiss($event)">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+<div class="modal-body" id="modalBody" #modalBody>
+  <div>
+    <div class="input-text-custom">
+      <label *ngIf="!showMore" class="title-info">Danh sách hàng hoá</label>
+
+      <div class="group-form-custom mb-25px">
+        <div class="group-item-custom" style="flex: 1">
+          <div class="item-search">
+            <input
+              name="keyword"
+              class="form-control"
+              type="search"
+              placeholder="Nhập tên sản phẩm ..."
+              (keyup.enter)="onSearch()"
+              [(ngModel)]="filterProduct.keyword"
+              (ngModelChange)="onDeleteKeywordSearch()"
+            />
+          </div>
+        </div>
+        <div class="form-btn-search">
+          <button (click)="getProduct()" class="btn-search">
+            <fa-icon icon="search"></fa-icon>
+            <span jhiTranslate="global.info.search"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="panel-action" *ngIf="!showMore">
+        <div>
+          <ul class="nav">
+            <li
+              class="nav-action cursor-pointer"
+              [hidden]="
+                paramCheckAll || (filterProduct.keyword !== undefined && filterProduct.keyword != null && filterProduct.keyword != '')
+              "
+              (click)="
+                paramCheckAll = true;
+                paramCheckAllPage = true;
+                utilsService.checkAll(products, listSelected, paramCheckAll, this.paramCheckAllPage)
+              "
+            >
+              <a class="nav-link nav-link-action">
+                <fa-icon icon="check"></fa-icon>
+                <span class="d-sm-block ms-2">Chọn tất cả</span>
+              </a>
+            </li>
+            <li
+              class="nav-action cursor-pointer"
+              [hidden]="
+                !paramCheckAll || (filterProduct.keyword !== undefined && filterProduct.keyword != null && filterProduct.keyword != '')
+              "
+              (click)="
+                paramCheckAll = false;
+                paramCheckAllPage = false;
+                utilsService.checkAll(products, listSelected, paramCheckAll, this.paramCheckAllPage)
+              "
+            >
+              <a class="nav-link nav-link-action">
+                <span class="d-flex align-items-center" [innerHTML]="ICON_CANCEL_WHITE | safeHtml"></span>
+                <span class="d-sm-block ms-2">Bỏ chọn tất cả</span>
+              </a>
+            </li>
+            <li [hidden]="!filterProduct.keyword" style="cursor: context-menu">
+              <a class="nav-link nav-link-action" [style]="filterProduct.keyword ? 'border-right: none' : ''">
+                <span class="d-sm-block ms-2" style="color: #0074bd">Chọn</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="form-page-size">
+          <label
+            class="form-label form-label label-search me-2 mb-0 text-bold"
+            jhiTranslate="global.info.totalParam"
+            [translateValues]="{ count: totalItems || 0 }"
+          ></label>
+          <div class="form-select-size">
+            <ng-select
+              [items]="sizes"
+              class="select-value select-size"
+              bindLabel="name"
+              bindValue="id"
+              placeholder="Tất cả"
+              [(ngModel)]="filterProduct.size"
+              (ngModelChange)="getProduct()"
+            >
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane fade active show">
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="panel panel-inverse">
+              <div class="table-responsive">
+                <table class="table editing-table">
+                  <thead class="table-header-sticky">
+                    <tr class="table-custom-header">
+                      <th *ngIf="!showMore">
+                        <div class="custom-checkbox custom-control col-checkbox">
+                          <input
+                            class="custom-control-input"
+                            id="checkAllForPage"
+                            type="checkbox"
+                            [disabled]="
+                              paramCheckAll ||
+                              (filterProduct.keyword !== undefined && filterProduct.keyword != null && filterProduct.keyword != '')
+                            "
+                            [(ngModel)]="paramCheckAllPage"
+                            (change)="checkAllForPage(products, listSelected, paramCheckAllPage)"
+                          /><label class="custom-control-label" for="checkAllForPage"></label>
+                        </div>
+                      </th>
+                      <th>Mã sản phẩm</th>
+                      <th>Tên sản phẩm</th>
+                      <th style="border-left: 1px solid #b0d4eb">Đơn vị tính</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let product of products; index as i">
+                      <tr class="table-custom-body tr-vertical-align" (click)="checked(product, listSelected, paramCheckAll, selectedItem)">
+                        <td *ngIf="!showMore">
+                          <div class="custom-checkbox custom-control mb-3 col-checkbox div-checkbox">
+                            <input
+                              class="custom-control-input"
+                              id="exampleCustomCheckbox{{ i }}"
+                              name="exampleCustomCheckbox{{ i }}"
+                              type="checkbox"
+                              [(ngModel)]="product.check"
+                            />
+                            <label class="custom-control-label" for="exampleCustomCheckbox{{ i }}"></label>
+                          </div>
+                        </td>
+                        <td class="break-word-table">
+                          {{ product.code2 }}
+                        </td>
+                        <td class="break-word-table td-text-overflow">
+                          {{ product.name }}
+                        </td>
+                        <td>
+                          {{ product.unit }}
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                  <tbody *ngIf="totalItems === 0">
+                    <tr class="table-not-data">
+                      <td colspan="8">
+                        <span jhiTranslate="easyPos.product.info.notData"></span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="group-page-size">
+  <div class="from-pagination d-flex justify-content-center" *ngIf="totalItems > 0">
+    <ngb-pagination
+      class="pagination"
+      [collectionSize]="totalItems || 0"
+      [pageSize]="filterProduct.size"
+      [page]="filterProduct.page + 1"
+      aria-label="Default pagination"
+      [directionLinks]="true"
+      [maxSize]="5"
+      (pageChange)="onChangedPage($event)"
+    ></ngb-pagination>
+  </div>
+</div>
+
+<div class="modal-footer" *ngIf="!showMore">
+  <div class="btn-row col-md-12">
+    <button type="button" class="exit-button-dialog me-2" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <span jhiTranslate="global.button.cancel"></span>
+    </button>
+    <button type="button" class="save-button-dialog" (click)="create()">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span jhiTranslate="global.button.save"></span>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,77 @@
+{
+  "activate": {
+    "title": "Kích hoạt",
+    "messages": {
+      "success": "<strong>Tài khoản của bạn đã được kích hoạt.</strong> Bạn vui lòng ",
+      "error": "<strong>Không thể kích hoạt tài khoản của bạn.</strong> Vui lòng quay lại trang đăng ký để tạo tài khoản."
+    },
+    "model": {
+      "title": {
+        "deleteVoucher": "Xóa voucher",
+        "publishInvoice": "Phát hành hóa đơn",
+        "deleteInvoice": "Xóa hóa đơn",
+        "deleteTransaction": "Xóa chứng từ",
+        "deleteCustomer": "Xóa khách hàng",
+        "saveOrder": "Lưu đơn hàng",
+        "saveVoucher": "Cảnh báo áp dụng chương trình khuyến mại",
+        "deleteOrder": "Xóa đơn hàng",
+        "confirmExitOrder": "Dữ liệu đơn hàng chưa được lưu",
+        "loginEpx": "Đăng nhập thất bại",
+        "cancelOrder": "Hủy đơn hàng",
+        "changeTypeVoucher": "Đổi loại áp dụng",
+        "deleteUnit": "Xóa bàn",
+        "deleteArea": "Xóa khu vực",
+        "exportCustomer": "Xuất khách hàng/nhà cung cấp ra excel",
+        "changeTypePolicy": "Xác nhận đổi chính sách thẻ",
+        "saveCardNonDefault": "Xác nhận lưu thông tin bổ sung",
+        "continueConvertPoint": "Xác nhận quy đổi điểm",
+        "expired": "Tài khoản hết hạn",
+        "saveUpdateInward": "Cập nhật phiếu Nhập kho",
+        "deleteInward": "Xoá phiếu Nhập kho"
+      },
+      "content": {
+        "deleteVoucher": "Bạn có chắc chắn muốn xóa voucher này không?",
+        "publishInvoice": "Bạn có chắc chắn muốn phát hành hóa đơn này không?",
+        "deleteInvoice": "Bạn có chắc chắn muốn xóa hóa đơn này không?",
+        "deleteTransaction": "Bạn có chắc chắn muốn xóa chứng từ này không?",
+        "saveOrder": "Bạn có chắc chắn muốn lưu đơn hàng này không?",
+        "saveVoucher": "Đơn hàng chỉ được áp dụng một chương trình khuyến mại. Nếu tiếp tục, sẽ đồng nghĩa với huỷ chương trình khuyến mại cũ.",
+        "deleteOrder": "Bạn có chắc chắn muốn xóa đơn hàng này không?",
+        "confirmExitOrder": "Dữ liệu đã bị thay đổi, bạn có muốn lưu lại?",
+        "deleteUnit": "Bạn có chắc chắn muốn xóa bàn này không?",
+        "deleteArea": "Bạn có chắc chắn muốn xóa khu vực này không?",
+        "deleteCustomer": "Bạn có chắc chắn muốn xóa khách hàng này không?",
+        "loginEpx": "Phiên đăng nhập của quý khách đã hết hạn. Quý khách vui lòng đăng nhập lại để tiếp tục sử dụng phần mềm.",
+        "cancelOrder": "Bạn có chắc chắn muốn hủy đơn hàng này không?",
+        "exportCustomer": "Bạn có chắc chắn muốn xuất khách hàng/nhà cung cấp ra excel không? ",
+        "changeTypePolicy": "Thao tác này sẽ cập nhật hạng cho tất cả Khách hàng đang sử dụng thẻ được áp dụng chính sách này. Bạn có chắc chắn muốn thay đổi không?",
+        "saveCardNonDefault": "Công ty của bạn hiện tại chưa có thẻ mặc định, bạn có muốn lưu thông tin điểm và tiền hay không?",
+        "changeTypeVoucher": "Những thay đổi chưa được lưu sẽ bị xoá hết. Bạn có chắc chắn muốn tiếp tục?",
+        "continueConvertPoint": "Thẻ không tồn tại chính sách. Bạn có chắc chắn muốn quy đổi điểm không?",
+        "trialExpired": "Thời hạn dùng thử của phần mềm ĐÃ HẾT HẠN. Để tiếp tục sử dụng phần mềm, bạn vui lòng thanh toán hoặc gia hạn để sử dụng phần mềm.",
+        "accountExpired": "Tài khoản của bạn đã bị khóa hoặc hết hạn phần mềm. Để tiếp tục sử dụng phần mềm, bạn vui lòng thanh toán hoặc gia hạn để sử dụng phần mềm.",
+        "saveUpdateInward": "Sản phẩm trong phiếu nhập kho có thể đã được xuất kho, bạn có chắc chắn muốn tiếp tục chỉnh sửa phiếu nhập kho này không?",
+        "deleteInward": "Bạn có chắc chắn muốn Xoá phiếu Nhập kho này không?",
+        "deleteStaff": "Tất cả quyền của nhân viên này sẽ được thu hồi, nhân viên sẽ không thể vào cửa hàng của bạn. Bạn có chắc chắn muốn thực hiện?"
+      },
+      "btn": {
+        "deleteVoucher": "Xóa voucher",
+        "publishInvoice": "Phát hành",
+        "deleteInvoice": "Xóa hóa đơn",
+        "saveOrder": "Lưu đơn hàng",
+        "saveVoucher": "Tiếp tục",
+        "deleteOrder": "Xóa đơn hàng",
+        "confirmExitOrder": "Xác nhận",
+        "deleteTransaction": "Xóa chứng từ",
+        "deleteUnit": "Xóa bàn",
+        "deleteArea": "Xóa khu vực",
+        "export": "Xuất Excel",
+        "deleteCustomer": "Xóa khách hàng",
+        "deleteStaff": "Xóa nhân viên",
+        "agree": "Đồng ý",
+        "cancelOrder": "Hủy đơn hàng",
+        "changeTypeVoucher": "Tiếp tục"
+      }
+    }
+  }
+}

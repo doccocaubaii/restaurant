@@ -1,0 +1,40 @@
+{
+  "reset": {
+    "request": {
+      "title": "Tìm tài khoản",
+      "title2": "Xác thực tài khoản",
+      "title3": "Đặt lại mật khẩu",
+      "label": "Email hoặc Số điện thoại",
+      "form": {
+        "button": "Đặt lại mật khẩu",
+        "continue": "Tiếp tục"
+      },
+      "messages": {
+        "info": "Nhập Email hoặc Số điện thoại đã đăng ký với hệ thống EasyPos",
+        "phone.text1": "Mã xác minh đã được gửi tới số điện thoại ",
+        "phone.text2": " của bạn, vui lòng kiểm tra",
+        "email.text1": "Mã xác minh đã được gửi tới email ",
+        "email.text2": " của bạn, vui lòng kiểm tra",
+        "username.text1": "Mã xác minh đã được gửi tới tài khoản ",
+        "username.text2": " của bạn, vui lòng kiểm tra",
+        "success": "Vui lòng kiểm tra tin nhắn/email và nhập mã xác minh",
+        "resend": "Bạn không nhận được mã? ",
+        "resend1": "Gửi lại mã sau",
+        "resend-otp": "Gửi lại",
+        "second": "giây"
+      }
+    },
+    "finish": {
+      "title": "Đặt lại mật khẩu",
+      "form": {
+        "button": "Đổi mật khẩu"
+      },
+      "messages": {
+        "info": "Đặt lại mật khẩu mới",
+        "success": "<strong>Mật khẩu của bạn đã được đặt lại.</strong> Bạn vui lòng ",
+        "keymissing": "Không tìm thấy khóa để đặt lại mật khẩu.",
+        "error": "Không thể đặt lại mật khẩu của bạn. Lưu ý, yêu cầu đặt lại mật khẩu chỉ có hiệu lực trong 24 giờ."
+      }
+    }
+  }
+}

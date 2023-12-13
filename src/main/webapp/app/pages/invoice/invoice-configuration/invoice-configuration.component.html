@@ -1,0 +1,485 @@
+<div class="row">
+  <div class="col-3">
+    <div class="panel panel-custom">
+      <div
+        class="custom-left-config"
+        [ngClass]="type === 0 ? 'active-item' : ''"
+        (click)="changeType(0)"
+        [style]="utilsService.getStyleByCode('HD/CD')"
+      >
+        <label jhiJsonCustom="HD/CD"></label>
+        <span>
+          <span [innerHTML]="ICON_PRINT_CONFIG | safeHtml"></span>
+        </span>
+      </div>
+      <div
+        class="custom-left-config"
+        [ngClass]="type === 1 ? 'active-item' : ''"
+        (click)="changeType(1)"
+        [style]="utilsService.getStyleByCode('BH/CD')"
+      >
+        <label jhiJsonCustom="BH/CD"></label>
+        <span>
+          <span [innerHTML]="ICON_PRINT_CONFIG | safeHtml"></span>
+        </span>
+      </div>
+      <div
+        class="custom-left-config"
+        [ngClass]="type === 2 ? 'active-item' : ''"
+        (click)="openPrintConfig()"
+        [style]="utilsService.getStyleByCode('CI/CD')"
+      >
+        <label jhiJsonCustom="CI/CD"></label>
+        <span>
+          <span [innerHTML]="ICON_PRINT_CONFIG | safeHtml"></span>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="col-9">
+    <div *ngIf="type === 0" class="panel panel-custom" [style]="utilsService.getStyleByCode('HD/CD')">
+      <div class="panel-custom-header bg-white border-bottom p-15px">
+        <div class="brand">
+          <h4 class="caption-title">Cấu hình hóa đơn điện tử</h4>
+        </div>
+      </div>
+      <div class="login-container ps-30px pe-30px">
+        <!-- BEGIN login-content -->
+        <div class="d-flex align-items-center" *ngIf="invoiceConfig.service !== VTE">
+          <div class="from-url" *ngIf="invoiceConfig.url">
+            <a href="{{ invoiceConfig.url }}" target="_blank" class="link-primary text-decoration-none">{{ invoiceConfig.url }}</a>
+          </div>
+          <div [ngClass]="invoiceConfig.url ? 'ms-5px' : ''">
+            <button (click)="openModalUrlInvoice(urlInvoiceModal)" class="exit-button-dialog">
+              <span [innerHTML]="ICON_UPDATE_PATH | safeHtml"></span>
+              Cập nhật đường dẫn
+            </button>
+          </div>
+        </div>
+        <div class="login-content">
+          <small *ngIf="invoiceConfig.service !== VTE"
+            >Bạn đang sử dụng hệ thống hóa đơn điện tử EasyInvoice. Xem thêm thông tin chi tiết truy cập</small
+          >
+          <form class="fs-13px">
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label class="form-label col-form-label text-title-custom">
+                    Hệ thống hóa đơn điện tử <span class="text-danger" *ngIf="lastCompany.easyinvoiceUrl">&nbsp;(*)</span></label
+                  >
+                  <div class="item-search from-select">
+                    <ng-select
+                      class="form-control"
+                      id="service-connect"
+                      name="service-connect"
+                      [(ngModel)]="invoiceConfig.service"
+                      [clearable]="false"
+                    >
+                      <ng-option *ngFor="let ser of services; let i = index" [value]="ser.code">{{ ser.name }}</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-15px col-6" *ngIf="!companies">
+                <label for="username1" class="text-title-custom">Tài khoản</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Tài khoản"
+                  id="username1"
+                  [(ngModel)]="invoiceConfig.username"
+                  autocomplete="'off'"
+                  name="username1"
+                />
+              </div>
+              <div class="mb-15px col-6" *ngIf="!companies">
+                <label for="password1" class="text-title-custom">Mật khẩu</label>
+                <div class="outer-input">
+                  <input
+                    [type]="passwordVisible ? 'text' : 'password'"
+                    class="form-control"
+                    placeholder="Mật khẩu"
+                    id="password1"
+                    [(ngModel)]="invoiceConfig.password"
+                    autocomplete="new-password"
+                    name="password1"
+                  />
+                  <div (click)="showPassword()" class="position-absolute cursor-pointer" style="right: 10px">
+                    <span *ngIf="!passwordVisible" [innerHTML]="ICON_PASSWORD_VISIBLE | safeHtml"></span>
+                    <span *ngIf="passwordVisible" [innerHTML]="ICON_PASSWORD_INVISIBLE | safeHtml"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <label class="form-check-label"
+                  >Bạn vui lòng nhập thông tin tài khoản và mật khẩu để đăng nhập hệ thống hóa đơn điện tử. Hệ thống này kết nối đẩy dữ liệu
+                  lên
+                  <span class="text-danger">Tổng cục thuế</span>
+                </label>
+              </div>
+              <div class="col-6">
+                <div class="form-group d-flex mt-15px">
+                  <label class="form-label col-form-label text-title-custom">Mã CQT cấp:</label>
+                  <div class="ms-25px d-flex align-items-center">
+                    <div>
+                      <label class="form-label col-form-label text-blue">{{ invoiceConfig.taxRegisterCode }}</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group d-flex mt-15px">
+                  <label class="form-label col-form-label text-title-custom">Mã thiết bị: <span class="text-danger">&nbsp;(*)</span></label>
+                  <div class="ms-25px">
+                    <button (click)="openDeviceModal()" class="exit-button-dialog">
+                      <span [innerHTML]="ICON_DEVICE_CODE | safeHtml"></span>
+                      {{ deviceCode ? deviceCode : 'Tạo mã thiết bị' }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-6" *ngIf="invoiceConfig.service === VTE">
+                <div class="form-group">
+                  <label class="form-label col-form-label text-title-custom">Chọn ký hiệu <span class="text-danger">&nbsp;(*)</span></label>
+                  <div class="item-search from-select">
+                    <ng-select
+                      class="form-control"
+                      id="invoice_template"
+                      name="invoice_template"
+                      [(ngModel)]="invoiceConfig.invoiceTemplate"
+                      (ngModelChange)="changeInvoiceTemplate()"
+                      #invoiceTemplate="ngModel"
+                      [clearable]="false"
+                    >
+                      <ng-option *ngFor="let template of templates; let i = index" [value]="template">{{ template }}</ng-option>
+                    </ng-select>
+                  </div>
+                  <span *ngIf="!invoiceTemplate.untouched && !invoiceConfig.invoiceTemplate" class="text-danger mt-1 d-block">
+                    Ký hiệu không được bỏ trống</span
+                  >
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="form-label col-form-label text-title-custom">Chọn mẫu số <span class="text-danger">&nbsp;(*)</span></label>
+                  <div class="item-search from-select">
+                    <ng-select
+                      class="form-control"
+                      id="invoicePattern"
+                      name="invoicePattern"
+                      [(ngModel)]="invoiceConfig.invoicePattern"
+                      (ngModelChange)="changeInvoicePattern(true)"
+                      #invoicePattern="ngModel"
+                      [clearable]="false"
+                    >
+                      <ng-option *ngFor="let pattern of patterns; let i = index" [value]="pattern.pattern">{{ pattern.pattern }}</ng-option>
+                    </ng-select>
+                  </div>
+                  <span *ngIf="!invoicePattern.untouched && !invoiceConfig.invoicePattern" class="text-danger mt-1 d-block">
+                    Mẫu số ký hiệu không được bỏ trống</span
+                  >
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="form-label col-form-label text-title-custom"
+                    >Loại hình hóa đơn <span class="text-danger">&nbsp;(*)</span></label
+                  >
+                  <div class="item-search from-select">
+                    <ng-select
+                      class="form-control"
+                      id="invoiceType"
+                      name="invoiceType"
+                      [(ngModel)]="invoiceConfig.invoiceType"
+                      #invoiceType="ngModel"
+                      [clearable]="false"
+                    >
+                      <ng-option *ngFor="let invoicetype of invoiceTypes; let i = index" [value]="invoicetype.id">{{
+                        invoicetype.name
+                      }}</ng-option>
+                    </ng-select>
+                  </div>
+                  <span
+                    class="text-danger mt-1"
+                    [hidden]="invoiceType.untouched"
+                    *ngIf="!this.invoiceConfig.invoiceType && this.invoiceConfig.invoiceType != 0"
+                  >
+                    Loại hình hóa đơn không được bỏ trống</span
+                  >
+                </div>
+              </div>
+              <div [ngClass]="invoiceConfig.service === VTE ? 'col-6' : 'col-12'">
+                <div class="form-group">
+                  <label class="form-label col-form-label text-title-custom"
+                    >Loại hình phát hành hóa đơn <span class="text-danger">&nbsp;(*)</span></label
+                  >
+                  <div class="item-search from-select">
+                    <ng-select
+                      class="form-control"
+                      id="invoiceMethod"
+                      name="invoiceMethod"
+                      [(ngModel)]="invoiceConfig.invoiceMethod"
+                      #invoiceMethod="ngModel"
+                      [clearable]="false"
+                    >
+                      <ng-option *ngFor="let invoiceMethod of invoiceMethods; let i = index" [value]="invoiceMethod.id">{{
+                        invoiceMethod.name
+                      }}</ng-option>
+                    </ng-select>
+                  </div>
+                  <span
+                    class="text-danger mt-1"
+                    [hidden]="invoiceMethod.untouched"
+                    *ngIf="!this.invoiceConfig.invoiceMethod && this.invoiceConfig.invoiceMethod != 0"
+                    >Loại hình phát hành hóa đơn không được bỏ trống</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="text-align-right mt-10px">
+              <button type="submit" class="save-button-dialog" (click)="login()" *jhiHasAnyAuthority="authorCOMPANY_CONFIG_UPDATE">
+                <span [innerHTML]="ICON_UPDATE_V2 | safeHtml"></span>
+                Cập nhật
+              </button>
+            </div>
+            <!--          <div class="text-gray-600 text-center mb-0">&copy; Color Admin All Right Reserved 2022</div>-->
+          </form>
+        </div>
+        <!-- END login-content -->
+      </div>
+    </div>
+    <div class="panel panel-custom" *ngIf="type === 1" [style]="utilsService.getStyleByCode('BH/CD')">
+      <div class="panel-custom-header bg-white border-bottom p-15px">
+        <div class="brand">
+          <h4 class="caption-title">Bán hàng</h4>
+        </div>
+      </div>
+      <form class="" style="border: 1px solid rgba(var(--app-component-border-color-rgb), 0.5)">
+        <div class="row m-0 ps-20px pe-20px">
+          <div class="col-12">
+            <div class="from-sale-config">
+              <label class="form-label col-form-label text-title-custom"
+                >Loại hình giảm giá <span class="text-danger">&nbsp;(*)</span>:</label
+              >
+              <div class="ms-25px">
+                <div class="d-flex align-items-center">
+                  <div class="custom-radio">
+                    <input type="radio" id="typeDiscount" name="typeDiscount" [(ngModel)]="ownerInfo.typeDiscount" [value]="0" />
+                    <label class="custom-radio-label" for="typeDiscount">Giá trị đơn hàng </label><br />
+                  </div>
+                  <div class="custom-radio ms-25px">
+                    <input type="radio" id="typeDiscount1" name="typeDiscount" [(ngModel)]="ownerInfo.typeDiscount" [value]="1" />
+                    <label for="typeDiscount1" class="custom-radio-label">Giá trị sản phẩm</label><br />
+                  </div>
+                  <div class="custom-radio ms-25px">
+                    <input type="radio" id="typeDiscount2" name="typeDiscount" [(ngModel)]="ownerInfo.typeDiscount" [value]="2" />
+                    <label for="typeDiscount2" class="custom-radio-label">Cả hai</label><br />
+                  </div>
+                  <div class="custom-radio ms-25px">
+                    <input type="radio" id="typeDiscount3" name="typeDiscount" [(ngModel)]="ownerInfo.typeDiscount" [value]="3" />
+                    <label for="typeDiscount3" class="custom-radio-label">Không giảm giá</label><br />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="from-sale-config">
+              <label class="form-label col-form-label text-title-custom"
+                >Hiển thị nội dung giảm giá <span class="text-danger">&nbsp;(*)</span>:</label
+              >
+              <div class="ms-25px">
+                <div class="d-flex align-items-center">
+                  <div class="custom-radio">
+                    <input
+                      type="radio"
+                      id="invDynamicDiscountName"
+                      name="invDynamicDiscountName"
+                      [(ngModel)]="ownerInfo.invDynamicDiscountName"
+                      [value]="0"
+                    />
+                    <label class="custom-radio-label" for="invDynamicDiscountName">Không hiển thị</label><br />
+                  </div>
+                  <div class="custom-radio ms-25px">
+                    <input
+                      type="radio"
+                      id="invDynamicDiscountName1"
+                      name="invDynamicDiscountName"
+                      [(ngModel)]="ownerInfo.invDynamicDiscountName"
+                      [value]="1"
+                    />
+                    <label for="invDynamicDiscountName1" class="custom-radio-label">Hiển thị</label><br />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="from-sale-config">
+              <label class="form-label col-form-label text-title-custom"
+                >Cho phép xuất quá số lượng tồn <span class="text-danger">&nbsp;(*)</span>:</label
+              >
+              <div class="ms-25px">
+                <div class="d-flex align-items-center">
+                  <div class="custom-radio">
+                    <input type="radio" id="no_overStock" name="no_overStock" [(ngModel)]="ownerInfo.overStock" [value]="0" />
+                    <label class="custom-radio-label" for="no_overStock">Không cho phép</label><br />
+                  </div>
+                  <div class="custom-radio ms-25px">
+                    <input type="radio" id="overStock1" name="overStock" [(ngModel)]="ownerInfo.overStock" [value]="1" />
+                    <label for="overStock1" class="custom-radio-label">Cho phép</label><br />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="from-sale-config">
+              <label class="form-label col-form-label text-title-custom">Giảm trừ thuế <span class="text-danger">&nbsp;(*)</span>:</label>
+              <div class="ms-25px">
+                <div class="d-flex align-items-center">
+                  <div class="custom-radio">
+                    <input type="radio" id="discount_vat" name="discount_vat" [(ngModel)]="ownerInfo.discountVat" [value]="0" />
+                    <label class="custom-radio-label" for="discount_vat">Không giảm trừ</label><br />
+                  </div>
+                  <div class="custom-radio ms-25px">
+                    <input type="radio" id="discount_vat1" name="discount_vat" [(ngModel)]="ownerInfo.discountVat" [value]="1" />
+                    <label for="discount_vat1" class="custom-radio-label">Giảm trừ</label><br />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="from-sale-config" *ngIf="ownerInfo.discountVat && ownerInfo.discountVat !== 0">
+              <label class="form-label col-form-label text-title-custom"
+                >Loại hình giảm trừ thuế <span class="text-danger">&nbsp;(*)</span>:</label
+              >
+              <div class="ms-25px">
+                <div class="d-flex align-items-center">
+                  <div class="custom-radio">
+                    <input
+                      type="radio"
+                      id="taxReductionType"
+                      name="taxReductionType"
+                      [(ngModel)]="ownerInfo.taxReductionType"
+                      [value]="0"
+                    />
+                    <label class="custom-radio-label" for="taxReductionType">Giảm trừ chung</label><br />
+                  </div>
+                  <div class="custom-radio ms-25px">
+                    <input
+                      type="radio"
+                      id="taxReductionType1"
+                      name="taxReductionType"
+                      [(ngModel)]="ownerInfo.taxReductionType"
+                      [value]="1"
+                    />
+                    <label for="taxReductionType1" class="custom-radio-label">Giảm trừ riêng</label><br />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="from-sale-config">
+              <label class="form-label col-form-label text-title-custom"
+                >Hiển thị thông tin người mua hàng <span class="text-danger">&nbsp;(*)</span>:</label
+              >
+              <div class="ms-25px">
+                <div class="d-flex align-items-center">
+                  <div class="custom-radio">
+                    <input type="radio" id="is_buyer" name="is_buyer" [(ngModel)]="ownerInfo.isBuyer" [value]="1" />
+                    <label class="custom-radio-label" for="is_buyer">Có</label><br />
+                  </div>
+                  <div class="custom-radio ms-25px">
+                    <input type="radio" id="is_buyer1" name="is_buyer" [(ngModel)]="ownerInfo.isBuyer" [value]="0" />
+                    <label for="is_buyer1" class="custom-radio-label">Không</label><br />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="from-sale-config">
+              <label class="form-label col-form-label text-title-custom">Áp dụng voucher <span class="text-danger">&nbsp;(*)</span>:</label>
+              <div class="ms-25px">
+                <div class="d-flex align-items-center">
+                  <div class="custom-radio">
+                    <input type="radio" id="voucher_apply" name="voucher_apply" [(ngModel)]="ownerInfo.voucherApply" [value]="1" />
+                    <label class="custom-radio-label" for="voucher_apply">Có</label><br />
+                  </div>
+                  <div class="custom-radio ms-25px">
+                    <input type="radio" id="voucher_apply1" name="voucher_apply" [(ngModel)]="ownerInfo.voucherApply" [value]="0" />
+                    <label for="voucher_apply1" class="custom-radio-label">Không</label><br />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="from-sale-config" *ngIf="ownerInfo.voucherApply && ownerInfo.voucherApply === 1">
+              <label class="form-label col-form-label text-title-custom"
+                >Áp dụng gộp voucher <span class="text-danger">&nbsp;(*)</span>:</label
+              >
+              <div class="ms-25px">
+                <div class="d-flex align-items-center">
+                  <div class="custom-radio">
+                    <input
+                      type="radio"
+                      id="combine_voucher_apply"
+                      name="combine_voucher_apply"
+                      [(ngModel)]="ownerInfo.combineVoucherApply"
+                      [value]="1"
+                    />
+                    <label class="custom-radio-label" for="combine_voucher_apply">Có</label><br />
+                  </div>
+                  <div class="custom-radio ms-25px">
+                    <input
+                      type="radio"
+                      id="combine_voucher_apply1"
+                      name="combine_voucher_apply"
+                      [(ngModel)]="ownerInfo.combineVoucherApply"
+                      [value]="0"
+                    />
+                    <label for="combine_voucher_apply1" class="custom-radio-label">Không</label><br />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6"></div>
+          <div class="text-align-right mt-15px mb-15px">
+            <button
+              (click)="updateInvoiceConfig()"
+              class="save-button-dialog"
+              id="btnUpdateInvoice"
+              name="btnUpdateInvoice"
+              *jhiHasAnyAuthority="authorCOMPANY_CONFIG_UPDATE"
+            >
+              <span [innerHTML]="ICON_UPDATE_CONFIG | safeHtml"></span>
+              Lưu
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<ng-template #urlInvoiceModal let-dctt="dismiss">
+  <div class="modal-header">
+    <h5 class="modal-title">Nhập đường dẫn hóa đơn điện tử</h5>
+    <button type="button" class="btn-close" (click)="dctt('Close')" aria-label="Close" name="btnCloseCheckModal"></button>
+  </div>
+  <div class="modal-body">
+    <input
+      type="text"
+      class="form-control h-45px fs-13px"
+      placeholder="Nhập đường dẫn ..."
+      id="urlInvoice"
+      [(ngModel)]="urlInvoice"
+      name="urlInvoice"
+    />
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="exit-button-dialog" (click)="dctt('Close')">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <label jhiTranslate="global.entity.action.cancel">Hủy</label>
+    </button>
+    <button type="button" class="save-button-dialog" (click)="updateUrlInvoice(); dctt('Close')">
+      <span [innerHTML]="ICON_UPDATE_V2 | safeHtml"></span>
+      <label>Cập nhật</label>
+    </button>
+  </div>
+</ng-template>

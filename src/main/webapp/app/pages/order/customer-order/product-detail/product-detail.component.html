@@ -1,0 +1,87 @@
+<!-- BEGIN #modalPosItem -->
+<div class="modal modal-pos-item">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body p-0">
+        <a (click)="closeModal()" data-bs-dismiss="modal" class="btn-close position-absolute top-0 end-0 m-4"></a>
+        <div class="form-product">
+          <div class="product-primary">
+            <div
+              class="product-img"
+              [style]="{
+                'background-image':
+                  'url(' +
+                  (product.imageUrl
+                    ? product.imageUrl
+                    : 'https://cdn.tgdd.vn/Products/Images/2565/80176/bhx/mi-khoai-tay-cung-dinh-lau-tom-chua-cay-ly-65g-201912101032086186.jpg') +
+                  ')'
+              }"
+            ></div>
+<!--            <div class="product-primary-info">-->
+<!--              <span class="product-name">{{ product.productName }}</span>-->
+<!--              <span class="product-unit-price">{{ product.salePrice | number }}đ</span>-->
+<!--            </div>-->
+          </div>
+          <div class="list-topping-product">
+            <ng-container *ngFor="let listTopping of listProductTopping">
+              <div class="form-topping">
+                <div class="name-group-topping" *ngIf="listTopping.isGroupTopping">
+                  <span>{{ listTopping.name }}</span>
+                  <ng-container *ngIf="listTopping.requiredOptional; else notRequire">
+                    <label class="require">(Bắt buộc)</label>
+                  </ng-container>
+                  <ng-template #notRequire>
+                    <label class="optional">Không bắt buộc</label>
+                  </ng-template>
+                </div>
+                <div class="form-list-product-topping">
+                  <ng-container *ngFor="let productTopping of listTopping.products">
+                    <div class="form-product-topping">
+                      <div class="left-product-topping col-8">
+                        <div>{{ productTopping.productName }}</div>
+                        <div>{{ productTopping.salePrice | number }}đ</div>
+                      </div>
+                      <div class="right-product-topping col-4">
+                        <ng-container>
+                          <button (click)="addToppingToProduct(productTopping)"><i class="fa fa-plus"></i></button>
+                        </ng-container>
+                        <ng-container>
+                          <div class="input-group qty col-6">
+                            <div class="input-group-append">
+                              <a class="btn btn-default"><i class="fa fa-minus"></i></a>
+                            </div>
+                            <input type="text" jhiCurrencyNumber />
+                            <div class="input-group-prepend">
+                              <a class="btn btn-default"><i class="fa fa-plus"></i></a>
+                            </div>
+                          </div>
+                        </ng-container>
+                        <div>Còn: {{ productTopping.inventoryCount | number }}</div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="bottom-modal">
+          <div class="quantity">
+            <span class="col-6">Số lượng</span>
+            <div class="input-group qty col-6">
+              <div class="input-group-append">
+                <a class="btn btn-default"><i class="fa fa-minus"></i></a>
+              </div>
+              <input type="text" jhiCurrencyNumber />
+              <div class="input-group-prepend">
+                <a class="btn btn-default"><i class="fa fa-plus"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="add-to-cart" (click)="saveProduct()">Thêm vào giỏ | {{ product.salePrice | number }}đ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END #modalPosItem -->

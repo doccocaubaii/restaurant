@@ -1,0 +1,34 @@
+<div class="pos-stock-product-container">
+  <div class="product">
+    <div class="product-img">
+      <div
+        class="img"
+        [class.img-icon]="!product.imageUrl"
+        [style.background-image]="'url(' + (product.imageUrl ? product.imageUrl : 'content/icon/san-pham/products.svg') + ')'"
+      ></div>
+    </div>
+    <div class="product-info">
+      <div class="title text-overflow" title="{{ product.productName }}">{{ product.productName }}</div>
+      <div *ngIf="product.description" class="description text-overflow" title="{{ product.description }}">{{ product.description }}</div>
+      <div class="product-option">
+        <div *ngIf="product.salePrice && type !== 'warehouse'" class="option p-0">
+          <div class="long-text price">{{ product.salePrice | number }} đ</div>
+        </div>
+        <div *ngIf="product.purchasePrice && type === 'warehouse'" class="option p-0">
+          <div class="long-text price">{{ product.purchasePrice | number }} đ</div>
+        </div>
+        <div class="option p-0">
+          <ng-container *ngIf="product.inventoryCount">
+            <span class="option-label title-info">Kho:</span>
+            <span class="long-text" style="color: #0074bd" jhiCurrencyNumber>{{ product.inventoryCount }}</span>
+          </ng-container>
+          <div class="divider" *ngIf="product.inventoryCount && product.unit"></div>
+          <ng-container *ngIf="product.unit">
+            <span class="option-label title-info">Đơn vị:</span>
+            <span class="long-text" style="color: #0074bd">{{ product.unit }}</span>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

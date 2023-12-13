@@ -1,0 +1,181 @@
+<div class="modal-header">
+  <div class="group-header">
+    <h5 class="modal-title">{{ title }}</h5>
+    <button type="button" class="btn-close" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    </button>
+  </div>
+</div>
+<div class="border-header"></div>
+<div class="modal-body" [style]="type === 2 ? 'max-height: 410px' : ''">
+  <div *ngIf="type === 1 || type === 4" class="card-action card-action-create">
+    <label>Tên thẻ<span style="color: red"> *</span></label>
+    <input class="form-control" [(ngModel)]="selectCard.name" placeholder="Nhập tên thẻ" (keyup.enter)="checkSaveCard()" />
+    <div class="mt-3">
+      <div class="mb-2">
+        <input
+          type="checkbox"
+          id="default"
+          value="1"
+          [checked]="selectCard.isDefault || lstCard.length == 0"
+          (click)="changeDefault($event)"
+        />
+        <label class="ps-2" for="default">Cấp thẻ mặc định</label>
+      </div>
+      <div class="mb-2">
+        <input type="checkbox" id="active" value="2" [checked]="selectCard.status" (click)="changeStatus()" />
+        <label class="ps-2" for="active">Hoạt động</label>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="type == 2" style="max-height: 375px; overflow: auto" cdkDropList class="example-list" (cdkDropListDropped)="onDrop($event)">
+    <!--    <div class="example-box" *ngFor="let movie of movies" cdkDrag cdkDragLockAxis="y">-->
+    <!--      <div class="example-custom-placeholder" *cdkDragPlaceholder ></div>-->
+    <!--      {{movie}}-->
+    <!--    </div>-->
+    <div
+      *ngFor="let card of lstCard"
+      cdkDrag
+      [cdkDragDisabled]="card.isDefault"
+      [cdkDragData]="card"
+      cdkDragBoundary=".modal-body"
+      cdkDragLockAxis="y"
+      class="mb-2 example-box d-flex justify-content-between sort-card"
+      style="z-index: 10001; position: relative"
+    >
+      <!--      <div class="example-handle" cdkDragHandle>-->
+      <!--        <svg width="24px" fill="currentColor" viewBox="0 0 24 24">-->
+      <!--          <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>-->
+      <!--          <path d="M0 0h24v24H0z" fill="none"></path>-->
+      <!--        </svg>-->
+      <!--      </div>-->
+      <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+      <div class="d-flex">
+        <div>
+          <span [innerHTML]="ICON_CARD_DEFAULT | safeHtml"></span>
+        </div>
+        <label >{{ card.name }}<small *ngIf="card.isDefault" class="ms-1">(Thẻ mặc định)</small></label>
+      </div>
+      <div>
+        <label class="rank-text">Hạng {{ card.rank }}</label>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="type === 3" class="card-action card-action-delete d-flex flex-column justify-content-center align-items-center">
+    <img src="content/img/template/folder%201.png" alt="Xoá thẻ" />
+    <label *ngIf="!deleteMultiple" class="mt-2">Bạn có chắc chắn muốn XÓA thẻ {{ name }}?</label>
+    <label *ngIf="!deleteMultiple" style="text-align: center">
+      Nếu bạn xoá thẻ, toàn bộ khách hàng trong thẻ {{ name }} sẽ tự động được xuống hạng thẻ trước đó.</label
+    >
+    <label style="text-align: center">Ngoài ra, Chính sách của thẻ này sẽ tự động được xoá.</label>
+    <label *ngIf="deleteMultiple" class="mt-2">Bạn có chắc chắn muốn XÓA những những thẻ đã chọn?</label>
+  </div>
+  <div *ngIf="type === 5">
+    <div class="custom-label-response">
+      <label class="label-info">Dữ liệu được xử lý: </label><label class="value-info ms-1">&nbsp;{{ countAll }}</label>
+    </div>
+    <div class="custom-label-response">
+      <label class="label-info">Dữ liệu xử lý thành công: </label><label class="value-info ms-1">{{ countSuccess }}</label>
+    </div>
+    <div class="custom-label-response">
+      <label class="label-info">Dữ liệu xử lý không thành công: </label>
+      <label class="value-info ms-1"> {{ countFalse }} </label>
+    </div>
+  </div>
+  <!--  confirm popup-->
+  <div *ngIf="type === 6" style="padding: 2px 16px">
+    <label class="mt-2"
+      >Thay đổi Thẻ mặc định sẽ cập nhật lại Khách hàng và Giá trị nâng hạng tương ứng.
+      <span style="font-size: 17px">Bạn có muốn tiếp tục?</span></label
+    >
+  </div>
+  <div *ngIf="type === 7" style="padding: 2px 16px">
+    <label class="mt-2">
+      Nếu bạn ngừng hoạt động thẻ, toàn bộ khách hàng trong thẻ [{{ selectCard.name }}] sẽ tự động được xuống hạng thẻ trước đó.</label
+    >
+    <label>Ngoài ra, Chính sách của thẻ này sẽ tự động được xoá.</label>
+    <label style="font-size: 17px">Bạn có muốn tiếp tục?</label>
+  </div>
+  <div *ngIf="type === 8" style="padding: 2px 16px; display: flex; justify-content: center; flex-direction: column">
+    <img src="content/img/template/showAgain.png" style="width: 120px; margin: 0 auto" alt="Thành công" />
+    <label class="mt-2 mb-2" style="text-align: center">
+      <label>Tạo thẻ thành công</label>
+      <label>Bạn có muốn cập nhật chính sách cho thẻ này?</label>
+    </label>
+    <div class="d-flex justify-content-center" style="gap: 2%">
+      <input type="checkbox" id="showAgain" class="mr-1" style="margin-left: 11px" [checked]="showAgain" (click)="changeShowAgain()" />
+      <label for="showAgain" style="opacity: 0.6; padding-top: 5px">Không hiện lại thông báo này?</label>
+    </div>
+  </div>
+  <div *ngIf="countFalse > 0">
+    <div class="table-responsive" style="max-height: 350px; overflow-y: auto">
+      <table class="table mb-0 editing-table">
+        <thead class="table-custom-body table-header-sticky">
+          <tr class="table-custom-header">
+            <th jhiTranslate="global.info.Stt">Stt</th>
+            <th>Tên thẻ</th>
+            <th>Nguyên nhân</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of data; index as i">
+            <td>
+              <label> {{ i + 1 }}</label>
+            </td>
+            <td>
+              <label> {{ item.name }}</label>
+            </td>
+            <td>
+              <label> {{ item.note }}</label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="modal-footer d-flex">
+  <div
+    [class]="type === 3 ? 'd-flex justify-content-center align-items-center' : ''"
+    class="btn-row col-md-12"
+    [style]="type === 8 ? 'justify-content: center; padding-left: 10px;' : ''"
+  >
+    <button
+      type="button"
+      class="exit-button-dialog me-2 mb-1"
+      (click)="
+        type === 5 ? closeDelete($event) : type === 6 || type == 7 ? closeConfirmPopup() : type === 8 ? closeShowPopup() : dismiss($event)
+      "
+    >
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <span  [jhiTranslate]="type === 3 ? 'global.entity.action.cancel' : 'global.button.cancel'"></span>
+    </button>
+    <button *ngIf="type === 1 || type === 4" type="button" class="save-button-dialog me-1 mb-1" (click)="checkSaveCard()">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span  jhiTranslate="global.button.save"></span>
+    </button>
+    <button *ngIf="type === 2" type="button" class="save-button-dialog me-1 mb-1" (click)="sortCard()">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span  jhiTranslate="global.button.save"></span>
+    </button>
+    <button
+      *ngIf="type === 3"
+      type="button"
+      [style]="type === 3 ? 'min-width: 126px' : ''"
+      class="btn ep-btn-custom save-button-dialog me-1 mb-1"
+      style="background: #dd0000"
+      (click)="deleteCard()"
+    >
+      <fa-icon icon="trash-can"></fa-icon>
+      <span >Xoá</span>
+    </button>
+    <button *ngIf="type === 8" type="button" class="save-button-dialog me-1 mb-1" (click)="goToPolicy()">
+      <span [innerHTML]="ICON_AGREE | safeHtml"></span>
+      <span >Đồng ý</span>
+    </button>
+    <button *ngIf="type === 6 || type === 7" type="button" class="btn ep-btn-custom save-button-dialog me-1 mb-1" (click)="saveCard()">
+      <span [innerHTML]="ICON_CONFIRM_V2 | safeHtml"></span>
+      <span >Xác nhận</span>
+    </button>
+  </div>
+</div>

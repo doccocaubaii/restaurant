@@ -1,0 +1,666 @@
+<article>
+  <!--  bắt đầu code html chung từ đoạn này-->
+  <h1 class="page-header">Danh sách khách hàng</h1>
+  <div class="panel-custom">
+    <ul class="nav">
+      <li class="nav-item" (click)="changeType(0)">
+        <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link active">
+          <span class="d-sm-block" jhiTranslate="easyPos.customer.info.type-all">Tất cả</span>
+        </a>
+      </li>
+      <li class="nav-item" (click)="changeType(1)" [style]="utilsService.getStyleByCode('KH')">
+        <a href="#nav-pills-tab-2" data-bs-toggle="tab" class="nav-link">
+          <span class="d-sm-block" jhiJsonCustom="KH"></span>
+        </a>
+      </li>
+      <li class="nav-item" (click)="changeType(2)" [style]="utilsService.getStyleByCode('KHCC')">
+        <a href="#nav-pills-tab-5" data-bs-toggle="tab" class="nav-link">
+          <span jhiJsonCustom="KHCC" class="d-sm-block"></span>
+        </a>
+      </li>
+      <li class="nav-item" (click)="changeType(3)" [style]="utilsService.getStyleByCode('NCC')">
+        <a href="#nav-pills-tab-3" data-bs-toggle="tab" class="nav-link">
+          <span jhiJsonCustom="NCC" class="d-sm-block"></span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <!-- kết thúc code html chung từ đoạn này-->
+
+  <div class="group-form-custom mb-15px">
+    <div class="group-item-custom">
+      <label class="form-label label-search" jhiTranslate="global.info.keyword"></label>
+      <div class="item-search">
+        <input
+          name="keyword"
+          [(ngModel)]="keyword"
+          class="form-control"
+          type="search"
+          placeholder="Tìm kiếm..."
+          (ngModelChange)="onDeleteKeywordSearch()"
+          (keyup.enter)="getCustomers()"
+        />
+      </div>
+    </div>
+    <div class="form-btn-search">
+      <button (click)="getCustomers()" class="btn-search">
+        <fa-icon icon="search"></fa-icon>
+        <span jhiTranslate="global.info.search"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="panel-action">
+    <ul class="nav">
+      <li class="nav-action" (click)="openCreate()">
+        <a class="nav-link nav-link-action">
+          <i class="fa-solid fa-plus"></i>
+          <span class="d-sm-block ms-2" jhiTranslate="easyPos.customer.action.add">Thêm khách hàng</span>
+        </a>
+      </li>
+      <li class="nav-action" (click)="onImportExcel()">
+        <a class="nav-link nav-link-action">
+          <span [innerHTML]="ICON_IMPORT_EXCEL | safeHtml"></span>
+          <span class="d-sm-block ms-2">Nhập từ excel</span>
+        </a>
+      </li>
+      <li class="nav-action" (click)="onExportExcel()">
+        <a class="nav-link nav-link-action">
+          <span [innerHTML]="ICON_IMPORT_EXCEL | safeHtml"></span>
+          <span class="d-sm-block ms-2">Xuất ra excel</span>
+        </a>
+      </li>
+      <li
+        class="nav-action cursor-pointer"
+        [hidden]="paramCheckAll"
+        (click)="
+          paramCheckAll = true;
+          paramCheckAllPage = true;
+          utilsService.checkAll(cusArray, listSelected, paramCheckAll, this.paramCheckAllPage)
+        "
+      >
+        <a class="nav-link nav-link-action">
+          <fa-icon icon="check"></fa-icon>
+          <span class="d-sm-block ms-2">Chọn tất cả</span>
+        </a>
+      </li>
+      <li
+        class="nav-action cursor-pointer"
+        [hidden]="!paramCheckAll"
+        (click)="
+          paramCheckAll = false;
+          paramCheckAllPage = false;
+          utilsService.checkAll(cusArray, listSelected, paramCheckAll, this.paramCheckAllPage)
+        "
+      >
+        <a class="nav-link nav-link-action">
+          <span class="d-flex align-items-center" [innerHTML]="ICON_CANCEL_WHITE | safeHtml"></span>
+          <span class="d-sm-block ms-2">Bỏ chọn tất cả</span>
+        </a>
+      </li>
+      <li class="nav-action" (click)="deleteMultiStaff()">
+        <a class="nav-link nav-link-action" [class]="paramCheckAll || listSelected?.length > 0 ? '' : 'disable-button'">
+          <i class="fa-solid fa-trash-can"></i>
+          <span class="d-sm-block ms-2" jhiTranslate="easyPos.customer.action.delete">Xóa khách hàng</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="d-flex justify-content-end align-items-center">
+      <div class="form-page-size">
+        <label
+          class="form-label form-label label-search me-2 mb-0 text-bold"
+          jhiTranslate="global.info.totalParam"
+          [translateValues]="{ count: totalSize || 0 }"
+        ></label>
+        <div class="form-select-size">
+          <ng-select
+            [items]="sizes"
+            class="select-value select-size"
+            bindLabel="name"
+            bindValue="id"
+            placeholder="Tất cả"
+            [(ngModel)]="pageSize"
+            (ngModelChange)="getCustomers()"
+          >
+          </ng-select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content rounded-top panel rounded-0 m-0">
+    <div class="tab-pane fade active show">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="table-responsive" style="height: calc(100vh - 370px)">
+            <table class="table editing-table">
+              <thead class="thead--customers">
+                <tr class="table-custom-header">
+                  <th>
+                    <div class="custom-checkbox custom-control col-checkbox">
+                      <input
+                        class="custom-control-input"
+                        id="checkAllForPage"
+                        type="checkbox"
+                        [disabled]="paramCheckAll"
+                        [(ngModel)]="paramCheckAllPage"
+                        (change)="utilsService.checkAllForPage(cusArray, listSelected, paramCheckAllPage)"
+                      />
+                    </div>
+                  </th>
+                  <th><span jhiTranslate="global.info.Stt">STT</span></th>
+                  <th jhiTranslate="easyPos.customer.info.table-th.taxCode">Mã số thuế</th>
+                  <th jhiTranslate="easyPos.customer.info.customerName" style="max-width: 150px" class="text-wrap">Tên khách hàng</th>
+                  <th jhiTranslate="easyPos.customer.info.table-th.phone-number">Số điện thoại</th>
+                  <th jhiTranslate="easyPos.customer.info.type" style="min-width: 130px">Loại khách hàng</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let cus of cusArray; index as i">
+                  <tr class="table-custom-body" [class.editing-head]="idEditing == cus.id" (click)="indexCustomerInfo = 0">
+                    <td>
+                      <div class="custom-checkbox custom-contro col-checkbox">
+                        <input
+                          class="custom-control-input"
+                          id="exampleCustomCheckbox{{ i }}"
+                          name="exampleCustomCheckbox{{ i }}"
+                          type="checkbox"
+                          [(ngModel)]="cus.check"
+                          (click)="idEditing = -1; getItem(cus); utilsService.check(cus, listSelected, paramCheckAll, selectedItem)"
+                        /><label class="custom-control-label" for="exampleCustomCheckbox{{ i }}"></label>
+                      </div>
+                    </td>
+                    <td (click)="idEditing = idEditing == cus.id ? -1 : cus.id; this.indexCustomerInfo = 0" style="text-align: center">
+                      {{ i + 1 + (page - 1) * pageSize }}
+                    </td>
+                    <td
+                      (click)="
+                        idEditing = idEditing == cus.id ? -1 : cus.id;
+                        this.indexCustomerInfo = 0;
+                        idCustomerCardAction !== cus.id ? (this.visibleCardAction = false) : ''
+                      "
+                    >
+                      <!--                          Chuyển từ hiển thị mã khách hàng sang mã số thuế-->
+                      <div class="td-ma-khach-hang" style="text-align: center">{{ cus.taxCode }}</div>
+                    </td>
+                    <td
+                      (click)="
+                        idEditing = idEditing == cus.id ? -1 : cus.id;
+                        this.indexCustomerInfo = 0;
+                        idCustomerCardAction !== cus.id ? (this.visibleCardAction = false) : ''
+                      "
+                    >
+                      <div class="td-ten-khach-hang" placement="top" [ngbTooltip]="cus.name">{{ cus.name }}</div>
+                    </td>
+                    <td
+                      style="text-align: center"
+                      (click)="
+                        idEditing = idEditing == cus.id ? -1 : cus.id;
+                        this.indexCustomerInfo = 0;
+                        idCustomerCardAction !== cus.id ? (this.visibleCardAction = false) : ''
+                      "
+                    >
+                      {{ cus.phoneNumber }}
+                    </td>
+                    <td
+                      (click)="
+                        idEditing = idEditing == cus.id ? -1 : cus.id;
+                        this.indexCustomerInfo = 0;
+                        idCustomerCardAction !== cus.id ? (this.visibleCardAction = false) : ''
+                      "
+                    >
+                      <div class="d-flex justify-content-between">
+                        <ng-container [ngSwitch]="cus.type">
+                          <span *ngSwitchCase="1"><span jhiTranslate="easyPos.customer.info.type-customer">Khách hàng</span></span>
+                          <span *ngSwitchCase="2"
+                            ><span jhiTranslate="easyPos.customer.info.type-cus-and-supply">Khách hàng và Nhà cung cấp</span></span
+                          >
+                          <span *ngSwitchCase="3"><span jhiTranslate="easyPos.customer.info.type-supply">Nhà cung cấp</span></span>
+                          <span *ngSwitchDefault></span>
+                        </ng-container>
+                      </div>
+                    </td>
+                    <td style="z-index: 0">
+                      <div class="list-action" style="position: relative">
+                        <i
+                          (click)="openCreate(cus)"
+                          class="fa-solid fa-pen-to-square"
+                          ngbTooltip="{{ 'global.entity.action.edit' | translate }}"
+                        >
+                        </i>
+                        <i
+                          (click)="idDel = cus.id; openDeleteCustomer()"
+                          class="fa-solid fa-trash-can m-0"
+                          ngbTooltip="{{ 'easyPos.bill.action.delete' | translate }}"
+                        >
+                        </i>
+                        <i
+                          *ngIf="cus.type != 3 && cus.cardInformation"
+                          class="fa-solid fa-ellipsis-vertical m-0 px-20px"
+                          (click)="idCustomerCardAction = cus.id; viewCardAction()"
+                        >
+                        </i>
+                        <div *ngIf="idCustomerCardAction === cus.id && visibleCardAction" class="card-action enable-card-action">
+                          <ul>
+                            <li
+                              class="nav-action"
+                              (click)="
+                                onUpdateCustomerCard(
+                                  0,
+                                  cus.id,
+                                  cus.cardInformation?.redeemValue,
+                                  cus.pointBalance,
+                                  cus.cardInformation?.cardName
+                                )
+                              "
+                            >
+                              <a class="nav-link nav-link-action">
+                                <span [innerHTML]="ICON_RECHARGE | safeHtml"></span>
+                                <span class="d-sm-block ms-2" jhiTranslate="easyPos.customer.action.inputMoney">Nạp tiền</span>
+                              </a>
+                            </li>
+                            <li
+                              class="nav-action"
+                              (click)="
+                                onUpdateCustomerCard(
+                                  1,
+                                  cus.id,
+                                  cus.cardInformation?.redeemValue,
+                                  cus.pointBalance,
+                                  cus.cardInformation?.cardName
+                                )
+                              "
+                            >
+                              <a class="nav-link nav-link-action">
+                                <span [innerHTML]="ICON_PLUS_POINT | safeHtml"></span>
+                                <span class="d-sm-block ms-2" jhiTranslate="easyPos.customer.action.plusPoint">Cộng điểm</span>
+                              </a>
+                            </li>
+                            <li
+                              class="nav-action"
+                              (click)="
+                                onUpdateCustomerCard(
+                                  2,
+                                  cus.id,
+                                  cus.cardInformation?.redeemValue,
+                                  cus.pointBalance,
+                                  cus.cardInformation?.cardName
+                                )
+                              "
+                            >
+                              <a class="nav-link nav-link-action">
+                                <span [innerHTML]="ICON_MINUS_POINT | safeHtml"></span>
+                                <span class="d-sm-block ms-2" jhiTranslate="easyPos.customer.action.minusPoint">Trừ điểm</span>
+                              </a>
+                            </li>
+                            <li
+                              class="nav-action"
+                              (click)="
+                                onUpdateCustomerCard(
+                                  3,
+                                  cus.id,
+                                  cus.cardInformation?.redeemValue,
+                                  cus.pointBalance,
+                                  cus.cardInformation?.cardName
+                                )
+                              "
+                            >
+                              <a class="nav-link nav-link-action">
+                                <span [innerHTML]="ICON_CONVERT_POINT | safeHtml"></span>
+                                <span class="d-sm-block ms-2" jhiTranslate="easyPos.customer.action.redeemPoint">Quy đổi điểm</span>
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr *ngIf="cus.id == idEditing" [class.editing-body]="idEditing == cus.id">
+                    <td class="td-chi-tiet-kh" [attr.colspan]="getColspan()">
+                      <div class="customer-detail">
+                        <div class="panel-custom custom-sub-panel mb-2">
+                          <ul class="nav">
+                            <li
+                              class="nav-item"
+                              (click)="this.customerCardHistory = []; this.countCustomerCardHistory = 0; this.indexCustomerInfo = 0"
+                            >
+                              <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link active">
+                                <span class="d-sm-block">Thông tin</span>
+                              </a>
+                            </li>
+                            <ng-container *ngIf="cus.type != 3">
+                              <li class="nav-item" (click)="onCustomerDetail(3, cus.id)">
+                                <a href="#nav-pills-tab-2" data-bs-toggle="tab" class="nav-link">
+                                  <span class="d-sm-block">Nợ phải thu</span>
+                                </a>
+                              </li>
+                              <li class="nav-item" (click)="onCustomerDetail(4, cus.id)">
+                                <a href="#nav-pills-tab-3" data-bs-toggle="tab" class="nav-link">
+                                  <span class="d-sm-block">Đơn hàng</span>
+                                </a>
+                              </li>
+                              <li class="nav-item" (click)="onCustomerDetail(1, cus.id)">
+                                <a href="#nav-pills-tab-4" data-bs-toggle="tab" class="nav-link">
+                                  <span class="d-sm-block">Lịch sử tích điểm</span>
+                                </a>
+                              </li>
+                              <li class="nav-item" (click)="onCustomerDetail(2, cus.id)">
+                                <a href="#nav-pills-tab-5" data-bs-toggle="tab" class="nav-link">
+                                  <span class="d-sm-block">Lịch sử chi tiêu</span>
+                                </a>
+                              </li>
+                            </ng-container>
+                          </ul>
+                        </div>
+                        <div *ngIf="indexCustomerInfo === 0" class="row wrap-order-detail cursor-default">
+                          <div class="col-6 left-order-detail-content">
+                            <div class="form-group border-bottom form-input-custom">
+                              <label for="ma-khach-hang" class="form-label">
+                                <span jhiTranslate="easyPos.customer.info.customer-code">Mã khách hàng</span>
+                              </label>
+                              <div class="user-input-text-div">
+                                <strong id="ma-khach-hang">{{ cus.code2 }}</strong>
+                              </div>
+                            </div>
+                            <div class="form-group border-bottom form-input-custom">
+                              <label for="ten-khach-hang" class="form-label"
+                                ><span jhiTranslate="easyPos.customer.info.customerName">Tên khách hàng</span>
+                              </label>
+                              <div class="user-input-text-div">
+                                <strong id="ten-khach-hang">{{ cus.name }}</strong>
+                              </div>
+                            </div>
+                            <div class="form-group border-bottom form-input-custom">
+                              <label for="nhom-khach-hang" class="form-label"
+                                ><span jhiTranslate="easyPos.customer.info.type">Loại khách hàng</span>
+                              </label>
+                              <div class="user-input-text-div">
+                                <strong id="nhom-khach-hang" [ngSwitch]="cus.type">
+                                  <span *ngSwitchCase="1" jhiTranslate="easyPos.customer.info.type-customer">Khách hàng</span>
+                                  <span *ngSwitchCase="2" jhiTranslate="easyPos.customer.info.type-cus-and-supply"
+                                    >Khách hàng và Nhà cung cấp</span
+                                  >
+                                  <span *ngSwitchCase="3" jhiTranslate="easyPos.customer.info.type-supply">Nhà cung cấp</span>
+                                </strong>
+                              </div>
+                            </div>
+                            <div class="form-group border-bottom form-input-custom">
+                              <label class="form-label" for="so-dien-thoai"
+                                ><span jhiTranslate="easyPos.customer.info.table-th.phone-number">Số điện thoại</span></label
+                              >
+                              <div class="user-input-text-div">
+                                <strong id="so-dien-thoai">{{ cus.phoneNumber }}</strong>
+                              </div>
+                            </div>
+                            <div class="form-group border-bottom form-input-custom">
+                              <label class="form-label" for="gender"><span>Giới tính</span> </label>
+                              <div class="user-input-text-div">
+                                <strong id="gender">{{ cus.gender === 1 ? 'Nam' : cus.gender === 2 ? 'Nữ' : 'Khác' }}</strong>
+                              </div>
+                            </div>
+                            <div class="form-group border-bottom form-input-custom">
+                              <label class="form-label" for="email"><span jhiTranslate="easyPos.customer.info.Email">Email</span> </label>
+                              <div class="user-input-text-div">
+                                <strong id="email">{{ cus.email }}</strong>
+                              </div>
+                            </div>
+                            <!--                              <div class="form-group border-bottom form-input-custom">-->
+                            <!--                                <label class="form-label" for="gender"-->
+                            <!--                                  ><span jhiTranslate="easyPos.customer.info.gender">Giới tính</span>-->
+                            <!--                                </label>-->
+                            <!--                                <div class="user-input-text-div">-->
+                            <!--                                  <strong id="gender" [ngSwitch]="cus.gender">-->
+                            <!--                                    <span *ngSwitchCase="1">Nam</span>-->
+                            <!--                                    <span *ngSwitchCase="2">Nữ</span>-->
+                            <!--                                    <span *ngSwitchCase="3">Khác</span>-->
+                            <!--                                  </strong>-->
+                            <!--                                </div>-->
+                            <!--                              </div>-->
+                            <div class="form-group border-bottom form-input-custom">
+                              <label class="form-label" for="description"
+                                ><span jhiTranslate="easyPos.customer.info.describe">Mô tả</span>
+                              </label>
+                              <div class="user-input-text-div">
+                                <strong id="description">{{ cus.description }}</strong>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-6 left-order-detail-content">
+                            <div class="form-group border-bottom form-input-custom">
+                              <label class="form-label" for="ma-so-thue"
+                                ><span jhiTranslate="easyPos.customer.info.table-th.taxCode">Mã số thuế</span>
+                              </label>
+                              <div class="user-input-text-div">
+                                <strong id="ma-so-thue">{{ cus.taxCode }}</strong>
+                              </div>
+                            </div>
+                            <!--                              <div class="form-group border-bottom form-input-custom">-->
+                            <!--                                <label class="form-label" for="tinh"-->
+                            <!--                                  ><span jhiTranslate="easyPos.customer.info.province">Tỉnh</span>-->
+                            <!--                                </label>-->
+                            <!--                                <div class="user-input-text-div">-->
+                            <!--                                  <strong id="tinh">{{ cus.city }}</strong>-->
+                            <!--                                </div>-->
+                            <!--                              </div>-->
+                            <!--                              <div class="form-group border-bottom form-input-custom">-->
+                            <!--                                <label class="form-label" for="huyen"-->
+                            <!--                                  ><span jhiTranslate="easyPos.customer.info.district">Huyện</span>-->
+                            <!--                                </label>-->
+                            <!--                                <div class="user-input-text-div">-->
+                            <!--                                  <strong id="huyen">{{ cus.district }}</strong>-->
+                            <!--                                </div>-->
+                            <!--                              </div>-->
+                            <div class="form-group border-bottom form-input-custom">
+                              <label class="form-label" for="so-can-cuoc"
+                                ><span jhiTranslate="easyPos.customer.info.cccd">Số CCCD/CMTND</span>
+                              </label>
+                              <div class="user-input-text-div">
+                                <strong id="so-can-cuoc">{{ cus.idNumber }}</strong>
+                              </div>
+                            </div>
+                            <div class="form-group border-bottom form-input-custom">
+                              <label class="form-label" for="dia-chi"
+                                ><span jhiTranslate="easyPos.customer.info.address">Địa chỉ</span>
+                              </label>
+                              <div class="user-input-text-div">
+                                <strong id="dia-chi">{{ cus.address }}</strong>
+                              </div>
+                            </div>
+                            <div class="form-group border-bottom form-input-custom">
+                              <label class="form-label" for="birthday"><span>Ngày sinh</span></label>
+                              <div class="user-input-text-div">
+                                <strong id="birthday">{{ compactDate(cus.birthday, 'dd/MM/yyyy') }}</strong>
+                              </div>
+                            </div>
+                            <div class="form-group form-input-custom p-0">
+                              <strong class="ms-0">Thông tin thẻ</strong>
+                            </div>
+                            <div class="form-group border-bottom form-input-custom">
+                              <div class="col-6 d-flex">
+                                <label class="form-label" for="card-number"><span>Số thẻ</span> </label>
+                                <div class="user-input-text-div">
+                                  <strong id="card-number">{{ cus.cardInformation?.cardCode }}</strong>
+                                </div>
+                              </div>
+                              <div class="col-6 d-flex">
+                                <label class="form-label" for="point"><span>Điểm tích luỹ</span> </label>
+                                <div class="user-input-text-div">
+                                  <strong id="point">{{ cus.pointBalance | number }}</strong>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group border-bottom form-input-custom">
+                              <div class="col-6 d-flex">
+                                <label class="form-label" for="card-rank"><span>Hạng thẻ</span> </label>
+                                <div class="user-input-text-div">
+                                  <strong id="card-rank">{{ cus.cardInformation?.cardName }}</strong>
+                                </div>
+                              </div>
+                              <div class="col-6 d-flex">
+                                <label class="form-label" for="card-balance"><span>Số dư thẻ</span> </label>
+                                <div class="user-input-text-div">
+                                  <strong id="card-balance">{{ cus.moneyBalance | number }}</strong>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div *ngIf="indexCustomerInfo !== 0">
+                          <div *ngIf="haveData" class="tab-content rounded-top panel rounded-0 m-0">
+                            <div class="tab-pane fade active show">
+                              <div class="row">
+                                <div class="col-xl-12">
+                                  <div class="panel panel-inverse m-0">
+                                    <div class="table-responsive" style="height: 300px; overflow: auto">
+                                      <table *ngIf="indexCustomerInfo < 3" class="table editing-table">
+                                        <thead>
+                                          <tr class="table-custom-header">
+                                            <th class="text-break main-table-th-1" jhiTranslate="global.info.Stt">STT</th>
+                                            <th class="main-table-th-2">Tên thẻ</th>
+                                            <th class="main-table-th-3">Thời gian</th>
+                                            <th class="main-table-th-4">Hình thức</th>
+                                            <th class="main-table-th-5">Số đơn hàng</th>
+                                            <th class="main-table-th-6" style="border-right: 1px solid #b0d4eb !important">Giá trị</th>
+                                            <th class="main-table-th-7">Mô tả</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <ng-container *ngFor="let history of customerCardHistory; index as j">
+                                            <tr>
+                                              <td style="text-align: center; padding: 10px 15px !important">{{ j + 1 }}</td>
+                                              <td>{{ history.cardName }}</td>
+                                              <td style="text-align: center">{{ compactDate(history.usageDate, 'dd/MM/yyyy hh:mm') }}</td>
+                                              <td>{{ history.typeName }}</td>
+                                              <td>{{ history.billCode }}</td>
+                                              <td style="text-align: end">
+                                                {{ indexCustomerInfo === 1 ? (history.point | number) : (history.amount | number) }}
+                                              </td>
+                                              <td style="text-align: start">{{ history.description }}</td>
+                                            </tr>
+                                          </ng-container>
+                                        </tbody>
+                                      </table>
+                                      <table *ngIf="indexCustomerInfo === 3" class="table editing-table">
+                                        <thead>
+                                          <tr class="table-custom-header">
+                                            <th class="text-break main-table-th-1" jhiTranslate="global.info.Stt">STT</th>
+                                            <th class="main-table-th-2">Chứng từ</th>
+                                            <th class="main-table-th-2">Mô tả</th>
+                                            <th class="main-table-th-3">Thời gian</th>
+                                            <th class="main-table-th-4">Tổng tiền</th>
+                                            <th class="main-table-th-5" style="border-right: 1px solid #b0d4eb !important">Dư nợ</th>
+                                            <!--                                          <th class="main-table-th-6">Người tạo</th>-->
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <ng-container *ngFor="let history of receivableBillHistory; index as j">
+                                            <tr>
+                                              <td style="text-align: center; padding: 10px 15px !important">{{ j + 1 }}</td>
+                                              <td>{{ history.code }}</td>
+                                              <td>{{ history.description }}</td>
+                                              <td>{{ compactDate(history.date, 'dd/MM/yyyy hh:mm') }}</td>
+                                              <td style="text-align: end">{{ history.amount | number }}</td>
+                                              <td style="text-align: end">{{ history.receivable | number }}</td>
+                                              <!--                                            <td>{{ history.creator }}</td>-->
+                                            </tr>
+                                          </ng-container>
+                                        </tbody>
+                                      </table>
+                                      <table *ngIf="indexCustomerInfo === 4" class="table editing-table">
+                                        <thead>
+                                          <tr class="table-custom-header">
+                                            <th class="text-break main-table-th-1" jhiTranslate="global.info.Stt">STT</th>
+                                            <th class="main-table-th-2">Chứng từ</th>
+                                            <th class="main-table-th-3">Thời gian</th>
+                                            <th class="main-table-th-4">Tổng tiền</th>
+                                            <th class="main-table-th-5">Trạng thái</th>
+                                            <th class="main-table-th-6" style="border-right: 1px solid #b0d4eb !important">
+                                              Hình thức thanh toán
+                                            </th>
+                                            <th class="main-table-th-7">Nhân viên</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <ng-container *ngFor="let history of customerBillHistory; index as j">
+                                            <tr>
+                                              <td style="text-align: center; padding: 10px 15px !important">{{ j + 1 }}</td>
+                                              <td>{{ history.code }}</td>
+                                              <td style="text-align: center">{{ history.billDate }}</td>
+                                              <td style="text-align: end">{{ history.totalAmount | number }}</td>
+                                              <td>{{ STATUS_MAP.get(history.status) }}</td>
+                                              <td>{{ history.paymentMethod }}</td>
+                                              <td>{{ history.updater }}</td>
+                                            </tr>
+                                          </ng-container>
+                                        </tbody>
+                                      </table>
+                                      <ng-container *ngIf="haveMoreData">
+                                        <label (click)="viewMoreHistory(cus.id)" class="view-more"> Xem thêm </label>
+                                      </ng-container>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div *ngIf="!haveData" class="d-flex justify-content-center py-3">
+                            <label>Không có dữ liệu</label>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  <div>-->
+  <!--    <div class="tab-pane fade active show">-->
+  <!--      <div class="d-flex justify-content-center">-->
+  <!--        <ngb-pagination-->
+  <!--          [collectionSize]="totalSize"-->
+  <!--          [(page)]="page"-->
+  <!--          [pageSize]="pageSize"-->
+  <!--          [maxSize]="5"-->
+  <!--          [rotate]="true"-->
+  <!--          [boundaryLinks]="true"-->
+  <!--          (pageChange)="getCustomers()"-->
+  <!--        ></ngb-pagination>-->
+  <!--      </div>-->
+  <!--    </div>-->
+  <!--  </div>-->
+  <div class="group-page-size mt-10px">
+    <!--    <div class="form-page-size">-->
+    <!--      <label class="label-total mr-5px" jhiTranslate="global.info.totalParam" [translateValues]="{ count: totalSize || 0 }"></label>-->
+    <!--      <div class="form-select-size">-->
+    <!--        <ng-select-->
+    <!--          [items]="sizes"-->
+    <!--          class="select-value select-size"-->
+    <!--          bindLabel="name"-->
+    <!--          bindValue="id"-->
+    <!--          placeholder="Tất cả"-->
+    <!--          [(ngModel)]="pageSize"-->
+    <!--          (ngModelChange)="getCustomers()"-->
+    <!--        >-->
+    <!--        </ng-select>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <div class="from-pagination d-flex justify-content-center" *ngIf="totalSize > 0">
+      <ngb-pagination
+        class="pagination"
+        [collectionSize]="totalSize"
+        [(page)]="page"
+        [pageSize]="pageSize"
+        [maxSize]="5"
+        [rotate]="true"
+        [boundaryLinks]="true"
+        (pageChange)="loadMore()"
+      ></ngb-pagination>
+    </div>
+  </div>
+</article>

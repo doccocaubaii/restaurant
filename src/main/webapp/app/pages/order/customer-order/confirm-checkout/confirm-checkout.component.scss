@@ -1,0 +1,93 @@
+.wrap {
+  position: relative;
+
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+
+    i {
+      font-size: 20px;
+    }
+  }
+
+  .totalAmout {
+    color: red;
+  }
+
+  .check-out {
+    margin-top: 100px;
+  }
+
+  .refund {
+    text-align: end;
+    color: var(--bs-success);
+  }
+
+  .debt {
+    text-align: end;
+    color: var(--bs-danger);
+  }
+
+  input[type='radio'] {
+    height: 20px;
+    width: 20px;
+  }
+
+  .icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .form-switch {
+    padding-left: 1rem;
+  }
+
+  .customer-amount {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+}
+
+.modal-header {
+  height: 56px !important;
+  background-color: #0074bd !important;
+
+  .modal-title {
+    color: #fff;
+  }
+
+  .btn-close {
+    color: #fff;
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    font-size: 16px;
+  }
+}
+
+.item-basic-infor {
+  margin: 0.75rem 0;
+}
+
+.title-info {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #58647a;
+}
+
+.title-info {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #58647a;
+}
+.form-control:disabled {
+  background-color: #ffffff;
+  opacity: 1;
+}

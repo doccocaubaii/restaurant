@@ -1,0 +1,55 @@
+<!--<div class="modal-header">-->
+<!--  <h3 class="modal-title">Thông báo</h3>-->
+<!--  <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close" name="btnCloseCheckModal"></button>-->
+<!--</div>-->
+<div>
+  <ng-container>
+    <div class="notify-content">
+      <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item" *ngFor="let item of notifies; index as i" [class]="i === 0 ? 'active' : ''">
+            <img [src]="item.image" class="d-block w-100 h-100" alt="..." />
+          </div>
+        </div>
+        <button
+          *ngIf="notifies && notifies.length > 1"
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#carouselExampleControls"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button
+          *ngIf="notifies && notifies.length > 1"
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#carouselExampleControls"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+      <div class="notify-close" (click)="closeModal()">
+        <button type="button" class="btn-close text-white" aria-label="Close" name="btnCloseCheckModal"></button>
+      </div>
+    </div>
+  </ng-container>
+</div>
+<!--<div class="modal-footer">-->
+<!--  <button type="button" class="exit-button-dialog" (click)="closeModal()">-->
+<!--    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>-->
+<!--    <label jhiTranslate="global.entity.action.cancel">Hủy</label>-->
+<!--  </button>-->
+<!--  <button type="button" class="save-button-dialog">-->
+<!--    <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+<!--      <path-->
+<!--        d="M1.33333 13.6667C0.966668 13.6667 0.652668 13.536 0.391334 13.2747C0.130001 13.0134 -0.000443313 12.6996 1.13186e-06 12.3334V3.66671C1.13186e-06 3.47782 0.0640012 3.31938 0.192001 3.19138C0.320001 3.06338 0.478223 2.9996 0.666668 3.00004C0.855557 3.00004 1.014 3.06404 1.142 3.19204C1.27 3.32004 1.33378 3.47826 1.33333 3.66671V12.3334H8C8.18889 12.3334 8.34733 12.3974 8.47534 12.5254C8.60334 12.6534 8.66711 12.8116 8.66667 13C8.66667 13.1889 8.60267 13.3474 8.47467 13.4754C8.34667 13.6034 8.18845 13.6672 8 13.6667H1.33333ZM4 11C3.63333 11 3.31933 10.8694 3.058 10.608C2.79667 10.3467 2.66622 10.0329 2.66667 9.66671V1.66671C2.66667 1.30004 2.79733 0.986042 3.05867 0.724708C3.32 0.463375 3.63378 0.332931 4 0.333375H10C10.3667 0.333375 10.6807 0.464042 10.942 0.725375C11.2033 0.986709 11.3338 1.30049 11.3333 1.66671V9.66671C11.3333 10.0334 11.2027 10.3474 10.9413 10.6087C10.68 10.87 10.3662 11.0005 10 11H4Z"-->
+<!--        fill="white"-->
+<!--      />-->
+<!--    </svg>-->
+<!--    Cập nhật-->
+<!--  </button>-->
+<!--</div>-->

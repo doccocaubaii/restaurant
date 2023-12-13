@@ -1,0 +1,112 @@
+<div class="modal-header header-product">
+  <h3 class="modal-title text-bold" id="exampleModalPopoversLabel">Bảng kê hàng hóa bán ra</h3>
+  <button type="button" class="btn-close" (click)="onBack($event)">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+
+<div class="modal-body">
+  <div class="group-item-search">
+    <div class="item-search">
+      <label class="title-info">Kỳ báo cáo</label>
+      <ng-select
+        [items]="periods"
+        class="field-search select-value"
+        bindLabel="name"
+        bindValue="id"
+        placeholder="Chọn kỳ báo cáo"
+        [(ngModel)]="period"
+        (ngModelChange)="updateDates($event)"
+      >
+      </ng-select>
+    </div>
+    <div class="item-search">
+      <label class="title-info">Trạng thái</label>
+      <ng-select
+        [items]="listStatus"
+        class="field-search"
+        bindLabel="name"
+        bindValue="id"
+        placeholder="Chọn trạng thái"
+        [(ngModel)]="status"
+      >
+      </ng-select>
+    </div>
+  </div>
+  <div class="group-item-search">
+    <div class="input-text-custom item-search">
+      <label class="title-info">Từ ngày</label>
+      <input
+        class="form-control field-search"
+        placeholder="DD/MM/YYYY"
+        name="d2"
+        #c3="ngModel"
+        [maxDate]="utilsService.getFromToMoment(toDate)"
+        [minDate]="utilsService.getFromToMoment(minDate, true)"
+        [(ngModel)]="fromDate"
+        ngbDatepicker
+        #d3="ngbDatepicker"
+        dateFormat
+        (ngModelChange)="changeFromDate($event)"
+        maxlength="10"
+      />
+      <button class="btn form-control btn-datepicker" (click)="d3.toggle()" type="button">
+        <fa-icon [icon]="'calendar-alt'"></fa-icon>
+      </button>
+    </div>
+    <div class="input-text-custom item-search">
+      <label class="title-info">Đến ngày</label>
+      <input
+        class="form-control field-search"
+        placeholder="DD/MM/YYYY"
+        [minDate]="utilsService.getFromToMoment(fromDate, true)"
+        [maxDate]="utilsService.getCurrentDate()"
+        name="d2"
+        #c2="ngModel"
+        [(ngModel)]="toDate"
+        ngbDatepicker
+        #d2="ngbDatepicker"
+        dateFormat
+        (ngModelChange)="changeToDate($event)"
+        maxlength="10"
+      />
+      <button class="btn form-control btn-datepicker" (click)="d2.toggle()" (change)="changeDate()" type="button">
+        <fa-icon [icon]="'calendar-alt'"></fa-icon>
+      </button>
+    </div>
+  </div>
+  <div class="group-item-search">
+    <div class="input-text-custom item-search">
+      <label class="title-info">Mẫu số hóa đơn</label>
+      <ng-select class="field-search" placeholder="Chọn mẫu số hóa đơn" [(ngModel)]="pattern">
+        <ng-option value="{{ null }}">Tất cả</ng-option>
+        <ng-option *ngFor="let obj of listPatterns" [value]="obj.pattern">{{ obj.pattern }}</ng-option>
+      </ng-select>
+    </div>
+    <div class="input-text-custom item-search">
+      <label class="title-info">Kết quả trả về</label>
+      <ng-select
+        [items]="listTaxStatus"
+        class="field-search"
+        bindLabel="name"
+        bindValue="id"
+        placeholder="Chọn kết quả trả về"
+        [(ngModel)]="taxCheckStatus"
+      >
+      </ng-select>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <div class="btn-row col-md-12">
+    <button type="button" class="exit-button-dialog me-2" (click)="onBack($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <span >Thoát</span>
+    </button>
+    <button type="button" class="save-button-dialog" (click)="onSave()">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span>Xem báo cáo</span>
+    </button>
+  </div>
+</div>

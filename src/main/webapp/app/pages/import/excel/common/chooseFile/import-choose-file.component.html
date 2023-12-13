@@ -1,0 +1,62 @@
+<div class="import-type">
+  <label>Hình thức import</label>
+  <div class="item-search from-select">
+    <ng-select
+      class="form-control"
+      id="importType"
+      name="importType"
+      [(ngModel)]="importTypeValue"
+      (ngModelChange)="changeType(importTypeValue)"
+      placeholder="Hình thức import"
+    >
+      #importType="ngModel" [clearable]="false" >
+      <ng-option *ngFor="let type of importTypes" [value]="type.id">
+        {{ type.name }}
+      </ng-option>
+    </ng-select>
+    <!--          <span-->
+    <!--            class="text-danger mt-1"-->
+    <!--            [hidden]="importType.untouched"-->
+    <!--            *ngIf="!this.ownerInfo.typeDiscount && this.ownerInfo.typeDiscount != 0"-->
+    <!--          >Loại hình giảm giá không được bỏ trống</span-->
+    <!--          >-->
+    <a [href]="urlFile">Tải tệp mẫu</a>
+  </div>
+</div>
+<div class="import-file">
+  <div class="upload-file">
+    <label>Tải lên file dữ liệu</label>
+    <div class="select-file">
+      <input class="form-control" readonly placeholder="File dữ liệu" [value]="fileName ? fileName : null" />
+      <div class="choose-file">
+        <input (change)="openFile($event)" type="file" name="file" id="file" class="input-file" accept=".xlsx,.xls" multiple="false" />
+        <span [innerHTML]="ICON_SELECT_FILE | safeHtml"></span>
+        <label class="labelChooseFile" for="file">Chọn file</label>
+      </div>
+    </div>
+  </div>
+  <div class="file-sheet">
+    <label>Sheet dữ liệu</label>
+
+    <div class="item-search from-select">
+      <ng-select
+        class="form-control"
+        name="importType"
+        [(ngModel)]="sheetValue"
+        (ngModelChange)="changeSheet(sheetValue)"
+        placeholder="Sheet dữ liệu"
+      >
+        [clearable]="false" >
+        <ng-option *ngFor="let sheet of sheets" [value]="sheet.id">
+          {{ sheet.name }}
+        </ng-option>
+      </ng-select>
+      <!--          <span-->
+      <!--            class="text-danger mt-1"-->
+      <!--            [hidden]="importType.untouched"-->
+      <!--            *ngIf="!this.ownerInfo.typeDiscount && this.ownerInfo.typeDiscount != 0"-->
+      <!--          >Loại hình giảm giá không được bỏ trống</span-->
+      <!--          >-->
+    </div>
+  </div>
+</div>

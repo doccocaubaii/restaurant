@@ -1,0 +1,39 @@
+.confirm-dialog {
+  box-shadow: 1px 1px 2px 5px #e1e1e1;
+}
+
+.modal-header {
+  height: 56px !important;
+  background-color: #0074bd !important;
+  display: flex;
+  justify-content: center;
+
+  .modal-title {
+    color: #fff;
+    font-size: 26px !important;
+  }
+
+  .btn-close {
+    color: #fff;
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    position: absolute;
+    top: 13px;
+    right: 10px;
+    font-size: 29px;
+  }
+}
+
+.title-info {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #58647a;
+
+  span {
+    color: #004671;
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "easyPos": {
+    "product": {
+      "title": "Danh sách sản phẩm",
+      "info": {
+        "name": "Sản phẩm",
+        "nameParam": "Sản phẩm: {{productName}}",
+        "discount": "Giảm giá",
+        "detail": "Chi tiết sản phẩm",
+        "unitPrice": "Đơn giá",
+        "quantity&unit": "Số lượng (đơn vị)",
+        "amount": "Thành tiền",
+        "typeDiscount": "Kiểu giảm giá",
+        "discountAmount": "Tiền giảm giá",
+        "vatRate": "Thuế sản phẩm",
+        "otherVatRate": "Nhập thuế suất khác (%)",
+        "typePercent": "Nhập phần trăm",
+        "vatAmount": "Tiền thuế",
+        "totalAmount": "Tổng tiền thanh toán",
+        "totalPreTax": "Tổng tiền trước thuế",
+        "totalProduct": "Tổng số ( {{count}} sản phẩm )",
+        "stt": "STT",
+        "productCode": "Mã sản phẩm",
+        "salePrice": "Giá bán",
+        "unit": "Đơn vị",
+        "desc": "Mô tả",
+        "add": "Thêm",
+        "category": "Nhóm sản phẩm",
+        "productName": "Tên sản phẩm",
+        "action": "Thêm",
+        "categoryName": "Tên nhóm sản phẩm",
+        "quantity": "Số lượng",
+        "createProduct": "Thêm sản phẩm",
+        "createCategory": "Thêm nhóm sản phẩm",
+        "updateCategory": "Chỉnh sửa nhóm sản phẩm",
+        "save": "Lưu",
+        "deleteMessage": "Bạn có muốn xóa sản phẩm này không?",
+        "deleteMultiProduct": "Bạn có muốn xóa các sản phẩm này không?",
+        "deleteConvertUnitMessage": "Bạn có muốn xóa đơn vị tính này không?",
+        "message": "Thông báo",
+        "convertsionError1": "Đơn vị tính chuyển đổi không được trùng đơn vị tính chính",
+        "convertsionError2": "Đơn vị tính chuyển đổi không được trùng nhau",
+        "vaterateError": "Giá trị quy đổi phải lớn hơn 0",
+        "unitNull": "Chưa có đơn vị tính chính",
+        "unitNameError": "Vui lòng nhập tên đơn vị",
+        "deleteConvertUnitMess": "Xóa đơn vị tính chuyển đổi thành công",
+        "unitIdError": "Vui lòng chọn đơn vị tính",
+        "salePriceError": "Vui lòng nhập giá bán",
+        "updateConvertUnitSuccess": "Cập nhật đơn vị tính chuyển đổi thành công",
+        "createConvertUnitSuccess": "Thêm đơn vị tính chuyển đổi thành công",
+        "groupNameError": "Vui lòng nhập tên nhóm sản phẩm",
+        "convertRate": "Giá trị quy đổi",
+        "createUnit": "Thêm đơn vị",
+        "createConvertUnit": "Thêm đơn vị tính chuyển đổi",
+        "unitName": "Tên đơn vị",
+        "isConvertUnitError": "Chưa lưu đơn vị tính chuyển đổi",
+        "categoryNameError": "Vui lòng nhập tên nhóm sản phẩm",
+        "productNameError": "Vui lòng nhập tên sản phẩm",
+        "purchasePriceError": "Giá nhập không được để trống khi theo dõi hàng tồn kho",
+        "inventoryTracking": "Theo dõi hàng tồn kho",
+        "inventoryTrackingMessage1": "Trừ số lượng tồn kho khi giao hàng thành công",
+        "inventoryTrackingMessage2": "Cảnh báo hết hàng khi lập đơn hàng",
+        "inventoryTrackingMessage3": "KHÔNG THỂ QUAY VỀ",
+        "inventoryTrackingMessage4": "quản lý tồn kho cơ bản cho sản phẩm này sau khi đồng ý theo dõi",
+        "inventoryTrackingMessage5": "Không hiện lại thông báo này?",
+        "btnConfirmInventoryTracking": "Vẫn sử dụng",
+        "imageError": "Ảnh tải lên vượt quá kích thước cho phép 2MB",
+        "noData": "Không có dữ liệu",
+        "convertUnit": "Đơn vị tính chuyển đổi",
+        "directSale": "Bán trực tiếp",
+        "warehouse": "Số lượng tồn kho",
+        "isVatRate": "Áp dụng thuế",
+        "deleteProduct": "Xóa sản phẩm",
+        "detailDeleteMultiProduct": "Chi tiết xóa sản phẩm",
+        "onHand": "Số lượng tồn sản phẩm",
+        "totalOnHand": "Tổng số lượng tồn",
+        "purchasePrice": "Đơn giá mua",
+        "totalValue": "Tổng giá trị tồn",
+        "notData": "Không có dữ liệu",
+        "code2Error": "Vui lòng nhập mã sản phẩm",
+        "barcode": "Mã vạch",
+        "topping": "Thông tin bán kèm",
+        "isTopping": "Là sản phẩm bán kèm",
+        "listProductTopping": "Danh sách sản phẩm bán kèm",
+        "listGroupTopping": "Danh sách nhóm bán kèm",
+        "discountVatRateInfo": "Thông tin giảm trừ thuế",
+        "discountVatRate": "Giảm trừ thuế",
+        "otherValue": "Giá trị khác",
+        "inventoryCountError": "Vui lòng nhập số lượng tồn kho",
+        "confirmDeleteUnit": "Bạn có muốn xóa đơn vị tính này không?",
+        "confirmDeleteMultiUnit": "Bạn có muốn xóa các đơn vị tính này không?"
+      },
+      "notify": {
+        "delete": "Bạn có chắc chắn muốn xóa sản phẩm?"
+      }
+    },
+    "category": {
+      "title": "Danh sách nhóm sản phẩm",
+      "infor": {
+        "deleteMultiCategory": "Xóa nhóm sản phẩm",
+        "deleteMessage": "Bạn có muốn xóa nhóm sản phẩm này không?",
+        "deleteMultiCategoryMessage": "Bạn có muốn xóa các nhóm sản phẩm này không?"
+      }
+    },
+    "report": {
+      "printPDF": "Kết xuất PDF"
+    },
+    "topping": {
+      "title": "Danh sách nhóm bán kèm",
+      "info": {
+        "createToppingGroup": "Thêm nhóm bán kèm",
+        "updateToppingGroup": "Chỉnh sửa nhóm bán kèm",
+        "groupName": "Tên nhóm bán kèm",
+        "productTopping": "Sản phẩm bán kèm",
+        "productLink": "Sản phẩm liên kết",
+        "requiredTopping": "Bắt buộc bán kèm"
+      },
+      "table": {
+        "stt": "STT",
+        "name": "Tên nhóm bán kèm",
+        "requiredOptional": "Bắt buộc bán kèm",
+        "numberOption": "Số lượng sản phẩm",
+        "numberProductLink": "Số sản phẩm liên kết"
+      },
+      "button": {
+        "create": "Thêm nhóm bán kèm"
+      },
+      "error": {
+        "groupNameError": "Vui lòng nhập tên nhóm bán kèm",
+        "titleDeleteGroup": "Bạn có muốn xóa nhóm bán kèm này không?"
+      }
+    }
+  }
+}

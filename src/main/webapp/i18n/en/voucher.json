@@ -1,0 +1,52 @@
+{
+  "easyPos": {
+    "voucher": {
+      "title": "Danh sách voucher",
+      "titleCreate": "Tạo voucher",
+      "titleUpdate": "Cập nhật voucher",
+      "info": {
+        "type": "Loại voucher",
+        "type-all": "Tất cả",
+        "type-1": "Theo phần trăm",
+        "type-2": "Theo giá tiền",
+        "voucherName": "Tên voucher",
+        "voucher-code": "Mã voucher",
+        "Email": "Email",
+        "startTime": "Từ ngày",
+        "endTime": "Đến ngày",
+        "table-th": {
+          "voucherCode": "Mã voucher",
+          "phone-number": "Số điện thoại",
+          "startTime": "Từ ngày",
+          "endTime": "Đến ngày",
+          "applyType": "Áp dụng",
+          "active": "Trạng thái",
+          "discountBy": "Voucher giảm giá theo"
+        }
+      },
+      "action": {
+        "selectvoucher": "Chọn voucher",
+        "add": "Thêm mới",
+        "getInfo": "Lấy dữ liệu"
+      },
+      "error": {
+        "emptyCode": "Mã voucher không được để trống",
+        "emptyName": "Tên voucher không được để trống",
+        "emptyValue": "Giá trị không được để trống"
+      },
+      "update": {
+        "title": "Cập nhật voucher"
+      },
+      "create": {
+        "title": "Thêm voucher"
+      },
+      "alert": {
+        "nameVoucher": "Tên voucher không được để trống",
+        "phoneNumber": "Số điện thoại phải bắt đầu bằng 0 và có 10-14 chữ số",
+        "email": "Email không hợp lệ",
+        "cccd": "Số căn cước phải có 9-12 chữ số",
+        "taxCode": "Mã số thuế phải từ 10-14 chữ số"
+      }
+    }
+  }
+}

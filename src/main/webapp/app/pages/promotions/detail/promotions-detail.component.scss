@@ -1,0 +1,70 @@
+$color-default: #0074bd;
+$label-color: #9ba3b1;
+$text-color: #58647a;
+
+.promotion-detail {
+  cursor: default;
+  border: 1px solid #9ba3b1;
+  box-shadow: 1px 3px 6px rgba(0, 116, 189, 0.5);
+  border-radius: 9px;
+  padding: 14px;
+
+  &__tab {
+    ul li a.nav-link {
+      font-size: 16px !important;
+      color: $label-color;
+
+      &:hover {
+        color: $color-default !important;
+      }
+    }
+
+    ul li a.active {
+      font-size: 16px !important;
+      border-bottom: 2px solid $color-default !important;
+    }
+  }
+
+  &__information {
+    border: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+
+    .left-order-detail-content {
+      .form-input-custom {
+        min-height: 50px !important;
+
+        label {
+          font-size: 14px;
+          font-weight: 500;
+          margin-bottom: 0 !important;
+        }
+
+        .user-input-text-div {
+          strong {
+            font-size: 14px;
+            font-weight: 700;
+            height: auto !important;
+          }
+        }
+      }
+    }
+  }
+
+  &__conditions {
+    display: flex;
+    flex-direction: column;
+    strong {
+      font-size: 16px;
+      font-weight: 500;
+      color: $color-default;
+      padding: 10px 0;
+    }
+  }
+}
+
+thead {
+  position: sticky;
+  top: -1px;
+}

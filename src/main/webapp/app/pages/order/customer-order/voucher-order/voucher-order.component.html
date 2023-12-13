@@ -1,0 +1,403 @@
+<ng-container *ngIf="type == 1">
+  <div class="modal-header" style="background-color: #0074bd; border-radius: 4px 4px 0px 0px; height: 56px">
+    <ng-container *ngIf="productSelected; else orderSelected">
+      <h5 style="color: white" class="modal-title">Áp dụng khuyến mại theo sản phẩm</h5>
+    </ng-container>
+    <ng-template #orderSelected>
+      <h5 style="color: white" class="modal-title">Áp dụng voucher</h5>
+    </ng-template>
+    <button type="button" class="btn-close" (click)="closeModal()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  <div class="modal-body">
+    <!-- <div>{{ orderSelectedLocal.vouchers | json }}</div> -->
+
+    <form class="">
+      <input
+        [(ngModel)]="keySearchVoucher"
+        tabindex="0"
+        name="keyword"
+        class="search-voucher-order"
+        (ngModelChange)="searchVoucher(keySearchVoucher)"
+        type="search"
+        placeholder="Tìm kiếm voucher..."
+      />
+      <div class="search-icon">
+        <i (click)="searchVoucher(keySearchVoucher)" class="fa-solid fa-magnifying-glass"></i>
+      </div>
+    </form>
+
+    <ng-container *ngIf="!loading.isLoading; else loadingVoucher">
+      <div class="tab-content panel rounded-0 m-0 mt-10px">
+        <div class="tab-pane fade active show">
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="panel panel-inverse">
+                <div class="">
+                  <table class="table editing-table">
+                    <thead>
+                      <tr class="table-voucher-header">
+                        <th *ngIf="listVoucherLocalShow?.length">
+                          <div
+                            *ngIf="invoiceConfiguration.combineVoucherApply && !productSelected"
+                            class="voucher-checkbox voucher-control col-checkbox"
+                          >
+                            <input
+                              class="voucher-control-input"
+                              id="checkAllForPage"
+                              type="checkbox"
+                              [(ngModel)]="statusCheckAllVoucher"
+                              (click)="toggleAllVoucher($event)"
+                            />
+                          </div>
+                        </th>
+                        <th>STT</th>
+                        <th>Tên voucher</th>
+                        <th>Mô tả</th>
+                        <th *ngIf="showEndTimeVoucher">Thời gian kết thúc</th>
+                        <th>Giá trị giảm</th>
+                        <th *ngIf="showChooseProductVoucher">Sản phẩm khuyến mại</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <ng-container *ngIf="listVoucherLocalShow?.length">
+                        <ng-container *ngFor="let voucher of listVoucherLocalShow; index as i">
+                          <ng-container *ngFor="let productVoucher of voucher.conditions">
+                            <tr class="table-voucher-body">
+                              <td (click)="changeVoucherOrder(voucher, productVoucher)" [class.disable]="!productVoucher.status">
+                                <div class="voucher-checkbox voucher-control col-checkbox">
+                                  <ng-container
+                                    *ngIf="
+                                      invoiceConfiguration.combineVoucherApply && (voucher.type == 100 || voucher.type == 300);
+                                      else radio
+                                    "
+                                  >
+                                    <input
+                                      class="voucher-control-input"
+                                      id="exampleVoucherCheckbox{{ i }}"
+                                      name="exampleVoucherCheckbox{{ i }}"
+                                      type="checkbox"
+                                      [(ngModel)]="voucher.check && productVoucher.status"
+                                      [disabled]="!productVoucher.status"
+                                    />
+                                  </ng-container>
+                                  <ng-template #radio>
+                                    <ng-container *ngIf="productVoucher.status">
+                                      <input
+                                        class="voucher-control-input"
+                                        id="exampleVoucherCheckbox{{ i }}"
+                                        name="exampleVoucherCheckbox{{ i }}"
+                                        type="radio"
+                                        [value]="voucher.code"
+                                        [(ngModel)]="voucherCode"
+                                      />
+                                    </ng-container>
+                                    <ng-container *ngIf="!productVoucher.status">
+                                      <input
+                                        class="voucher-control-input"
+                                        id="exampleVoucherCheckbox{{ i }}"
+                                        name="exampleVoucherCheckbox{{ i }}"
+                                        type="radio"
+                                        [disabled]="!productVoucher.status"
+                                      />
+                                    </ng-container>
+                                  </ng-template>
+                                  <label class="voucher-control-label" for="exampleVoucherCheckbox{{ i }}"></label>
+                                </div>
+                              </td>
+                              <td [class.disable]="!productVoucher.status" (click)="changeVoucherOrder(voucher, productVoucher)">
+                                {{ i + 1 + (filterVoucher.page - 1) * filterVoucher.size }}
+                              </td>
+                              <td [class.disable]="!productVoucher.status" (click)="changeVoucherOrder(voucher, productVoucher)">
+                                <div>{{ voucher.name }}</div>
+                              </td>
+                              <td (click)="changeVoucherOrder(voucher, productVoucher)">
+                                <div
+                                  class="desc-voucher"
+                                  tooltipClass="my-tooltip-class"
+                                  ngbTooltip="{{ productVoucher.desc }}"
+                                  placement="right"
+                                >
+                                  <span [class.disable]="!productVoucher.status">
+                                    {{ productVoucher.desc }}
+                                  </span>
+                                </div>
+                                <ng-container *ngIf="productVoucher.newGetQuantity">
+                                  <div [class.disable]="!productVoucher.status">(Tối đa {{ productVoucher.newGetQuantity }} sản phẩm)</div>
+                                </ng-container>
+                              </td>
+                              <td
+                                *ngIf="showEndTimeVoucher"
+                                [class.disable]="!productVoucher.status"
+                                (click)="changeVoucherOrder(voucher, productVoucher)"
+                              >
+                                <div *ngIf="voucher.endTime" placement="top" [ngbTooltip]="voucher.endTime | shortDateFormat">
+                                  {{ voucher.endTime | shortDateFormat }}
+                                </div>
+                              </td>
+                              <td [class.disable]="!productVoucher.status" (click)="changeVoucherOrder(voucher, productVoucher)">
+                                <div *ngIf="productVoucher.discountValue" placement="top">{{ productVoucher.discountValue | number }}đ</div>
+                                <div *ngIf="productVoucher.discountPercent" placement="top">{{ productVoucher.discountPercent }}%</div>
+                                <div *ngIf="productVoucher.type == 102" placement="top">100%</div>
+                              </td>
+                              <td [class.disable]="!productVoucher.status" *ngIf="showChooseProductVoucher" style="position: relative">
+                                <ng-container
+                                  *ngIf="
+                                    productVoucher.listProductPromo?.length > 1 &&
+                                    (!productVoucher.applyProductVoucher?.length || !productVoucher.showApplyProductVoucher)
+                                  "
+                                >
+                                  <button
+                                    (click)="openProductVoucherComponent(voucher, productVoucher)"
+                                    [disabled]="voucherCode !== voucher.code"
+                                    class="product-promo"
+                                  >
+                                    Chọn sản phẩm khuyến mại
+                                  </button>
+                                </ng-container>
+                                <ng-container
+                                  *ngIf="
+                                    productVoucher.listProductPromo?.length == 1 &&
+                                    (!productVoucher.applyProductVoucher?.length || !productVoucher.showApplyProductVoucher)
+                                  "
+                                >
+                                  <ng-container *ngFor="let product of productVoucher.listProductPromo">
+                                    <div class="product-voucher">
+                                      <div class="product-info col-6">
+                                        <div>
+                                          {{ product.productName }}
+                                        </div>
+                                        <div style="color: rgb(128, 128, 128); font-size: 14px">
+                                          <s>{{ product.salePrice | number }}</s>
+                                        </div>
+                                        <div style="color: red">{{ product.salePricePromo | number }}</div>
+                                      </div>
+                                      <div class="product-price col-6">
+                                        <ng-container *ngIf="!product.inProductOrder">
+                                          <div class="add-icon" (click)="addPromoToProduct(product, productVoucher, voucher)">
+                                            <i class="fa fa-plus"></i>
+                                          </div>
+                                          <div *ngIf="(!invoiceConfiguration.overStock && product.inventoryTracking) || true">
+                                            Còn: {{ product.inventoryCount | number }}
+                                          </div>
+                                        </ng-container>
+                                      </div>
+                                    </div>
+                                  </ng-container>
+                                </ng-container>
+                                <ng-container *ngIf="productVoucher.applyProductVoucher?.length && productVoucher.showApplyProductVoucher">
+                                  <p class="text-end" *ngIf="productVoucher.listProductPromo.length > 1">
+                                    <svg
+                                      (click)="openProductVoucherComponent(voucher, productVoucher)"
+                                      width="16"
+                                      height="16"
+                                      viewBox="0 0 16 16"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <g clip-path="url(#clip0_5717_21373)">
+                                        <path
+                                          d="M13.7813 1.83906L14.1594 2.21719C14.4531 2.51094 14.4531 2.98594 14.1594 3.27656L13.25 4.18906L11.8094 2.74844L12.7188 1.83906C13.0125 1.54531 13.4875 1.54531 13.7781 1.83906H13.7813ZM6.55625 8.00469L10.75 3.80781L12.1906 5.24844L7.99375 9.44219C7.90313 9.53281 7.79063 9.59844 7.66875 9.63281L5.84063 10.1547L6.3625 8.32656C6.39688 8.20469 6.4625 8.09219 6.55313 8.00156L6.55625 8.00469ZM11.6594 0.779688L5.49375 6.94219C5.22188 7.21406 5.025 7.54844 4.92188 7.91406L4.02813 11.0391C3.95313 11.3016 4.025 11.5828 4.21875 11.7766C4.4125 11.9703 4.69375 12.0422 4.95625 11.9672L8.08125 11.0734C8.45 10.9672 8.78438 10.7703 9.05313 10.5016L15.2188 4.33906C16.0969 3.46094 16.0969 2.03594 15.2188 1.15781L14.8406 0.779688C13.9625 -0.0984375 12.5375 -0.0984375 11.6594 0.779688ZM2.75 1.99844C1.23125 1.99844 0 3.22969 0 4.74844V13.2484C0 14.7672 1.23125 15.9984 2.75 15.9984H11.25C12.7688 15.9984 14 14.7672 14 13.2484V9.74844C14 9.33281 13.6656 8.99844 13.25 8.99844C12.8344 8.99844 12.5 9.33281 12.5 9.74844V13.2484C12.5 13.9391 11.9406 14.4984 11.25 14.4984H2.75C2.05938 14.4984 1.5 13.9391 1.5 13.2484V4.74844C1.5 4.05781 2.05938 3.49844 2.75 3.49844H6.25C6.66563 3.49844 7 3.16406 7 2.74844C7 2.33281 6.66563 1.99844 6.25 1.99844H2.75Z"
+                                          fill="#004671"
+                                        />
+                                      </g>
+                                      <defs>
+                                        <clipPath id="clip0_5717_21373">
+                                          <rect width="16" height="16" fill="white" />
+                                        </clipPath>
+                                      </defs>
+                                    </svg>
+                                  </p>
+                                  <ng-container *ngFor="let productApply of productVoucher.applyProductVoucher">
+                                    <ng-container
+                                      *ngIf="
+                                        !productSelected ||
+                                        (productApply.parentProductId == productSelected.productProductUnitId &&
+                                          productApply.parentProductUniqueId == productSelected.productUniqueId)
+                                      "
+                                    >
+                                      <div class="form-product-promo-apply">
+                                        <div class="product-voucher">
+                                          <div class="product-name">
+                                            <div>{{ productApply.productName }}</div>
+                                            <div class="input-group qty col-6">
+                                              <div
+                                                class="input-group-append"
+                                                (click)="
+                                                  decreaseProduct(productApply, productVoucher, productVoucher.listProductPromo, voucher)
+                                                "
+                                              >
+                                                <a class="btn btn-default"><i class="fa fa-minus"></i></a>
+                                              </div>
+                                              <input
+                                                type="text"
+                                                [(ngModel)]="productApply.quantity"
+                                                (ngModelChange)="
+                                                  changeProductPromoQuantity(productApply, productVoucher, productVoucher.listProductPromo)
+                                                "
+                                                (blur)="
+                                                  checkProductVoucherApplyQuantity(
+                                                    productApply,
+                                                    productVoucher,
+                                                    productVoucher.listProductPromo,
+                                                    voucher
+                                                  )
+                                                "
+                                                class="form-control"
+                                                jhiCurrencyNumber
+                                                [maxvalue]="getMaxValueProductPromo(productApply, productVoucher, voucher)"
+                                                [numberRound]="lastCompany.roundScaleQuantity"
+                                              />
+                                              <div
+                                                class="input-group-prepend"
+                                                (click)="increaseProduct(productApply, productVoucher.listProductPromo, productVoucher)"
+                                              >
+                                                <a class="btn btn-default"><i class="fa fa-plus"></i></a>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div class="quantity">
+                                            <svg
+                                              (click)="
+                                                removeProductVoucher(productApply, productVoucher, productVoucher.listProductPromo, voucher)
+                                              "
+                                              width="18"
+                                              height="18"
+                                              viewBox="0 0 18 18"
+                                              fill="none"
+                                              xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                              <path
+                                                d="M7.5 4.5H10.5C10.5 4.10217 10.342 3.72064 10.0607 3.43934C9.77936 3.15804 9.39782 3 9 3C8.60217 3 8.22064 3.15804 7.93934 3.43934C7.65804 3.72064 7.5 4.10217 7.5 4.5ZM6 4.5C6 3.70435 6.31607 2.94129 6.87868 2.37868C7.44129 1.81607 8.20435 1.5 9 1.5C9.79565 1.5 10.5587 1.81607 11.1213 2.37868C11.6839 2.94129 12 3.70435 12 4.5H15.75C15.9489 4.5 16.1397 4.57902 16.2803 4.71967C16.421 4.86032 16.5 5.05109 16.5 5.25C16.5 5.44891 16.421 5.63968 16.2803 5.78033C16.1397 5.92098 15.9489 6 15.75 6H15.0885L14.424 13.755C14.3601 14.5038 14.0175 15.2014 13.4639 15.7098C12.9103 16.2181 12.1861 16.5001 11.4345 16.5H6.5655C5.81393 16.5001 5.08971 16.2181 4.53611 15.7098C3.98252 15.2014 3.63988 14.5038 3.576 13.755L2.9115 6H2.25C2.05109 6 1.86032 5.92098 1.71967 5.78033C1.57902 5.63968 1.5 5.44891 1.5 5.25C1.5 5.05109 1.57902 4.86032 1.71967 4.71967C1.86032 4.57902 2.05109 4.5 2.25 4.5H6ZM11.25 9C11.25 8.80109 11.171 8.61032 11.0303 8.46967C10.8897 8.32902 10.6989 8.25 10.5 8.25C10.3011 8.25 10.1103 8.32902 9.96967 8.46967C9.82902 8.61032 9.75 8.80109 9.75 9V12C9.75 12.1989 9.82902 12.3897 9.96967 12.5303C10.1103 12.671 10.3011 12.75 10.5 12.75C10.6989 12.75 10.8897 12.671 11.0303 12.5303C11.171 12.3897 11.25 12.1989 11.25 12V9ZM7.5 8.25C7.69891 8.25 7.88968 8.32902 8.03033 8.46967C8.17098 8.61032 8.25 8.80109 8.25 9V12C8.25 12.1989 8.17098 12.3897 8.03033 12.5303C7.88968 12.671 7.69891 12.75 7.5 12.75C7.30109 12.75 7.11032 12.671 6.96967 12.5303C6.82902 12.3897 6.75 12.1989 6.75 12V9C6.75 8.80109 6.82902 8.61032 6.96967 8.46967C7.11032 8.32902 7.30109 8.25 7.5 8.25ZM5.07 13.6275C5.10195 14.0021 5.27338 14.351 5.55033 14.6051C5.82729 14.8593 6.18959 15.0002 6.5655 15H11.4345C11.8102 14.9999 12.1721 14.8588 12.4487 14.6046C12.7254 14.3505 12.8966 14.0018 12.9285 13.6275L13.5825 6H4.4175L5.07 13.6275Z"
+                                                fill="red"
+                                              />
+                                            </svg>
+                                            <div [class.hidden]="!productApply.totalPreTax || productApply.feature == spkmProduct.feature">
+                                              {{ productApply.totalPreTax | number }}
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </ng-container>
+                                  </ng-container>
+                                </ng-container>
+                              </td>
+                            </tr>
+                          </ng-container>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!listVoucherLocalShow || !listVoucherLocalShow?.length">
+                        <tr>
+                          <td colspan="7" style="text-align: center">
+                            <p>Không tìm thấy voucher khả dụng</p>
+                            <p>Bạn vui lòng vào mục Quản lý voucher tạo và áp dụng voucher</p>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #loadingVoucher>
+      <div class="loading-voucher">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </ng-template>
+    <div class="wrap-product-voucher" *ngIf="showSP1Product">
+      <div class="item-basic-infor input-text-custom input col-12">
+        <label class="title-info">Nội dung giảm giá</label>
+        <input
+          placeholder="Nhập nội dung giảm giá..."
+          #firstInput
+          class="input-value form-control"
+          type="text"
+          [(ngModel)]="productVoucherOrderLocal.productNameCustom"
+          (ngModelChange)="changeProductNameCustom(productVoucherOrderLocal.productNameCustom)"
+        />
+      </div>
+      <ng-container *ngIf="invoiceConfiguration.invoiceType === invoiceType.invoiceMultiple">
+        <div class="item-basic-infor ng-select-custom input wrap-discount-tax">
+          <label class="title-info" jhiTranslate="easyPos.bill.info.vatRateDiscount">Thuế giảm giá (%)</label>
+          <ng-select
+            class="input-value w-100"
+            [items]="listVat"
+            bindLabel="name"
+            placeholder="Chọn giá trị thuế"
+            bindValue="value"
+            [virtualScroll]="true"
+            [(ngModel)]="productVoucherOrderLocal.vatRate"
+            (ngModelChange)="changeVat(productVoucherOrderLocal.vatRate)"
+          >
+          </ng-select>
+        </div>
+
+        <div class="item-basic-infor input-text-custom input col-12" [hidden]="!statusVatRateInput">
+          <label class="title-info" jhiTranslate="easyPos.bill.action.typeVatRate">Nhập thuế suất(%)</label>
+          <input
+            class="input-value form-control"
+            type="text"
+            [(ngModel)]="productVoucherOrderLocal.vatRate"
+            (ngModelChange)="changeVatRateOrder(productVoucherOrderLocal.vatRate)"
+            jhiCurrencyNumber
+            [numberRound]="lastCompany.roundScaleAmount"
+            [maxvalue]="100"
+          />
+        </div>
+
+        <div
+          class="item-basic-infor input-text-custom input"
+          *ngIf="productVoucherOrderLocal.vatRate > 0 && productVoucherOrderLocal.totalPreTax"
+        >
+          <label class="title-info" jhiTranslate="easyPos.bill.info.vatRateDiscountAmount">Tiền thuế giảm giá (đ)</label>
+          <input disabled="true" class="input-value form-control" type="text" [ngModel]="productVoucherOrderLocal.vatAmount | number" />
+        </div>
+      </ng-container>
+    </div>
+    <ng-container *ngIf="filterVoucher && filterVoucher.totalItem && filterVoucher.size">
+      <div class="group-page-size mt-10px">
+        <div class="from-pagination d-flex justify-content-center">
+          <ngb-pagination
+            class="pagination"
+            [collectionSize]="filterVoucher.totalItem"
+            [page]="filterVoucher.page"
+            [pageSize]="filterVoucher.size"
+            aria-label="Default pagination"
+            [directionLinks]="true"
+            [maxSize]="5"
+            (pageChange)="onChangedPage($event)"
+          ></ngb-pagination>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn exit-button-dialog" (click)="closeModal()">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <label jhiTranslate="global.entity.action.cancel">Hủy</label>
+    </button>
+    <button type="button" class="btn btn-success save-button-dialog" (click)="saveVoucherOrder()">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span jhiTranslate="global.entity.action.save">Lưu</span>
+    </button>
+  </div>
+</ng-container>
+<ng-container *ngIf="type == 2">
+  <jhi-product-voucher
+    [voucher]="voucherSelected"
+    [productVoucher]="productVoucherSelected"
+    [lastCompany]="lastCompany"
+    [invoiceConfiguration]="invoiceConfiguration"
+    [orderSelected]="orderSelectedLocal"
+    [productSelected]="productSelected"
+    (formSubmit)="handleSubmit($event)"
+  >
+  </jhi-product-voucher>
+</ng-container>

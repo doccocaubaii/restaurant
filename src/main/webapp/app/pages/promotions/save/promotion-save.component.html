@@ -1,0 +1,931 @@
+<ng-container *ngIf="isLoadingSuccess">
+  <div class="modal-header" style="background-color: #0074bd; border-radius: 4px 4px 0 0; height: 56px">
+    <h5 style="color: white" class="modal-title">
+      <span *ngIf="!isUpdate">Thêm mới </span>
+      <span *ngIf="isUpdate">Cập nhật </span>
+      chương trình khuyến mại
+    </h5>
+    <button type="button" class="btn-close" (click)="dismiss()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <!--  (click)="visibleIgnoreDays = false"-->
+  <div class="modal-body" (click)="disableAllBox()">
+    <!--  <form class="promotion" #promotionForm="ngForm">-->
+    <div class="d-flex">
+      <div class="col-6 pe-2">
+        <div class="my-form-group position-relative">
+          <label for="promotion-code" class="promotion__label"> Mã chương trình khuyến mại <span style="color: red">*</span> </label>
+          <div class="user-input-text-div">
+            <input
+              class="option-title input-value form-control"
+              placeholder="Nhập mã CTKM"
+              id="promotion-code"
+              required
+              name="promotion-code"
+              #name="ngModel"
+              [(ngModel)]="promotion.code"
+              maxlength="400"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="col-6 ps-2">
+        <div class="my-form-group position-relative">
+          <label class="promotion__label"> Tên chương trình khuyến mại <span style="color: red">*</span> </label>
+          <div class="user-input-text-div position-relative">
+            <input
+              class="input-value form-control"
+              placeholder="Nhập tên CTKM"
+              id="promotion-name"
+              type="text"
+              required
+              name="name"
+              #vname="ngModel"
+              [(ngModel)]="promotion.name"
+              maxlength="100"
+              minlength="1"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="promotion__status">
+      <label style="margin-right: 50px" class="promotion__label">Trạng thái</label>
+      <div class="promotion__status--group">
+        <div class="common-div__center">
+          <input id="active" type="radio" name="status" [(ngModel)]="promotion.status" [value]="1" />
+          <label class="promotion__label--small" for="active">Kích hoạt</label>
+        </div>
+        <div class="common-div__center" style="padding-left: 50px">
+          <input id="inactive" type="radio" name="status" [(ngModel)]="promotion.status" [value]="0" />
+          <label class="promotion__label--small" for="inactive">Chưa kích hoạt</label>
+        </div>
+      </div>
+    </div>
+    <!--  <div class="promotion__description">-->
+    <!--    <label class="promotion__label">Ghi chú</label>-->
+    <!--    <input class="form-control" placeholder="Nhập ghi chú"/>-->
+    <!--  </div>-->
+    <div class="promotion__discount-type">
+      <div class="promotion__discount-type__header" (click)="changeViewDiscountType()">
+        <label class="promotion__label--header">Hình thức khuyến mại</label>
+        <i *ngIf="isEnableDiscountType" class="fa-sharp fa-solid fa-angle-down"></i>
+        <i *ngIf="!isEnableDiscountType" class="fa-sharp fa-solid fa-angle-up"></i>
+      </div>
+      <div *ngIf="isEnableDiscountType" class="promotion__discount-type__container">
+        <div class="promotion__discount-type__container__type row justify-content-between">
+          <div class="col-sm-12 col-md-6 col-lg-5">
+            <label class="promotion__label">Hình thức khuyến mại<span style="color: red"> *</span></label>
+            <div class="item-search from-select">
+              <ng-select
+                id="discount-type"
+                name="discount-type"
+                class="form-control"
+                [(ngModel)]="conditionType"
+                (ngModelChange)="onChangeDiscountType()"
+                placeholder="Chọn hình thức"
+              >
+                <ng-option *ngFor="let type of discountConditionsTypes" [value]="type.id">
+                  {{ type.name }}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div
+            *ngIf="[100, 200].includes(conditionType)"
+            class="col-sm-12 col-md-6 col-lg-7 promotion__discount-type__container__type-check"
+          >
+            <ng-container *ngIf="conditionType === 100">
+              <input
+                id="auto-apply"
+                type="checkbox"
+                class="form-check-input"
+                [(ngModel)]="this.promotion.differentExtConditions.autoApplyVoucher"
+                [checked]="this.promotion.differentExtConditions.autoApplyVoucher"
+              />
+              <label for="auto-apply" class="promotion__label--small">Tự động áp dụng khuyến mại này khi tạo đơn</label>
+            </ng-container>
+            <ng-container *ngIf="conditionType === 200">
+              <input
+                id="isFixedQuantity"
+                type="checkbox"
+                class="form-check-input"
+                [(ngModel)]="this.promotion.differentExtConditions.isFixedQuantity"
+                [checked]="this.promotion.differentExtConditions.isFixedQuantity"
+              />
+              <label for="isFixedQuantity" class="promotion__label--small"
+                >Số lượng hàng khuyến mại không tăng theo số lượng hàng được mua</label
+              >
+            </ng-container>
+          </div>
+        </div>
+        <div *ngIf="conditionType" class="promotion__discount-type__container__conditions">
+          <ng-container *ngFor="let item of conditions; let i = index">
+            <div class="promotion__discount-type__container__add-conditions">
+              <div
+                [ngClass]="
+                  i % 2 === 1
+                    ? 'promotion__discount-type__container__add-conditions--modify'
+                    : 'promotion__discount-type__container__add-conditions--default'
+                "
+              >
+                <div class="common-div__center gap-3" style="padding: 0 10px 0px 10px">
+                  <ng-container *ngIf="conditionType !== 200">
+                    <div class="col-6 position-relative">
+                      <label class="promotion__label">Giá trị đơn hàng tối thiểu<span style="color: red"> *</span></label>
+                      <input
+                        jhiCurrencyNumber
+                        [(ngModel)]="item.minValue"
+                        name="minValue"
+                        class="form-control"
+                        placeholder="Nhập giá trị"
+                      />
+                    </div>
+                    <div class="col-6 position-relative">
+                      <div class="common-div__center justify-content-between">
+                        <label class="promotion__label"
+                          >Giá trị đơn hàng tối đa<span *ngIf="i < conditions.length - 1" style="color: red"> *</span></label
+                        >
+                        <span
+                          ngbTooltip="Xoá giá trị khyến mại"
+                          tooltipClass="my-custom-class"
+                          placement="left"
+                          (click)="onDeleteConditionItem(i)"
+                          *ngIf="conditions.length > 1"
+                          class="promotion__discount-type__container__delete-item"
+                        >
+                          <i class="fa-solid fa-xmark"></i>
+                        </span>
+                      </div>
+                      <input
+                        jhiCurrencyNumber
+                        [(ngModel)]="item.maxValue"
+                        name="maxValue"
+                        class="form-control"
+                        placeholder="Nhập giá trị"
+                      />
+                    </div>
+                  </ng-container>
+                </div>
+                <ng-container *ngIf="conditionType === 200">
+                  <div class="common-div__center" style="padding: 0 1px">
+                    <div class="col-6 position-relative">
+                      <label class="promotion__label">Số lượng hàng mua<span style="color: red"> *</span></label>
+                      <input
+                        jhiStringNumberOnly
+                        [(ngModel)]="item.buyQuantity"
+                        name="getQuantity"
+                        class="form-control"
+                        placeholder="Nhập số lượng"
+                      />
+                    </div>
+                    <div class="col-6 position-relative" style="padding-left: 8px" (click)="$event.stopPropagation()">
+                      <div class="common-div__center justify-content-between">
+                        <label class="promotion__label"
+                          >Sản phẩm/ Nhóm sản phẩm mua
+                          <span style="color: red"> *</span>
+                        </label>
+                        <span
+                          (click)="onDeleteConditionItem(i)"
+                          *ngIf="conditions.length > 1"
+                          class="promotion__discount-type__container__delete-item"
+                          ngbTooltip="Xoá giá trị khuyến mại"
+                          tooltipClass="my-custom-class"
+                          placement="left"
+                        >
+                          <i class="fa-solid fa-xmark"></i>
+                        </span>
+                      </div>
+                      <div class="position-relative">
+                        <div (click)="onResetDataGetProd(!viewBuyProd); viewGetProd = false; viewBuyProd = !viewBuyProd; idViewBuyProd = i">
+                          <div class="cursor-pointer promotion__ignore-day" style="padding-right: 57px; font-size: 16px; background: white">
+                            <ng-container *ngIf="item.buyProductProductUnitIdView.length === 0 && item.buyProductGroupIdView.length === 0">
+                              <label class="d-flex align-items-center" style="color: #999; font-size: 14px"
+                                >Chọn sản phẩm/ nhóm sản phẩm</label
+                              >
+                            </ng-container>
+                            <div
+                              class="d-flex align-items-center"
+                              style="height: 100%"
+                              *ngFor="
+                                let id of item.conditionBuyType === 0 ? item.buyProductGroupIdView : item.buyProductProductUnitIdView;
+                                let index = index
+                              "
+                            >
+                              <div class="promotion__ignore-day__item me-3">
+                                <span (click)="removeBuyProdGroupItem(index, i)">×</span>
+                                <span *ngIf="groupResultMap.has(id) || prodResultMap.has(id)" style="font-weight: 400">
+                                  {{ item.conditionBuyType === 0 ? groupResultMap.get(id) : prodResultMap.get(id) }}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="promotion__prod-group-icon">
+                          <span style="width: 50%" class="d-flex justify-content-center">
+                            <svg
+                              *ngIf="item.buyProductGroupIdView.length > 0 || item.buyProductProductUnitIdView.length > 0"
+                              (click)="onClearDataCondition(i, 0)"
+                              class="cursor-pointer"
+                              width="12"
+                              height="12"
+                              viewBox="0 0 12 12"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M0.959998 0.959998C1.05275 0.867113 1.16291 0.793424 1.28416 0.743148C1.40542 0.692871 1.5354 0.666992 1.66666 0.666992C1.79793 0.666992 1.92791 0.692871 2.04917 0.743148C2.17042 0.793424 2.28058 0.867113 2.37333 0.959998L6 4.58533L9.62666 0.959998C9.71947 0.867197 9.82964 0.793584 9.95089 0.74336C10.0721 0.693137 10.2021 0.667287 10.3333 0.667287C10.4646 0.667287 10.5945 0.693137 10.7158 0.74336C10.837 0.793584 10.9472 0.867197 11.04 0.959998C11.1328 1.0528 11.2064 1.16297 11.2566 1.28422C11.3069 1.40547 11.3327 1.53542 11.3327 1.66666C11.3327 1.7979 11.3069 1.92786 11.2566 2.04911C11.2064 2.17036 11.1328 2.28053 11.04 2.37333L7.41466 6L11.04 9.62666C11.2274 9.81408 11.3327 10.0683 11.3327 10.3333C11.3327 10.5984 11.2274 10.8526 11.04 11.04C10.8526 11.2274 10.5984 11.3327 10.3333 11.3327C10.0683 11.3327 9.81408 11.2274 9.62666 11.04L6 7.41466L2.37333 11.04C2.18591 11.2274 1.93172 11.3327 1.66666 11.3327C1.40161 11.3327 1.14742 11.2274 0.959998 11.04C0.772578 10.8526 0.667287 10.5984 0.667287 10.3333C0.667287 10.0683 0.772578 9.81408 0.959998 9.62666L4.58533 6L0.959998 2.37333C0.867113 2.28058 0.793424 2.17042 0.743148 2.04917C0.692871 1.92791 0.666992 1.79793 0.666992 1.66666C0.666992 1.5354 0.692871 1.40542 0.743148 1.28416C0.793424 1.16291 0.867113 1.05275 0.959998 0.959998Z"
+                                fill="#9BA3B1"
+                              />
+                            </svg>
+                          </span>
+                          <span style="width: 50%" (click)="viewGetProd = false; viewBuyProd = !viewBuyProd; idViewBuyProd = i">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M11 8H16M16 12H11M16 16H11M8 8H8.001M8 12H8.001M8 16H8.001M6 20H18C18.5304 20 19.0391 19.7893 19.4142 19.4142C19.7893 19.0391 20 18.5304 20 18V6C20 5.46957 19.7893 4.96086 19.4142 4.58579C19.0391 4.21071 18.5304 4 18 4H6C5.46957 4 4.96086 4.21071 4.58579 4.58579C4.21071 4.96086 4 5.46957 4 6V18C4 18.5304 4.21071 19.0391 4.58579 19.4142C4.96086 19.7893 5.46957 20 6 20Z"
+                                stroke="#9BA3B1"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          </span>
+                        </div>
+                      </div>
+                      <div *ngIf="viewBuyProd && idViewBuyProd === i" class="promotion__discount-type__container__get-prod">
+                        <div class="promotion__status--group py-3 justify-content-center">
+                          <div class="common-div__center">
+                            <input
+                              type="radio"
+                              name="getProd"
+                              id="buyProd1"
+                              [(ngModel)]="item.conditionBuyType"
+                              [value]="0"
+                              [disabled]="item.conditionBuyType === 1 && item.buyProductProductUnitIdView.length > 0"
+                              [checked]="item.conditionBuyType === 0"
+                            />
+                            <label class="promotion__label--small" for="buyProd1">Theo nhóm sản phẩm</label>
+                          </div>
+                          <div class="common-div__center" style="padding-left: 100px">
+                            <input
+                              id="buyProd2"
+                              type="radio"
+                              name="getProd"
+                              [(ngModel)]="item.conditionBuyType"
+                              [value]="1"
+                              [disabled]="item.conditionBuyType === 0 && item.buyProductGroupIdView.length > 0"
+                              [checked]="item.conditionBuyType === 1"
+                            />
+                            <label class="promotion__label--small" for="buyProd2">Theo sản phẩm</label>
+                          </div>
+                        </div>
+                        <div class="pb-3" style="padding: 0 25px">
+                          <input
+                            type="search"
+                            class="form-control"
+                            placeholder="Tìm kiếm"
+                            [(ngModel)]="item.conditionBuyType === 0 ? getProdGroupKeyword : getProdKeyword"
+                            (keyup.enter)="onGetProdKeywordChange($event, item.conditionBuyType)"
+                          />
+                          <!--                          <fa-icon icon="search"></fa-icon>-->
+                        </div>
+                        <perfect-scrollbar>
+                          <!--buy-group-->
+                          <div
+                            style="overflow: auto; height: 180px"
+                            (scroll)="loadMore($event, item.conditionBuyType)"
+                            *ngIf="item.conditionBuyType === 0"
+                          >
+                            <ng-container *ngFor="let buyProdGroup of getProductGroups">
+                              <div class="promotion__product-group-item">
+                                <div class="promotion__fake-click" (click)="onSelectBuyProdItem(buyProdGroup, i)"></div>
+                                <input
+                                  [id]="'buyGroupCheckBox' + buyProdGroup.id"
+                                  class="form-check-input"
+                                  type="checkbox"
+                                  [checked]="item.buyProductGroupIdView.includes(buyProdGroup.id)"
+                                  onclick="return false"
+                                />
+                                <div style="padding-left: 20px">
+                                  <label class="promotion__label">{{ buyProdGroup.name }}</label>
+                                </div>
+                              </div>
+                            </ng-container>
+                          </div>
+                          <!--buy-product-->
+                          <div
+                            style="overflow: auto; height: 180px"
+                            (scroll)="loadMore($event, item.conditionBuyType)"
+                            *ngIf="item.conditionBuyType === 1"
+                          >
+                            <ng-container *ngFor="let buyProd of getProducts">
+                              <div class="promotion__product-group-item">
+                                <div class="promotion__fake-click" (click)="onSelectBuyProdItem(buyProd, i)"></div>
+                                <input
+                                  [id]="'buyProductCheckBox' + buyProd.productProductUnitId"
+                                  class="form-check-input"
+                                  type="checkbox"
+                                  onclick="return false"
+                                  [checked]="item.buyProductProductUnitIdView.includes(buyProd.productProductUnitId)"
+                                />
+                                <label style="padding-left: 20px; width: 100%">
+                                  <label class="promotion__label">{{ buyProd.productName }}</label>
+                                  <div>
+                                    <span>Đơn vị:</span>
+                                    <span class="promotion__label" style="padding: 0 10px 0 5px">{{ buyProd.unit }}</span>
+                                    <span>Đơn giá:</span>
+                                    <span class="promotion__label" style="padding-left: 5px">{{ buyProd.salePrice }}</span>
+                                  </div>
+                                </label>
+                              </div>
+                            </ng-container>
+                          </div>
+                        </perfect-scrollbar>
+                        <div class="d-flex justify-content-end">
+                          <button
+                            [disabled]=""
+                            type="button"
+                            class="btn btn-success save-button-dialog"
+                            style="min-width: 70px; height: 30px; margin: 10px; font-size: 14px"
+                            (click)="this.viewGetProd = false; this.viewBuyProd = false; onSaveDiscountItem(i, 0)"
+                          >
+                            <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path
+                                d="M1.33333 13.6668C0.966668 13.6668 0.652668 13.5362 0.391334 13.2748C0.130001 13.0135 -0.000443313 12.6997 1.13186e-06 12.3335V3.66683C1.13186e-06 3.47794 0.0640012 3.3195 0.192001 3.1915C0.320001 3.0635 0.478223 2.99972 0.666668 3.00016C0.855557 3.00016 1.014 3.06416 1.142 3.19216C1.27 3.32016 1.33378 3.47839 1.33333 3.66683V12.3335H8C8.18889 12.3335 8.34734 12.3975 8.47534 12.5255C8.60334 12.6535 8.66711 12.8117 8.66667 13.0002C8.66667 13.1891 8.60267 13.3475 8.47467 13.4755C8.34667 13.6035 8.18845 13.6673 8 13.6668H1.33333ZM4 11.0002C3.63333 11.0002 3.31933 10.8695 3.058 10.6082C2.79667 10.3468 2.66622 10.0331 2.66667 9.66683V1.66683C2.66667 1.30016 2.79733 0.986164 3.05867 0.72483C3.32 0.463497 3.63378 0.333053 4 0.333497H10C10.3667 0.333497 10.6807 0.464164 10.942 0.725497C11.2033 0.986831 11.3338 1.30061 11.3333 1.66683V9.66683C11.3333 10.0335 11.2027 10.3475 10.9413 10.6088C10.68 10.8702 10.3662 11.0006 10 11.0002H4Z"
+                                fill="white"
+                              />
+                            </svg>
+                            <span jhiTranslate="global.entity.action.save">Lưu</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="[100, 200].includes(conditionType)">
+                  <div class="common-div__center" style="padding: 10px 1px">
+                    <div class="col-sm-4 col-lg-2 col-md-2">
+                      <label class="promotion__label">Khuyến mại giảm giá theo<span style="color: red">*</span></label>
+                    </div>
+                    <div class="promotion__status--group col-sm-5 col-lg-4 col-md-4">
+                      <div class="common-div__center" style="padding-left: 50px">
+                        <input
+                          type="radio"
+                          [id]="i + 'discount_percent'"
+                          [value]="0"
+                          [name]="i + 'discount-type'"
+                          [checked]="item.discountType === 0"
+                          (change)="item.discountType = 0"
+                        />
+                        <label class="promotion__label--small" [for]="i + 'discount_percent'">Theo phần trăm</label>
+                      </div>
+                      <div class="common-div__center" style="padding-left: 50px">
+                        <input
+                          type="radio"
+                          [id]="i + 'discount_value'"
+                          [value]="1"
+                          [name]="i + 'discount-type'"
+                          (change)="item.discountType = 1"
+                          [checked]="item.discountType === 1"
+                        />
+                        <label class="promotion__label--small" [for]="i + 'discount_value'">Theo giá tiền</label>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 col-lg-6 col-md-6 position-relative" style="padding-left: 8px">
+                      <input
+                        *ngIf="item.discountType === 0"
+                        class="form-control"
+                        placeholder="Giá trị giảm"
+                        [maxvalue]="100"
+                        [(ngModel)]="item.discountPercent"
+                        jhiStringNumberOnly
+                        (change)="onDiscountChange($event, i)"
+                        name="discountValue"
+                      />
+                      <input
+                        *ngIf="item.discountType === 1"
+                        class="form-control"
+                        placeholder="Giá trị giảm"
+                        [(ngModel)]="item.discountValue"
+                        jhiCurrencyNumber
+                        (change)="onDiscountChange($event, i)"
+                        name="discountValue"
+                      />
+                      <span class="position-absolute" style="right: 10px; top: 7px; color: #999; font-size: 14px">
+                        {{ item.discountType === 0 ? '(%)' : '(VND)' }}
+                      </span>
+                    </div>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="[102, 200].includes(conditionType)">
+                  <div class="common-div__center" style="padding: 0 1px">
+                    <div class="col-6 position-relative">
+                      <label class="promotion__label">Tổng số lượng hàng khuyến mại<span style="color: red"> *</span></label>
+                      <input
+                        jhiStringNumberOnly
+                        [(ngModel)]="item.getQuantity"
+                        name="getQuantity"
+                        class="form-control"
+                        placeholder="Nhập số lượng"
+                      />
+                    </div>
+                    <div class="col-6 position-relative" style="padding-left: 8px" (click)="$event.stopPropagation()">
+                      <label class="promotion__label"
+                        >Sản phẩm/ Nhóm sản phẩm khuyến mại
+                        <span style="color: red"> *</span>
+                      </label>
+                      <div class="position-relative">
+                        <div
+                          (click)="onResetDataGetProd(!!promotion.id); viewBuyProd = false; viewGetProd = !viewGetProd; idViewGetProd = i"
+                        >
+                          <div class="cursor-pointer promotion__ignore-day" style="padding-right: 57px; font-size: 16px; background: white">
+                            <ng-container *ngIf="item.getProductProductUnitIdView.length === 0 && item.getProductGroupIdView.length === 0">
+                              <label class="d-flex align-items-center" style="color: #999; font-size: 14px"
+                                >Chọn sản phẩm/ nhóm sản phẩm</label
+                              >
+                            </ng-container>
+                            <div
+                              class="d-flex align-items-center"
+                              style="height: 100%"
+                              *ngFor="
+                                let id of item.conditionGetType === 0 ? item.getProductGroupIdView : item.getProductProductUnitIdView;
+                                let index = index
+                              "
+                            >
+                              <div class="promotion__ignore-day__item me-3">
+                                <span (click)="removeGetProdGroupItem(index, i)">×</span>
+                                <span *ngIf="groupResultMap.has(id) || prodResultMap.has(id)" style="font-weight: 400">
+                                  {{ item.conditionGetType === 0 ? groupResultMap.get(id) : prodResultMap.get(id) }}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="promotion__prod-group-icon">
+                          <span style="width: 50%" class="d-flex justify-content-center">
+                            <svg
+                              *ngIf="item.getProductGroupIdView.length > 0 || item.getProductProductUnitIdView.length > 0"
+                              (click)="onClearDataCondition(i, 1)"
+                              class="cursor-pointer"
+                              width="12"
+                              height="12"
+                              viewBox="0 0 12 12"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M0.959998 0.959998C1.05275 0.867113 1.16291 0.793424 1.28416 0.743148C1.40542 0.692871 1.5354 0.666992 1.66666 0.666992C1.79793 0.666992 1.92791 0.692871 2.04917 0.743148C2.17042 0.793424 2.28058 0.867113 2.37333 0.959998L6 4.58533L9.62666 0.959998C9.71947 0.867197 9.82964 0.793584 9.95089 0.74336C10.0721 0.693137 10.2021 0.667287 10.3333 0.667287C10.4646 0.667287 10.5945 0.693137 10.7158 0.74336C10.837 0.793584 10.9472 0.867197 11.04 0.959998C11.1328 1.0528 11.2064 1.16297 11.2566 1.28422C11.3069 1.40547 11.3327 1.53542 11.3327 1.66666C11.3327 1.7979 11.3069 1.92786 11.2566 2.04911C11.2064 2.17036 11.1328 2.28053 11.04 2.37333L7.41466 6L11.04 9.62666C11.2274 9.81408 11.3327 10.0683 11.3327 10.3333C11.3327 10.5984 11.2274 10.8526 11.04 11.04C10.8526 11.2274 10.5984 11.3327 10.3333 11.3327C10.0683 11.3327 9.81408 11.2274 9.62666 11.04L6 7.41466L2.37333 11.04C2.18591 11.2274 1.93172 11.3327 1.66666 11.3327C1.40161 11.3327 1.14742 11.2274 0.959998 11.04C0.772578 10.8526 0.667287 10.5984 0.667287 10.3333C0.667287 10.0683 0.772578 9.81408 0.959998 9.62666L4.58533 6L0.959998 2.37333C0.867113 2.28058 0.793424 2.17042 0.743148 2.04917C0.692871 1.92791 0.666992 1.79793 0.666992 1.66666C0.666992 1.5354 0.692871 1.40542 0.743148 1.28416C0.793424 1.16291 0.867113 1.05275 0.959998 0.959998Z"
+                                fill="#9BA3B1"
+                              />
+                            </svg>
+                          </span>
+                          <span style="width: 50%" (click)="viewGetProd = true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M11 8H16M16 12H11M16 16H11M8 8H8.001M8 12H8.001M8 16H8.001M6 20H18C18.5304 20 19.0391 19.7893 19.4142 19.4142C19.7893 19.0391 20 18.5304 20 18V6C20 5.46957 19.7893 4.96086 19.4142 4.58579C19.0391 4.21071 18.5304 4 18 4H6C5.46957 4 4.96086 4.21071 4.58579 4.58579C4.21071 4.96086 4 5.46957 4 6V18C4 18.5304 4.21071 19.0391 4.58579 19.4142C4.96086 19.7893 5.46957 20 6 20Z"
+                                stroke="#9BA3B1"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          </span>
+                        </div>
+                      </div>
+                      <div *ngIf="viewGetProd && idViewGetProd === i" class="promotion__discount-type__container__get-prod">
+                        <div class="promotion__status--group py-3 justify-content-center">
+                          <div class="common-div__center">
+                            <input
+                              type="radio"
+                              name="getProd"
+                              id="getProd1"
+                              [(ngModel)]="item.conditionGetType"
+                              [value]="0"
+                              [disabled]="item.conditionGetType === 1 && item.getProductProductUnitIdView.length > 0"
+                              [checked]="item.conditionGetType === 0"
+                            />
+                            <label class="promotion__label--small" for="getProd1">Theo nhóm sản phẩm</label>
+                          </div>
+                          <div class="common-div__center" style="padding-left: 100px">
+                            <input
+                              id="getProd2"
+                              type="radio"
+                              name="getProd"
+                              [(ngModel)]="item.conditionGetType"
+                              [value]="1"
+                              [disabled]="item.conditionGetType === 0 && item.getProductGroupIdView.length > 0"
+                              [checked]="item.conditionGetType === 1"
+                            />
+                            <label class="promotion__label--small" for="getProd2">Theo sản phẩm</label>
+                          </div>
+                        </div>
+                        <div class="pb-3" style="padding: 0 25px">
+                          <input
+                            type="search"
+                            class="form-control"
+                            placeholder="Tìm kiếm"
+                            [(ngModel)]="item.conditionGetType === 0 ? getProdGroupKeyword : getProdKeyword"
+                            (keyup.enter)="onGetProdKeywordChange($event, item.conditionGetType)"
+                          />
+                        </div>
+                        <perfect-scrollbar>
+                          <div
+                            style="overflow: auto; height: 180px"
+                            (scroll)="loadMore($event, item.conditionGetType)"
+                            *ngIf="item.conditionGetType === 0"
+                          >
+                            <ng-container *ngFor="let getProdGroup of getProductGroups">
+                              <div class="promotion__product-group-item">
+                                <div class="promotion__fake-click" (click)="onSelectGetProdItem(getProdGroup, i)"></div>
+                                <input
+                                  [id]="'getGroupCheckBox' + getProdGroup.id"
+                                  class="form-check-input"
+                                  type="checkbox"
+                                  onclick="return false"
+                                  [checked]="item.getProductGroupIdView && item.getProductGroupIdView.includes(getProdGroup.id)"
+                                />
+                                <div style="padding-left: 20px">
+                                  <label class="promotion__label">{{ getProdGroup.name }}</label>
+                                </div>
+                              </div>
+                            </ng-container>
+                          </div>
+
+                          <div
+                            style="overflow: auto; height: 180px"
+                            (scroll)="loadMore($event, item.conditionGetType)"
+                            *ngIf="item.conditionGetType === 1"
+                          >
+                            <ng-container *ngFor="let getProd of getProducts">
+                              <div class="promotion__product-group-item">
+                                <div class="promotion__fake-click" (click)="onSelectGetProdItem(getProd, i)"></div>
+                                <input
+                                  [id]="'getProductCheckBox' + getProd.productProductUnitId"
+                                  class="form-check-input"
+                                  type="checkbox"
+                                  onclick="return false"
+                                  [checked]="item.getProductProductUnitIdView.includes(getProd.productProductUnitId)"
+                                />
+                                <label style="padding-left: 20px; width: 100%">
+                                  <label class="promotion__label">{{ getProd.productName }}</label>
+                                  <div>
+                                    <span>Đơn vị:</span>
+                                    <span class="promotion__label" style="padding: 0 10px 0 5px">{{ getProd.unit }}</span>
+                                    <span>Đơn giá:</span>
+                                    <span class="promotion__label" style="padding-left: 5px">{{ getProd.salePrice }}</span>
+                                  </div>
+                                </label>
+                              </div>
+                            </ng-container>
+                          </div>
+                        </perfect-scrollbar>
+                        <div class="d-flex justify-content-end">
+                          <button
+                            (click)="this.viewGetProd = false; this.viewBuyProd = false; onSaveDiscountItem(i, 1)"
+                            type="button"
+                            class="btn btn-success save-button-dialog"
+                            style="min-width: 70px; height: 30px; margin: 10px; font-size: 14px"
+                          >
+                            <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path
+                                d="M1.33333 13.6668C0.966668 13.6668 0.652668 13.5362 0.391334 13.2748C0.130001 13.0135 -0.000443313 12.6997 1.13186e-06 12.3335V3.66683C1.13186e-06 3.47794 0.0640012 3.3195 0.192001 3.1915C0.320001 3.0635 0.478223 2.99972 0.666668 3.00016C0.855557 3.00016 1.014 3.06416 1.142 3.19216C1.27 3.32016 1.33378 3.47839 1.33333 3.66683V12.3335H8C8.18889 12.3335 8.34734 12.3975 8.47534 12.5255C8.60334 12.6535 8.66711 12.8117 8.66667 13.0002C8.66667 13.1891 8.60267 13.3475 8.47467 13.4755C8.34667 13.6035 8.18845 13.6673 8 13.6668H1.33333ZM4 11.0002C3.63333 11.0002 3.31933 10.8695 3.058 10.6082C2.79667 10.3468 2.66622 10.0331 2.66667 9.66683V1.66683C2.66667 1.30016 2.79733 0.986164 3.05867 0.72483C3.32 0.463497 3.63378 0.333053 4 0.333497H10C10.3667 0.333497 10.6807 0.464164 10.942 0.725497C11.2033 0.986831 11.3338 1.30061 11.3333 1.66683V9.66683C11.3333 10.0335 11.2027 10.3475 10.9413 10.6088C10.68 10.8702 10.3662 11.0006 10 11.0002H4Z"
+                                fill="white"
+                              />
+                            </svg>
+                            <span jhiTranslate="global.entity.action.save">Lưu</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </ng-container>
+          <div class="promotion__discount-type__container__border-conditions"></div>
+          <div (click)="onAddNewCondition()" class="promotion__discount-type__container__add-discount">
+            <label class="promotion__label">
+              <i class="fa-solid fa-plus"></i>
+              Thêm mới giá trị khuyến mại
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="promotion__ext-time">
+      <div class="promotion__ext-time__header" (click)="changeViewExtTime()">
+        <label class="promotion__label--header">Thời gian</label>
+        <i *ngIf="isEnableExtTime" class="fa-sharp fa-solid fa-angle-down"></i>
+        <i *ngIf="!isEnableExtTime" class="fa-sharp fa-solid fa-angle-up"></i>
+      </div>
+      <div *ngIf="isEnableExtTime" class="promotion__ext-time__container gap-3">
+        <div class="col-6" style="padding: 10px">
+          <div>
+            <div class="promotion__duration d-flex flex-wrap">
+              <div class="promotion__from-date col-sm-12 col-md-6 col-lg-6">
+                <label class="promotion__label">Hiệu lực từ<span style="color: red"> *</span></label>
+                <div class="item-search">
+                  <input
+                    (click)="d3.toggle()"
+                    class="form-control cursor-pointer"
+                    placeholder="DD/MM/YYYY"
+                    name="d3"
+                    ngbDatepicker
+                    #d3="ngbDatepicker"
+                    [(ngModel)]="promotion.startTime"
+                    (ngModelChange)="onStartTimeChange(true)"
+                    readonly
+                  />
+                  <button (click)="d3.toggle()" class="btn form-control btn-datepicker" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <g id="ic:round-calendar-month">
+                        <path
+                          id="Vector"
+                          d="M17 2C16.45 2 16 2.45 16 3V4H8V3C8 2.45 7.55 2 7 2C6.45 2 6 2.45 6 3V4H5C3.89 4 3.01 4.9 3.01 6L3 20C3 20.5304 3.21071 21.0391 3.58579 21.4142C3.96086 21.7893 4.46957 22 5 22H19C20.1 22 21 21.1 21 20V6C21 4.9 20.1 4 19 4H18V3C18 2.45 17.55 2 17 2ZM19 20H5V10H19V20ZM11 13C11 12.45 11.45 12 12 12C12.55 12 13 12.45 13 13C13 13.55 12.55 14 12 14C11.45 14 11 13.55 11 13ZM7 13C7 12.45 7.45 12 8 12C8.55 12 9 12.45 9 13C9 13.55 8.55 14 8 14C7.45 14 7 13.55 7 13ZM15 13C15 12.45 15.45 12 16 12C16.55 12 17 12.45 17 13C17 13.55 16.55 14 16 14C15.45 14 15 13.55 15 13ZM11 17C11 16.45 11.45 16 12 16C12.55 16 13 16.45 13 17C13 17.55 12.55 18 12 18C11.45 18 11 17.55 11 17ZM7 17C7 16.45 7.45 16 8 16C8.55 16 9 16.45 9 17C9 17.55 8.55 18 8 18C7.45 18 7 17.55 7 17ZM15 17C15 16.45 15.45 16 16 16C16.55 16 17 16.45 17 17C17 17.55 16.55 18 16 18C15.45 18 15 17.55 15 17Z"
+                          fill="#9BA3B1"
+                        />
+                      </g>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="promotion__to-date col-sm-12 col-md-6 col-lg-6">
+                <label class="promotion__label">Đến ngày</label>
+                <div class="item-search">
+                  <input
+                    (click)="d2.toggle()"
+                    class="form-control cursor-pointer"
+                    placeholder="DD/MM/YYYY"
+                    name="d2"
+                    ngbDatepicker
+                    #d2="ngbDatepicker"
+                    [(ngModel)]="promotion.endTime"
+                    (ngModelChange)="onEndTimeChange(true)"
+                    [minDate]="utilsService.getFromToMoment(promotion.startTime)"
+                    readonly
+                  />
+
+                  <span *ngIf="promotion.endTime" (click)="promotion.endTime = null">
+                    <svg
+                      class="position-absolute"
+                      style="top: 12px; right: 50px"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                    >
+                      <path
+                        d="M2.96 2.96C3.05275 2.86711 3.16291 2.79342 3.28416 2.74315C3.40542 2.69287 3.5354 2.66699 3.66666 2.66699C3.79793 2.66699 3.92791 2.69287 4.04917 2.74315C4.17042 2.79342 4.28058 2.86711 4.37333 2.96L8 6.58533L11.6267 2.96C11.7195 2.8672 11.8296 2.79358 11.9509 2.74336C12.0721 2.69314 12.2021 2.66729 12.3333 2.66729C12.4646 2.66729 12.5945 2.69314 12.7158 2.74336C12.837 2.79358 12.9472 2.8672 13.04 2.96C13.1328 3.0528 13.2064 3.16297 13.2566 3.28422C13.3069 3.40547 13.3327 3.53542 13.3327 3.66666C13.3327 3.7979 13.3069 3.92786 13.2566 4.04911C13.2064 4.17036 13.1328 4.28053 13.04 4.37333L9.41466 8L13.04 11.6267C13.2274 11.8141 13.3327 12.0683 13.3327 12.3333C13.3327 12.5984 13.2274 12.8526 13.04 13.04C12.8526 13.2274 12.5984 13.3327 12.3333 13.3327C12.0683 13.3327 11.8141 13.2274 11.6267 13.04L8 9.41466L4.37333 13.04C4.18591 13.2274 3.93172 13.3327 3.66666 13.3327C3.40161 13.3327 3.14742 13.2274 2.96 13.04C2.77258 12.8526 2.66729 12.5984 2.66729 12.3333C2.66729 12.0683 2.77258 11.8141 2.96 11.6267L6.58533 8L2.96 4.37333C2.86711 4.28058 2.79342 4.17042 2.74315 4.04917C2.69287 3.92791 2.66699 3.79793 2.66699 3.66666C2.66699 3.5354 2.69287 3.40542 2.74315 3.28416C2.79342 3.16291 2.86711 3.05275 2.96 2.96Z"
+                        fill="#9BA3B1"
+                      />
+                    </svg>
+                  </span>
+
+                  <button (click)="d2.toggle()" class="btn form-control btn-datepicker" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <g id="ic:round-calendar-month">
+                        <path
+                          id="Vector"
+                          d="M17 2C16.45 2 16 2.45 16 3V4H8V3C8 2.45 7.55 2 7 2C6.45 2 6 2.45 6 3V4H5C3.89 4 3.01 4.9 3.01 6L3 20C3 20.5304 3.21071 21.0391 3.58579 21.4142C3.96086 21.7893 4.46957 22 5 22H19C20.1 22 21 21.1 21 20V6C21 4.9 20.1 4 19 4H18V3C18 2.45 17.55 2 17 2ZM19 20H5V10H19V20ZM11 13C11 12.45 11.45 12 12 12C12.55 12 13 12.45 13 13C13 13.55 12.55 14 12 14C11.45 14 11 13.55 11 13ZM7 13C7 12.45 7.45 12 8 12C8.55 12 9 12.45 9 13C9 13.55 8.55 14 8 14C7.45 14 7 13.55 7 13ZM15 13C15 12.45 15.45 12 16 12C16.55 12 17 12.45 17 13C17 13.55 16.55 14 16 14C15.45 14 15 13.55 15 13ZM11 17C11 16.45 11.45 16 12 16C12.55 16 13 16.45 13 17C13 17.55 12.55 18 12 18C11.45 18 11 17.55 11 17ZM7 17C7 16.45 7.45 16 8 16C8.55 16 9 16.45 9 17C9 17.55 8.55 18 8 18C7.45 18 7 17.55 7 17ZM15 17C15 16.45 15.45 16 16 16C16.55 16 17 16.45 17 17C17 17.55 16.55 18 16 18C15.45 18 15 17.55 15 17Z"
+                          fill="#9BA3B1"
+                        />
+                      </g>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="promotion__label">Theo ngày</label>
+            <div class="item-search from-select ng-select--multi-custom">
+              <ng-select
+                id="ext-days"
+                name="daysSave"
+                class="form-control"
+                placeholder="Chọn ngày"
+                [multiple]="true"
+                [selectableGroup]="true"
+                [closeOnSelect]="false"
+                [(ngModel)]="daysSave"
+                (change)="onDayChange($event)"
+              >
+                <ng-option *ngFor="let day of days" [value]="day">
+                  {{ day }}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="common-div__center justify-content-start" style="padding: 10px 0">
+            <input class="form-check-input" type="checkbox" id="auto-birthday" [(ngModel)]="birthDaySave" />
+            <label class="promotion__label--small" for="auto-birthday">Áp dụng ngày sinh nhật của KH</label>
+          </div>
+          <div class="promotion__time-slot mb-2">
+            <label class="promotion__label">Theo giờ</label>
+            <div class="d-flex gap-3 align-items-center justify-content-between">
+              <div class="d-flex gap-3 w-100">
+                <div class="item-search">
+                  <input
+                    id="fromTimeSlot"
+                    name="fromTimeSlot"
+                    class="form-control"
+                    placeholder="Từ giờ"
+                    [(ngModel)]="timeSlotFromStr"
+                    (ngModelChange)="onTimeSlotFromChange()"
+                    jhiTimeFormat
+                  />
+                </div>
+                <div class="item-search">
+                  <input
+                    name="toTimeSlot"
+                    class="form-control"
+                    placeholder="Đến giờ"
+                    [(ngModel)]="timeSlotToStr"
+                    (ngModelChange)="onTimeSlotToChange()"
+                    (keyup.enter)="onAddNewTimeSlots()"
+                    jhiTimeFormat
+                  />
+                </div>
+              </div>
+              <button [disabled]="!timeSlotValid" type="button" class="btn btn--add-time-slot" (click)="onAddNewTimeSlots()">
+                <i [ngStyle]="timeSlotValid ? { color: '#0074bd' } : {}" class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="promotion__time-slots">
+            <ng-container *ngFor="let item of timeSlots | slice: 0:timeSlots.length - 1; let i = index">
+              <div *ngIf="item" class="d-flex gap-3 align-items-center mb-2">
+                <div class="promotion__time-slot-item">
+                  <span class="promotion__span--time-slot-item">{{ item.from }}</span>
+                </div>
+                <div class="promotion__time-slot-item">
+                  <span class="promotion__span--time-slot-item">{{ item.to }}</span>
+                </div>
+                <div style="width: 42px" class="d-flex justify-content-center cursor-pointer" (click)="onRemoveTimeSlotItem(i)">
+                  <i [ngStyle]="timeSlotValid ? { color: '#0074bd' } : {}" class="fa-solid fa-subtract"></i>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="col-6" style="padding: 10px">
+          <div>
+            <label class="promotion__label">Theo tháng</label>
+            <div class="item-search from-select ng-select--multi-custom">
+              <ng-select
+                id="ext-month"
+                class="form-control select-value select-add-value"
+                placeholder="Chọn tháng"
+                [multiple]="true"
+                [selectableGroup]="true"
+                [closeOnSelect]="false"
+                [(ngModel)]="monthsSave"
+                name="monthsSave"
+                (change)="onMonthChange($event)"
+              >
+                <ng-option *ngFor="let item of months" [value]="item.id">
+                  {{ item.name }}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="promotion__dow">
+            <label class="promotion__label">Theo thứ</label>
+            <div class="item-search from-select ng-select--multi-custom">
+              <ng-select
+                id="ext-dow"
+                class="form-control"
+                placeholder="Chọn thứ trong tuần"
+                [multiple]="true"
+                [selectableGroup]="true"
+                [closeOnSelect]="false"
+                [(ngModel)]="dowSave"
+                (change)="onDowChange($event)"
+                name="dowSave"
+              >
+                <ng-option *ngFor="let dow of dows" [value]="dow.id">
+                  {{ dow.name }}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div></div>
+          <div class="position-relative">
+            <label class="promotion__label">Không áp dụng</label>
+            <ng-container *ngIf="visibleIgnoreDays">
+              <ngb-multi-date-picker
+                (click)="$event.stopPropagation()"
+                style="position: absolute; z-index: 6; bottom: 42px; right: 0; background: white"
+                [fromDateReq]="utilsService.getFromToMoment(promotion.startTime)"
+                [toDateReq]="promotion.endTime ? utilsService.getFromToMoment(ignoreDays[ignoreDays.length - 1]) : null"
+                [datesSelected]="datesSelected"
+                (datesSelectedChange)="change($event)"
+                [dateUnSelected]="requestUnSelected"
+                (unSelected)="unSelectedDate($event)"
+              >
+              </ngb-multi-date-picker>
+            </ng-container>
+
+            <div (click)="toggleDatePicker($event)" class="item-search">
+              <div class="promotion__ignore-day" style="padding-right: 64px">
+                <ng-container *ngIf="ignoreDaysSave.length <= 0">
+                  <label class="d-flex align-items-center" style="color: #999; font-size: 14px">Chọn ngày không áp dụng</label>
+                </ng-container>
+                <div class="d-flex align-items-center" *ngFor="let ignore of ignoreDaysSave; let index = index" style="margin-right: 4px">
+                  <div class="promotion__ignore-day__item">
+                    <span (click)="onRemoveIgnoreDate($event, ignore, index)">×</span>
+                    <span>{{ ignore }}</span>
+                  </div>
+                </div>
+              </div>
+              <span
+                *ngIf="ignoreDaysSave.length > 0"
+                (click)="clearAllIgnoreDate()"
+                style="position: absolute; right: 47px; top: -2px; padding: 10px; cursor: pointer"
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M0.959998 0.959998C1.05275 0.867113 1.16291 0.793424 1.28416 0.743148C1.40542 0.692871 1.5354 0.666992 1.66666 0.666992C1.79793 0.666992 1.92791 0.692871 2.04917 0.743148C2.17042 0.793424 2.28058 0.867113 2.37333 0.959998L6 4.58533L9.62666 0.959998C9.71947 0.867197 9.82964 0.793584 9.95089 0.74336C10.0721 0.693137 10.2021 0.667287 10.3333 0.667287C10.4646 0.667287 10.5945 0.693137 10.7158 0.74336C10.837 0.793584 10.9472 0.867197 11.04 0.959998C11.1328 1.0528 11.2064 1.16297 11.2566 1.28422C11.3069 1.40547 11.3327 1.53542 11.3327 1.66666C11.3327 1.7979 11.3069 1.92786 11.2566 2.04911C11.2064 2.17036 11.1328 2.28053 11.04 2.37333L7.41466 6L11.04 9.62666C11.2274 9.81408 11.3327 10.0683 11.3327 10.3333C11.3327 10.5984 11.2274 10.8526 11.04 11.04C10.8526 11.2274 10.5984 11.3327 10.3333 11.3327C10.0683 11.3327 9.81408 11.2274 9.62666 11.04L6 7.41466L2.37333 11.04C2.18591 11.2274 1.93172 11.3327 1.66666 11.3327C1.40161 11.3327 1.14742 11.2274 0.959998 11.04C0.772578 10.8526 0.667287 10.5984 0.667287 10.3333C0.667287 10.0683 0.772578 9.81408 0.959998 9.62666L4.58533 6L0.959998 2.37333C0.867113 2.28058 0.793424 2.17042 0.743148 2.04917C0.692871 1.92791 0.666992 1.79793 0.666992 1.66666C0.666992 1.5354 0.692871 1.40542 0.743148 1.28416C0.793424 1.16291 0.867113 1.05275 0.959998 0.959998Z"
+                    fill="#9BA3B1"
+                  />
+                </svg>
+              </span>
+              <button (click)="toggleDatePicker($event)" class="btn form-control btn-datepicker" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <g id="ic:round-calendar-month">
+                    <path
+                      id="Vector"
+                      d="M17 2C16.45 2 16 2.45 16 3V4H8V3C8 2.45 7.55 2 7 2C6.45 2 6 2.45 6 3V4H5C3.89 4 3.01 4.9 3.01 6L3 20C3 20.5304 3.21071 21.0391 3.58579 21.4142C3.96086 21.7893 4.46957 22 5 22H19C20.1 22 21 21.1 21 20V6C21 4.9 20.1 4 19 4H18V3C18 2.45 17.55 2 17 2ZM19 20H5V10H19V20ZM11 13C11 12.45 11.45 12 12 12C12.55 12 13 12.45 13 13C13 13.55 12.55 14 12 14C11.45 14 11 13.55 11 13ZM7 13C7 12.45 7.45 12 8 12C8.55 12 9 12.45 9 13C9 13.55 8.55 14 8 14C7.45 14 7 13.55 7 13ZM15 13C15 12.45 15.45 12 16 12C16.55 12 17 12.45 17 13C17 13.55 16.55 14 16 14C15.45 14 15 13.55 15 13ZM11 17C11 16.45 11.45 16 12 16C12.55 16 13 16.45 13 17C13 17.55 12.55 18 12 18C11.45 18 11 17.55 11 17ZM7 17C7 16.45 7.45 16 8 16C8.55 16 9 16.45 9 17C9 17.55 8.55 18 8 18C7.45 18 7 17.55 7 17ZM15 17C15 16.45 15.45 16 16 16C16.55 16 17 16.45 17 17C17 17.55 16.55 18 16 18C15.45 18 15 17.55 15 17Z"
+                      fill="#9BA3B1"
+                    />
+                  </g>
+                </svg>
+              </button>
+              <!--              <input-->
+              <!--                (click)="visibleIgnoreDays = !visibleIgnoreDays"-->
+              <!--                class="form-control cursor-pointer"-->
+              <!--                placeholder="Chọn ngày không áp dụng"-->
+              <!--                readonly-->
+              <!--              />-->
+            </div>
+            <!--            <div class="item-search from-select ng-select&#45;&#45;multi-custom">-->
+            <!--              <ng-select-->
+            <!--                id="ext-ignore-days"-->
+            <!--                class="form-control form-control&#45;&#45;custom"-->
+            <!--                placeholder="Chọn những ngày không áp dụng"-->
+            <!--                name="ignoreDaysSave"-->
+            <!--                [multiple]="true"-->
+            <!--                [selectableGroup]="true"-->
+            <!--                [closeOnSelect]="false"-->
+            <!--                [(ngModel)]="ignoreDaysSave"-->
+            <!--                (change)="onIgnoreDaysChange($event)"-->
+            <!--              >-->
+            <!--                <ng-option *ngFor="let ignore of ignoreDays" [value]="ignore">-->
+            <!--                  {{ ignore }}-->
+            <!--                </ng-option>-->
+            <!--              </ng-select>-->
+            <!--            </div>-->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--  </form>-->
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn exit-button-dialog" (click)="dismiss()">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M0.959998 0.959998C1.05275 0.867113 1.16291 0.793424 1.28416 0.743148C1.40542 0.692871 1.5354 0.666992 1.66666 0.666992C1.79793 0.666992 1.92791 0.692871 2.04917 0.743148C2.17042 0.793424 2.28058 0.867113 2.37333 0.959998L6 4.58533L9.62666 0.959998C9.71947 0.867197 9.82964 0.793584 9.95089 0.74336C10.0721 0.693137 10.2021 0.667287 10.3333 0.667287C10.4646 0.667287 10.5945 0.693137 10.7158 0.74336C10.837 0.793584 10.9472 0.867197 11.04 0.959998C11.1328 1.0528 11.2064 1.16297 11.2566 1.28422C11.3069 1.40547 11.3327 1.53542 11.3327 1.66666C11.3327 1.7979 11.3069 1.92786 11.2566 2.04911C11.2064 2.17036 11.1328 2.28053 11.04 2.37333L7.41466 6L11.04 9.62666C11.2274 9.81408 11.3327 10.0683 11.3327 10.3333C11.3327 10.5984 11.2274 10.8526 11.04 11.04C10.8526 11.2274 10.5984 11.3327 10.3333 11.3327C10.0683 11.3327 9.81408 11.2274 9.62666 11.04L6 7.41466L2.37333 11.04C2.18591 11.2274 1.93172 11.3327 1.66666 11.3327C1.40161 11.3327 1.14742 11.2274 0.959998 11.04C0.772578 10.8526 0.667287 10.5984 0.667287 10.3333C0.667287 10.0683 0.772578 9.81408 0.959998 9.62666L4.58533 6L0.959998 2.37333C0.867113 2.28058 0.793424 2.17042 0.743148 2.04917C0.692871 1.92791 0.666992 1.79793 0.666992 1.66666C0.666992 1.5354 0.692871 1.40542 0.743148 1.28416C0.793424 1.16291 0.867113 1.05275 0.959998 0.959998Z"
+          fill="#0074BD"
+        />
+      </svg>
+      <label jhiTranslate="global.entity.action.cancel">Hủy</label>
+    </button>
+    <button
+      [disabled]="viewBuyProd || viewGetProd || disableSave"
+      type="button"
+      class="btn btn-success save-button-dialog"
+      (click)="disableSave = true; onSave()"
+    >
+      <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M1.33333 13.6668C0.966668 13.6668 0.652668 13.5362 0.391334 13.2748C0.130001 13.0135 -0.000443313 12.6997 1.13186e-06 12.3335V3.66683C1.13186e-06 3.47794 0.0640012 3.3195 0.192001 3.1915C0.320001 3.0635 0.478223 2.99972 0.666668 3.00016C0.855557 3.00016 1.014 3.06416 1.142 3.19216C1.27 3.32016 1.33378 3.47839 1.33333 3.66683V12.3335H8C8.18889 12.3335 8.34734 12.3975 8.47534 12.5255C8.60334 12.6535 8.66711 12.8117 8.66667 13.0002C8.66667 13.1891 8.60267 13.3475 8.47467 13.4755C8.34667 13.6035 8.18845 13.6673 8 13.6668H1.33333ZM4 11.0002C3.63333 11.0002 3.31933 10.8695 3.058 10.6082C2.79667 10.3468 2.66622 10.0331 2.66667 9.66683V1.66683C2.66667 1.30016 2.79733 0.986164 3.05867 0.72483C3.32 0.463497 3.63378 0.333053 4 0.333497H10C10.3667 0.333497 10.6807 0.464164 10.942 0.725497C11.2033 0.986831 11.3338 1.30061 11.3333 1.66683V9.66683C11.3333 10.0335 11.2027 10.3475 10.9413 10.6088C10.68 10.8702 10.3662 11.0006 10 11.0002H4Z"
+          fill="white"
+        />
+      </svg>
+      <span jhiTranslate="global.entity.action.save">Lưu</span>
+    </button>
+  </div>
+</ng-container>
+
+<!--<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">-->
+<!--  <g id="wi:time-3">-->
+<!--    <path id="Vector" d="M2.99219 11.5748C2.99219 9.94278 3.40019 8.43078 4.20819 7.04678C5.01619 5.66278 6.11219 4.56678 7.49619 3.75878C8.88019 2.95078 10.3842 2.55078 12.0082 2.55078C13.2242 2.55078 14.3922 2.79078 15.5042 3.26278C16.6162 3.73478 17.5682 4.38278 18.3762 5.18278C19.1842 5.98278 19.8242 6.94278 20.2962 8.06278C20.7682 9.18278 21.0082 10.3428 21.0082 11.5748C21.0082 12.7908 20.7682 13.9588 20.2962 15.0708C19.8242 16.1828 19.1762 17.1428 18.3762 17.9428C17.5762 18.7428 16.6162 19.3828 15.5042 19.8548C14.3922 20.3268 13.2322 20.5668 12.0082 20.5668C10.7842 20.5668 9.60819 20.3268 8.49619 19.8548C7.38419 19.3828 6.42419 18.7348 5.61619 17.9348C4.80819 17.1348 4.17619 16.1748 3.69619 15.0708C3.21619 13.9668 2.99219 12.7988 2.99219 11.5748ZM4.97619 11.5748C4.97619 13.4708 5.66419 15.1188 7.04819 16.5188C8.43219 17.9028 10.0802 18.5908 12.0082 18.5908C13.2722 18.5908 14.4482 18.2788 15.5202 17.6468C16.5922 17.0148 17.4562 16.1668 18.0882 15.0868C18.7202 14.0068 19.0402 12.8388 19.0402 11.5748C19.0402 10.3108 18.7202 9.13478 18.0882 8.05478C17.4562 6.97478 16.6002 6.11878 15.5202 5.48678C14.4402 4.85478 13.2722 4.54278 12.0082 4.54278C10.7442 4.54278 9.56819 4.85478 8.49619 5.48678C7.42419 6.11878 6.56019 6.97478 5.92019 8.05478C5.28019 9.13478 4.97619 10.3108 4.97619 11.5748ZM11.3122 11.5748V6.24678C11.3122 6.06278 11.3762 5.90278 11.5042 5.77478C11.6322 5.64678 11.7922 5.58278 11.9762 5.58278C12.1602 5.58278 12.3202 5.64678 12.4482 5.77478C12.5762 5.90278 12.6402 6.06278 12.6402 6.24678V10.9028H15.6642C15.8482 10.9028 16.0082 10.9668 16.1362 11.0948C16.2642 11.2228 16.3282 11.3828 16.3282 11.5668C16.3282 11.7428 16.2642 11.9028 16.1362 12.0388C16.0082 12.1748 15.8482 12.2388 15.6642 12.2388H12.1122C12.0882 12.2468 12.0402 12.2468 11.9682 12.2468C11.8802 12.2484 11.7929 12.232 11.7115 12.1986C11.6301 12.1652 11.5565 12.1155 11.495 12.0525C11.4336 11.9896 11.3856 11.9147 11.3542 11.8325C11.3228 11.7504 11.3085 11.6627 11.3122 11.5748Z" fill="#58647A"/>-->
+<!--  </g>-->
+<!--</svg>-->

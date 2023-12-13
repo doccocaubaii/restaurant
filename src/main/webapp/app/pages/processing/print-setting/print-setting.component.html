@@ -1,0 +1,104 @@
+<h1 class="page-header mb-0">Thiết lập máy in theo khu vực chế biến</h1>
+<div class="panel-action">
+  <ul class="nav">
+    <li class="nav-action">
+      <a class="nav-link nav-link-action">
+        <i class="fa-solid fa-plus"></i>
+        <span class="d-sm-block ms-2">Thêm mới</span>
+      </a>
+    </li>
+  </ul>
+  <div class="d-flex justify-content-end align-items-center">
+    <div class="form-page-size">
+      <label
+        class="form-label label-search me-2 mb-0 text-bold"
+        jhiTranslate="global.info.totalParam"
+        [translateValues]="{ count: totalItems || 0 }"
+      ></label>
+      <div class="form-select-size" *ngIf="totalItems > 0">
+        <ng-select
+          [items]="sizes"
+          class="select-value select-size"
+          bindLabel="name"
+          bindValue="id"
+          placeholder="Tất cả"
+          [(ngModel)]="filterSetting.size"
+          (ngModelChange)="getLstSetting()"
+        >
+        </ng-select>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="tab-content rounded-top panel rounded-0 m-0">
+  <div class="tab-pane fade active show">
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="panel panel-inverse">
+          <div class="table-responsive">
+            <table class="table editing-table">
+              <thead>
+                <tr class="table-custom-header">
+                  <th jhiTranslate="global.info.Stt">STT</th>
+                  <th>Khu vực chế biến</th>
+                  <th>Máy in</th>
+                  <th>Mẫu in/ khổ giấy in</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let setting of lstSetting; let index = index">
+                  <tr class="table-custom-body" (click)="utilsService.scrollToTargets()">
+                    <td>{{ setting + index + 1 }}</td>
+                    <td>{{ setting.name }}</td>
+                    <td>
+                      <ng-select
+                        [items]="lstPrinter"
+                        class="select-value select-size"
+                        bindLabel="name"
+                        bindValue="name"
+                        placeholder="Không sử dụng máy in"
+                        [(ngModel)]="setting.printerInfo"
+                      >
+                      </ng-select>
+                    </td>
+                    <td>
+                      <ng-select
+                        [items]="lstPrintTemplate"
+                        class="select-value select-size"
+                        bindLabel="name"
+                        bindValue="id"
+                        placeholder="Không sử dụng mẫu"
+                        [(ngModel)]="setting.printTemplateId"
+                      >
+                      </ng-select>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+              <tbody *ngIf="!totalItems || totalItems == 0">
+                <tr class="table-not-data">
+                  <td colspan="7">
+                    <span jhiTranslate="easyPos.product.info.noData"></span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <ng-container *ngIf="totalItems && totalItems > 0">
+              <ngb-pagination
+                class="pagination"
+                [collectionSize]="totalItems || 0"
+                [pageSize]="20"
+                [page]="filterSetting.page"
+                aria-label="Default pagination"
+                [directionLinks]="true"
+                [maxSize]="5"
+                (pageChange)="onChangedPage($event)"
+              ></ngb-pagination>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

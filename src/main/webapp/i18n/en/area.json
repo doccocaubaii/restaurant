@@ -1,0 +1,51 @@
+{
+  "easyPos": {
+    "area": {
+      "title": "Danh sách khu vực",
+      "all-area": "Tất cả khu vực",
+      "table-th": {
+        "area-name": "Tên khu vực",
+        "total-unit": "Tổng số bàn",
+        "unit-empty": "Số bàn trống",
+        "unit-inuse": "Số bàn sử dụng",
+        "bill-count": "Số đơn hàng"
+      },
+      "button": {
+        "add": "Thêm khu vực"
+      },
+      "create": {
+        "title": "Tạo khu vực",
+        "tableName": "Tên khu vực"
+      },
+      "update": {
+        "title": "Sửa khu vực"
+      },
+      "info": {
+        "empty": "còn trống",
+        "Empty": "Còn trống",
+        "new-table": "Tạo bàn mới",
+        "bill": "đơn",
+        "Inuse": "Đang sử dụng"
+      }
+    },
+    "area-unit": {
+      "create": {
+        "title": "Tạo bàn",
+        "tableName": "Tên bàn",
+        "areaName": "Khu vực"
+      },
+      "update": {
+        "title": "Chỉnh sửa bàn"
+      },
+      "detail": {
+        "title": "Chọn đơn hàng để xử lý",
+        "bill": "Đơn hàng",
+        "create-bill": "Tạo đơn mới"
+      },
+      "button": {
+        "add": "Thêm bàn"
+      },
+      "title": "Danh sách bàn"
+    }
+  }
+}

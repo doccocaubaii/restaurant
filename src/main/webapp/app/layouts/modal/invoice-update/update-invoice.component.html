@@ -1,0 +1,106 @@
+<div class="modal-header">
+  <h3 class="modal-title" jhiTranslate="easyPos.invoice.info.update">Sửa hóa đơn</h3>
+  <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close" name="btnCloseCheckModal"></button>
+</div>
+<div class="modal-body">
+  <div class="row">
+    <div class="col-6">
+      <div class="panel-body">
+        <div class="from-item">
+          <label class="form-label" jhiTranslate="easyPos.customer.action.selectCustomer">Chọn khách hàng</label>
+          <div class="item-search from-select">
+            <ng-select
+              class="form-control"
+              [items]="listCustomer"
+              bindLabel="name"
+              title="Tìm kiếm khách hàng"
+              placeholder="Tìm kiếm khách hàng"
+              bindValue="id"
+              [virtualScroll]="true"
+              [(ngModel)]="invoiceUpdate.customerId"
+              (ngModelChange)="changeCustomer()"
+              [typeahead]="keywordCustomer$"
+              (scrollToEnd)="loadMoreCustomer()"
+            >
+            </ng-select>
+          </div>
+        </div>
+        <div class="from-item">
+          <label class="form-label" jhiTranslate="easyPos.invoice.info.arisingDate"> Chọn ngày tạo lập</label>
+          <div class="item-search">
+            <input
+              class="form-control"
+              placeholder="DD/MM/YYYY"
+              name="d2"
+              [(ngModel)]="invoiceUpdate.arisingDate"
+              ngbDatepicker
+              #d3="ngbDatepicker"
+              (ngModelChange)="changeDate()"
+            />
+            <button class="btn form-control btn-datepicker" (click)="d3.toggle()" type="button">
+              <fa-icon [icon]="'calendar-alt'"></fa-icon>
+            </button>
+          </div>
+        </div>
+        <div class="from-item">
+          <label class="form-label" jhiTranslate="global.info.paymentMethod"> Hình thức thanh toán</label>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="custom-radio">
+              <input type="radio" id="at_table" name="type_shipping" [(ngModel)]="paymentMethod" [value]="'Tiền mặt'" />
+              <label for="at_table" class="custom-radio-label">Tiền mặt</label><br />
+            </div>
+            <div class="custom-radio">
+              <input type="radio" id="get_away" name="type_shipping" [(ngModel)]="paymentMethod" [value]="'Chuyển khoản'" />
+              <label class="custom-radio-label" for="get_away">Chuyển khoản</label><br />
+            </div>
+            <div class="custom-radio">
+              <input type="radio" id="shipping" name="type_shipping" [(ngModel)]="paymentMethod" [value]="'Khác'" />
+              <label class="custom-radio-label" for="shipping">Khác</label><br />
+            </div>
+          </div>
+          <div class="from-item" *ngIf="paymentMethod === 'Khác'">
+            <div class="item-search">
+              <input type="text" [(ngModel)]="paymentMethodString" class="form-control" placeholder="Nhập hình thức thanh toán ..." />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="panel-body">
+        <div class="from-item">
+          <label class="form-label" jhiTranslate="global.info.totalPreTax">Tổng tiền trước thuế</label>
+          <div class="item-search">
+            <input
+              type="text"
+              [(ngModel)]="invoiceUpdate.totalPreTax"
+              (ngModelChange)="changeTotalPreTax()"
+              jhiCurrencyNumber
+              class="form-control"
+            />
+          </div>
+        </div>
+        <div class="from-item">
+          <label class="form-label" jhiTranslate="global.info.totalVatAmount">Tổng tiền thuế</label>
+          <div class="item-search"><input type="text" [(ngModel)]="invoiceUpdate.vatAmount" jhiCurrencyNumber class="form-control" /></div>
+        </div>
+        <div class="from-item">
+          <label class="form-label" jhiTranslate="global.info.totalAmount">Tổng tiền thanh toán</label>
+          <div class="item-search">
+            <input type="text" [(ngModel)]="invoiceUpdate.totalAmount" jhiCurrencyNumber class="form-control" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="exit-button-dialog" (click)="closeModal()">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <label jhiTranslate="global.entity.action.cancel">Hủy</label>
+  </button>
+  <button type="button" class="save-button-dialog" disableDiv (click)="updateInvoice()">
+    <fa-icon icon="edit"></fa-icon>
+    Cập nhật
+  </button>
+</div>

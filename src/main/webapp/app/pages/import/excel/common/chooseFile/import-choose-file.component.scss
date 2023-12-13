@@ -1,0 +1,110 @@
+$background-color: #0074bd;
+$disabled-color: #9ba3b1;
+$color-default: #ffffff;
+$text-color: #58647a;
+$font-size-title: 16px;
+$font-weight-title: 700;
+$font-title-bottom: 8px;
+
+.import-type {
+  display: flex;
+  flex-direction: column;
+  font-size: $font-size-title;
+  padding-bottom: $font-title-bottom;
+  font-weight: $font-weight-title;
+  color: $text-color;
+
+  label {
+    padding-bottom: $font-title-bottom;
+  }
+
+  .item-search {
+    align-items: center;
+
+    ng-select {
+      width: 80%;
+    }
+
+    a {
+      width: 20%;
+      display: flex;
+      justify-content: center;
+      color: $background-color;
+    }
+  }
+}
+
+.import-file {
+  font-size: $font-size-title;
+  font-weight: $font-weight-title;
+  color: $text-color;
+  display: flex;
+  width: 100%;
+  gap: 32px;
+
+  label {
+    padding-bottom: $font-title-bottom;
+  }
+
+  .upload-file {
+    padding: calc($font-title-bottom * 2) 0;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+
+    .select-file {
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      display: flex;
+
+      input:first-child {
+        width: 75%;
+      }
+
+      input.input-file {
+        position: absolute;
+        width: 125px;
+        height: 40px;
+        opacity: 0;
+        z-index: 2;
+      }
+
+      .choose-file {
+        margin-left: 8px;
+        background: $background-color;
+        border-radius: 4px;
+        color: $color-default;
+        height: 40px;
+        width: 25%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+          cursor: pointer;
+        }
+      }
+
+      label {
+        padding: 0 !important;
+        margin-left: 6px;
+      }
+    }
+
+    .choose-file:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .file-sheet {
+    padding: calc($font-title-bottom * 2) 0;
+    width: 50%;
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  .labelChooseFile {
+    font-size: 10px;
+  }
+}

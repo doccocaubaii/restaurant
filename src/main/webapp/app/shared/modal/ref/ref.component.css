@@ -1,0 +1,19 @@
+.btn-eb {
+  background-color: #218838;
+  color: #fff;
+  /*border-color: #28a745;*/
+}
+.btn-eb:hover {
+  background-color: #28a745;
+  /*border-color: #28a745;*/
+}
+.btn-outline-dark {
+  color: #fff;
+  background-color: #23272b;
+  border-color: #343a40;
+}
+.btn-outline-dark:hover {
+  border-color: #343a40;
+  background-color: #343a40;
+  color: #fff;
+}

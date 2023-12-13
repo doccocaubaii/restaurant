@@ -1,0 +1,42 @@
+<div class="div-new-feature" id="div-new-feature" *ngIf="isClose">
+  <div class="div-container">
+    <div class="div-title">
+      <span class="span-title">Tính năng mới</span>
+      <span [innerHTML]="ICON_CLOSE_NEW_FEATURE | safeHtml" (click)="onOpen()" style="cursor: pointer"></span>
+    </div>
+    <div class="div-body">
+      <ng-container *ngFor="let n of newFeatures; index as i">
+        <tr class="table-custom-body tr">
+          <div class="div-date">Ngày {{ n.versionUpdateItem.startDate }}</div>
+          <img class="div-img" [src]="n.versionUpdateItem.image" />
+          <div *ngIf="n.details && n.details.length > 0">
+            <div *ngFor="let d of n.details; index as i" class="div-details">
+              <a [href]="d.link" target="_blank" class="a">
+                <div class="div-description">{{ d.description }}</div>
+              </a>
+            </div>
+          </div>
+        </tr>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<div class="container-move">
+  <div
+    [ngClass]="isClose ? 'hidden-div' : 'show-div'"
+    class="div-icon-new-feature"
+    id="iconNewFeature"
+    cdkDrag
+    cdkDragBoundary=".container-move"
+    (cdkDragStarted)="onStart()"
+    (cdkDragEnded)="onEnd()"
+    (click)="onOpen()"
+  >
+    <span [innerHTML]="ICON_NEW_FEATURE | safeHtml"></span>
+  </div>
+</div>
+
+<div class="div-new-img">
+  <img class="img-new" [src]="newestNewFeature.image" *ngIf="newestNewFeature" (click)="hideNewest(); onOpen()" style="cursor: pointer" />
+</div>

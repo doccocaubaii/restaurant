@@ -1,0 +1,11 @@
+{
+  "easyPos": {
+    "reportProductSales": {
+      "title": "Thống kê hàng hóa bán ra",
+      "message": {
+        "title": "Thông báo",
+        "dateError": "Định dạng ngày không hợp lệ"
+      }
+    }
+  }
+}

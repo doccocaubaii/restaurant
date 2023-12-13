@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <div class="group-header">
+    <h5 class="modal-title" jhiTranslate="easyPos.product.info.createUnit"></h5>
+    <button type="button" class="btn-close" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    </button>
+  </div>
+</div>
+<div class="border-header"></div>
+<div class="modal-body">
+  <div class="pos-infor mt-0 input-text-custom">
+    <label class="title-info">
+      <span jhiTranslate="easyPos.product.info.unitName"></span>
+      <span style="color: red; margin: 0px">*</span></label>
+    <input class="input-value form-control" [(ngModel)]="unit.name" placeholder="Ví dụ: Cái" (keyup.enter)="onSaveUnit()" jhiNoEmoji />
+  </div>
+  <div class="pos-infor mt-0 input-text-custom mt-16px">
+    <label class="title-info">
+      <span>Mô tả</span>
+    </label>
+    <input class="input-value form-control" [(ngModel)]="unit.description" placeholder="Nhập mô tả" />
+  </div>
+</div>
+<div class="modal-footer d-flex">
+  <div class="btn-row col-md-12" style="margin: 0; justify-content: end; display: flex">
+    <button type="button" class="exit-button-dialog me-2 mb-1" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <span jhiTranslate="global.button.cancel"></span>
+    </button>
+    <button type="button" class="save-button-dialog me-1 mb-1" (click)="onSaveUnit()" [disabled]="disableButton">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span jhiTranslate="global.button.save"></span>
+    </button>
+  </div>
+</div>

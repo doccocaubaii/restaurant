@@ -1,0 +1,166 @@
+<div class="modal-header">
+  <h3 class="modal-title text-bold" style="color: white">{{ title }}</h3>
+  <button type="button" class="btn-close" (click)="dismiss($event)">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="group-form-custom mt-10px mb-15px row">
+    <!--    formdate -->
+    <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-4">
+      <label class="form-label label-search" jhiTranslate="global.info.fromDate"></label>
+      <div class="item-search">
+        <input
+          class="form-control"
+          placeholder="DD-MM-YYYY"
+          name="d2"
+          #c3="ngModel"
+          [(ngModel)]="fromDate"
+          [maxDate]="utilsService.getFromToMoment(toDate)"
+          ngbDatepicker
+          #d3="ngbDatepicker"
+        />
+        <button class="btn form-control btn-datepicker" (click)="d3.toggle()" type="button">
+          <fa-icon [icon]="'calendar-alt'"></fa-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-4">
+      <label class="form-label label-search" jhiTranslate="global.info.toDate"></label>
+      <div class="item-search">
+        <input
+          class="form-control"
+          placeholder="DD-MM-YYYY"
+          name="d2"
+          #c2="ngModel"
+          [(ngModel)]="toDate"
+          [minDate]="utilsService.getFromToMoment(fromDate, true)"
+          [maxDate]="utilsService.getCurrentDate()"
+          ngbDatepicker
+          #d2="ngbDatepicker"
+        />
+        <button class="btn form-control btn-datepicker" (click)="d2.toggle()" type="button">
+          <fa-icon [icon]="'calendar-alt'"></fa-icon>
+        </button>
+      </div>
+    </div>
+
+    <!--    end todate-->
+    <div class="group-item-custom1 col-sm-6 col-md-2 col-lg-2">
+      <div class="label-search d-block">
+        <button (click)="data.type < 3 ? getAllCardHistory() : getAllBillHistory()" class="btn-search">
+          <fa-icon icon="search"></fa-icon>
+          <span jhiTranslate="global.info.search"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!isValidData" class="d-flex justify-content-center py-3">
+    <label>Không có dữ liệu</label>
+  </div>
+  <div *ngIf="isValidData">
+    <div class="tab-content rounded-top panel rounded-0 m-0">
+      <div class="tab-pane fade active show">
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="panel panel-inverse m-0" style="height: 500px">
+              <div class="table-responsive">
+                <table *ngIf="data.type && data.type < 3" class="table editing-table">
+                  <thead>
+                    <tr class="table-custom-header">
+                      <th class="text-break main-table-th-1" jhiTranslate="global.info.Stt">STT</th>
+                      <th class="main-table-th-2">Tên thẻ</th>
+                      <th class="main-table-th-3">Thời gian</th>
+                      <th class="main-table-th-4">Hình thức</th>
+                      <th class="main-table-th-5" style="border-right: 1px solid #b0d4eb !important">Số đơn hàng</th>
+                      <th class="main-table-th-6">Giá trị</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let history of customerCardHistory; index as i">
+                      <tr>
+                        <td style="text-align: center">{{ i + 1 + (page - 1) * pageSize }}</td>
+                        <td style="text-align: center">{{ history.cardName }}</td>
+                        <td style="text-align: center">{{ compactDate(history.usageDate, 'dd/MM/yyyy') }}</td>
+                        <td style="text-align: center">{{ history.typeName }}</td>
+                        <td style="text-align: center">{{ history.billCode }}</td>
+                        <td style="text-align: right">{{ data.type === 1 ? (history.point | number) : (history.amount | number) }}</td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+                <table *ngIf="data.type == 3" class="table editing-table">
+                  <thead>
+                    <tr class="table-custom-header">
+                      <th class="text-break main-table-th-1" jhiTranslate="global.info.Stt">STT</th>
+                      <th class="main-table-th-2">Chứng từ</th>
+                      <th class="main-table-th-2">Mô tả</th>
+                      <th class="main-table-th-3">Thời gian</th>
+                      <th class="main-table-th-4">Tổng tiền</th>
+                      <th class="main-table-th-5">Dư nợ</th>
+                      <!--                                          <th class="main-table-th-6">Người tạo</th>-->
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let history of receivableBillHistory; index as j">
+                      <tr>
+                        <td style="text-align: center; padding: 10px 15px !important">{{ j + 1 }}</td>
+                        <td>{{ history.code }}</td>
+                        <td>{{ history.description }}</td>
+                        <td>{{ compactDate(history.date, 'dd/MM/yyyy hh:mm') }}</td>
+                        <td style="text-align: end">{{ history.amount | number }}</td>
+                        <td style="text-align: end">{{ history.receivable | number }}</td>
+                        <!--                                            <td>{{ history.creator }}</td>-->
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+                <table *ngIf="data.type == 4" class="table editing-table">
+                  <thead>
+                    <tr class="table-custom-header">
+                      <th class="text-break main-table-th-1" jhiTranslate="global.info.Stt">STT</th>
+                      <th class="main-table-th-2">Chứng từ</th>
+                      <th class="main-table-th-3">Thời gian</th>
+                      <th class="main-table-th-4">Tổng tiền</th>
+                      <th class="main-table-th-5">Trạng thái</th>
+                      <th class="main-table-th-6">Hình thức thanh toán</th>
+                      <th class="main-table-th-7">Nhân viên</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let history of customerBillHistory; index as j">
+                      <tr>
+                        <td style="text-align: center; padding: 10px 15px !important">{{ j + 1 }}</td>
+                        <td>{{ history.code }}</td>
+                        <td style="text-align: center">{{ history.billDate }}</td>
+                        <td style="text-align: end">{{ history.totalAmount | number }}</td>
+                        <td>{{ STATUS_MAP.get(history.status) }}</td>
+                        <td>{{ history.paymentMethod }}</td>
+                        <td>{{ history.updater }}</td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="group-page-size">
+      <div class="from-pagination d-flex justify-content-center" *ngIf="totalSize > 0">
+        <ngb-pagination
+          class="pagination mb-0"
+          [collectionSize]="totalSize"
+          [(page)]="page"
+          [pageSize]="pageSize"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="loadMore()"
+        ></ngb-pagination>
+      </div>
+    </div>
+  </div>
+</div>

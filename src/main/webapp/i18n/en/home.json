@@ -1,0 +1,34 @@
+{
+  "home": {
+    "title": "Trang chủ",
+    "subtitle": "Đây là trang chủ của bạn",
+    "logged": {
+      "message": "Bạn đang đăng nhập bằng tài khoản \"{{username}}\"."
+    },
+    "question": "Nếu bạn có bất kỳ câu hỏi nào về JHipster vui lòng truy cập:",
+    "link": {
+      "homepage": "Trang chủ JHipster",
+      "stackoverflow": "JHipster trên Stack Overflow",
+      "bugtracker": "Theo dõi các lỗi JHipster",
+      "chat": "Phòng chat công cộng JHipster",
+      "follow": "Theo dõi @jhipster trên Twitter"
+    },
+    "like": "Nếu bạn thích JHipster, đừng quên cho chúng tôi thêm một ngôi sao trên",
+    "github": "GitHub",
+    "info": {
+      "all": "Tất cả số hóa đơn",
+      "success": "Số hóa đơn xử lý thành công",
+      "process": "Số hóa đơn đang xử lý",
+      "pending": "Số hóa đơn chưa phát hành",
+      "moreDetail": "Xem chi tiết",
+      "revenueBenefitChart": "Biểu đồ cột báo cáo doanh thu và lợi nhuận",
+      "fromDate": "Từ ngày",
+      "toDate": "Đến ngày",
+      "statistics": "Thống kê",
+      "estimateRevenue": "Doanh thu ước tính",
+      "estimateProfit": "Lợi nhuận ước tính",
+      "allOrder": "Tổng số đơn hàng",
+      "processOrder": "Đơn hàng đang xử lý"
+    }
+  }
+}

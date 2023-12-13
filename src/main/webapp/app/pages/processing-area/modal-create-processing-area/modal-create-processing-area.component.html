@@ -1,0 +1,180 @@
+<div class="modal-header header-product">
+  <h3 class="modal-title text-bold" id="exampleModalPopoversLabel">
+    {{ processingAreaDetail.id ? 'Chi tiết khu vực chế biến' : 'Thêm khu vực chế biến' }}
+  </h3>
+  <button type="button" class="btn-close" (click)="dismiss($event)">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+<div class="modal-body" id="modalBody" #modalBody>
+  <div>
+    <div class="input-text-custom">
+      <label class="title-info">Tên khu vực <span style="color: red; margin: 0px">*</span></label>
+      <input
+        class="input-value form-control"
+        [(ngModel)]="processingAreaDetail.name"
+        placeholder="Ví dụ: Bếp 01"
+        (ngModelChange)="checkChanged()"
+      />
+      <!--      <div class="div-radio-container">-->
+      <!--        <label class="div-radio-label title-info">Cài đặt hiển thị:</label>-->
+      <!--        <div class="div-radio-button">-->
+      <!--          <input [(ngModel)]="processingAreaDetail.setting" type="radio" id="setting0" name="setting" [value]="0" />-->
+      <!--          <label for="setting0">Quản lý máy in</label><br />-->
+      <!--        </div>-->
+      <!--        <div class="div-radio-button">-->
+      <!--          <input [(ngModel)]="processingAreaDetail.setting" type="radio" id="setting1" name="setting" [value]="1" />-->
+      <!--          <label for="setting1">Nhà bếp</label><br />-->
+      <!--        </div>-->
+      <!--        <div class="div-radio-button">-->
+      <!--          <input [(ngModel)]="processingAreaDetail.setting" type="radio" id="setting2" name="setting" [value]="2" />-->
+      <!--          <label for="setting2">Cả 2</label>-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <!--      <div class="div-radio-container" style="margin-bottom: 20px">-->
+      <!--        <label class="div-radio-label title-info">Trạng thái:</label>-->
+      <!--        <div class="div-radio-button">-->
+      <!--          <input [(ngModel)]="processingAreaDetail.active" type="radio" id="active1" name="active" [value]="1" />-->
+      <!--          <label for="active1">Đang hoạt động</label><br />-->
+      <!--        </div>-->
+      <!--        <div class="div-radio-button">-->
+      <!--          <input [(ngModel)]="processingAreaDetail.active" type="radio" id="active0" name="active" [value]="0" />-->
+      <!--          <label for="active0">Ngưng hoạt động</label><br />-->
+      <!--        </div>-->
+      <!--      </div>-->
+
+      <div class="panel-action" style="margin-top: 20px">
+        <div>
+          <ul class="nav">
+            <li class="nav-action" (click)="onCreateProduct()">
+              <a class="nav-link nav-link-action">
+                <i class="fa-solid fa-plus"></i>
+                <span class="d-sm-block ms-2">Thêm mới</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="form-page-size">
+          <label
+            class="form-label form-label label-search me-2 mb-0 text-bold"
+            jhiTranslate="global.info.totalParam"
+            [translateValues]="{ count: totalItems || 0 }"
+          ></label>
+          <div class="form-select-size" *ngIf="totalItems > 0">
+            <ng-select
+              [items]="sizes"
+              class="select-value select-size"
+              bindLabel="name"
+              bindValue="id"
+              placeholder="Tất cả"
+              [(ngModel)]="size"
+              (ngModelChange)="getProduct()"
+            >
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane fade active show">
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="panel panel-inverse">
+              <div class="table-responsive">
+                <table class="table editing-table">
+                  <thead class="table-header-sticky">
+                    <tr class="table-custom-header">
+                      <!--                        <th>-->
+                      <!--                          <div class="custom-checkbox custom-control col-checkbox">-->
+                      <!--                            <input class="custom-control-input" id="checkAllForPage" type="checkbox" /><label-->
+                      <!--                            class="custom-control-label"-->
+                      <!--                            for="checkAllForPage"-->
+                      <!--                          ></label>-->
+                      <!--                          </div>-->
+                      <!--                        </th>-->
+                      <!--                      <th></th>-->
+                      <th>STT</th>
+                      <th>Mã sản phẩm</th>
+                      <th>Tên sản phẩm</th>
+                      <th>Đơn vị tính</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let product of products; index as i">
+                      <tr class="table-custom-body" (click)="check(product, listSelected, paramCheckAll, selectedItem)">
+                        <!--                        <td>-->
+                        <!--                          <div class="custom-checkbox custom-contro col-checkbox">-->
+                        <!--                            <input-->
+                        <!--                              class="custom-control-input"-->
+                        <!--                              id="exampleCustomCheckbox{{ i }}"-->
+                        <!--                              name="exampleCustomCheckbox{{ i }}"-->
+                        <!--                              type="checkbox"-->
+                        <!--                              [(ngModel)]="product.check"-->
+                        <!--                              (click)="getItem(product)"-->
+                        <!--                            /><label class="custom-control-label" for="exampleCustomCheckbox{{ i }}"></label>-->
+                        <!--                          </div>-->
+                        <!--                        </td>-->
+                        <td>{{ i + 1 + (page - 1) * size }}</td>
+                        <td class="break-word-table">{{ product.code2 }}</td>
+                        <td class="break-word-table td-text-overflow">
+                          {{ product.name }}
+                        </td>
+                        <td>
+                          {{ product.unit }}
+                        </td>
+                        <td>
+                          <div class="list-action">
+                            <i
+                              class="fa-solid fa-trash-can"
+                              ngbTooltip="{{ 'global.button.delete' | translate }}"
+                              (click)="onConfirmDeleteCategory(product)"
+                            ></i>
+                          </div>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                  <tbody *ngIf="totalItems === 0">
+                    <tr class="table-not-data">
+                      <td colspan="8">
+                        <span jhiTranslate="easyPos.product.info.notData"></span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="group-page-size">
+  <div class="from-pagination d-flex justify-content-center" *ngIf="totalItems > 0">
+    <ngb-pagination
+      class="pagination"
+      [collectionSize]="totalItems || 0"
+      [pageSize]="size"
+      [page]="page"
+      aria-label="Default pagination"
+      [directionLinks]="true"
+      [maxSize]="5"
+      (pageChange)="onChangedPage($event)"
+    ></ngb-pagination>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <div class="btn-row col-md-12">
+    <button type="button" class="exit-button-dialog me-2" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <span jhiTranslate="global.button.cancel"></span>
+    </button>
+    <button type="button" class="save-button-dialog" [disabled]="isLoading" (click)="create()">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span jhiTranslate="global.button.save"></span>
+    </button>
+  </div>
+</div>

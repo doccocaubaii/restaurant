@@ -1,0 +1,169 @@
+<div class="row">
+  <h1 class="page-header">Cài đặt hiển thị chức năng</h1>
+  <div class="col-4 ps-0">
+    <div
+      style="height: calc(100vh - 150px) !important; width: 100%; overflow: auto"
+      cdkDropList
+      class="example-list border-custom bg-white p-5px"
+      (cdkDropListDropped)="onDrop($event)"
+    >
+      <div
+        (click)="selectRowsItem(card)"
+        *ngFor="let card of getData()"
+        cdkDrag
+        [cdkDragData]="card"
+        cdkDragBoundary=".modal-body"
+        cdkDragLockAxis="y"
+        [ngClass]="!card.active ? 'disable-div' : ''"
+        class="example-box d-flex justify-content-between sort-card"
+        style="position: relative"
+      >
+        <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+        <div class="d-flex" style="font-weight: 700">
+          <div>
+            <span [innerHTML]="ICON_LIST_ITEM | safeHtml"></span>
+          </div>
+          <label class="ms-2 text-black">{{ card.displayName }}</label>
+        </div>
+        <div>
+          <label class="rank-text"
+            >{{ card.active ? 'Bật' : 'Tắt' }}
+            <span [innerHTML]="ICON_RIGHT | safeHtml"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-8" *ngIf="selectedItem">
+    <div>
+      <div class="panel panel-custom border-custom bg-white p-5px">
+        <div class="panel-custom-header bg-white border-bottom">
+          <div class="brand d-flex justify-content-between">
+            <h4 class="caption-title" style="color: #004671; font-weight: 700">{{ selectedItem.oldDisplayName }}</h4>
+            <div>
+              <!--              <button class="btn-search" (click)="isSort = true">-->
+              <!--                <span [innerHTML]="ICON_PENCIL | safeHtml"></span>-->
+              <!--                <span>Sắp xếp</span>-->
+              <!--              </button>-->
+            </div>
+          </div>
+        </div>
+        <div>
+          <div
+            style="max-height: 60vh; width: 100%; overflow: auto"
+            cdkDropList
+            class="example-list"
+            [ngClass]="!selectedItem.active ? 'disable-div' : ''"
+            (cdkDropListDropped)="onDrop($event)"
+          >
+            <div class="d-flex justify-content-between align-items-center border-bottom p-15px">
+              <div class="content-left d-flex w-100 flex-row align-items-center">
+                <span [innerHTML]="ICON_LIST_ITEM | safeHtml"></span>
+                <label *ngIf="!selectedItem.isEdit" style="color: #16243Dl; font-weight: 700">{{ selectedItem.displayName }}</label>
+                <div
+                  *ngIf="!selectedItem.isEdit && selectedItem.isRenameAble"
+                  (click)="selectedItem.isEdit = true; focusOnInput('input' + selectedItem.code, null)"
+                  class="cursor-default ms-5px"
+                >
+                  <span [innerHTML]="ICON_SORT | safeHtml"></span>
+                </div>
+                <div *ngIf="selectedItem.isEdit" style="position: relative; width: 100%">
+                  <input
+                    type="text"
+                    class="form-control w-100"
+                    [(ngModel)]="displayName"
+                    id="input{{ selectedItem.code }}"
+                    (keyup.enter)="selectedItem.isEdit = false"
+                    (blur)="onChangeDisplayName()"
+                  />
+                  <span
+                    (click)="selectedItem.isEdit = false"
+                    class="cursor-pointer"
+                    style="position: absolute; top: 9px; right: 10px"
+                    [innerHTML]="ICON_SORT | safeHtml"
+                  >
+                  </span>
+                </div>
+              </div>
+              <div class="content-right" *jhiHasAnyAuthority="authorUPDATE_HIDE_SHOW">
+                <div class="form-check form-switch ps-10px">
+                  <input
+                    *ngIf="isSort"
+                    [disabled]="!selectedItem.isHiddenAble"
+                    type="checkbox"
+                    name="isActivate"
+                    id="isActivate"
+                    class="form-check-input ng-valid ng-dirty ng-touched"
+                    style="margin: 0px"
+                    [(ngModel)]="selectedItem.active"
+                    (ngModelChange)="changeActiveParent(selectedItem)"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              *ngFor="let card of this.getDataChild(selectedItem.code); index as i"
+              cdkDrag
+              [cdkDragDisabled]="!isSort"
+              [cdkDragData]="card"
+              cdkDragBoundary=".modal-body"
+              cdkDragLockAxis="y"
+              [ngClass]="!card.active ? 'disable-div' : ''"
+              class="example-box d-flex justify-content-between sort-card"
+              style="position: relative"
+            >
+              <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+              <div class="d-flex flex-row align-items-center w-100 ms-30px">
+                <div>
+                  <span [innerHTML]="ICON_LIST_ITEM | safeHtml"></span>
+                </div>
+                <label *ngIf="!card.isEdit" style="color: #16243Dl; font-weight: 700">{{ card.displayName }}</label>
+                <div class="ms-5px">
+                  <span
+                    *ngIf="!card.isEdit && card.isRenameAble"
+                    (click)="card.isEdit = true; focusOnInput('input' + card.code, card)"
+                    class="cursor-default"
+                    [innerHTML]="ICON_SORT | safeHtml"
+                  >
+                  </span>
+                </div>
+                <div *ngIf="card.isEdit" style="position: relative; width: 100%">
+                  <input
+                    type="text"
+                    class="form-control w-100"
+                    [(ngModel)]="card.displayName"
+                    id="input{{ card.code }}"
+                    (keyup.enter)="card.isEdit = false"
+                    (blur)="card.isEdit = false; changeChiddName(card)"
+                  />
+                  <span (click)="card.isEdit = false" class="cursor-pointer" [innerHTML]="ICON_SORT | safeHtml"> </span>
+                </div>
+              </div>
+              <div>
+                <div class="form-check form-switch ps-10px" *jhiHasAnyAuthority="authorUPDATE_HIDE_SHOW">
+                  <input
+                    *ngIf="isSort"
+                    [disabled]="!card.isHiddenAble"
+                    type="checkbox"
+                    name="activateItem + {{ i }}}"
+                    id="activateItem + {{ i }}}"
+                    class="form-check-input ng-valid ng-dirty ng-touched"
+                    style="margin: 0px"
+                    [(ngModel)]="card.active"
+                    (ngModelChange)="changeActiveChildrent(card)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end mt-2">
+            <button type="button" class="save-button-dialog me-2 mb-1" (click)="saveConfig()" *jhiHasAnyAuthority="authorUPDATE_HIDE_SHOW">
+              <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+              <span jhiTranslate="global.button.save"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

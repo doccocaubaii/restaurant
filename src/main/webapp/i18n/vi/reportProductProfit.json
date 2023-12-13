@@ -1,0 +1,13 @@
+{
+  "easyPos": {
+    "reportProductProfit": {
+      "title": "Thống kê lợi nhuận sản phẩm",
+      "info": {},
+      "error": {
+        "message": "Thông báo",
+        "dateError": "Định dạng ngày không hợp lệ",
+        "productError": "Vui lòng chọn sản phẩm"
+      }
+    }
+  }
+}

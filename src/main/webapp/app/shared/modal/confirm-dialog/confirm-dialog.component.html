@@ -1,0 +1,24 @@
+<div class="modal-header">
+  <h5 class="modal-title" jhiTranslate="{{ 'activate.model.title.' + value.title }}"></h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true" (click)="decline()"></button>
+</div>
+<div class="modal-body">
+  <label jhiTranslate="{{ 'activate.model.content.' + value.message }}"></label>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-default exit-button-dialog" [hidden]="value.isHiddenCancel" data-bs-dismiss="modal" (click)="decline()">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.cancel">Hủy</span>
+  </button>
+  <button
+    [disabled]="loading.isLoading"
+    (click)="accept($event)"
+    class="ep-btn-custom"
+    [ngClass]="value.classBtn ? value.classBtn : 'save-button-dialog'"
+  >
+    <span *ngIf="!value.icon" [innerHTML]="ICON_CONFIRM | safeHtml"></span>
+    <fa-icon *ngIf="value.icon" [icon]="value.icon"></fa-icon>
+    <span jhiTranslate="{{ 'activate.model.btn.' + value.btnText }}"></span>
+  </button>
+  <!-- <button type="button" class="ep-btn-custom btn-cancel" (click)="decline()"><fa-icon icon="xmark"></fa-icon> Hủy</button> -->
+</div>

@@ -1,0 +1,37 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="exampleModalLongTitle" jhiTranslate="easyPos.product.info.inventoryTracking"></h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()"></button>
+</div>
+<div class="modal-body">
+  <div class="message-info">
+    <i class="fa-solid fa-check icon-check"></i>
+    <span class="ms-2 confirm-messsage" jhiTranslate="easyPos.product.info.inventoryTrackingMessage1"></span>
+  </div>
+  <div class="message-info">
+    <i class="fa-solid fa-check icon-check"></i>
+    <span class="ms-2 confirm-messsage" jhiTranslate="easyPos.product.info.inventoryTrackingMessage2"></span>
+  </div>
+  <div class="message-info">
+    <i class="fa-solid fa-triangle-exclamation icon-warning"></i>
+    <span class="ms-2 me-1 icon-warning" jhiTranslate="easyPos.product.info.inventoryTrackingMessage3"></span>
+    <span class="confirm-messsage" jhiTranslate="easyPos.product.info.inventoryTrackingMessage4"></span>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" [(ngModel)]="isNotShowAgain" id="notShowAgain" />
+    <label class="form-check-label ms-2" for="notShowAgain" jhiTranslate="easyPos.product.info.inventoryTrackingMessage5"> </label>
+  </div>
+</div>
+<div class="modal-footer">
+  <div class="btn-row col-md-12" style="margin: 0; justify-content: end; display: flex">
+    <button type="button" class="exit-button-dialog me-1 mb-1" (click)="dismiss()">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+
+      <span jhiTranslate="global.button.cancel"></span>
+    </button>
+
+    <button (click)="onInventoryTracking()" class="save-button-dialog me-2 mb-1">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span jhiTranslate="easyPos.product.info.btnConfirmInventoryTracking"></span>
+    </button>
+  </div>
+</div>

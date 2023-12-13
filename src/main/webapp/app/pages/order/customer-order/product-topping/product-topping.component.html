@@ -1,0 +1,64 @@
+<!-- BEGIN #modalPosItem -->
+<div class="modal modal-pos-item" *ngIf="product">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body p-0">
+        <a (click)="closeModal()" data-bs-dismiss="modal" class="btn-close position-absolute top-0 end-0 m-4"></a>
+        <div class="form-product">
+          <h4 class="header">
+            {{ product.productName }}
+          </h4>
+          <!-- <div>{{ listProductOrder | json }}</div> -->
+          <div class="content">
+            <ng-container *ngFor="let product of listProductOrder">
+              <div class="form-topping">
+                <div class="unit-price-product">
+                  <span>Tổng cộng</span>
+                  <span>{{ product.displayAmount | number }}đ</span>
+                </div>
+                <div class="list-product-topping">
+                  <ng-container *ngFor="let productTopping of product.toppings">
+                    <div class="product-topping">
+                      <span>x{{ productTopping.displayQuantity }}</span>
+                      <span>{{ productTopping.productName }}</span>
+                    </div>
+                  </ng-container>
+                </div>
+                <div class="bottom">
+                  <div *ngIf="checkConditionNotify() && orderSelected.id && product.id"></div>
+                  <div
+                    class="modify"
+                    [hidden]="checkConditionNotify() && orderSelected.id && product.id"
+                    (click)="modifyProductOrder(product)"
+                  >
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span>Chỉnh sửa</span>
+                  </div>
+                  <div class="input-group qty col-6">
+                    <div class="input-group-append" (click)="decreaseProductQuantity(product)">
+                      <a class="btn btn-default"><i class="fa fa-minus"></i></a>
+                    </div>
+                    <input
+                      type="text"
+                      class="form-control"
+                      jhiCurrencyNumber
+                      [(ngModel)]="product.quantity"
+                      (ngModelChange)="changeProductQuantity(product)"
+                    />
+                    <div class="input-group-prepend" (click)="increaseProductQuantity(product)">
+                      <a class="btn btn-default"><i class="fa fa-plus"></i></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="bottom-modal">
+          <button (click)="createNewProductOrder()">Chọn tùy chỉnh khác</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END #modalPosItem -->

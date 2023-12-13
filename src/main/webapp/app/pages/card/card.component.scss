@@ -1,0 +1,22 @@
+.card-page-content {
+  .card-page-data {
+    .card-page-items {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 20px;
+      height: 200px;
+    }
+  }
+}
+
+.disable-button {
+  opacity: 0.6;
+}
+
+.long-text {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 300px;
+}

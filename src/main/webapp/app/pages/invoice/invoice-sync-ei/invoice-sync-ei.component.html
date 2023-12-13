@@ -1,0 +1,270 @@
+<div class="modal-header">
+  <div class="group-header">
+    <h5 class="modal-title">Lấy dữ liệu hoá đơn</h5>
+    <button type="button" class="btn-close" (click)="dismiss($event)">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M0.439997 0.439997C0.579127 0.300669 0.74436 0.190136 0.926245 0.114721C1.10813 0.0393063 1.3031 0.000488281 1.5 0.000488281C1.6969 0.000488281 1.89186 0.0393063 2.07375 0.114721C2.25563 0.190136 2.42087 0.300669 2.56 0.439997L8 5.878L13.44 0.439997C13.5792 0.300796 13.7445 0.190375 13.9263 0.11504C14.1082 0.0397052 14.3031 0.00093079 14.5 0.000930786C14.6969 0.000930782 14.8918 0.0397052 15.0737 0.11504C15.2555 0.190375 15.4208 0.300796 15.56 0.439997C15.6992 0.579198 15.8096 0.744454 15.885 0.926329C15.9603 1.1082 15.9991 1.30314 15.9991 1.5C15.9991 1.69686 15.9603 1.89179 15.885 2.07367C15.8096 2.25554 15.6992 2.4208 15.56 2.56L10.122 8L15.56 13.44C15.8411 13.7211 15.9991 14.1024 15.9991 14.5C15.9991 14.8976 15.8411 15.2789 15.56 15.56C15.2789 15.8411 14.8976 15.9991 14.5 15.9991C14.1024 15.9991 13.7211 15.8411 13.44 15.56L8 10.122L2.56 15.56C2.27887 15.8411 1.89757 15.9991 1.5 15.9991C1.10242 15.9991 0.721127 15.8411 0.439997 15.56C0.158868 15.2789 0.000930786 14.8976 0.000930786 14.5C0.000930786 14.1024 0.158868 13.7211 0.439997 13.44L5.878 8L0.439997 2.56C0.300669 2.42087 0.190136 2.25563 0.114721 2.07375C0.0393063 1.89186 0.000488281 1.6969 0.000488281 1.5C0.000488281 1.3031 0.0393063 1.10813 0.114721 0.926245C0.190136 0.74436 0.300669 0.579127 0.439997 0.439997Z"
+          fill="#ffffff"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+<div class="border-header"></div>
+<div class="modal-body">
+  <ng-container *ngIf="viewType === 0">
+    <div class="group-form-custom mt-5px mb-20px row">
+      <div class="group-item-custom1 col-sm-12 col-md-4 col-lg-4">
+        <label class="form-label label-search" jhiTranslate="global.info.fromDate"></label>
+        <div class="item-search">
+          <input
+            (click)="d3.toggle()"
+            readonly
+            class="form-control cursor-pointer"
+            placeholder="DD-MM-YYYY"
+            name="d3"
+            ngbDatepicker
+            #d3="ngbDatepicker"
+            [minDate]="utilsService.getFromToMoment(minDate, true)"
+            [maxDate]="utilsService.getFromToMoment(toDate)"
+            [(ngModel)]="fromDate"
+            (ngModelChange)="onFromDateChange()"
+          />
+          <button class="btn form-control btn-datepicker" (click)="d3.toggle()" type="button">
+            <fa-icon [icon]="'calendar-alt'"></fa-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="group-item-custom1 col-sm-12 col-md-4 col-lg-4">
+        <label class="form-label label-search" jhiTranslate="global.info.toDate"></label>
+        <div class="item-search">
+          <input
+            (click)="d2.toggle()"
+            readonly
+            class="form-control cursor-pointer"
+            placeholder="DD-MM-YYYY"
+            name="d2"
+            #c2="ngModel"
+            [minDate]="utilsService.getFromToMoment(fromDate ? fromDate : minDate, true)"
+            [maxDate]="utilsService.getMaxToDate(fromDate)"
+            [(ngModel)]="toDate"
+            (ngModelChange)="onToDateChange()"
+            ngbDatepicker
+            #d2="ngbDatepicker"
+          />
+          <button class="btn form-control btn-datepicker" (click)="d2.toggle()" type="button">
+            <fa-icon [icon]="'calendar-alt'"></fa-icon>
+          </button>
+        </div>
+      </div>
+      <div class="group-item-custom1 col-sm-12 col-md-4 col-lg-4">
+        <label class="form-label label-search">Mẫu số hóa đơn <span style="color: red">(*)</span></label>
+        <div class="item-search from-select">
+          <ng-select
+            class="form-control cursor-pointer"
+            id="invoicePattern"
+            name="invoicePattern"
+            [(ngModel)]="filterInvoice.pattern"
+            #invoicePattern="ngModel"
+            [clearable]="false"
+            placeholder="chọn mẫu số hoá đơn"
+          >
+            <ng-option *ngFor="let pattern of patterns; let i = index" [value]="pattern.pattern">{{ pattern.pattern }} </ng-option>
+          </ng-select>
+        </div>
+      </div>
+    </div>
+    <div class="group-form-custom mt-5px mb-20px row">
+      <div class="group-item-custom1 mt-0 col-sm-12 col-md-4 col-lg-4">
+        <label class="form-label label-search">Trạng thái</label>
+        <div class="item-search from-select">
+          <ng-select class="form-control" name="invoicePattern" [(ngModel)]="filterInvoice.status" placeholder="Tất cả" [clearable]="false">
+            <ng-option *ngFor="let item of filterInvoice.statusList; let i = index" [value]="item.id">{{ item.name }}</ng-option>
+          </ng-select>
+        </div>
+      </div>
+      <div class="group-item-custom1 mt-0 col-sm-12 col-md-4 col-lg-4">
+        <label class="form-label label-search">Kết quả trả về</label>
+        <div class="item-search from-select">
+          <ng-select class="form-control" name="invoicePattern" [(ngModel)]="filterInvoice.result" [clearable]="false" placeholder="Tất cả">
+            <ng-option *ngFor="let item of filterInvoice.results; let i = index" [value]="item.id">{{ item.name }}</ng-option>
+          </ng-select>
+        </div>
+      </div>
+      <div class="group-item-custom1 mt-0 col-sm-12 col-md-6 col-lg-4 d-flex justify-content-between">
+        <button [disabled]="isDisableSearch" (click)="onReset()" class="btn-search">
+          <span><fa-icon icon="repeat"></fa-icon> Đặt lại</span>
+        </button>
+        <button [disabled]="isDisableSearch" (click)="onSearch()" class="btn-search">
+          <fa-icon icon="search"></fa-icon>
+          <span jhiTranslate="global.info.search"></span>
+        </button>
+        <button [disabled]="isDisableSearch || !(listSelected && listSelected.length > 1)" (click)="syncSaveData(null)" class="btn-search">
+          <i class="fa-solid fa-circle-arrow-down"></i>
+          <span>Đồng bộ</span>
+        </button>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="viewType === 1">
+    <div>
+      <div class="custom-label-response">
+        <label
+          >Số hoá đơn được xử lý: <span class="fw-bold">&nbsp;{{ syncSaveDataResponse.countTotal }}</span></label
+        >
+      </div>
+      <div class="custom-label-response">
+        <label
+          >Số hoá đơn đã đồng bộ thành công: <span class="fw-bold">&nbsp;{{ syncSaveDataResponse.countSuccess }}</span></label
+        >
+      </div>
+      <div class="custom-label-response mb-3">
+        <label
+          >Số hoá đơn đã đồng bộ không thành công: <span class="fw-bold"> &nbsp;{{ syncSaveDataResponse.countFail }}</span></label
+        >
+      </div>
+    </div>
+  </ng-container>
+  <div *ngIf="isAction && dataView.length > 0" class="tab-pane fade active show">
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="panel panel-inverse" style="max-height: 475px; margin-bottom: 0">
+          <div class="table-responsive">
+            <table class="table editing-table">
+              <thead>
+                <tr class="table-custom-header">
+                  <th *ngIf="viewType === 0">
+                    <div class="custom-checkbox custom-control col-checkbox">
+                      <input
+                        class="custom-control-input"
+                        id="checkAllForPage"
+                        type="checkbox"
+                        [disabled]="paramCheckAll"
+                        [(ngModel)]="paramCheckAllPage"
+                        (change)="utilsService.checkAllForPage(invoices.data, listSelected, paramCheckAllPage)"
+                      /><label class="custom-control-label" for="checkAllForPage"></label>
+                    </div>
+                  </th>
+                  <th jhiTranslate="easyPos.product.info.stt"></th>
+                  <th>Mẫu số</th>
+                  <th>Số hoá đơn</th>
+                  <th>Ngày hoá đơn</th>
+                  <th>Tên khách hàng</th>
+                  <th>Tổng tiền</th>
+                  <th>Trạng thái</th>
+                  <th>Kết quả CQT</th>
+                  <th *ngIf="viewType === 0">Thao tác</th>
+                  <th *ngIf="viewType === 1" style="border-left: 1px solid #b0d4eb !important">
+                    <span>Ghi chú</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody *ngIf="totalItems > 0">
+                <ng-container *ngFor="let item of dataView; index as i">
+                  <tr class="table-custom-body">
+                    <td *ngIf="viewType === 0">
+                      <div *ngIf="!item.isExists" class="custom-checkbox custom-control col-checkbox">
+                        <input
+                          class="custom-control-input"
+                          id="exampleCustomCheckbox{{ i }}"
+                          name="exampleCustomCheckbox{{ i }}"
+                          type="checkbox"
+                          [(ngModel)]="item.check"
+                          (click)="selectItem(item)"
+                        /><label class="custom-control-label" for="exampleCustomCheckbox{{ i }}"></label>
+                      </div>
+                    </td>
+                    <td [ngStyle]="item.isExists ? { opacity: '.7' } : {}" (click)="selectItem(item)">{{ i + 1 }}</td>
+                    <td [ngStyle]="item.isExists ? { opacity: '.7' } : {}" (click)="selectItem(item)">
+                      {{ viewType === 0 ? item.Pattern : item.pattern }}
+                    </td>
+                    <td [ngStyle]="item.isExists ? { opacity: '.7' } : {}" (click)="selectItem(item)">
+                      {{ viewType === 0 ? item.InvoiceNo : item.invoiceNo }}
+                    </td>
+                    <td [ngStyle]="item.isExists ? { opacity: '.7' } : {}" (click)="selectItem(item)">
+                      {{ viewType === 0 ? item.ArisingDate : item.arisingDate }}
+                    </td>
+                    <td [ngStyle]="item.isExists ? { opacity: '.7' } : {}" (click)="selectItem(item)">
+                      {{ viewType === 0 ? (item.CusName ? item.CusName : item.Buyer) : item.cusName ? item.cusName : item.buyer }}
+                    </td>
+                    <td class="text-end" [ngStyle]="item.isExists ? { opacity: '.7' } : {}" (click)="selectItem(item)">
+                      {{ (viewType === 0 ? item.Amount : item.amount) | number }}
+                    </td>
+                    <td
+                      [ngStyle]="item.isExists ? { opacity: '.7' } : {}"
+                      (click)="selectItem(item)"
+                      [ngClass]="getColorStatus(item.Status, item.Type)"
+                    >
+                      {{ STATUS_MAP.get(viewType === 0 ? item.Status : item.status) }}
+                    </td>
+                    <td
+                      [ngStyle]="item.isExists ? { opacity: '.7' } : {}"
+                      [ngClass]="getColorTctStatus(viewType === 0 ? item.TCTCheckStatus : item.tctcheckStatus)"
+                      (click)="selectItem(item)"
+                    >
+                      {{ TCT_CHECK_STATUS_MAP.get(viewType === 0 ? item.TCTCheckStatus : item.tctcheckStatus) }}
+                    </td>
+                    <td class="text-center" *ngIf="viewType === 0">
+                      <div class="">
+                        <i
+                          *ngIf="!item.isExists"
+                          [ngbTooltip]="'Đồng bộ dữ liệu'"
+                          tooltipClass="my-tooltip-class"
+                          (click)="syncSaveData(item)"
+                          class="fa-solid fa-circle-arrow-down me-0 p-2px"
+                          style="color: #0074bd"
+                        ></i>
+                        <i
+                          *ngIf="item.isExists"
+                          [ngbTooltip]="'Dữ liệu đã được đồng bộ'"
+                          tooltipClass="my-tooltip-class"
+                          class="fa-solid fa-circle-check me-0"
+                          style="color: #31ad46"
+                        ></i>
+                      </div>
+                    </td>
+                    <td *ngIf="viewType === 1">{{ item.errorMessage }}</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+              <tbody *ngIf="totalItems === 0">
+                <tr class="table-not-data">
+                  <td colspan="12" style="padding: 16px 0 0 0">
+                    <span jhiTranslate="easyPos.product.info.notData"></span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="group-page-size mt-3" *ngIf="viewType === 0">
+      <div class="from-pagination d-flex justify-content-center" *ngIf="invoices.totalRecords > 0">
+        <ngb-pagination
+          class="pagination"
+          [collectionSize]="invoices.totalRecords || 0"
+          [pageSize]="filterData.size"
+          [page]="filterData.page"
+          aria-label="Default pagination"
+          [directionLinks]="true"
+          [maxSize]="5"
+          (pageChange)="loadMore($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end">
+      <button type="button" class="btn exit-button-dialog me-2" (click)="dismiss($event)" *ngIf="viewType === 1">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M0.439997 0.439997C0.579127 0.300669 0.74436 0.190136 0.926245 0.114721C1.10813 0.0393063 1.3031 0.000488281 1.5 0.000488281C1.6969 0.000488281 1.89186 0.0393063 2.07375 0.114721C2.25563 0.190136 2.42087 0.300669 2.56 0.439997L8 5.878L13.44 0.439997C13.5792 0.300796 13.7445 0.190375 13.9263 0.11504C14.1082 0.0397052 14.3031 0.00093079 14.5 0.000930786C14.6969 0.000930782 14.8918 0.0397052 15.0737 0.11504C15.2555 0.190375 15.4208 0.300796 15.56 0.439997C15.6992 0.579198 15.8096 0.744454 15.885 0.926329C15.9603 1.1082 15.9991 1.30314 15.9991 1.5C15.9991 1.69686 15.9603 1.89179 15.885 2.07367C15.8096 2.25554 15.6992 2.4208 15.56 2.56L10.122 8L15.56 13.44C15.8411 13.7211 15.9991 14.1024 15.9991 14.5C15.9991 14.8976 15.8411 15.2789 15.56 15.56C15.2789 15.8411 14.8976 15.9991 14.5 15.9991C14.1024 15.9991 13.7211 15.8411 13.44 15.56L8 10.122L2.56 15.56C2.27887 15.8411 1.89757 15.9991 1.5 15.9991C1.10242 15.9991 0.721127 15.8411 0.439997 15.56C0.158868 15.2789 0.000930786 14.8976 0.000930786 14.5C0.000930786 14.1024 0.158868 13.7211 0.439997 13.44L5.878 8L0.439997 2.56C0.300669 2.42087 0.190136 2.25563 0.114721 2.07375C0.0393063 1.89186 0.000488281 1.6969 0.000488281 1.5C0.000488281 1.3031 0.0393063 1.10813 0.114721 0.926245C0.190136 0.74436 0.300669 0.579127 0.439997 0.439997Z"
+            fill="#0074BD"
+          />
+        </svg>
+        <span class="ms-2">Thoát</span>
+      </button>
+    </div>
+  </div>
+</div>

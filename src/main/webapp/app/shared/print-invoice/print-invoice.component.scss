@@ -1,0 +1,102 @@
+#print {
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+
+  .layout-invoice {
+    overflow: auto;
+    max-height: 60vh;
+  }
+
+  .wrap-invoice {
+    width: 500px;
+    padding: 0 30px;
+  }
+
+  .visibility-hidden {
+    visibility: hidden;
+  }
+
+  .header {
+    text-align: center;
+
+    h2 {
+      font-weight: 700;
+    }
+
+    .hotline-address {
+      font-size: 1.3rem;
+    }
+  }
+
+  .wrap-content-common-info {
+    .item-content-common-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .customer-label,
+      .customer-name {
+        font-size: 1.3rem;
+      }
+    }
+
+    .product-invoice {
+      width: 100%;
+      .header-product-invoice {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        border-bottom: 1px solid rgb(211, 211, 211);
+        border-top: 1px solid rgb(211, 211, 211);
+
+        .amount {
+          text-align: end;
+        }
+      }
+
+      .content-product-invoice {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        margin-bottom: 10px;
+        border-bottom: 1px solid rgb(211, 211, 211);
+
+        .right-content-product {
+          text-align: end;
+        }
+      }
+    }
+
+    .wrap-amount-invoice {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+  }
+
+  .footer {
+    text-align: center;
+
+    .head-footer {
+      border-bottom: 1px solid rgb(211, 211, 211);
+    }
+
+    .paymentMethod {
+      text-transform: uppercase;
+    }
+
+    .qrcode {
+      width: 100px;
+      height: 100px;
+    }
+  }
+}
+
+.modal-footer {
+  fa-icon {
+    margin-right: 5px;
+  }
+}

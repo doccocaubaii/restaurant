@@ -1,0 +1,11 @@
+{
+  "changelogDate": "20230605024617",
+  "dto": "no",
+  "fields": [],
+  "jpaMetamodelFiltering": false,
+  "name": "Report",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [],
+  "service": "serviceImpl"
+}

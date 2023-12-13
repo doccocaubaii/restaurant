@@ -1,0 +1,10 @@
+{
+  "roles": {
+    "message": {
+      "delete": "Bạn có chắc muốn xoá vai trò '{{name}}' trò này không?"
+    },
+    "title": {
+      "deleteRole": "Xoá vai trò "
+    }
+  }
+}

@@ -1,0 +1,31 @@
+export interface IAccountingObjectDependent {
+  id?: any;
+  accountingObjectId?: any;
+  relationship?: string;
+  fullName?: string;
+  isOnlyYear?: boolean;
+  birthDate?: any;
+  yearStart?: string;
+  monthStart?: string;
+  yearEnd?: string;
+  monthEnd?: string;
+  year?: string;
+  taxCode?: string;
+  nationality?: string;
+  identificationNumber?: string;
+  deductionStartDate?: any;
+  deductionEndDate?: any;
+  number?: string;
+  book?: string;
+  country?: string;
+  province?: string;
+  district?: string;
+  wardOrCommune?: string;
+  orderPriority?: string;
+  countryToString?: string;
+  provinceToString?: string;
+  districtToString?: string;
+  wardOrCommuneToString?: string;
+  nationalityToString?: string;
+  relationshipToString?: string;
+}

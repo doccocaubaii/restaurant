@@ -1,0 +1,834 @@
+<div class="status-websocket-fail" *ngIf="statusNotifyOrder && statusConnectingWebSocket == false">
+  Không kết nối được tới app EasyPos In
+</div>
+
+<div class="status-websocket-success" *ngIf="statusNotifyOrder && statusConnectingWebSocket">Kết nối tới app EasyPos In thành công</div>
+
+<div
+  class="pos pos-customer overflow-x-hidden"
+  id="pos-customer"
+  [ngClass]="{
+    'pos-mobile-sidebar-toggled': posMobileSidebarToggled
+  }"
+  (click)="hiddenListOrderShowStatus()"
+>
+  <ng-container *ngIf="orderSelected && invoiceConfiguration">
+    <div class="pos-menu">
+      <div class="nav-container">
+        <ul class="nav nav-tabs">
+          <div class="dashboard" routerLink="/easy-pos/home">
+            <img src="/content/img/logo/logo2.png" alt="" />
+          </div>
+          <ng-container *ngIf="menuType == 0; else table">
+            <div class="wrap-list-nav-link" [style]="display === 1 ? '' : utilService.getStyleByCode('DM/BH')">
+              <div class="product-group"><span jhiJsonCustom="DM/BH"></span></div>
+              <li class="nav-item" style="margin-left: 20px" (click)="filterProductByProductGroupId($event)">
+                <input type="checkbox" [(ngModel)]="activeTotalProductGroup" />
+                <a class="nav-link" jhiTranslate="easyPos.bill.status.all"> Tất cả </a>
+              </li>
+              <ng-container *ngFor="let productGroup of listProductGroup">
+                <li class="nav-item" style="margin-left: 20px" (click)="filterProductByProductGroupId($event, productGroup)">
+                  <input type="checkbox" [(ngModel)]="productGroup.status" />
+                  <a class="nav-link">{{ productGroup.name }} </a>
+                </li>
+              </ng-container>
+            </div>
+          </ng-container>
+          <ng-template #table>
+            <div class="wrap-list-nav-link">
+              <div class="area-table">Khu vực</div>
+              <li class="nav-item" (click)="showListArea()">
+                <a class="nav-link col-12" jhiTranslate="easyPos.bill.status.all" [class.active]="activeBorderArea === 0">Tất cả </a>
+              </li>
+              <ng-container *ngFor="let area of listArea">
+                <li class="nav-item" (click)="changeArea(area)">
+                  <a class="nav-link col-12" [class.active]="activeBorderArea === area.id" data-filter="all"> {{ area.name }}</a>
+                </li>
+              </ng-container>
+            </div>
+          </ng-template>
+        </ul>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-5 col-md-8 col-lg-7 col-xl-8 wrap-right-content panel-custom">
+      <ul class="nav nav-tabs d-flex">
+        <li class="nav-item" [style]="display === 1 ? '' : utilService.getStyleByCode('TD/BH')">
+          <a (click)="menuType = 0" [ngClass]="menuType === 0 ? 'active' : ''" class="nav-link">
+            <span class="d-sm-none">Tab 1</span>
+            <span class="d-sm-block d-none">
+              <span jhiTranslate="easyPos.bill.info.menu" jhiJsonCustom="TD/BH"></span>
+            </span>
+          </a>
+        </li>
+        <li class="nav-item" [style]="display === 1 ? '' : utilService.getStyleByCode('PB/BH')">
+          <a (click)="menuType = 1; updateAreaUnit = false" [ngClass]="menuType === 1 ? 'active' : ''" class="nav-link">
+            <span class="d-sm-none">Tab 2</span>
+            <span class="d-sm-block d-none">
+              <span jhiTranslate="easyPos.bill.info.areaTable" jhiJsonCustom="PB/BH"></span>
+            </span>
+          </a>
+        </li>
+        <div *ngIf="menuType == 0" class="search-form" style="order: 10000">
+          <form class="nosubmit search-product-order">
+            <input
+              #searchProduct
+              [formControl]="query"
+              tabindex="0"
+              name="keyword"
+              class="nosubmit search-product-order"
+              (keyup.enter)="searchProductFunction($event)"
+              type="search"
+              placeholder="{{ scanBarCode ? 'Quét mã barcode sản phẩm' : 'Tìm món...' }}"
+            />
+            <i (click)="getListProduct()" class="fa-solid fa-magnifying-glass"></i>
+            <div class="wrap-barcode" [class.active]="scanBarCode" (click)="toggleScanBarCode()">
+              <span [innerHTML]="ICON_BAR_CODE | safeHtml"></span>
+            </div>
+          </form>
+        </div>
+      </ul>
+      <div
+        [class.noProductGroup]="menuType == 0 && !listProductGroup?.length"
+        class="row col-12 tab-content-right panel rounded-0 pt-3 pb-3 m-0 pos-stock"
+      >
+        <div class="pos-stock-body tab-pane fade active show" id="default-tab-1" *ngIf="menuType === 0">
+          <div class="pos-stock-content overflow-hidden">
+            <perfect-scrollbar class="mb-1 mb-xl-3 mb-xxl-3 pos-stock-content-container">
+              <div (scroll)="loadMore($event)" class="product-row d-flex flex-wrap">
+                <!-- <div>{{ productVoucherOrder | json }}</div> -->
+                <div
+                  class="col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 wrap-product-container"
+                  [class.wrap-no-productgroup]="menuType == 0 && !listProductGroup?.length"
+                  (click)="addProduct()"
+                  *jhiHasAnyAuthority="authorProductAdd"
+                >
+                  <div class="pos-stock-product add-product">
+                    <jhi-base-create-product></jhi-base-create-product>
+                  </div>
+                </div>
+                <ng-container *ngFor="let product of listProduct">
+                  <ng-container
+                    *ngIf="
+                      ![spckProduct.code, spgcProduct.code, spVoucherProduct.code, spkmProduct.code, spdvProduct.code].includes(
+                        product.productCode
+                      )
+                    "
+                  >
+                    <div
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 wrap-product-container"
+                      [class.wrap-no-productgroup]="menuType == 0 && !listProductGroup?.length"
+                      (click)="checkVatProduct(product)"
+                    >
+                      <div class="pos-stock-product">
+                        <jhi-base-form-product [product]="product"></jhi-base-form-product>
+                      </div>
+                    </div>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </perfect-scrollbar>
+          </div>
+        </div>
+        <div id="default-tab-2" *ngIf="menuType === 1">
+          <div class="pos-content overflow-hidden" style="background-color: #e6f1f8">
+            <perfect-scrollbar class="pos-content-container">
+              <div class="">
+                <ng-container *ngIf="areaSelected">
+                  <div *ngFor="let area of listAreaShow">
+                    <jhi-manage-area-unit
+                      [area]="area"
+                      [listOrder]="listOrder"
+                      [updateAreaUnit]="updateAreaUnit"
+                      (pickAreaUnit)="selectedAreaUnit($event)"
+                      (updateArea)="getListAreaUpdate()"
+                    ></jhi-manage-area-unit>
+                  </div>
+                </ng-container>
+              </div>
+            </perfect-scrollbar>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row col-xs-6 col-sm-7 col-md-6 col-lg-5 col-xl-4 pos-sidebar" id="pos-sidebar">
+      <div class="pos-sidebar-nav">
+        <div class="me-1 w-100">
+          <div class="area btn-default dropdown-toggle">
+            <div class="left-header">
+              <div class="current-order">
+                <span>{{ orderSelected.code }}</span>
+                <fa-icon
+                  class="cursor-pointer"
+                  *ngIf="listOrder.length > 1"
+                  (click)="removeOrderFromOrderList($event, orderSelected)"
+                  [icon]="'xmark'"
+                ></fa-icon>
+              </div>
+              <ng-container *ngIf="listOrder.length > 1">
+                <div class="list-order-rest cursor-pointer active" (click)="toggleListOrderShowStatus($event)">
+                  <i class="fa-solid fa-file-invoice"></i>
+                  <span>{{ listOrder.length - 1 }}</span>
+                </div>
+              </ng-container>
+              <div class="add cursor-pointer" (click)="createOrder($event)" *jhiHasAnyAuthority="authorBillAdd">
+                <i class="fa fa-plus"></i>
+                <span>Đơn hàng</span>
+              </div>
+            </div>
+            <div class="right-header">
+              <div class="exit cursor-pointer" (click)="returnToOrderList()">
+                <i class="fa fa-xmark"></i>
+              </div>
+            </div>
+          </div>
+          <div class="dropdown-order-list" *ngIf="listOrderShowStatus == true && listOrder.length > 1">
+            <ng-container *ngFor="let order of listOrder">
+              <ng-container *ngIf="order.billDate !== orderSelected.billDate">
+                <a class="dropdown-item d-flex justify-content-between" (click)="changeOrderSelected(order)">
+                  <span
+                    >Đơn hàng: <b>{{ order.code }}</b></span
+                  >
+                  <span *ngIf="order.areaUnitName"
+                    >Bàn: <b>{{ order.areaUnitName }}</b></span
+                  >
+                  <div class="d-flex">
+                    <div class="background-icon remove-color">
+                      <fa-icon [icon]="'xmark'" class="padding-fa" (click)="removeOrderFromOrderList($event, order)"></fa-icon>
+                    </div>
+                  </div>
+                </a>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+        <ul class="nav nav-tabs nav-fill">
+          <div class="row d-flex"></div>
+        </ul>
+      </div>
+
+      <div style="padding: 0 20px">
+        <div class="wrap-customer-delivery order-column">
+          <div class="customer-tax d-flex justify-content-between align-items-center mb-2">
+            <div class="text col-3 d-flex align-items-center">
+              <span jhiTranslate="easyPos.bill.info.customer">Khách hàng:</span>
+            </div>
+            <div class="customer-input col-9" *ngIf="listCustomer.length">
+              <ng-select
+                class="col-10"
+                [items]="listCustomer"
+                bindLabel="name"
+                title="Tìm kiếm khách hàng"
+                bindValue="id"
+                [virtualScroll]="true"
+                [(ngModel)]="orderSelected.customerId"
+                (ngModelChange)="changeCustomer()"
+                [typeahead]="keywordCustomer$"
+                (scrollToEnd)="loadMoreCustomer()"
+              >
+                <ng-template ng-option-tmp let-item="item">
+                  <div ngbTooltip="{{ item.name }}">{{ item.name }}</div>
+                </ng-template>
+              </ng-select>
+
+              <div (click)="addCustomer()" _ngcontent-lth-c393="" class="icon-right-ng-select" *jhiHasAnyAuthority="authorCustomerAdd">
+                <i _ngcontent-veq-c152="" class="fa fa-plus"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-info pb-7px" *ngIf="orderSelected.cardCustomerInfo">
+            <button [disabled]="!orderSelected.pointBalanceCustomer" class="save-button-dialog" (click)="convertPointCustomer()">
+              Quy đổi điểm
+            </button>
+            <div class="col-9">
+              <span class="me-10px"
+                >Hạng thẻ: <b>{{ orderSelected.cardCustomerInfo.cardName }}</b></span
+              >
+              <span class="me-10px"
+                >Điểm tích lũy: <b>{{ orderSelected.pointBalanceCustomer | number }}</b></span
+              >
+              <span
+                >Tiền trong thẻ: <b>{{ orderSelected.moneyBalanceCustomer | number }}</b></span
+              >
+            </div>
+          </div>
+
+          <div *ngIf="invoiceConfiguration.isBuyer" class="customer-tax d-flex justify-content-between align-items-center mb-2">
+            <div class="text col-3 d-flex align-items-center">
+              <span>Tên người mua:</span>
+            </div>
+            <div class="customer-input col-9">
+              <input
+                placeholder="Nhập tên người mua hàng"
+                class="form-control"
+                [(ngModel)]="orderSelected.buyerName"
+                (ngModelChange)="checkStatusNotifyProduct()"
+                type="text"
+              />
+            </div>
+          </div>
+
+          <div
+            class="d-flex justify-content-end align-items-center flex-wrap mb-2 mt-2"
+            [style]="display === 1 ? '' : utilService.getStyleByCode('KG/BH')"
+          >
+            <div class="text delivery-title col-md-12 col-lg-12 col-xl-3">
+              <span jhiTranslate="easyPos.bill.deliveryType.title" jhiJsonCustom="KG/BH"></span> <span>:</span>
+            </div>
+            <div class="delivery-type d-flex justify-content-between align-items-center flex-wrap col-md-11 col-lg-11 col-xl-9">
+              <div class="delivery-item d-flex justify-content-start align-items-center col-4">
+                <input
+                  class="me-10px"
+                  [(ngModel)]="orderSelected.deliveryType"
+                  type="radio"
+                  id="at_table"
+                  name="type_shipping"
+                  [value]="1"
+                />
+                <label for="at_table" jhiTranslate="easyPos.bill.deliveryType.status.atTable">Ăn tại bàn</label><br />
+              </div>
+              <div class="delivery-item d-flex justify-content-center align-items-center col-4">
+                <input
+                  class="me-10px"
+                  [(ngModel)]="orderSelected.deliveryType"
+                  (ngModelChange)="modifyDeliverytypeOrder()"
+                  type="radio"
+                  id="get_away"
+                  name="type_shipping"
+                  [value]="2"
+                />
+                <label for="get_away" jhiTranslate="easyPos.bill.deliveryType.status.takeAway">Mang về</label><br />
+              </div>
+              <div class="delivery-item d-flex justify-content-end align-items-center col-4">
+                <input
+                  class="me-10px"
+                  [(ngModel)]="orderSelected.deliveryType"
+                  (ngModelChange)="modifyDeliverytypeOrder()"
+                  type="radio"
+                  id="shipping"
+                  name="type_shipping"
+                  [value]="3"
+                />
+                <label for="shipping" jhiTranslate="easyPos.bill.deliveryType.status.shipping">Giao hàng</label><br />
+              </div>
+            </div>
+          </div>
+
+          <div
+            *ngIf="orderSelected?.deliveryType == deliveryType.AT_TABLE"
+            class="order-delivery d-flex justify-content-between align-items-center flex-wrap mb-2"
+          >
+            <div
+              data-bs-toggle="tab"
+              (click)="menuType = 1; updateAreaUnit = true"
+              class="pick-table color-blue-400 d-flex justify-content-between align-items-center col-12"
+            >
+              <ng-container *ngIf="!orderSelected.areaUnitId; else haveAreaUnit">
+                <div jhiTranslate="easyPos.bill.info.emptyTable">Chưa có bàn được chọn</div>
+                <div jhiTranslate="easyPos.bill.info.pickTable">Chọn bàn</div>
+              </ng-container>
+              <ng-template #haveAreaUnit>
+                <div class="area-picked">{{ orderSelected.areaUnitName }} - {{ orderSelected.areaName }}</div>
+                <div jhiTranslate="easyPos.bill.info.pickTableAgain">Chọn lại bàn</div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pos-sidebar-body h-100">
+        <div class="tab-content h-100">
+          <div class="tab-pane fade h-100 show active" id="newOrderTab">
+            <div class="pos-table">
+              <ng-container *ngFor="let productSelected of orderSelected.products">
+                <ng-container *ngIf="!returnOrder || productSelected.quantityInitial">
+                  <ng-container *ngIf="productSelected.feature == 1 || productSelected.feature == 2">
+                    <!-- <div>{{orderSelected.products | json}}</div> -->
+                    <div class="row pos-table-row">
+                      <div class="col-12">
+                        <div class="pos-product-thumb">
+                          <div class="wrap-delete-icon" *ngIf="productSelected.productCode !== spdvProduct.code && !returnOrder">
+                            <fa-icon
+                              [icon]="'xmark'"
+                              class="cursor-pointer delete-product"
+                              (click)="removeProductFromCustomerOrder(productSelected)"
+                            ></fa-icon>
+                          </div>
+                          <div
+                            (click)="openDiscountTaxProductComponent(productSelected)"
+                            class="img"
+                            [class.promo-product]="productSelected.feature == spkmProduct.feature"
+                            [style]="{
+                              'background-image':
+                                'url(' +
+                                (!!productSelected.imageUrl ? productSelected.imageUrl : 'content/icon/san-pham/products.svg') +
+                                ')'
+                            }"
+                          >
+                            <div
+                              *ngIf="productSelected.haveTopping && !returnOrder"
+                              (click)="openToppingProduct($event, productSelected)"
+                              class="icon-topping"
+                              [hidden]="statusNotifyOrder && orderSelected.id && productSelected.id"
+                            >
+                              <span class="d-flex align-items-center" [innerHTML]="ICON_TOPPING | safeHtml"></span>
+                            </div>
+                          </div>
+                          <div class="info d-flex justify-content-between align-items-center flex-wrap">
+                            <div (click)="openDiscountTaxProductComponent(productSelected)" class="title cursor-pointer col-8">
+                              <div class="form-product-promo">
+                                <span>{{ productSelected.productName }}</span>
+                                <span *ngIf="productSelected.feature == spkmProduct.feature" class="product-promo">KM</span>
+                              </div>
+                              <ng-container *ngFor="let topping of productSelected.toppings; let indexTopping = index">
+                                <span
+                                  >x{{ topping.displayQuantity }} {{ topping.productName
+                                  }}<span *ngIf="indexTopping !== productSelected.toppings.length - 1">,</span>
+                                </span>
+                              </ng-container>
+                              <div style="font-size: 12px; color: #58647a">{{ productSelected.unit }}</div>
+                            </div>
+                            <div class="col-4 d-flex justify-content-end align-items-center pe-5px">
+                              <ng-container *ngIf="statusNotifyOrder">
+                                <div
+                                  *ngIf="productSelected.deliveredQuantity"
+                                  ngbTooltip="{{ getprocessedQuantityProduct(productSelected) }}"
+                                  class="delivered-quantity"
+                                >
+                                  Đã cung ứng
+                                </div>
+                                <div
+                                  *ngIf="!productSelected.deliveredQuantity && productSelected.processedQuantity"
+                                  ngbTooltip="{{ getprocessedQuantityProduct(productSelected) }}"
+                                  class="processed-quantity"
+                                >
+                                  Đã chế biến
+                                </div>
+                              </ng-container>
+                              <div
+                                class="form-promo-icon"
+                                *ngIf="productSelected.promoValid && productSelected.feature !== spkmProduct.feature && !returnOrder"
+                              >
+                                <svg
+                                  class="promo-icon"
+                                  *ngIf="
+                                    productSelected.promoValid &&
+                                    !productSelected.voucherProducts?.length &&
+                                    invoiceConfiguration.voucherApply === 1 &&
+                                    productSelected.feature !== spkmProduct.feature
+                                  "
+                                  (click)="changeVoucherOrder($event, productSelected)"
+                                  width="20"
+                                  height="20"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M3.75 19.5C3.75 20.2956 4.06607 21.0587 4.62868 21.6213C5.19129 22.1839 5.95435 22.5 6.75 22.5H11.0625C11.1122 22.5 11.1599 22.4802 11.1951 22.4451C11.2302 22.4099 11.25 22.3622 11.25 22.3125V13.6875C11.25 13.6378 11.2302 13.5901 11.1951 13.5549C11.1599 13.5197 11.1122 13.5 11.0625 13.5H4.125C4.02554 13.5 3.93016 13.5395 3.85984 13.6098C3.78951 13.6802 3.75 13.7755 3.75 13.875V19.5ZM11.25 11.8125V6.74999H12.75V11.8125C12.75 11.8622 12.7698 11.9099 12.8049 11.9451C12.8401 11.9802 12.8878 12 12.9375 12H19.5C19.7555 12 20.0091 11.9564 20.25 11.8711C20.6883 11.7155 21.0677 11.4281 21.3363 11.0484C21.6048 10.6686 21.7493 10.2151 21.75 9.74999V8.99999C21.75 8.40326 21.5129 7.83096 21.091 7.409C20.669 6.98705 20.0967 6.74999 19.5 6.74999H17.5997C17.5834 6.74973 17.5674 6.74521 17.5533 6.73688C17.5393 6.72854 17.5277 6.71668 17.5196 6.70248C17.5116 6.68827 17.5074 6.6722 17.5074 6.65587C17.5075 6.63954 17.5118 6.62351 17.52 6.60937C17.954 5.87666 18.0949 5.00697 17.9146 4.17469C17.7343 3.34242 17.246 2.60908 16.5476 2.12173C15.8492 1.63438 14.9925 1.42904 14.1491 1.54689C13.3057 1.66474 12.538 2.09707 12 2.75718C11.462 2.09707 10.6943 1.66474 9.85092 1.54689C9.00752 1.42904 8.15075 1.63438 7.4524 2.12173C6.75405 2.60908 6.26574 3.34242 6.0854 4.17469C5.90506 5.00697 6.04602 5.87666 6.48 6.60937C6.48817 6.62351 6.4925 6.63954 6.49257 6.65587C6.49263 6.6722 6.48843 6.68827 6.48038 6.70248C6.47233 6.71668 6.46071 6.72854 6.44666 6.73688C6.43262 6.74521 6.41664 6.74973 6.40031 6.74999H4.5C3.90326 6.74999 3.33097 6.98705 2.90901 7.409C2.48705 7.83096 2.25 8.40326 2.25 8.99999V9.74999C2.25066 10.2151 2.39517 10.6686 2.66372 11.0484C2.93227 11.4281 3.3117 11.7155 3.75 11.8711C3.99085 11.9564 4.24449 12 4.5 12H11.0625C11.1122 12 11.1599 11.9802 11.1951 11.9451C11.2302 11.9099 11.25 11.8622 11.25 11.8125ZM12.75 4.87499C12.75 4.50415 12.86 4.14164 13.066 3.8333C13.272 3.52496 13.5649 3.28463 13.9075 3.14272C14.2501 3.00081 14.6271 2.96367 14.9908 3.03602C15.3545 3.10837 15.6886 3.28695 15.9508 3.54917C16.213 3.81139 16.3916 4.14549 16.464 4.5092C16.5363 4.87291 16.4992 5.24991 16.3573 5.59253C16.2154 5.93514 15.975 6.22797 15.6667 6.434C15.3584 6.64003 14.9958 6.74999 14.625 6.74999H12.75V4.87499ZM9.24094 3.00468C9.49781 2.98627 9.75572 3.02097 9.9986 3.10662C10.2415 3.19227 10.4641 3.32704 10.6526 3.50252C10.8411 3.67799 10.9914 3.89042 11.0942 4.12655C11.197 4.36269 11.25 4.61746 11.25 4.87499V6.74999H9.375C8.89017 6.74875 8.42466 6.55975 8.07619 6.22266C7.72771 5.88557 7.52336 5.4266 7.50601 4.94208C7.48867 4.45756 7.65968 3.98515 7.98316 3.62401C8.30664 3.26286 8.75744 3.04106 9.24094 3.00515V3.00468ZM12.9375 22.5H17.25C18.0456 22.5 18.8087 22.1839 19.3713 21.6213C19.9339 21.0587 20.25 20.2956 20.25 19.5V13.875C20.25 13.7755 20.2105 13.6802 20.1402 13.6098C20.0698 13.5395 19.9745 13.5 19.875 13.5H12.9375C12.8878 13.5 12.8401 13.5197 12.8049 13.5549C12.7698 13.5901 12.75 13.6378 12.75 13.6875V22.3125C12.75 22.3622 12.7698 22.4099 12.8049 22.4451C12.8401 22.4802 12.8878 22.5 12.9375 22.5Z"
+                                  />
+                                </svg>
+                                <svg
+                                  class="promo-icon"
+                                  *ngIf="productSelected.promoValid && productSelected.voucherProducts?.length"
+                                  (click)="changeVoucherOrder($event, productSelected)"
+                                  width="20"
+                                  height="20"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M22 10.92L19.26 9.32999C21.9 7.07999 19.25 2.87999 16.08 4.30999L15.21 4.67999L15.1 3.71999C15 2.63999 14.44 1.86999 13.7 1.41999C12.06 0.466986 9.56 1.11999 9.16 3.49999L6.41 1.91999C5.45 1.35999 4.23 1.68999 3.68 2.64999L2.68 4.37999C2.4 4.85999 2.57 5.46999 3.05 5.74999L10.84 10.25L12.34 7.64999L14.07 8.64999L12.57 11.25L20.36 15.75C20.84 16 21.46 15.86 21.73 15.38L22.73 13.65C23.28 12.69 22.96 11.47 22 10.92ZM12.37 4.99999C11.5 5.24999 10.8 4.31999 11.24 3.54999C11.5 3.06999 12.13 2.90999 12.61 3.17999C13.38 3.62999 13.23 4.78999 12.37 4.99999ZM17.56 7.99999C16.7 8.24999 16 7.31999 16.44 6.54999C16.71 6.06999 17.33 5.90999 17.8 6.17999C18.57 6.62999 18.42 7.78999 17.56 7.99999ZM20.87 16.88C21.28 16.88 21.67 16.74 22 16.5V20C22 21.11 21.11 22 20 22H4C3.46957 22 2.96086 21.7893 2.58579 21.4142C2.21071 21.0391 2 20.5304 2 20V11H10.15L11 11.5V20H13V12.65L19.87 16.61C20.17 16.79 20.5 16.88 20.87 16.88Z"
+                                  />
+                                </svg>
+                              </div>
+                              <div
+                                (click)="changeProductVoucherQuantity(productSelected)"
+                                class=""
+                                *ngIf="
+                                  productSelected.promoValid &&
+                                  productSelected.feature !== spkmProduct.feature &&
+                                  returnOrder &&
+                                  productSelected.voucherProducts.length
+                                "
+                              >
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <g clip-path="url(#clip0_363_3438)">
+                                    <path
+                                      d="M13.7813 1.84062L14.1594 2.21874C14.4531 2.51249 14.4531 2.98749 14.1594 3.27812L13.25 4.19062L11.8094 2.74999L12.7188 1.84062C13.0125 1.54687 13.4875 1.54687 13.7781 1.84062H13.7813ZM6.55625 8.00625L10.75 3.80937L12.1906 5.24999L7.99375 9.44375C7.90313 9.53437 7.79063 9.59999 7.66875 9.63437L5.84063 10.1562L6.3625 8.32812C6.39688 8.20625 6.4625 8.09374 6.55313 8.00312L6.55625 8.00625ZM11.6594 0.781244L5.49375 6.94374C5.22188 7.21562 5.025 7.54999 4.92188 7.91562L4.02813 11.0406C3.95313 11.3031 4.025 11.5844 4.21875 11.7781C4.4125 11.9719 4.69375 12.0437 4.95625 11.9687L8.08125 11.075C8.45 10.9687 8.78438 10.7719 9.05313 10.5031L15.2188 4.34062C16.0969 3.46249 16.0969 2.03749 15.2188 1.15937L14.8406 0.781244C13.9625 -0.0968811 12.5375 -0.0968811 11.6594 0.781244ZM2.75 1.99999C1.23125 1.99999 0 3.23124 0 4.74999V13.25C0 14.7687 1.23125 16 2.75 16H11.25C12.7688 16 14 14.7687 14 13.25V9.75C14 9.33437 13.6656 9 13.25 9C12.8344 9 12.5 9.33437 12.5 9.75V13.25C12.5 13.9406 11.9406 14.5 11.25 14.5H2.75C2.05938 14.5 1.5 13.9406 1.5 13.25V4.74999C1.5 4.05937 2.05938 3.49999 2.75 3.49999H6.25C6.66563 3.49999 7 3.16562 7 2.74999C7 2.33437 6.66563 1.99999 6.25 1.99999H2.75Z"
+                                      fill="#004671"
+                                    />
+                                  </g>
+                                  <defs>
+                                    <clipPath id="clip0_363_3438">
+                                      <rect width="16" height="16" fill="white" />
+                                    </clipPath>
+                                  </defs>
+                                </svg>
+                              </div>
+                            </div>
+
+                            <ng-container *ngIf="productSelected.voucherProducts?.length">
+                              <ng-container *ngFor="let productVoucher of productSelected.voucherProducts">
+                                <ng-container *ngIf="returnOrder ? productVoucher.quantityInitial : true">
+                                  <div class="form-product-promo col-6">
+                                    <span
+                                      >x{{ productVoucher.quantity }}
+                                      <span *ngIf="productVoucher.quantityInitial && returnOrder"
+                                        >/{{ productVoucher.quantityInitial }}</span
+                                      >
+                                      {{ productVoucher.productName }}</span
+                                    >
+                                    <span class="product-promo">KM</span>
+                                  </div>
+                                  <div class="col-6 text-end d-flex justify-content-between">
+                                    <div>
+                                      <s *ngIf="productVoucher.amount" style="color: rgb(128, 128, 128); font-size: 14px"
+                                        >{{ productVoucher.amount | number }} đ</s
+                                      >
+                                    </div>
+                                    <div>{{ productVoucher.totalPreTax | number }} đ</div>
+                                  </div>
+                                </ng-container>
+                              </ng-container>
+                            </ng-container>
+                            <div class="col-6 input-group qty" [class.width-50]="productSelected.productCode == spdvProduct.code">
+                              <ng-container *ngIf="productSelected.productCode !== spdvProduct.code">
+                                <ng-container *ngIf="productSelected.feature !== spkmProduct.feature || returnOrder; else promoProduct">
+                                  <div class="input-group-append" (click)="decreaseProductQuantity(productSelected)">
+                                    <a class="btn btn-default"><i class="fa fa-minus"></i></a>
+                                  </div>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    [ngStyle]="{ 'width.px': productSelected.inputWidth }"
+                                    [title]="productSelected.quantity"
+                                    [(ngModel)]="productSelected.quantity"
+                                    jhiCurrencyNumber
+                                    [maxvalue]="
+                                      returnOrder
+                                        ? productSelected.quantityInitial
+                                        : !invoiceConfiguration.overStock && productSelected.inventoryTracking
+                                        ? productSelected.quantityProduct
+                                        : undefined
+                                    "
+                                    [numberRound]="lastCompany.roundScaleQuantity"
+                                    (blur)="checkProductQuantity(productSelected)"
+                                    (ngModelChange)="changeProductSelectedQuantity(productSelected)"
+                                  />
+                                  <span *ngIf="productSelected.quantityInitial && returnOrder" class="quantity-initial"
+                                    >/{{ productSelected.quantityInitial }}</span
+                                  >
+                                  <div class="input-group-prepend" (click)="increaseProductQuantity(productSelected)">
+                                    <a class="btn btn-default"><i class="fa fa-plus"></i></a>
+                                  </div>
+                                </ng-container>
+                                <ng-template #promoProduct>
+                                  <div>Số lượng: {{ productSelected.quantity }}</div>
+                                </ng-template>
+                              </ng-container>
+                            </div>
+                            <div class="col-6 text-end">
+                              <div *ngIf="productSelected.feature == spkmProduct.feature">
+                                <s *ngIf="productSelected.totalAmount" style="color: rgb(128, 128, 128); font-size: 14px"
+                                  >{{ productSelected.totalAmount | number }} đ</s
+                                >
+                              </div>
+                              <ng-container *ngIf="productSelected.feature !== spkmProduct.feature; else normalProduct">
+                                <div>{{ productSelected.displayAmount | number }} đ</div>
+                              </ng-container>
+                              <ng-template #normalProduct>
+                                <div>0 đ</div>
+                              </ng-template>
+                            </div>
+
+                            <ng-container
+                              *ngIf="
+                                productSelected.discountAmount &&
+                                (invoiceConfiguration.typeDiscount === invoiceDiscount.productValue ||
+                                  invoiceConfiguration.typeDiscount === invoiceDiscount.orderProductValue)
+                              "
+                            >
+                              <div class="discount-amount title col-6" jhiTranslate="easyPos.bill.info.discount">Giảm giá</div>
+
+                              <div class="discount-amount col-6 text-end">{{ productSelected.discountAmount | number }} đ</div>
+                            </ng-container>
+
+                            <ng-container
+                              *ngIf="
+                                invoiceConfiguration.invoiceType === invoiceType.invoiceMultiple &&
+                                productSelected.displayVatAmount &&
+                                productSelected.feature !== spkmProduct.feature
+                              "
+                            >
+                              <div class="vat-rate title col-6">Thuế suất {{ productSelected.vatRate }}%</div>
+                              <div class="vat-rate-color col-6 text-end">{{ productSelected.displayVatAmount | number }} đ</div>
+                            </ng-container>
+                            <ng-container
+                              *ngIf="
+                                productSelected.displayVatAmount &&
+                                invoiceConfiguration.invoiceType === invoiceType.invoiceSale &&
+                                invoiceConfiguration.discountVat == 1 &&
+                                invoiceConfiguration.taxReductionType == 1
+                              "
+                            >
+                              <div class="vat-rate title col-6">
+                                <span>Thuế giảm trừ</span>
+                              </div>
+                              <div class="vat-rate-color col-6 text-end">
+                                {{ productSelected.displayVatAmount | positiveNumber | number }} đ
+                              </div>
+                            </ng-container>
+                            <ng-container
+                              *ngIf="
+                                productSelected.displayVatAmount &&
+                                invoiceConfiguration.invoiceType === invoiceType.invoiceMultiple &&
+                                productSelected.feature !== spkmProduct.feature
+                              "
+                            >
+                              <div class="vat-amount title col-6" jhiTranslate="global.info.total">Tổng</div>
+                              <div class="text-end col-6">{{ productSelected.displayTotalAmount | number }} đ</div>
+                            </ng-container>
+                          </div>
+                          <ng-container *ngIf="activeRemoveProductSelected == productSelected.productUniqueId">
+                            <div class="pos-remove-confirmation">
+                              <span [innerHTML]="ICON_DELETE_SM | safeHtml"></span>
+                              <div class="alert" jhiTranslate="easyPos.product.notify.delete">Bạn có chắc chắn muốn xóa sản phẩm?</div>
+                              <a class="btn btn-white ms-auto me-2" jhiTranslate="global.entity.action.cancel" (click)="cancel()">Hủy</a>
+                              <a
+                                class="btn btn-danger"
+                                jhiTranslate="global.entity.action.delete"
+                                (click)="removeProductFromCustomerOrder(productSelected)"
+                                >Xóa</a
+                              >
+                            </div>
+                          </ng-container>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="productSelected.feature == spgcProduct.feature">
+                    <div class="row pos-table-row">
+                      <div class="col-12">
+                        <div class="pos-product-thumb">
+                          <div
+                            class="img"
+                            [style]="{
+                              'background-image':
+                                'url(' +
+                                (!!productSelected.imageUrl ? productSelected.imageUrl : 'content/icon/san-pham/products.svg') +
+                                ')'
+                            }"
+                          ></div>
+                          <div class="info d-flex justify-content-between align-items-start flex-wrap">
+                            <div>{{ productSelected.productName }}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+              <!-- <div>{{listCustomer | json}}</div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="wrap-pos-sidebar-footer">
+        <div class="pos-sidebar-footer order-column">
+          <div class="d-flex align-items-center checkout-detail justify-content-between" (click)="togglePosSidebarFooter()">
+            <div>
+              <span class="text" jhiTranslate="easyPos.bill.checkout.detail">Chi tiết thanh toán</span>
+            </div>
+            <div>
+              <i *ngIf="posSidebarFooterStatus" class="cursor-pointer fa-solid fa-chevron-down"></i>
+              <i *ngIf="!posSidebarFooterStatus" class="cursor-pointer fa-solid fa-chevron-up"></i>
+            </div>
+          </div>
+          <ng-container *ngIf="posSidebarFooterStatus" class="order-column">
+            <div
+              class="d-flex justify-content-between align-items-center mb-1"
+              [style]="display === 1 ? '' : utilService.getStyleByCode('ND/BH')"
+            >
+              <span class="text">
+                <span jhiJsonCustom="ND/BH"></span>
+                <span *ngIf="orderSelected.countProduct">( {{ orderSelected.countProduct }} sản phẩm )</span></span
+              >
+              <span class="fw-600"> {{ orderSelected.amount < 0 ? 0 : (orderSelected.amount | number) }} đ </span>
+            </div>
+            <div
+              (click)="changeDiscountAmountOrder()"
+              *ngIf="
+                invoiceConfiguration.typeDiscount === invoiceDiscount.orderValue ||
+                invoiceConfiguration.typeDiscount === invoiceDiscount.orderProductValue
+              "
+              [style]="display === 1 ? '' : utilService.getStyleByCode('GGDH/BH')"
+              class="discount-order d-flex justify-content-between align-items-center cursor-pointer mb-1"
+            >
+              <div class="text">
+                <span>Giảm giá đơn hàng</span>
+              </div>
+              <span class="fw-600">{{ productDiscountTaxOrder?.totalPreTax || 0 | number }} đ </span>
+            </div>
+
+            <div
+              (click)="changeVoucherOrder()"
+              *ngIf="invoiceConfiguration.voucherApply === 1"
+              class="discount-order d-flex justify-content-between align-items-center cursor-pointer mb-1"
+              [style]="display === 1 ? '' : utilService.getStyleByCode('KM/BH')"
+            >
+              <div class="text">
+                <span [innerHTML]="ICON_VOUCHER_BLUE | safeHtml"></span>
+                <span jhiJsonCustom="KM/BH"></span>
+                <ng-container *ngIf="returnOrder" ; else orderNormal>
+                  <span *ngIf="orderSelected.voucherReturns?.length">({{ orderSelected.voucherReturns.length }})</span>
+                </ng-container>
+                <ng-template #orderNormal>
+                  <span *ngIf="orderSelected.vouchers?.length">({{ orderSelected.vouchers.length }})</span>
+                </ng-template>
+              </div>
+              <span class="fw-600">{{ productVoucherOrder?.totalPreTax || 0 | number }} đ </span>
+            </div>
+
+            <div
+              class="d-flex justify-content-between align-items-center cursor-pointer mb-1"
+              [style]="display === 1 ? '' : utilService.getStyleByCode('TT/BH')"
+            >
+              <span class="text" jhiJsonCustom="TT/BH"></span>
+              <span class="fw-600"> {{ orderSelected.totalPreTax | number }} đ </span>
+            </div>
+            <ng-container
+              *ngIf="invoiceConfiguration.serviceChargeConfig && invoiceConfiguration.invoiceType == invoiceType.invoiceMultiple"
+            >
+              <div class="d-flex justify-content-between align-items-center cursor-pointer mb-1">
+                <div (click)="toggleSPDV()" class="service-product">
+                  <input type="checkbox" [ngModel]="orderSelected.checkSPDV" />
+                  <span class="text">Thêm hàng hóa dịch vụ (tỷ lệ {{ invoiceConfiguration.serviceChargeConfig[0].value * 100 }} %)</span>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between align-items-center vat-rate-color cursor-pointer mb-1">
+                <span class="text">Tổng tiền phí dịch vụ</span>
+                <span class="fw-600"> {{ orderSelected.extraConfig?.svc5 || 0 | number }} đ </span>
+              </div>
+            </ng-container>
+            <div
+              class="d-flex justify-content-between align-items-center vat-rate-color cursor-pointer mb-1"
+              *ngIf="invoiceConfiguration.invoiceType === invoiceType.invoiceOne"
+              [style]="display === 1 ? '' : utilService.getStyleByCode('TDH/BH')"
+              (click)="changeVatRateOrder()"
+            >
+              <span class="text">Thuế đơn hàng </span>
+              <ng-container *ngIf="orderSelected.vatRate >= 0; else noVatRateValid">
+                <span class="fw-600"> {{ orderSelected.vatRate > 0 ? orderSelected.vatRate : 0 }}%</span>
+              </ng-container>
+              <ng-template #noVatRateValid>
+                <span class="fw-600"> {{ orderSelected.vatRateName }}</span>
+              </ng-template>
+            </div>
+            <div
+              (click)="changeVatAmountOrder()"
+              class="d-flex justify-content-between align-items-center vat-rate-color cursor-pointer mb-1"
+              *ngIf="invoiceConfiguration.invoiceType !== invoiceType.invoiceSale"
+              [style]="display === 1 ? '' : utilService.getStyleByCode('TTT/BH')"
+            >
+              <span class="text" jhiTranslate="easyPos.bill.checkout.vatAmount">Tổng tiền thuế </span>
+              <span class="fw-600"> {{ orderSelected.vatAmount | number }} đ </span>
+            </div>
+
+            <div
+              *ngIf="invoiceConfiguration.invoiceType == 0 && invoiceConfiguration.discountVat == 1"
+              (click)="changeVatRateDiscountProductOrder()"
+              [style]="display === 1 ? '' : utilService.getStyleByCode('GTT/BH')"
+              class="discount-order d-flex justify-content-between align-items-center cursor-pointer mb-1"
+            >
+              <div class="text">
+                <span>Giảm trừ thuế</span>
+              </div>
+              <span class="fw-600">{{ orderSelected.discountVatAmount || 0 | number }} đ </span>
+            </div>
+          </ng-container>
+          <div
+            class="d-flex justify-content-between align-items-center total-amount"
+            [style]="display === 1 ? '' : utilService.getStyleByCode('TP/BH')"
+          >
+            <span class="text" jhiTranslate="easyPos.bill.checkout.totalAmount" jhiJsonCustom="TP/BH"></span>
+            <span class="fw-600"> {{ orderSelected.totalAmount | number }} đ </span>
+          </div>
+        </div>
+        <div class="pos-sidebar-footer order-column">
+          <div
+            class="d-flex justify-content-start align-items-center cursor-pointer"
+            (click)="d3.toggle()"
+            [style]="display === 1 ? '' : utilService.getStyleByCode('NT/BH')"
+          >
+            <i class="fa-solid fa-calendar-days me-10px"></i>
+            <span class="fw-600 me-10px"><span jhiJsonCustom="NT/BH"></span> : {{ orderSelected.billDate | dateFormat }}</span>
+            <i class="fa-solid fa-pencil"></i>
+            <input
+              class="form-control"
+              [(ngModel)]="orderSelected.billDate"
+              style="visibility: hidden; width: 20px"
+              placeholder="DD-MM-YYYY"
+              name="d2"
+              ngbDatepicker
+              #d3="ngbDatepicker"
+              [maxDate]="utilService.getCurrentDate()"
+            />
+          </div>
+          <div
+            class="d-flex justify-content-start align-items-center flex-wrap cursor-pointer"
+            (click)="toggleStatusDesciptionOrder()"
+            [style]="display === 1 ? '' : utilService.getStyleByCode('GC/BH')"
+          >
+            <i class="fa-solid fa-message me-10px"></i>
+            <span class="fw-600 me-10px" jhiJsonCustom="GC/BH"></span>
+            <i class="fa-solid fa-pencil"></i>
+            <textarea
+              id="myTextarea"
+              [hidden]="!statusDesciptionOrder"
+              #descriptionOrder
+              (blur)="statusDesciptionOrder = false"
+              [(ngModel)]="orderSelected.description"
+              class="col-12 form-control p-1"
+              type="text"
+              row="3"
+            ></textarea>
+          </div>
+        </div>
+        <div class="pos-sidebar-footer">
+          <div class="btn-row" [class.flex-row-reverse]="statusNotifyOrder">
+            <button *ngIf="returnOrder" (click)="cancelOrder()" class="btn btn-default cancel-order">
+              <fa-icon [icon]="'xmark'"></fa-icon>
+              <span>Hủy</span>
+            </button>
+            <ng-container *ngIf="!returnOrder">
+              <ng-container *ngIf="!statusNotifyOrder; else normal">
+                <button (click)="saveOrder()" class="btn btn-primary save-order" *jhiHasAnyAuthority="authorBillNotify">
+                  <fa-icon [icon]="'download'"></fa-icon>
+                  <span jhiTranslate="easyPos.bill.action.save">Lưu đơn</span>
+                </button>
+              </ng-container>
+              <ng-template #normal>
+                <button
+                  [disabled]="!statusNotifyProduct"
+                  (click)="saveOrder()"
+                  class="btn btn-primary save-order"
+                  *jhiHasAnyAuthority="authorBillNotify"
+                >
+                  <fa-icon [icon]="'bell'"></fa-icon>
+                  <span>Thông báo</span>
+                </button>
+              </ng-template>
+            </ng-container>
+            <button (click)="openConfirmCheckoutForm()" class="btn btn-success checkout-order" *jhiHasAnyAuthority="authorBillDone">
+              <fa-icon [icon]="'dollar'"></fa-icon>
+              <span jhiTranslate="easyPos.bill.action.pay">Thanh toán</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

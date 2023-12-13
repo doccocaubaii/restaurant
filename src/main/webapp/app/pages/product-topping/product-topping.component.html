@@ -1,0 +1,127 @@
+<h1 class="page-header mb-0" jhiTranslate="easyPos.topping.title"></h1>
+<div class="group-form-custom mb-25px">
+  <div class="group-item-custom">
+    <label class="form-label label-search" jhiTranslate="global.info.keyword">Từ khóa</label>
+    <div class="item-search input-text-custom">
+      <input
+        name="keyword"
+        [(ngModel)]="filterTopping.keyword"
+        (ngModelChange)="onDeleteKeywordSearch()"
+        class="form-control"
+        type="search"
+        (keyup.enter)="onSearch()"
+        placeholder="Tìm kiếm..."
+      />
+    </div>
+  </div>
+  <div class="form-btn-search">
+    <button (click)="onSearch()" class="btn-search">
+      <fa-icon icon="search"></fa-icon>
+      <span jhiTranslate="global.info.search"></span>
+    </button>
+  </div>
+</div>
+
+<div class="panel-action">
+  <ul class="nav" *jhiHasAnyAuthority="authorADD">
+    <li class="nav-action" (click)="onCreateToppingGroup()">
+      <a class="nav-link nav-link-action">
+        <i class="fa-solid fa-plus"></i>
+        <span class="d-sm-block ms-2" jhiTranslate="easyPos.topping.button.create">Thêm mới</span>
+      </a>
+    </li>
+  </ul>
+  <div class="d-flex justify-content-end align-items-center" style="margin-left: auto; height: 45px">
+    <div class="form-page-size">
+      <label
+        class="form-label label-search me-2 mb-0 text-bold"
+        jhiTranslate="global.info.totalParam"
+        [translateValues]="{ count: totalItems || 0 }"
+      ></label>
+      <div class="form-select-size">
+        <ng-select
+          [items]="sizes"
+          class="select-value select-size"
+          bindLabel="name"
+          bindValue="id"
+          placeholder="Tất cả"
+          [(ngModel)]="filterTopping.size"
+          (ngModelChange)="getToppings()"
+        >
+        </ng-select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-pane fade active show">
+  <div class="row">
+    <div class="col-xl-12">
+      <div class="panel panel-inverse">
+        <div class="table-responsive">
+          <table class="table editing-table">
+            <thead>
+              <tr class="table-custom-header">
+                <th jhiTranslate="easyPos.topping.table.stt"></th>
+                <th jhiTranslate="easyPos.topping.table.name"></th>
+                <th jhiTranslate="easyPos.topping.table.requiredOptional"></th>
+                <th jhiTranslate="easyPos.topping.table.numberOption"></th>
+                <th jhiTranslate="easyPos.topping.table.numberProductLink"></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody *ngIf="totalItems > 0">
+              <ng-container *ngFor="let groupTopping of lstTopping; index as i">
+                <tr class="table-custom-body" (dblclick)="onUpdateToppingGroup(groupTopping)">
+                  <td>{{ i + 1 + (filterTopping.page - 1) * filterTopping.size }}</td>
+                  <td class="break-word-table">{{ groupTopping.name }}</td>
+                  <td class="break-word-table">{{ groupTopping.requiredOptional ? 'Bắt buộc' : 'Không bắt buộc' }}</td>
+                  <td class="break-word-table text-align-right">{{ groupTopping.numberOption | number }}</td>
+                  <td class="break-word-table text-align-right">{{ groupTopping.numberProductLink | number }}</td>
+                  <td>
+                    <div class="list-action">
+                      <i
+                        class="fa-solid fa-pen-to-square"
+                        ngbTooltip="{{ 'global.button.edit' | translate }}"
+                        (click)="onUpdateToppingGroup(groupTopping)"
+                        *jhiHasAnyAuthority="authorUPDATE"
+                      ></i>
+                      <i
+                        class="fa-solid fa-trash-can"
+                        ngbTooltip="{{ 'global.button.delete' | translate }}"
+                        (click)="onConfirmDeleteGroupTopping(groupTopping)"
+                        *jhiHasAnyAuthority="authorDELETE"
+                      ></i>
+                      <!--                      <i class="fa-solid fa-ellipsis-vertical"></i>-->
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+            <tbody *ngIf="totalItems === 0">
+              <tr class="table-not-data">
+                <td colspan="8">
+                  <span jhiTranslate="easyPos.product.info.notData"></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="group-page-size">
+    <div class="from-pagination d-flex justify-content-center">
+      <ngb-pagination
+        class="pagination"
+        [collectionSize]="totalItems"
+        [pageSize]="filterTopping.size"
+        [page]="filterTopping.page"
+        aria-label="Default pagination"
+        [directionLinks]="true"
+        [maxSize]="5"
+        (pageChange)="loadMore($event)"
+      ></ngb-pagination>
+    </div>
+  </div>
+</div>

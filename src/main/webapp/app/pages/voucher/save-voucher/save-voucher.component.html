@@ -1,0 +1,299 @@
+<div class="modal-header" style="background-color: #0074bd; border-radius: 4px 4px 0px 0px; height: 56px">
+  <h5 *ngIf="voucher.id < 1" style="color: white" class="modal-title" jhiTranslate="easyPos.voucher.titleCreate">Thêm voucher</h5>
+  <h5 *ngIf="voucher.id > 0" style="color: white" class="modal-title" jhiTranslate="easyPos.voucher.titleUpdate">Cập nhật voucher</h5>
+  <button type="button" class="btn-close" (click)="dismiss()">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+<div class="modal-body">
+  <form class="detail-row" #cusForm="ngForm">
+    <div class="col-in-row">
+      <div class="d-flex">
+        <div class="col col-left">
+          <div class="my-form-group position-relative">
+            <label for="voucherCode" class="my-form-label"
+              ><span jhiTranslate="easyPos.voucher.info.table-th.voucherCode">Mã voucher </span><span style="color: red">*</span>
+            </label>
+            <div class="user-input-text-div">
+              <input
+                appEnterKeyFocus
+                class="option-title input-value form-control"
+                placeholder="Nhập mã voucher"
+                id="voucherCode"
+                required
+                name="voucherCode"
+                #name="ngModel"
+                [(ngModel)]="voucher.code"
+                maxlength="400"
+              />
+            </div>
+            <div
+              id="aler-name"
+              class="my-form-group pt-0 position-absolute"
+              [hidden]="name.valid || name.untouched"
+              placement="right"
+              ngbTooltip="{{ 'easyPos.voucher.error.emptyCode' | translate }}"
+            >
+              <div class="alert-user-input">
+                <i class="fas fa-circle-exclamation"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col col-right">
+          <div class="my-form-group position-relative">
+            <label class="my-form-label"
+              ><span jhiTranslate="easyPos.voucher.info.voucherName">Tên voucher </span><span style="color: red">*</span>
+            </label>
+            <div class="user-input-text-div position-relative">
+              <input
+                appEnterKeyFocus=""
+                class="input-value form-control"
+                placeholder="Nhập tên voucher"
+                id="name"
+                type="text"
+                required
+                name="name"
+                #vname="ngModel"
+                [(ngModel)]="voucher.name"
+                maxlength="100"
+                minlength="1"
+              />
+            </div>
+            <div
+              style="top: 44px; right: -17px"
+              class="my-form-group pt-0 position-absolute"
+              [hidden]="vname.valid || vname.untouched"
+              placement="left"
+              ngbTooltip="{{ 'easyPos.voucher.error.emptyName' | translate }}"
+            >
+              <div class="alert-user-input">
+                <i class="fas fa-circle-exclamation"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="my-form-group position-relative d-flex">
+        <div class="d-flex align-items-center justify-content-between" style="width: 70%; padding-right: 15%">
+          <label class="my-form-label"
+            ><span jhiTranslate="easyPos.voucher.info.table-th.discountBy">Voucher giảm giá theo </span
+            ><span style="color: red"> *</span></label
+          >
+          <div class="delivery-item d-flex justify-content-start align-items-center">
+            <input
+              class="me-10px"
+              [(ngModel)]="voucher.conditions[0].discountType"
+              type="radio"
+              id="percent"
+              name="type_voucher"
+              [value]="0"
+              (ngModelChange)="clearByPercent()"
+            />
+            <label for="percent" style="white-space: nowrap; font-size: 14px" class="my-form-label">Theo phần trăm (%)</label><br />
+          </div>
+          <div class="delivery-item d-flex justify-content-center align-items-center">
+            <input
+              class="me-10px"
+              [(ngModel)]="voucher.conditions[0].discountType"
+              type="radio"
+              id="cash"
+              name="type_voucher"
+              [value]="1"
+            />
+            <label for="cash" style="white-space: nowrap; font-size: 14px" class="my-form-label">Theo giá tiền </label><br />
+          </div>
+        </div>
+        <div class="user-input-text-div" style="width: 30%" *ngIf="voucher.conditions[0].discountType === 0">
+          <input
+            appEnterKeyFocus
+            class="input-value form-control"
+            placeholder="Nhập giá trị"
+            id="value1"
+            type="text"
+            required
+            name="value1"
+            #value1="ngModel"
+            jhiStringNumberOnly
+            [maxvalue]="100"
+            [(ngModel)]="voucher.conditions[0].discountValue"
+            maxlength="50"
+            minlength="1"
+          />
+          <div
+            style="top: 20px; right: -17px"
+            class="my-form-group pt-0 position-absolute"
+            [hidden]="value1.valid || value1.untouched"
+            placement="left"
+            ngbTooltip="{{ 'easyPos.voucher.error.emptyValue' | translate }}"
+          >
+            <div class="alert-user-input">
+              <i class="fas fa-circle-exclamation"></i>
+            </div>
+          </div>
+        </div>
+        <div class="user-input-text-div" style="width: 30%" *ngIf="voucher.conditions[0].discountType === 1">
+          <input
+            appEnterKeyFocus
+            class="input-value form-control"
+            placeholder="Nhập giá trị"
+            id="value2"
+            type="text"
+            required
+            name="value2"
+            #value2="ngModel"
+            jhiStringNumberOnly
+            [(ngModel)]="voucher.conditions[0].discountValue"
+            maxlength="50"
+            minlength="1"
+          />
+          <div
+            style="top: 20px; right: -17px"
+            class="my-form-group pt-0 position-absolute"
+            [hidden]="value2.valid || value2.untouched"
+            placement="left"
+            ngbTooltip="{{ 'easyPos.voucher.error.emptyValue' | translate }}"
+          >
+            <div class="alert-user-input">
+              <i class="fas fa-circle-exclamation"></i>
+            </div>
+          </div>
+        </div>
+        <!--        <div class="user-input-text-div position-relative">-->
+        <!--          <div class="item-search from-select">-->
+        <!--            <ng-select-->
+        <!--              placeholder="Chọn loại hình giảm giá"-->
+        <!--              class="css-ng-select select-value form-control"-->
+        <!--              style="font-size: 0.875rem"-->
+        <!--              id="type"-->
+        <!--              [items]="typeDiscount"-->
+        <!--              name="type"-->
+        <!--              bindValue="id"-->
+        <!--              bindLabel="value"-->
+        <!--              [(ngModel)]="voucher.discountType"-->
+        <!--              [clearable]="false"-->
+        <!--            >-->
+        <!--            </ng-select>-->
+        <!--          </div>-->
+        <!--        </div>-->
+      </div>
+      <div class="my-form-group d-flex align-items-center">
+        <label style="width: 20%" class="my-form-label"><span>Thời gian áp dụng</span><span style="color: red"> *</span></label>
+        <div style="width: 35%; margin-left: 5%" class="pe-10px d-flex align-items-center">
+          <label class="my-form-label pe-10px" style="white-space: nowrap; font-size: 14px" jhiTranslate="global.info.fromDate"></label>
+          <div class="item-search">
+            <input
+              appEnterKeyFocus
+              class="form-control"
+              placeholder="DD/MM/YYYY"
+              name="d3"
+              ngbDatepicker
+              #d3="ngbDatepicker"
+              [(ngModel)]="fromDate"
+              (ngModelChange)="autoSelectStatus()"
+            />
+            <button class="btn form-control btn-datepicker" (click)="d3.toggle()" type="button">
+              <fa-icon [icon]="'calendar-alt'"></fa-icon>
+            </button>
+          </div>
+        </div>
+        <div style="width: 35%; margin-left: 5%" class="ps-10px d-flex align-items-center">
+          <label class="my-form-label pe-10px" style="white-space: nowrap; font-size: 14px" jhiTranslate="global.info.toDate"></label>
+          <div class="item-search">
+            <input
+              appEnterKeyFocus
+              class="form-control"
+              placeholder="DD/MM/YYYY"
+              name="d2"
+              [minDate]="utilsService.getFromToMoment(getAfterPresent(fromDate), true)"
+              [(ngModel)]="toDate"
+              ngbDatepicker
+              #d2="ngbDatepicker"
+            />
+            <button class="btn form-control btn-datepicker" (click)="d2.toggle()" type="button">
+              <fa-icon [icon]="'calendar-alt'"></fa-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="my-form-group position-relative d-flex">
+        <div
+          class="d-flex align-items-center justify-content-between"
+          style="padding-right: 15%"
+          [ngStyle]="voucher.id ? { width: '100%' } : { width: ' 70%' }"
+        >
+          <label class="my-form-label"><span>Trạng thái hoạt động </span><span style="color: red"> *</span></label>
+          <div class="delivery-item d-flex justify-content-start align-items-center">
+            <input class="me-10px" [(ngModel)]="voucher.status" type="radio" id="status1" name="status1" [value]="1" />
+            <label for="status1" style="white-space: nowrap; font-size: 14px" class="my-form-label">Đang chạy</label><br />
+          </div>
+          <div class="delivery-item d-flex justify-content-center align-items-center">
+            <input class="me-10px" [(ngModel)]="voucher.status" type="radio" id="status0" name="status0" [value]="0" />
+            <label for="status0" style="white-space: nowrap; font-size: 14px" class="my-form-label">Chưa chạy</label><br />
+          </div>
+          <ng-container *ngIf="voucher.id">
+            <div class="delivery-item d-flex justify-content-start align-items-center">
+              <input class="me-10px" [(ngModel)]="voucher.status" type="radio" id="status2" name="status2" [value]="2" />
+              <label for="status2" style="white-space: nowrap; font-size: 14px" class="my-form-label">Tạm ngừng</label><br />
+            </div>
+            <div class="delivery-item d-flex justify-content-start align-items-center">
+              <input class="me-10px" [(ngModel)]="voucher.status" type="radio" id="status3" name="status3" [value]="3" />
+              <label for="status3" style="white-space: nowrap; font-size: 14px" class="my-form-label">Đã xong</label><br />
+            </div>
+            <!--            <div class="delivery-item d-flex justify-content-start align-items-center">-->
+            <!--              <input class="me-10px" [(ngModel)]="voucher.status" type="radio" id="status-1" name="status-1" [value]="-1" />-->
+            <!--              <label for="status-1" style="white-space: nowrap; font-size: 14px" class="my-form-label">Đã xoá</label><br />-->
+            <!--            </div>-->
+          </ng-container>
+        </div>
+        <!--        <div class="user-input-text-div position-relative">-->
+        <!--          <div class="item-search from-select">-->
+        <!--            <ng-select-->
+        <!--              placeholder="Chọn loại hình giảm giá"-->
+        <!--              class="css-ng-select select-value form-control"-->
+        <!--              style="font-size: 0.875rem"-->
+        <!--              id="type"-->
+        <!--              [items]="typeDiscount"-->
+        <!--              name="type"-->
+        <!--              bindValue="id"-->
+        <!--              bindLabel="value"-->
+        <!--              [(ngModel)]="voucher.discountType"-->
+        <!--              [clearable]="false"-->
+        <!--            >-->
+        <!--            </ng-select>-->
+        <!--          </div>-->
+        <!--        </div>-->
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="exit-button-dialog" (click)="dismiss()">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <label jhiTranslate="global.entity.action.cancel">Hủy</label>
+  </button>
+  <button
+    type="button"
+    class="save-button-dialog"
+    [disabled]="!voucher.code || !voucher.name || !toDate || !fromDate || isLoading"
+    (click)="close()"
+  >
+    <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.save">Lưu</span>
+  </button>
+  <!--  <button-->
+  <!--    *ngIf="voucher.id < 1"-->
+  <!--    type="button"-->
+  <!--    class="save-button-dialog"-->
+  <!--    [disabled]="!voucher.code||!voucher.name||!toDate||!fromDate"-->
+  <!--    (click)="close()"-->
+  <!--  >-->
+  <!--    <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+  <!--      <path-->
+  <!--        d="M1.33333 13.6668C0.966668 13.6668 0.652668 13.5362 0.391334 13.2748C0.130001 13.0135 -0.000443313 12.6997 1.13186e-06 12.3335V3.66683C1.13186e-06 3.47794 0.0640012 3.3195 0.192001 3.1915C0.320001 3.0635 0.478223 2.99972 0.666668 3.00016C0.855557 3.00016 1.014 3.06416 1.142 3.19216C1.27 3.32016 1.33378 3.47839 1.33333 3.66683V12.3335H8C8.18889 12.3335 8.34734 12.3975 8.47534 12.5255C8.60334 12.6535 8.66711 12.8117 8.66667 13.0002C8.66667 13.1891 8.60267 13.3475 8.47467 13.4755C8.34667 13.6035 8.18845 13.6673 8 13.6668H1.33333ZM4 11.0002C3.63333 11.0002 3.31933 10.8695 3.058 10.6082C2.79667 10.3468 2.66622 10.0331 2.66667 9.66683V1.66683C2.66667 1.30016 2.79733 0.986164 3.05867 0.72483C3.32 0.463497 3.63378 0.333053 4 0.333497H10C10.3667 0.333497 10.6807 0.464164 10.942 0.725497C11.2033 0.986831 11.3338 1.30061 11.3333 1.66683V9.66683C11.3333 10.0335 11.2027 10.3475 10.9413 10.6088C10.68 10.8702 10.3662 11.0006 10 11.0002H4Z"-->
+  <!--        fill="white"-->
+  <!--      />-->
+  <!--    </svg>-->
+  <!--    <span jhiTranslate="global.entity.action.save">Lưu</span>-->
+  <!--  </button>-->
+</div>

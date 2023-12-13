@@ -1,0 +1,28 @@
+<div class="modal-body col-6">
+  <label>Kiểu giảm giá</label>
+  <ng-select
+    class="w-100"
+    [items]="typeDiscountProduct"
+    title="Chọn kiểu giảm giá"
+    bindLabel="name"
+    placeholder="Chọn kiểu giảm giá"
+    bindValue="name"
+    [(ngModel)]="productSelectedLocal.typeDiscount"
+    (ngModelChange)="changeTypeDiscountProduct()"
+  >
+  </ng-select>
+</div>
+<div class="modal-body col-6" *ngIf="productSelectedLocal.typeDiscount == typeDiscount.PERCENT">
+  <label>Nhập phần trăm</label>
+  <input
+    class="form-control"
+    type="number"
+    [(ngModel)]="productSelectedLocal.discountPercent"
+    (keypress)="checkDiscountProductPercent($event)"
+    (ngModelChange)="getDiscountAmountProduct()"
+  />
+</div>
+<div class="modal-body col-6" *ngIf="productSelectedLocal.typeDiscount == typeDiscount.VALUE || productSelectedLocal.discountAmount">
+  <label>Tiền giảm giá</label>
+  <input class="form-control" type="number" [(ngModel)]="productSelectedLocal.discountAmount" />
+</div>

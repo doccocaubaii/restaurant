@@ -1,0 +1,754 @@
+<div id="sidebar" [class]="'app-sidebar app-sidebar--' + (sidebarOption.isShow ? 'show-all' : 'mini')">
+  <!-- BEGIN scrollbar -->
+  <div class="app-sidebar-content" data-scrollbar="true" data-height="100%">
+    <div class="menu">
+      <div [ngClass]="sidebarOption.isShow ? 'menu-profile' : 'menu-profile-custom'">
+        <img *ngIf="sidebarOption.isShow" src="/content/img/logo/logo2.png" class="logo-img" alt="EasyPos" />
+        <span (click)="toggleAppSidebarNone()" *ngIf="sidebarOption.isShow" [innerHTML]="LOGO | safeHtml"></span>
+        <img *ngIf="!sidebarOption.isShow" src="/content/img/logo/logo2.png" class="logo-img-custom" alt="EasyPos" />
+        <img *ngIf="!sidebarOption.isShow" src="/content/img/logo/EasyPosIcon.png" class="logo-img-custom" alt="EasyPos" />
+      </div>
+    </div>
+    <!-- BEGIN menu -->
+    <div class="list-item">
+      <div class="menu order-column">
+        <div class="menu-profile-action" (click)="toggleAppSidebarNone()">
+          <span *ngIf="!sidebarOption.isShow" [innerHTML]="EXTEND | safeHtml"></span>
+        </div>
+        <!--      <div class="menu-header">Navigation</div>-->
+        <div
+          [style]="utilsService.getStyleByCode('HOME')"
+          class="menu-item has-sub"
+          [ngClass]="sidebarOption.isShow ? '' : 'menu-item-custom'"
+        >
+          <a (click)="getLink(HOME)" class="menu-link menu-parent" [ngClass]="latestUrl.includes(HOME) ? 'item-active' : ''">
+            <div class="menu-icon">
+              <span [innerHTML]="ICON_HOME | safeHtml"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span jhiJsonCustom="HOME"></span></div>
+          </a>
+        </div>
+        <div
+          [style]="utilsService.getStyleByCode('BILL_ORDER')"
+          class="menu-item has-sub"
+          [ngClass]="sidebarOption.isShow ? '' : 'menu-item-custom'"
+          *jhiHasAnyAuthority="authorBillView"
+        >
+          <a
+            (click)="getLink(BILL_ORDER, BILL_ORDER_OFFLINE)"
+            class="menu-link menu-parent"
+            [ngClass]="latestUrl.includes(BILL_ORDER) ? 'item-active' : ''"
+          >
+            <div class="menu-icon">
+              <span [innerHTML]="ICON_BILL_ORDER | safeHtml"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span jhiJsonCustom="BILL_ORDER"></span></div>
+          </a>
+        </div>
+        <div
+          *ngIf="hasAuthority(authorProductManagement)"
+          [style]="utilsService.getStyleByCode('PRODUCT_GROUP')"
+          class="menu-item has-sub"
+          [ngClass]="sidebarOption.isShow ? '' : 'menu-item-custom'"
+        >
+          <a class="menu-link menu-parent" [ngClass]="latestUrl.includes(PRODUCT) ? 'item-active' : ''">
+            <div class="menu-icon">
+              <span [innerHTML]="ICON_GROUP_PRODUCT | safeHtml"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">
+              <span jhiJsonCustom="PRODUCT_GROUP"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-caret' : 'menu-caret caret-custom'"></div>
+          </a>
+          <div [ngClass]="sidebarOption.isShow ? 'menu-submenu' : 'menu-submenu-custom'" class="order-column">
+            <div
+              *jhiHasAnyAuthority="authorGroupView"
+              [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'"
+              [style]="utilsService.getStyleByCode('NSP')"
+            >
+              <a
+                (click)="getLink(PRODUCT_GROUP, 'pos/danh-muc-san-pham-offline')"
+                class="menu-link"
+                [ngClass]="latestUrl === PRODUCT_GROUP ? 'sub-item-active' : ''"
+              >
+                <div class="menu-icon">
+                  <span [innerHTML]="ICON_PRODUCT_GROUP | safeHtml"></span>
+                </div>
+                <div class="menu-text--sub" [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">
+                  <span jhiJsonCustom="NSP"></span>
+                </div>
+              </a>
+            </div>
+            <div
+              *jhiHasAnyAuthority="authorProductView"
+              [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item pb-8px'"
+              [style]="utilsService.getStyleByCode('SP')"
+            >
+              <a
+                (click)="getLink(PRODUCT, 'pos/san-pham-offline')"
+                class="menu-link"
+                [ngClass]="latestUrl === PRODUCT ? 'sub-item-active' : ''"
+              >
+                <div class="menu-icon">
+                  <span [innerHTML]="ICON_PRODUCT | safeHtml"></span>
+                </div>
+                <div class="menu-text--sub" [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">
+                  <span jhiJsonCustom="SP"></span>
+                </div>
+              </a>
+            </div>
+            <div
+              *jhiHasAnyAuthority="authorTopping"
+              [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'"
+              [style]="utilsService.getStyleByCode('NBK')"
+            >
+              <a
+                (click)="getLink(PRODUCT_TOPPING, '')"
+                class="menu-link"
+                [ngClass]="latestUrl === PRODUCT_TOPPING ? 'sub-item-active' : ''"
+              >
+                <div class="menu-icon">
+                  <span [innerHTML]="ICON_PRODUCT_TOPPING | safeHtml"></span>
+                </div>
+                <div class="menu-text--sub" [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">
+                  <span jhiJsonCustom="NBK"></span>
+                </div>
+              </a>
+            </div>
+            <div
+              [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'"
+              [style]="utilsService.getStyleByCode('DVT')"
+              *jhiHasAnyAuthority="authorGroupView"
+            >
+              <a (click)="getLink(PRODUCT_UNIT, '')" class="menu-link" [ngClass]="latestUrl === PRODUCT_UNIT ? 'sub-item-active' : ''">
+                <div class="menu-icon">
+                  <span [innerHTML]="ICON_PRODUCT_UNIT | safeHtml"></span>
+                </div>
+                <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span jhiJsonCustom="DVT"></span></div>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div
+          class="menu-item has-sub"
+          [ngClass]="sidebarOption.isShow ? '' : 'menu-item-custom'"
+          [style]="utilsService.getStyleByCode('RS_INOUT_WARD')"
+          *jhiHasAnyAuthority="authorInOutWard"
+        >
+          <a
+            (click)="getLink(RS_INOUT_WARD, RS_INOUT_WARD)"
+            class="menu-link img-sidebar menu-parent"
+            [ngClass]="latestUrl.includes(RS_INOUT_WARD) ? 'item-active' : ''"
+          >
+            <div class="menu-icon">
+              <span [innerHTML]="ICON_RS_INOUT_WARD | safeHtml"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span jhiJsonCustom="RS_INOUT_WARD"></span></div>
+          </a>
+        </div>
+        <div
+          class="menu-item has-sub"
+          [ngClass]="sidebarOption.isShow ? '' : 'menu-item-custom'"
+          [style]="utilsService.getStyleByCode('BILL')"
+          *jhiHasAnyAuthority="authorBillView"
+        >
+          <a (click)="getLink(BILL)" class="menu-link menu-parent" [ngClass]="latestUrl === BILL ? 'item-active' : ''">
+            <div class="menu-icon">
+              <span [innerHTML]="ICON_BILL | safeHtml"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span jhiJsonCustom="BILL"></span></div>
+          </a>
+        </div>
+        <div
+          *ngIf="hasAuthority(authorInvoiceManagement)"
+          [style]="utilsService.getStyleByCode('INVOICE')"
+          class="menu-item has-sub"
+          [ngClass]="sidebarOption.isShow ? '' : 'menu-item-custom'"
+        >
+          <a class="menu-link menu-parent" [ngClass]="[INVOICE, INVOICE_EI].includes(latestUrl) ? 'item-active' : ''">
+            <div class="menu-icon">
+              <span [innerHTML]="ICON_INVOICE | safeHtml"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span jhiJsonCustom="INVOICE"></span></div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-caret' : 'menu-caret caret-custom'"></div>
+            <!--          <div class="menu-badge">+12</div>-->
+          </a>
+          <div [ngClass]="sidebarOption.isShow ? 'menu-submenu' : 'menu-submenu-custom'" class="order-column">
+            <div
+              [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'"
+              [style]="utilsService.getStyleByCode('INVOICE_EP')"
+              *jhiHasAnyAuthority="authorInvoiceView"
+            >
+              <a (click)="getLink(INVOICE)" class="menu-link" [ngClass]="latestUrl === INVOICE ? 'sub-item-active' : ''">
+                <div class="menu-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="22" viewBox="0 0 20 22" fill="none">
+                    <g clip-path="url(#clip0_20_210)">
+                      <path
+                        d="M0 10.2647C0 7.49517 0 4.72569 0 1.95621C0 0.705594 0.695115 0.00283371 1.94389 0.00188914C6.17265 0 10.4024 0 14.6311 0C15.9417 0 16.6041 0.674424 16.6041 2.01288C16.6059 5.28582 16.6125 8.55876 16.5947 11.8317C16.5919 12.2898 16.6931 12.5288 17.1493 12.7366C19.0032 13.581 19.9934 15.0905 19.9991 17.1251C20.0047 19.1814 19.0135 20.7239 17.1324 21.5542C15.2757 22.374 13.5435 22.0425 11.9809 20.7362C11.8001 20.585 11.5162 20.4859 11.2802 20.4849C8.22146 20.4679 5.16277 20.4755 2.10408 20.4736C0.648274 20.4726 0 19.8133 0 18.3388C0 15.6459 0.000936812 12.9548 0 10.2647ZM10.2956 16.8379C10.1447 16.8379 9.96019 16.8379 9.7747 16.8379C7.52728 16.8379 5.27987 16.8426 3.03246 16.8294C2.85821 16.8285 2.58747 16.7557 2.52565 16.6329C2.24835 16.0794 2.53127 15.6563 3.13645 15.6563C5.47754 15.6553 7.81863 15.6591 10.1597 15.6506C10.3312 15.6496 10.5879 15.6241 10.6572 15.5155C10.8577 15.1963 10.9841 14.8298 11.1602 14.433C10.9082 14.433 10.7228 14.433 10.5363 14.433C8.08563 14.433 5.63586 14.433 3.18516 14.433C2.5322 14.433 2.46944 14.382 2.47318 13.8635C2.47787 13.2571 2.50597 13.2297 3.15799 13.2297C5.96749 13.2297 8.77699 13.2221 11.5865 13.2363C12.083 13.2391 12.5224 13.172 12.9496 12.883C13.24 12.6865 13.5978 12.5675 13.9416 12.4825C14.4185 12.3644 14.9112 12.3115 15.4321 12.2246C15.4321 12.0839 15.4321 11.945 15.4321 11.8062C15.4321 8.56442 15.433 5.32266 15.4321 2.08089C15.4321 1.34035 15.2916 1.1996 14.5543 1.1996C10.3874 1.19866 6.2195 1.19866 2.05256 1.20055C1.30685 1.20055 1.19537 1.31484 1.19537 2.0875C1.1935 7.53295 1.1935 12.9775 1.19537 18.4229C1.19537 19.1304 1.34058 19.2721 2.05068 19.273C4.82927 19.2749 7.60691 19.274 10.3855 19.273C10.5316 19.273 10.6768 19.256 10.7752 19.2494C10.615 18.4456 10.4633 17.6814 10.2956 16.8379ZM15.1942 20.9071C17.2861 20.9109 18.9367 19.2598 18.9498 17.1515C18.963 15.065 17.2926 13.3638 15.2223 13.3553C13.1603 13.3468 11.4731 15.0347 11.4572 17.1241C11.4413 19.2031 13.1201 20.9034 15.1942 20.9071Z"
+                        fill="#004671"
+                      />
+                      <path
+                        d="M8.30575 11.9989C6.54173 11.9979 4.77865 11.9847 3.01463 12.0074C2.55559 12.0131 2.46098 11.8185 2.46753 11.4142C2.47316 11.0326 2.52281 10.7879 2.99683 10.7898C6.55484 10.8021 10.1138 10.8031 13.6727 10.7898C14.1824 10.7879 14.1496 11.0874 14.1618 11.4369C14.1749 11.8213 14.0803 12.0112 13.6437 12.0064C11.8647 11.9885 10.0848 11.9998 8.30575 11.9989Z"
+                        fill="#004671"
+                      />
+                      <path
+                        d="M4.14444 6.59498C3.50835 6.59498 2.95563 6.59498 2.32422 6.59498C2.48067 6.21526 2.60058 5.91678 2.72611 5.62113C3.16829 4.58304 3.60952 3.54402 4.06294 2.50971C4.10978 2.40203 4.23625 2.3293 4.32619 2.24051C4.37303 2.35952 4.45828 2.47949 4.45828 2.5985C4.45828 3.27387 4.45828 3.95113 4.41612 4.62461C4.39083 5.04022 4.49481 5.23385 4.94542 5.19513C5.34356 5.16112 5.74733 5.18757 6.2429 5.18757C5.56653 6.76689 5.01849 8.29993 4.30932 9.76118C4.25405 9.74512 4.19878 9.72907 4.14351 9.71301C4.14444 8.70704 4.14444 7.69918 4.14444 6.59498Z"
+                        fill="#004671"
+                      />
+                      <path
+                        d="M10.5457 5.96119C11.5752 5.96119 12.6057 5.98008 13.6344 5.95269C14.1112 5.94041 14.1637 6.18316 14.1646 6.56666C14.1655 6.95676 14.0934 7.17874 13.6259 7.17496C11.5668 7.15512 9.5077 7.15512 7.44859 7.17496C6.92679 7.17968 6.93241 6.88687 6.92023 6.50904C6.90711 6.10382 7.04295 5.94607 7.45702 5.95457C8.48564 5.97535 9.51613 5.96119 10.5457 5.96119Z"
+                        fill="#004671"
+                      />
+                      <path
+                        d="M10.5326 8.39345C11.5762 8.39439 12.6198 8.41045 13.6625 8.38683C14.1159 8.37644 14.1665 8.6107 14.1618 8.97436C14.1571 9.32007 14.1515 9.58549 13.6831 9.58172C11.5968 9.5666 9.5096 9.56566 7.42332 9.58266C6.93055 9.58644 6.93149 9.30685 6.92025 8.94602C6.90807 8.5493 7.02986 8.37739 7.45048 8.38589C8.47723 8.40761 9.50491 8.3925 10.5326 8.39345Z"
+                        fill="#004671"
+                      />
+                      <path
+                        d="M11.4431 4.73136C10.6965 4.73136 9.94893 4.71719 9.20229 4.73797C8.7751 4.7493 8.72358 4.51411 8.72545 4.17217C8.72732 3.83401 8.72545 3.5327 9.18824 3.53459C10.6984 3.5412 12.2076 3.54403 13.7177 3.53742C14.2498 3.53459 14.1346 3.91241 14.158 4.22885C14.1843 4.58211 14.0653 4.74741 13.6849 4.73797C12.9374 4.71719 12.1898 4.73136 11.4431 4.73136Z"
+                        fill="#004671"
+                      />
+                      <path
+                        d="M15.6579 19.5432C15.6391 19.835 15.6513 20.1543 15.1801 20.1543C14.7051 20.1553 14.7164 19.8407 14.6986 19.5007C14.1496 19.3769 13.7102 19.103 13.4845 18.5684C13.3468 18.2425 13.2859 17.8958 13.6803 17.7164C14.0606 17.5426 14.277 17.8071 14.3838 18.1282C14.5749 18.7035 15.1735 18.8055 15.5689 18.6071C15.7347 18.524 15.9146 18.3096 15.9333 18.1377C15.9473 18.0026 15.7534 17.7702 15.6007 17.706C15.2298 17.5492 14.8232 17.4821 14.441 17.3489C13.9632 17.1818 13.5725 16.9069 13.4929 16.3505C13.4002 15.7026 13.7084 15.1764 14.3445 14.9545C14.5927 14.8676 14.7482 14.7958 14.7304 14.4831C14.7126 14.1695 14.9581 14.1166 15.2166 14.1213C15.4714 14.1261 15.6616 14.2215 15.6316 14.5058C15.6007 14.8005 15.804 14.8279 15.9839 14.9573C16.2977 15.183 16.5909 15.473 16.7942 15.7989C16.8664 15.9141 16.708 16.2844 16.5525 16.4091C16.3296 16.5876 16.0935 16.4459 15.9295 16.2022C15.5698 15.6695 15.2635 15.5193 14.8307 15.6912C14.6967 15.7441 14.5496 15.9066 14.5225 16.0417C14.5037 16.138 14.6536 16.3316 14.7698 16.3779C15.1005 16.5111 15.4536 16.5876 15.7956 16.6925C16.6865 16.9664 17.0481 17.3678 17.0359 18.063C17.0237 18.7658 16.6172 19.2173 15.7637 19.478C15.7347 19.4884 15.7103 19.5111 15.6579 19.5432Z"
+                        fill="#004671"
+                      />
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_20_210">
+                        <rect width="20" height="22" fill="white" />
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </div>
+                <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span jhiJsonCustom="INVOICE_EP"></span></div>
+              </a>
+            </div>
+            <ng-container *ngIf="this.lastCompany && (this.lastCompany.service === 'EI' || !this.lastCompany.service)">
+              <div
+                [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'"
+                [style]="utilsService.getStyleByCode('INVOICE_EI')"
+                *jhiHasAnyAuthority="authorEASY_INVOICE_CONFIG_VIEW"
+              >
+                <a (click)="getLink(INVOICE_EI)" class="menu-link" [ngClass]="latestUrl === INVOICE_EI ? 'sub-item-active' : ''">
+                  <div class="menu-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M5.91581 1.04169H14.0833C14.9308 1.04169 15.5141 1.04169 16.005 1.21169C16.4637 1.37369 16.8789 1.63933 17.2183 1.98794C17.5577 2.33656 17.812 2.75875 17.9616 3.22169C18.125 3.71919 18.1241 4.31085 18.1241 5.18835V16.9784C18.1241 18.2 16.685 18.9267 15.7375 18.0592C15.7071 18.0301 15.6666 18.0139 15.6246 18.0139C15.5825 18.0139 15.542 18.0301 15.5116 18.0592L15.1083 18.4275C14.335 19.1359 13.1633 19.1359 12.39 18.4275C12.25 18.2968 12.0656 18.2241 11.8741 18.2241C11.6826 18.2241 11.4983 18.2968 11.3583 18.4275C10.585 19.1359 9.41331 19.1359 8.63998 18.4275C8.50001 18.2968 8.31565 18.2241 8.12414 18.2241C7.93264 18.2241 7.74828 18.2968 7.60831 18.4275C6.83498 19.1359 5.66331 19.1359 4.88998 18.4275L4.48748 18.0592C4.45704 18.0299 4.41642 18.0135 4.37415 18.0135C4.33188 18.0135 4.29125 18.0299 4.26081 18.0592C3.31331 18.9259 1.87415 18.2 1.87415 16.9784V5.18919C1.87415 4.31085 1.87415 3.71919 2.03665 3.22169C2.1862 2.75872 2.44056 2.3365 2.77993 1.98788C3.1193 1.63926 3.53453 1.37364 3.99331 1.21169C4.48498 1.04085 5.06831 1.04169 5.91581 1.04169ZM6.03748 2.29169C5.01998 2.29169 4.66915 2.30002 4.40415 2.39252C4.12738 2.4915 3.87712 2.65288 3.67278 2.86416C3.46844 3.07544 3.3155 3.33094 3.22581 3.61085C3.13331 3.89335 3.12581 4.26502 3.12581 5.30835V16.9784C3.12581 17.0784 3.17498 17.1384 3.23748 17.1675C3.266 17.1811 3.29779 17.1863 3.32915 17.1825C3.36297 17.1771 3.3942 17.161 3.41831 17.1367C3.67907 16.8966 4.02055 16.7634 4.37498 16.7634C4.72941 16.7634 5.07088 16.8966 5.33165 17.1367L5.73415 17.505C5.87412 17.6357 6.05848 17.7084 6.24998 17.7084C6.44148 17.7084 6.62584 17.6357 6.76581 17.505C7.13618 17.1638 7.62137 16.9743 8.12498 16.9743C8.62859 16.9743 9.11378 17.1638 9.48415 17.505C9.62412 17.6357 9.80848 17.7084 9.99998 17.7084C10.1915 17.7084 10.3758 17.6357 10.5158 17.505C10.8862 17.1638 11.3714 16.9743 11.875 16.9743C12.3786 16.9743 12.8638 17.1638 13.2341 17.505C13.3741 17.6357 13.5585 17.7084 13.75 17.7084C13.9415 17.7084 14.1258 17.6357 14.2658 17.505L14.6683 17.1367C14.9291 16.8966 15.2705 16.7634 15.625 16.7634C15.9794 16.7634 16.3209 16.8966 16.5816 17.1367C16.6175 17.17 16.6483 17.18 16.6716 17.1825C16.7027 17.1861 16.7342 17.1809 16.7625 17.1675C16.825 17.1384 16.875 17.0775 16.875 16.9784V5.30835C16.875 4.26502 16.8666 3.89335 16.775 3.61085C16.6852 3.33073 16.532 3.07509 16.3274 2.86379C16.1227 2.65249 15.8721 2.49122 15.595 2.39252C15.3308 2.30085 14.98 2.29252 13.9625 2.29252L6.03748 2.29169ZM5.20831 6.25002C5.20831 6.08426 5.27416 5.92529 5.39137 5.80808C5.50858 5.69087 5.66755 5.62502 5.83331 5.62502H6.24998C6.41574 5.62502 6.57471 5.69087 6.69192 5.80808C6.80913 5.92529 6.87498 6.08426 6.87498 6.25002C6.87498 6.41578 6.80913 6.57475 6.69192 6.69196C6.57471 6.80917 6.41574 6.87502 6.24998 6.87502H5.83331C5.66755 6.87502 5.50858 6.80917 5.39137 6.69196C5.27416 6.57475 5.20831 6.41578 5.20831 6.25002ZM8.12498 6.25002C8.12498 6.08426 8.19083 5.92529 8.30804 5.80808C8.42525 5.69087 8.58422 5.62502 8.74998 5.62502H14.1666C14.3324 5.62502 14.4914 5.69087 14.6086 5.80808C14.7258 5.92529 14.7916 6.08426 14.7916 6.25002C14.7916 6.41578 14.7258 6.57475 14.6086 6.69196C14.4914 6.80917 14.3324 6.87502 14.1666 6.87502H8.74998C8.58422 6.87502 8.42525 6.80917 8.30804 6.69196C8.19083 6.57475 8.12498 6.41578 8.12498 6.25002ZM5.20831 9.16669C5.20831 9.00093 5.27416 8.84196 5.39137 8.72475C5.50858 8.60754 5.66755 8.54169 5.83331 8.54169H6.24998C6.41574 8.54169 6.57471 8.60754 6.69192 8.72475C6.80913 8.84196 6.87498 9.00093 6.87498 9.16669C6.87498 9.33245 6.80913 9.49142 6.69192 9.60863C6.57471 9.72584 6.41574 9.79169 6.24998 9.79169H5.83331C5.66755 9.79169 5.50858 9.72584 5.39137 9.60863C5.27416 9.49142 5.20831 9.33245 5.20831 9.16669ZM8.12498 9.16669C8.12498 9.00093 8.19083 8.84196 8.30804 8.72475C8.42525 8.60754 8.58422 8.54169 8.74998 8.54169H14.1666C14.3324 8.54169 14.4914 8.60754 14.6086 8.72475C14.7258 8.84196 14.7916 9.00093 14.7916 9.16669C14.7916 9.33245 14.7258 9.49142 14.6086 9.60863C14.4914 9.72584 14.3324 9.79169 14.1666 9.79169H8.74998C8.58422 9.79169 8.42525 9.72584 8.30804 9.60863C8.19083 9.49142 8.12498 9.33245 8.12498 9.16669ZM5.20831 12.0834C5.20831 11.9176 5.27416 11.7586 5.39137 11.6414C5.50858 11.5242 5.66755 11.4584 5.83331 11.4584H6.24998C6.41574 11.4584 6.57471 11.5242 6.69192 11.6414C6.80913 11.7586 6.87498 11.9176 6.87498 12.0834C6.87498 12.2491 6.80913 12.4081 6.69192 12.5253C6.57471 12.6425 6.41574 12.7084 6.24998 12.7084H5.83331C5.66755 12.7084 5.50858 12.6425 5.39137 12.5253C5.27416 12.4081 5.20831 12.2491 5.20831 12.0834ZM8.12498 12.0834C8.12498 11.9176 8.19083 11.7586 8.30804 11.6414C8.42525 11.5242 8.58422 11.4584 8.74998 11.4584H14.1666C14.3324 11.4584 14.4914 11.5242 14.6086 11.6414C14.7258 11.7586 14.7916 11.9176 14.7916 12.0834C14.7916 12.2491 14.7258 12.4081 14.6086 12.5253C14.4914 12.6425 14.3324 12.7084 14.1666 12.7084H8.74998C8.58422 12.7084 8.42525 12.6425 8.30804 12.5253C8.19083 12.4081 8.12498 12.2491 8.12498 12.0834Z"
+                        fill="#004671"
+                      />
+                    </svg>
+                  </div>
+                  <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span jhiJsonCustom="INVOICE_EI"></span></div>
+                </a>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div
+          [style]="utilsService.getStyleByCode('COMPANY')"
+          class="menu-item has-sub"
+          [ngClass]="sidebarOption.isShow ? '' : 'menu-item-custom'"
+          *jhiHasAnyAuthority="authorCompanyView"
+        >
+          <a (click)="getLink(COMPANY)" class="menu-link menu-parent" [ngClass]="latestUrl === COMPANY ? 'item-active' : ''">
+            <div class="menu-icon">
+              <span [innerHTML]="ICON_COMPANY | safeHtml"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span jhiJsonCustom="COMPANY"></span></div>
+            <!--          <div class="menu-badge">+12</div>-->
+          </a>
+        </div>
+        <div
+          *ngIf="hasAuthority(authorVoucherManagement)"
+          [style]="utilsService.getStyleByCode('VOUCHER')"
+          class="menu-item has-sub"
+          [ngClass]="sidebarOption.isShow ? '' : 'menu-item-custom'"
+        >
+          <a class="menu-link" [ngClass]="latestUrl === VOUCHER || latestUrl === PROMOTIONS ? 'item-active' : ''">
+            <div class="menu-icon">
+              <span [innerHTML]="ICON_VOUCHER | safeHtml"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span jhiJsonCustom="VOUCHER"></span></div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-caret' : 'menu-caret caret-custom'"></div>
+          </a>
+          <div [ngClass]="sidebarOption.isShow ? 'menu-submenu' : 'menu-submenu-custom'" class="order-column">
+            <div [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'">
+              <a (click)="getLink(VOUCHER)" class="menu-link cursor-pointer" [ngClass]="latestUrl === VOUCHER ? 'sub-item-active' : ''">
+                <div class="menu-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M9.99499 4H14.005C17.785 4 19.675 4 20.85 5.172C21.66 5.978 21.911 7.123 21.99 8.989C22.005 9.359 22.013 9.545 21.944 9.668C21.874 9.791 21.599 9.946 21.047 10.254C20.7361 10.4273 20.4771 10.6806 20.2967 10.9875C20.1164 11.2945 20.0214 11.644 20.0214 12C20.0214 12.356 20.1164 12.7055 20.2967 13.0125C20.4771 13.3194 20.7361 13.5727 21.047 13.746C21.599 14.055 21.875 14.209 21.944 14.332C22.013 14.455 22.005 14.64 21.989 15.01C21.911 16.877 21.659 18.022 20.85 18.828C19.676 20 17.786 20 14.005 20H9.99499C6.21499 20 4.32499 20 3.14999 18.828C2.33999 18.022 2.08899 16.877 2.00999 15.011C1.99499 14.641 1.98699 14.455 2.05599 14.332C2.12599 14.209 2.40099 14.055 2.95299 13.746C3.26392 13.5727 3.52292 13.3194 3.70323 13.0125C3.88353 12.7055 3.9786 12.356 3.9786 12C3.9786 11.644 3.88353 11.2945 3.70323 10.9875C3.52292 10.6806 3.26392 10.4273 2.95299 10.254C2.40099 9.946 2.12499 9.791 2.05599 9.668C1.98699 9.545 1.99499 9.36 2.01099 8.989C2.08899 7.123 2.34099 5.979 3.14999 5.172C4.32399 4 6.21399 4 9.99499 4ZM15.548 8.47C15.6177 8.53957 15.6729 8.62218 15.7106 8.71312C15.7483 8.80407 15.7677 8.90155 15.7677 9C15.7677 9.09845 15.7483 9.19593 15.7106 9.28688C15.6729 9.37782 15.6177 9.46043 15.548 9.53L9.53299 15.53C9.39185 15.6706 9.20073 15.7496 9.00149 15.7496C8.80224 15.7496 8.61112 15.6706 8.46999 15.53C8.40032 15.4604 8.34506 15.3778 8.30735 15.2869C8.26964 15.1959 8.25023 15.0984 8.25023 15C8.25023 14.9016 8.26964 14.8041 8.30735 14.7131C8.34506 14.6222 8.40032 14.5396 8.46999 14.47L14.484 8.47C14.6252 8.32906 14.8165 8.2499 15.016 8.2499C15.2155 8.2499 15.4068 8.32906 15.548 8.47ZM14.515 15.5C14.6501 15.506 14.785 15.4847 14.9116 15.4371C15.0382 15.3896 15.1538 15.3169 15.2515 15.2235C15.3493 15.13 15.427 15.0177 15.4802 14.8934C15.5333 14.769 15.5607 14.6352 15.5607 14.5C15.5607 14.3648 15.5333 14.231 15.4802 14.1066C15.427 13.9823 15.3493 13.87 15.2515 13.7765C15.1538 13.6831 15.0382 13.6104 14.9116 13.5629C14.785 13.5153 14.6501 13.494 14.515 13.5C13.961 13.5 13.512 13.948 13.512 14.5C13.512 15.052 13.962 15.5 14.515 15.5ZM9.50199 10.5C10.056 10.5 10.505 10.052 10.505 9.5C10.505 8.948 10.056 8.5 9.50199 8.5C9.3669 8.49396 9.23199 8.51535 9.1054 8.56288C8.97881 8.61041 8.86316 8.68309 8.76544 8.77654C8.66771 8.87 8.58993 8.98228 8.53679 9.10662C8.48365 9.23096 8.45625 9.36478 8.45625 9.5C8.45625 9.63522 8.48365 9.76904 8.53679 9.89338C8.58993 10.0177 8.66771 10.13 8.76544 10.2235C8.86316 10.3169 8.97881 10.3896 9.1054 10.4371C9.23199 10.4847 9.3669 10.506 9.50199 10.5Z"
+                      fill="#58647A"
+                    />
+                  </svg>
+                </div>
+                <div class="menu-text--sub" [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">Voucher</div>
+              </a>
+            </div>
+
+            <div [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'">
+              <a
+                (click)="getLink(PROMOTIONS)"
+                class="menu-link cursor-pointer"
+                [ngClass]="latestUrl === PROMOTIONS ? 'sub-item-active' : ''"
+              >
+                <div class="menu-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M9.59199 3.20025C9.43472 3.34256 9.26945 3.47578 9.09699 3.59925C8.79899 3.79925 8.46399 3.93725 8.11199 4.00725C7.95899 4.03725 7.79899 4.05025 7.47999 4.07525C6.67899 4.13925 6.27799 4.17125 5.94399 4.28925C5.56209 4.42409 5.21523 4.64272 4.92884 4.9291C4.64246 5.21548 4.42383 5.56235 4.28899 5.94425C4.17099 6.27825 4.13899 6.67925 4.07499 7.48025C4.06409 7.69202 4.04138 7.90301 4.00699 8.11225C3.93699 8.46425 3.79899 8.79925 3.59899 9.09725C3.51199 9.22725 3.40799 9.34925 3.19999 9.59225C2.67899 10.2043 2.41799 10.5103 2.26499 10.8303C1.91199 11.5703 1.91199 12.4303 2.26499 13.1703C2.41799 13.4903 2.67899 13.7963 3.19999 14.4083C3.40799 14.6513 3.51199 14.7733 3.59899 14.9033C3.79899 15.2013 3.93699 15.5363 4.00699 15.8883C4.03699 16.0413 4.04999 16.2013 4.07499 16.5203C4.13899 17.3213 4.17099 17.7223 4.28899 18.0563C4.42383 18.4382 4.64246 18.785 4.92884 19.0714C5.21523 19.3578 5.56209 19.5764 5.94399 19.7113C6.27799 19.8293 6.67899 19.8613 7.47999 19.9253C7.79899 19.9503 7.95899 19.9633 8.11199 19.9933C8.46399 20.0633 8.79899 20.2023 9.09699 20.4013C9.22699 20.4883 9.34899 20.5923 9.59199 20.8003C10.204 21.3213 10.51 21.5823 10.83 21.7353C11.57 22.0883 12.43 22.0883 13.17 21.7353C13.49 21.5823 13.796 21.3213 14.408 20.8003C14.651 20.5923 14.773 20.4883 14.903 20.4013C15.201 20.2013 15.536 20.0633 15.888 19.9933C16.041 19.9633 16.201 19.9503 16.52 19.9253C17.321 19.8613 17.722 19.8293 18.056 19.7113C18.4379 19.5764 18.7848 19.3578 19.0711 19.0714C19.3575 18.785 19.5762 18.4382 19.711 18.0563C19.829 17.7223 19.861 17.3213 19.925 16.5203C19.95 16.2013 19.963 16.0413 19.993 15.8883C20.063 15.5363 20.202 15.2013 20.401 14.9033C20.488 14.7733 20.592 14.6513 20.8 14.4083C21.321 13.7963 21.582 13.4903 21.735 13.1703C22.088 12.4303 22.088 11.5703 21.735 10.8303C21.582 10.5103 21.321 10.2043 20.8 9.59225C20.6577 9.43498 20.5245 9.26971 20.401 9.09725C20.2012 8.79914 20.0625 8.46434 19.993 8.11225C19.9586 7.90301 19.9359 7.69202 19.925 7.48025C19.861 6.67925 19.829 6.27825 19.711 5.94425C19.5762 5.56235 19.3575 5.21548 19.0711 4.9291C18.7848 4.64272 18.4379 4.42409 18.056 4.28925C17.722 4.17125 17.321 4.13925 16.52 4.07525C16.3082 4.06434 16.0972 4.04164 15.888 4.00725C15.5359 3.93774 15.2011 3.79906 14.903 3.59925C14.7307 3.47552 14.5655 3.34231 14.408 3.20025C13.796 2.67925 13.49 2.41825 13.17 2.26525C12.8047 2.09063 12.4049 2 12 2C11.5951 2 11.1953 2.09063 10.83 2.26525C10.51 2.41825 10.204 2.67925 9.59199 3.20025ZM15.831 8.17025C15.9833 8.32286 16.0688 8.52965 16.0688 8.74525C16.0688 8.96085 15.9833 9.16765 15.831 9.32025L9.31999 15.8323C9.24581 15.9134 9.15593 15.9788 9.0558 16.0243C8.95567 16.0698 8.84736 16.0945 8.7374 16.097C8.62744 16.0995 8.51812 16.0796 8.41604 16.0387C8.31396 15.9978 8.22124 15.9366 8.14347 15.8588C8.0657 15.781 8.00449 15.6883 7.96355 15.5862C7.92261 15.4841 7.90278 15.3748 7.90526 15.2648C7.90774 15.1549 7.93247 15.0466 7.97797 14.9464C8.02348 14.8463 8.0888 14.7564 8.16999 14.6823L14.68 8.17125C14.8326 8.01895 15.0394 7.93342 15.255 7.93342C15.4706 7.93342 15.6774 8.01895 15.83 8.17125L15.831 8.17025ZM15.798 14.7133C15.798 15.001 15.6837 15.277 15.4802 15.4805C15.2767 15.6839 15.0008 15.7983 14.713 15.7983C14.4252 15.7983 14.1493 15.6839 13.9458 15.4805C13.7423 15.277 13.628 15.001 13.628 14.7133C13.628 14.4255 13.7423 14.1495 13.9458 13.946C14.1493 13.7426 14.4252 13.6283 14.713 13.6283C15.0008 13.6283 15.2767 13.7426 15.4802 13.946C15.6837 14.1495 15.798 14.4255 15.798 14.7133ZM9.28799 10.3733C9.43048 10.3733 9.57157 10.3452 9.70321 10.2907C9.83484 10.2361 9.95445 10.1562 10.0552 10.0555C10.156 9.95471 10.2359 9.8351 10.2904 9.70346C10.3449 9.57183 10.373 9.43074 10.373 9.28825C10.373 9.14577 10.3449 9.00468 10.2904 8.87304C10.2359 8.7414 10.156 8.62179 10.0552 8.52104C9.95445 8.42029 9.83484 8.34037 9.70321 8.28584C9.57157 8.23132 9.43048 8.20325 9.28799 8.20325C9.00023 8.20325 8.72426 8.31756 8.52078 8.52104C8.31731 8.72452 8.20299 9.00049 8.20299 9.28825C8.20299 9.57601 8.31731 9.85199 8.52078 10.0555C8.72426 10.2589 9.00023 10.3733 9.28799 10.3733Z"
+                      fill="#58647A"
+                    />
+                  </svg>
+                </div>
+                <div class="menu-text--sub" [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">
+                  Chương trình khuyến mại
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div
+          *ngIf="hasAuthority(authorAreaManagement)"
+          [style]="utilsService.getStyleByCode('AREA_UNIT')"
+          class="menu-item has-sub"
+          [ngClass]="sidebarOption.isShow ? '' : 'menu-item-custom'"
+        >
+          <a class="menu-link menu-parent" [ngClass]="latestUrl.includes(AREA) ? 'item-active' : ''">
+            <div class="menu-icon">
+              <span [innerHTML]="ICON_AREA | safeHtml"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">
+              <span jhiJsonCustom="AREA_UNIT"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-caret' : 'menu-caret caret-custom'"></div>
+          </a>
+          <div [ngClass]="sidebarOption.isShow ? 'menu-submenu' : 'menu-submenu-custom'" class="order-column">
+            <div
+              [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'"
+              [style]="utilsService.getStyleByCode('QLB')"
+              *jhiHasAnyAuthority="authorAreaUnitView"
+            >
+              <a (click)="getLink(AREA_UNIT)" class="menu-link" [ngClass]="latestUrl === AREA ? 'sub-item-active' : ''">
+                <div class="menu-icon">
+                  <span [innerHTML]="ICON_TABLE_AREA | safeHtml"></span>
+                </div>
+                <div class="menu-text--sub" [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">
+                  <span jhiJsonCustom="QLB"></span>
+                </div>
+              </a>
+            </div>
+            <div
+              [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'"
+              [style]="utilsService.getStyleByCode('KV')"
+              *jhiHasAnyAuthority="authorAreaView"
+            >
+              <a (click)="getLink(AREA)" class="menu-link" [ngClass]="latestUrl === AREA_UNIT ? 'sub-item-active' : ''">
+                <div class="menu-icon">
+                  <span [innerHTML]="ICON_AREA_UNIT | safeHtml"></span>
+                </div>
+                <div class="menu-text--sub" [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">
+                  <span jhiJsonCustom="KV"></span>
+                </div>
+              </a>
+            </div>
+            <div
+              [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'"
+              [style]="utilsService.getStyleByCode('PROCESSING_AREA')"
+              *jhiHasAnyAuthority="authorProcessingAreaView"
+            >
+              <a
+                (click)="getLink(PROCESSING_AREA_LIST)"
+                class="menu-link"
+                [ngClass]="latestUrl === PROCESSING_AREA_LIST ? 'sub-item-active' : ''"
+              >
+                <div class="menu-icon">
+                  <span [innerHTML]="ICON_PROCESSING_AREA | safeHtml"></span>
+                </div>
+                <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span jhiJsonCustom="PROCESSING_AREA"></span></div>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div
+          [style]="utilsService.getStyleByCode('RECEIPT_PAYMENT')"
+          class="menu-item has-sub"
+          [ngClass]="sidebarOption.isShow ? '' : 'menu-item-custom'"
+          *jhiHasAnyAuthority="authorRECEIPT_PAYMENT"
+        >
+          <a
+            (click)="getLink(RECEIPT_PAYMENT)"
+            class="menu-link menu-parent"
+            [ngClass]="latestUrl === RECEIPT_PAYMENT ? 'item-active' : ''"
+          >
+            <div class="menu-icon">
+              <span [innerHTML]="ICON_RECEIPT_PAYMENT | safeHtml"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span jhiJsonCustom="RECEIPT_PAYMENT"></span></div>
+          </a>
+        </div>
+        <div
+          [style]="utilsService.getStyleByCode('KITCHEN')"
+          class="menu-item has-sub"
+          [ngClass]="sidebarOption.isShow ? '' : 'menu-item-custom'"
+          *jhiHasAnyAuthority="authorKitchenView"
+        >
+          <a (click)="getLink(PROCESSING)" class="menu-link menu-parent" [ngClass]="latestUrl === PROCESSING ? 'item-active' : ''">
+            <div class="menu-icon">
+              <span [innerHTML]="ICON_PROCESSING | safeHtml"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span jhiJsonCustom="KITCHEN"></span></div>
+          </a>
+        </div>
+        <div
+          *ngIf="hasAuthority(authorCustomerManagement)"
+          [style]="utilsService.getStyleByCode('CUSTOMER')"
+          class="menu-item has-sub"
+          [ngClass]="sidebarOption.isShow ? '' : 'menu-item-custom'"
+        >
+          <a class="menu-link menu-parent" [ngClass]="latestUrl.includes(CUSTOMER) || latestUrl.includes(EMPLOYEE) ? 'item-active' : ''">
+            <div class="menu-icon">
+              <span [innerHTML]="ICON_GROUP_CUSTOMER | safeHtml"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">
+              <span jhiJsonCustom="CUSTOMER"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-caret' : 'menu-caret caret-custom'"></div>
+          </a>
+          <div class="order-column">
+            <div [ngClass]="sidebarOption.isShow ? 'menu-submenu' : 'menu-submenu-custom'">
+              <div [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'" *jhiHasAnyAuthority="authorCustomerView">
+                <a (click)="getLink(CUSTOMER)" class="menu-link" [ngClass]="latestUrl === CUSTOMER ? 'sub-item-active' : ''">
+                  <div class="menu-icon">
+                    <span [innerHTML]="ICON_CUSTOMER | safeHtml"></span>
+                  </div>
+                  <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">Khách hàng</div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          *ngIf="hasAuthority(authorCardManagement)"
+          [style]="utilsService.getStyleByCode('CARD')"
+          class="menu-item has-sub"
+          [ngClass]="sidebarOption.isShow ? '' : 'menu-item-custom'"
+        >
+          <a class="menu-link menu-parent" [ngClass]="latestUrl.includes(CARD) ? 'item-active' : ''">
+            <div class="menu-icon">
+              <span [innerHTML]="ICON_GROUP_CART | safeHtml"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">
+              <span jhiJsonCustom="CARD"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-caret' : 'menu-caret caret-custom'"></div>
+          </a>
+          <div [ngClass]="sidebarOption.isShow ? 'menu-submenu' : 'menu-submenu-custom'" class="order-column">
+            <div
+              [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'"
+              [style]="utilsService.getStyleByCode('DST')"
+              *jhiHasAnyAuthority="authorCardView"
+            >
+              <a (click)="getLink(CARD)" class="menu-link" [ngClass]="latestUrl === EMPLOYEE ? 'sub-item-active' : ''">
+                <div class="menu-icon">
+                  <span [innerHTML]="ICON_LIST_CARD | safeHtml"></span>
+                </div>
+                <div class="menu-text--sub" [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">
+                  <span jhiJsonCustom="DST"></span>
+                </div>
+              </a>
+            </div>
+            <div
+              [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'"
+              [style]="utilsService.getStyleByCode('CST')"
+              *jhiHasAnyAuthority="authorCardPolicyView"
+            >
+              <a (click)="getLink(CARD_POLICY)" class="menu-link" [ngClass]="latestUrl === CARD_POLICY ? 'sub-item-active' : ''">
+                <div class="menu-icon">
+                  <span [innerHTML]="ICON_CARD_POLICY | safeHtml"></span>
+                </div>
+                <div class="menu-text--sub" [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">
+                  <span jhiJsonCustom="CST"></span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div
+          *ngIf="hasAuthority(authorInvoiceConfig)"
+          [style]="utilsService.getPositonByCode('INVOICE_CONFIG', false)"
+          class="menu-item has-sub"
+          [ngClass]="sidebarOption.isShow ? '' : 'menu-item-custom'"
+        >
+          <a class="menu-link menu-parent" [ngClass]="[INVOICE_CONFIG, DESIGN_CONFIGURATION].includes(latestUrl) ? 'item-active' : ''">
+            <div class="menu-icon">
+              <span [innerHTML]="ICON_GRPOUP_INVOICE_CONFIG | safeHtml"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">
+              <span jhiJsonCustom="INVOICE_CONFIG"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-caret' : 'menu-caret caret-custom'"></div>
+          </a>
+          <div [ngClass]="sidebarOption.isShow ? 'menu-submenu' : 'menu-submenu-custom'" class="order-column">
+            <div
+              [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'"
+              *jhiHasAnyAuthority="authorCOMPANY_CONFIG_VIEW"
+              [style]="utilsService.getStyleByCode('INVOICE_CONFIG')"
+            >
+              <a (click)="getLink(INVOICE_CONFIG)" class="menu-link" [ngClass]="latestUrl === INVOICE_CONFIG ? 'sub-item-active' : ''">
+                <div class="menu-icon">
+                  <span [innerHTML]="ICON_INVOICE_CONFIG | safeHtml"></span>
+                </div>
+                <div class="menu-text--sub" [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">
+                  <span>Cấu hình cửa hàng</span>
+                </div>
+              </a>
+            </div>
+            <div
+              *jhiHasAnyAuthority="authorDESIGN_CONFIGURATION_VIEW"
+              [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'"
+              [style]="utilsService.getPositonByCode('INVOICE_CONFIG', true)"
+            >
+              <a
+                (click)="getLink(DESIGN_CONFIGURATION)"
+                class="menu-link"
+                [ngClass]="latestUrl === DESIGN_CONFIGURATION ? 'sub-item-active' : ''"
+              >
+                <div class="menu-icon">
+                  <span [innerHTML]="ICON_DESIGN_CONFIG | safeHtml"></span>
+                </div>
+                <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">
+                  <span style="text-wrap: wrap">Cài đặt hiển thị chức năng</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+        <!--        <div-->
+        <!--          [style]="utilsService.getStyleByCode('INVOICE_CONFIG')"-->
+        <!--          class="menu-item has-sub"-->
+        <!--          [ngClass]="sidebarOption.isShow ? '' : 'menu-item-custom'"-->
+        <!--        >-->
+        <!--          <a class="menu-link menu-parent" [ngClass]="latestUrl.includes(INVOICE_CONFIG) ? 'item-active' : ''">-->
+        <!--            <div class="menu-icon">-->
+        <!--              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 28 28" fill="none">-->
+        <!--                <path-->
+        <!--                  fill-rule="evenodd"-->
+        <!--                  clip-rule="evenodd"-->
+        <!--                  d="M16.6587 2.51067C16.227 2.33334 15.6787 2.33334 14.5832 2.33334C13.4877 2.33334 12.9394 2.33334 12.5077 2.51067C11.9331 2.74658 11.4757 3.20106 11.236 3.77417C11.1264 4.03434 11.0844 4.33884 11.0669 4.781C11.0591 5.10137 10.9697 5.41447 10.8072 5.69068C10.6447 5.96688 10.4145 6.19708 10.1382 6.3595C9.85675 6.51596 9.54035 6.59884 9.21833 6.60047C8.89631 6.6021 8.57908 6.52243 8.29605 6.36884C7.90171 6.16117 7.61588 6.04684 7.33355 6.0095C6.71586 5.9284 6.09113 6.09444 5.59521 6.4715C5.22421 6.75384 4.95005 7.22517 4.40288 8.16667C3.85455 9.10817 3.58155 9.57834 3.51971 10.0392C3.43805 10.6528 3.60605 11.2735 3.98638 11.7647C4.15905 11.9887 4.40288 12.1765 4.77971 12.4122C5.33621 12.7587 5.69321 13.349 5.69321 14C5.69321 14.651 5.33621 15.2413 4.78088 15.5867C4.40288 15.8235 4.15905 16.0113 3.98521 16.2353C3.79748 16.4779 3.65968 16.7553 3.57978 17.0515C3.49988 17.3477 3.47946 17.6567 3.51971 17.9608C3.58155 18.4205 3.85455 18.8918 4.40288 19.8333C4.95121 20.7748 5.22421 21.245 5.59521 21.5285C6.08988 21.9053 6.71521 22.071 7.33355 21.9905C7.61588 21.9532 7.90171 21.8388 8.29605 21.6312C8.57923 21.4774 8.89667 21.3976 9.21891 21.3992C9.54116 21.4008 9.85777 21.4838 10.1394 21.6405C10.7064 21.9672 11.0424 22.568 11.0669 23.219C11.0844 23.6623 11.1264 23.9657 11.236 24.2258C11.474 24.7975 11.9314 25.2525 12.5077 25.4893C12.9394 25.6667 13.4877 25.6667 14.5832 25.6667C15.6787 25.6667 16.227 25.6667 16.6587 25.4893C17.2334 25.2534 17.6908 24.7989 17.9304 24.2258C18.04 23.9657 18.082 23.6623 18.0995 23.219C18.1229 22.568 18.46 21.966 19.0282 21.6405C19.3097 21.484 19.6261 21.4012 19.9481 21.3995C20.2701 21.3979 20.5873 21.4776 20.8704 21.6312C21.2647 21.8388 21.5505 21.9532 21.8329 21.9905C22.4512 22.0722 23.0765 21.9053 23.5712 21.5285C23.9422 21.2462 24.2164 20.7748 24.7635 19.8333C25.3119 18.8918 25.5849 18.4217 25.6467 17.9608C25.6868 17.6567 25.6662 17.3475 25.5861 17.0514C25.506 16.7552 25.368 16.4778 25.18 16.2353C25.0074 16.0113 24.7635 15.8235 24.3867 15.5878C23.8302 15.2413 23.4732 14.651 23.4732 14C23.4732 13.349 23.8302 12.7587 24.3855 12.4133C24.7635 12.1765 25.0074 11.9887 25.1812 11.7647C25.3689 11.5221 25.5067 11.2447 25.5866 10.9485C25.6665 10.6523 25.687 10.3433 25.6467 10.0392C25.5849 9.5795 25.3119 9.10817 24.7635 8.16667C24.2152 7.22517 23.9422 6.755 23.5712 6.4715C23.0753 6.09444 22.4506 5.9284 21.8329 6.0095C21.5505 6.04684 21.2647 6.16117 20.8704 6.36884C20.5872 6.52264 20.2698 6.60242 19.9475 6.60079C19.6253 6.59916 19.3087 6.51616 19.027 6.3595C18.751 6.19694 18.521 5.96668 18.3587 5.69048C18.1964 5.41428 18.1072 5.10126 18.0995 4.781C18.082 4.33767 18.04 4.03434 17.9304 3.77417C17.8118 3.49036 17.6384 3.2327 17.4202 3.0159C17.2021 2.79911 16.9433 2.62743 16.6587 2.51067ZM14.5832 17.5C16.5315 17.5 18.11 15.9332 18.11 14C18.11 12.0668 16.5304 10.5 14.5832 10.5C12.6349 10.5 11.0564 12.0668 11.0564 14C11.0564 15.9332 12.636 17.5 14.5832 17.5Z"-->
+        <!--                  fill="#58647A"-->
+        <!--                />-->
+        <!--              </svg>-->
+        <!--            </div>-->
+        <!--            <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span jhiJsonCustom="INVOICE_CONFIG"></span></div>-->
+        <!--            <div [ngClass]="sidebarOption.isShow ? 'menu-caret' : 'menu-caret caret-custom'"></div>-->
+        <!--          </a>-->
+        <!--          <div [ngClass]="sidebarOption.isShow ? 'menu-submenu' : 'menu-submenu-custom'">-->
+        <!--            <div [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'">-->
+        <!--              <a-->
+        <!--                (click)="getLink(INVOICE_CONFIG)"-->
+        <!--                class="menu-link cursor-pointer"-->
+        <!--                [ngClass]="latestUrl === INVOICE_CONFIG ? 'sub-item-active' : ''"-->
+        <!--              >-->
+        <!--                <div class="menu-icon">-->
+        <!--                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">-->
+        <!--                    <path-->
+        <!--                      d="M18.0749 17.5L16.6498 18.95C16.5498 19.05 16.4998 19.1667 16.4998 19.3C16.4998 19.4333 16.5498 19.55 16.6498 19.65C16.7498 19.75 16.8665 19.8 16.9998 19.8C17.1332 19.8 17.2498 19.75 17.3498 19.65L19.2998 17.7C19.4998 17.5 19.5998 17.2667 19.5998 17C19.5998 16.7333 19.4998 16.5 19.2998 16.3L17.3498 14.35C17.2498 14.25 17.1332 14.2 16.9998 14.2C16.8665 14.2 16.7498 14.25 16.6498 14.35C16.5498 14.45 16.4998 14.5667 16.4998 14.7C16.4998 14.8333 16.5498 14.95 16.6498 15.05L18.0998 16.5H14.4998C14.3665 16.5 14.2498 16.55 14.1498 16.65C14.0498 16.75 13.9998 16.8667 13.9998 17C13.9998 17.1333 14.0498 17.25 14.1498 17.35C14.2498 17.45 14.3665 17.5 14.4998 17.5H18.0749ZM16.9998 22C15.6165 22 14.4372 21.5123 13.4618 20.537C12.4865 19.5617 11.9992 18.3827 11.9998 17C11.9998 15.6167 12.4875 14.4373 13.4628 13.462C14.4382 12.4867 15.6172 11.9993 16.9998 12C18.3832 12 19.5625 12.4877 20.5378 13.463C21.5132 14.4383 22.0005 15.6173 21.9998 17C21.9998 18.3833 21.5122 19.5627 20.5368 20.538C19.5615 21.5133 18.3825 22.0007 16.9998 22ZM12.0998 22H10.1248C9.87485 22 9.65818 21.9167 9.47485 21.75C9.29152 21.5833 9.18318 21.375 9.14985 21.125L8.84985 18.8C8.63318 18.7167 8.42885 18.6167 8.23685 18.5C8.04485 18.3833 7.85752 18.2583 7.67485 18.125L5.49985 19.025C5.26652 19.125 5.03318 19.1377 4.79985 19.063C4.56652 18.9883 4.38318 18.8423 4.24985 18.625L2.39985 15.4C2.26652 15.1833 2.22485 14.95 2.27485 14.7C2.32485 14.45 2.44985 14.25 2.64985 14.1L4.52485 12.675C4.50818 12.5583 4.49985 12.4457 4.49985 12.337V11.663C4.49985 11.5543 4.50818 11.4417 4.52485 11.325L2.64985 9.9C2.44985 9.75 2.32485 9.55 2.27485 9.3C2.22485 9.05 2.26652 8.81667 2.39985 8.6L4.24985 5.375C4.38318 5.15833 4.56652 5.01233 4.79985 4.937C5.03318 4.86167 5.26652 4.87433 5.49985 4.975L7.67485 5.875C7.85818 5.74167 8.04585 5.61667 8.23785 5.5C8.42985 5.38333 8.63385 5.28333 8.84985 5.2L9.14985 2.875C9.18318 2.625 9.29152 2.41667 9.47485 2.25C9.65818 2.08333 9.87485 2 10.1248 2H13.8748C14.1248 2 14.3415 2.08333 14.5248 2.25C14.7082 2.41667 14.8165 2.625 14.8498 2.875L15.1498 5.2C15.3665 5.28333 15.5708 5.38333 15.7628 5.5C15.9548 5.61667 16.1422 5.74167 16.3249 5.875L18.4998 4.975C18.7332 4.875 18.9665 4.86233 19.1999 4.937C19.4332 5.01167 19.6165 5.15767 19.7498 5.375L21.5998 8.6C21.7332 8.81667 21.7748 9.05 21.7248 9.3C21.6749 9.55 21.5499 9.75 21.3498 9.9L20.1999 10.775C19.6999 10.525 19.1832 10.3333 18.6498 10.2C18.1165 10.0667 17.5665 10 16.9998 10C16.6665 10 16.3458 10.0293 16.0378 10.088C15.7298 10.1467 15.4172 10.2173 15.0998 10.3C14.7832 9.75 14.3542 9.31233 13.8128 8.987C13.2715 8.66167 12.6838 8.49933 12.0498 8.5C11.0832 8.5 10.2582 8.84167 9.57485 9.525C8.89152 10.2083 8.54985 11.0333 8.54985 12C8.54985 12.6333 8.70418 13.2167 9.01285 13.75C9.32152 14.2833 9.74218 14.7083 10.2748 15.025C10.1748 15.3583 10.1042 15.7043 10.0628 16.063C10.0215 16.4217 10.0005 16.7757 9.99985 17.125C10.0165 18.0583 10.2042 18.946 10.5628 19.788C10.9215 20.63 11.4338 21.3673 12.0998 22Z"-->
+        <!--                      fill="#58647A"-->
+        <!--                    />-->
+        <!--                  </svg>-->
+        <!--                </div>-->
+        <!--                <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">Cấu hình cửa hàng</div>-->
+        <!--              </a>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--          <div [ngClass]="sidebarOption.isShow ? 'menu-submenu' : 'menu-submenu-custom'">-->
+        <!--            <div [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'">-->
+        <!--              <a-->
+        <!--                (click)="getLink(DESIGN_CONFIGURATION)"-->
+        <!--                class="menu-link cursor-pointer"-->
+        <!--                [ngClass]="latestUrl === INVOICE_CONFIG ? 'sub-item-active' : ''"-->
+        <!--              >-->
+        <!--                <div class="menu-icon">-->
+        <!--                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">-->
+        <!--                    <path-->
+        <!--                      d="M18.0749 17.5L16.6498 18.95C16.5498 19.05 16.4998 19.1667 16.4998 19.3C16.4998 19.4333 16.5498 19.55 16.6498 19.65C16.7498 19.75 16.8665 19.8 16.9998 19.8C17.1332 19.8 17.2498 19.75 17.3498 19.65L19.2998 17.7C19.4998 17.5 19.5998 17.2667 19.5998 17C19.5998 16.7333 19.4998 16.5 19.2998 16.3L17.3498 14.35C17.2498 14.25 17.1332 14.2 16.9998 14.2C16.8665 14.2 16.7498 14.25 16.6498 14.35C16.5498 14.45 16.4998 14.5667 16.4998 14.7C16.4998 14.8333 16.5498 14.95 16.6498 15.05L18.0998 16.5H14.4998C14.3665 16.5 14.2498 16.55 14.1498 16.65C14.0498 16.75 13.9998 16.8667 13.9998 17C13.9998 17.1333 14.0498 17.25 14.1498 17.35C14.2498 17.45 14.3665 17.5 14.4998 17.5H18.0749ZM16.9998 22C15.6165 22 14.4372 21.5123 13.4618 20.537C12.4865 19.5617 11.9992 18.3827 11.9998 17C11.9998 15.6167 12.4875 14.4373 13.4628 13.462C14.4382 12.4867 15.6172 11.9993 16.9998 12C18.3832 12 19.5625 12.4877 20.5378 13.463C21.5132 14.4383 22.0005 15.6173 21.9998 17C21.9998 18.3833 21.5122 19.5627 20.5368 20.538C19.5615 21.5133 18.3825 22.0007 16.9998 22ZM12.0998 22H10.1248C9.87485 22 9.65818 21.9167 9.47485 21.75C9.29152 21.5833 9.18318 21.375 9.14985 21.125L8.84985 18.8C8.63318 18.7167 8.42885 18.6167 8.23685 18.5C8.04485 18.3833 7.85752 18.2583 7.67485 18.125L5.49985 19.025C5.26652 19.125 5.03318 19.1377 4.79985 19.063C4.56652 18.9883 4.38318 18.8423 4.24985 18.625L2.39985 15.4C2.26652 15.1833 2.22485 14.95 2.27485 14.7C2.32485 14.45 2.44985 14.25 2.64985 14.1L4.52485 12.675C4.50818 12.5583 4.49985 12.4457 4.49985 12.337V11.663C4.49985 11.5543 4.50818 11.4417 4.52485 11.325L2.64985 9.9C2.44985 9.75 2.32485 9.55 2.27485 9.3C2.22485 9.05 2.26652 8.81667 2.39985 8.6L4.24985 5.375C4.38318 5.15833 4.56652 5.01233 4.79985 4.937C5.03318 4.86167 5.26652 4.87433 5.49985 4.975L7.67485 5.875C7.85818 5.74167 8.04585 5.61667 8.23785 5.5C8.42985 5.38333 8.63385 5.28333 8.84985 5.2L9.14985 2.875C9.18318 2.625 9.29152 2.41667 9.47485 2.25C9.65818 2.08333 9.87485 2 10.1248 2H13.8748C14.1248 2 14.3415 2.08333 14.5248 2.25C14.7082 2.41667 14.8165 2.625 14.8498 2.875L15.1498 5.2C15.3665 5.28333 15.5708 5.38333 15.7628 5.5C15.9548 5.61667 16.1422 5.74167 16.3249 5.875L18.4998 4.975C18.7332 4.875 18.9665 4.86233 19.1999 4.937C19.4332 5.01167 19.6165 5.15767 19.7498 5.375L21.5998 8.6C21.7332 8.81667 21.7748 9.05 21.7248 9.3C21.6749 9.55 21.5499 9.75 21.3498 9.9L20.1999 10.775C19.6999 10.525 19.1832 10.3333 18.6498 10.2C18.1165 10.0667 17.5665 10 16.9998 10C16.6665 10 16.3458 10.0293 16.0378 10.088C15.7298 10.1467 15.4172 10.2173 15.0998 10.3C14.7832 9.75 14.3542 9.31233 13.8128 8.987C13.2715 8.66167 12.6838 8.49933 12.0498 8.5C11.0832 8.5 10.2582 8.84167 9.57485 9.525C8.89152 10.2083 8.54985 11.0333 8.54985 12C8.54985 12.6333 8.70418 13.2167 9.01285 13.75C9.32152 14.2833 9.74218 14.7083 10.2748 15.025C10.1748 15.3583 10.1042 15.7043 10.0628 16.063C10.0215 16.4217 10.0005 16.7757 9.99985 17.125C10.0165 18.0583 10.2042 18.946 10.5628 19.788C10.9215 20.63 11.4338 21.3673 12.0998 22Z"-->
+        <!--                      fill="#58647A"-->
+        <!--                    />-->
+        <!--                  </svg>-->
+        <!--                </div>-->
+        <!--                <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'" style="text-wrap: wrap">-->
+        <!--                  Cài đặt hiển thị chức năng-->
+        <!--                </div>-->
+        <!--              </a>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </div>-->
+
+        <!--                report-->
+        <div
+          *ngIf="hasAuthority(authorReportView)"
+          class="menu-item has-sub"
+          id="report"
+          [style]="utilsService.getStyleByCode('REPORT')"
+          [ngClass]="sidebarOption.isShow ? '' : 'menu-item-custom'"
+        >
+          <a
+            class="menu-link menu-parent"
+            (click)="scrollToBottom('report')"
+            [ngClass]="
+              latestUrl.includes(REPORT_REVENUE_COMMON) ||
+              latestUrl.includes(REPORT_PRODUCT_SALES) ||
+              latestUrl.includes(REPORT_PRODUCT_PROFIT) ||
+              latestUrl.includes(REPORT_INVENTORY_STATS) ||
+              latestUrl.includes(REPORT_PRODUCT_HOT_SALES) ||
+              latestUrl.includes(REPORT_ACTIVITY_HISTORY)
+                ? 'item-active'
+                : ''
+            "
+          >
+            <div class="menu-icon">
+              <span [innerHTML]="ICON_GROUP_REPORT | safeHtml"></span>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span jhiJsonCustom="REPORT"></span></div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-caret' : 'menu-caret caret-custom'"></div>
+          </a>
+
+          <div [ngClass]="sidebarOption.isShow ? 'menu-submenu' : 'menu-submenu-custom'" class="order-column">
+            <!--            <div [style]="utilsService.getStyleByCode('DT/BC')"-->
+            <!--                 [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'"-->
+            <!--                 (click)="onSearchInitRevenueCommon($event)">-->
+            <!--              <a class="menu-link">-->
+            <!--                <div class="menu-icon">-->
+            <!--                  <span [innerHTML]="ICON_REPORT_REVENUE | safeHtml"></span>-->
+            <!--                </div>-->
+            <!--                <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span-->
+            <!--                        jhiJsonCustom="DT/BC"></span></div>-->
+            <!--              </a>-->
+            <!--            </div>-->
+            <div
+              [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'"
+              [style]="utilsService.getStyleByCode('BR/BC')"
+              (click)="onSearchInitProductSales($event)"
+            >
+              <a class="menu-link">
+                <div class="menu-icon">
+                  <span [innerHTML]="ICON_REPORT_PRODUCT_SALES | safeHtml"></span>
+                </div>
+                <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span jhiJsonCustom="BR/BC"></span></div>
+              </a>
+            </div>
+
+            <div
+              [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'"
+              [style]="utilsService.getStyleByCode('LN/BC')"
+              (click)="onSearchInitProductProfit($event)"
+            >
+              <a class="menu-link">
+                <div class="menu-icon">
+                  <span [innerHTML]="ICON_REPORT_PRODUCT_PROFIT | safeHtml"></span>
+                </div>
+                <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span jhiJsonCustom="LN/BC"></span></div>
+              </a>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'" [style]="utilsService.getStyleByCode('TK/BC')">
+              <a class="menu-link" (click)="getLink(REPORT_INVENTORY_STATS)">
+                <div class="menu-icon">
+                  <span [innerHTML]="ICON_INVENTORY_STATS | safeHtml"></span>
+                </div>
+                <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'"><span jhiJsonCustom="TK/BC"></span></div>
+              </a>
+            </div>
+            <div
+              [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'"
+              [style]="utilsService.getStyleByCode('REPORT_HOT_SALES')"
+            >
+              <a (click)="getLink(REPORT_PRODUCT_HOT_SALES)" class="menu-link">
+                <div class="menu-icon">
+                  <span [innerHTML]="ICON_REPORT_HOT_SALE | safeHtml"></span>
+                </div>
+                <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">
+                  <span jhiJsonCustom="REPORT_HOT_SALES"></span>
+                </div>
+              </a>
+            </div>
+            <div [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'" [style]="utilsService.getStyleByCode('HD/BC')">
+              <a
+                (click)="getLink(REPORT_ACTIVITY_HISTORY)"
+                class="menu-link cursor-pointer"
+                [ngClass]="latestUrl === REPORT_ACTIVITY_HISTORY ? 'sub-item-active' : ''"
+              >
+                <div class="menu-icon">
+                  <span [innerHTML]="ICON_REPORT_ACTIVITY_HISTORY | safeHtml"></span>
+                </div>
+                <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">
+                  <span jhiJsonCustom="HD/BC"></span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+        <!--         END menu -->
+      </div>
+      <!--      <div class="menu-item-footer">-->
+      <!--        <div class="menu">-->
+      <!--          <div class="menu-item has-sub" [ngClass]="sidebarOption.isShow ? '' : 'menu-item-custom'">-->
+      <!--            <a class="menu-link menu-parent" [ngClass]="latestUrl.includes(CHANGE_PASSWORD) ? 'item-active' : ''">-->
+      <!--              <div class="menu-icon">-->
+      <!--                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">-->
+      <!--                  <path-->
+      <!--                    d="M14.0002 2.33333C7.56016 2.33333 2.3335 7.56 2.3335 14C2.3335 20.44 7.56016 25.6667 14.0002 25.6667C20.4402 25.6667 25.6668 20.44 25.6668 14C25.6668 7.56 20.4402 2.33333 14.0002 2.33333ZM14.0002 7C16.2518 7 18.0835 8.83167 18.0835 11.0833C18.0835 13.335 16.2518 15.1667 14.0002 15.1667C11.7485 15.1667 9.91683 13.335 9.91683 11.0833C9.91683 8.83167 11.7485 7 14.0002 7ZM14.0002 23.3333C11.6318 23.3333 8.83183 22.3767 6.83683 19.9733C8.88037 18.37 11.4027 17.4986 14.0002 17.4986C16.5976 17.4986 19.12 18.37 21.1635 19.9733C19.1685 22.3767 16.3685 23.3333 14.0002 23.3333Z"-->
+      <!--                    fill="#58647A"-->
+      <!--                  />-->
+      <!--                </svg>-->
+      <!--              </div>-->
+      <!--              <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">Tài khoản</div>-->
+      <!--              <div [ngClass]="sidebarOption.isShow ? 'menu-caret' : 'menu-caret caret-custom'"></div>-->
+      <!--            </a>-->
+      <!--            <div [ngClass]="sidebarOption.isShow ? 'menu-submenu' : 'menu-submenu-custom'">-->
+      <!--              <div [ngClass]="sidebarOption.isShow ? 'menu-item' : 'menu-submenu-item'">-->
+      <!--                <a-->
+      <!--                  (click)="openPasswordChange()"-->
+      <!--                  class="menu-link cursor-pointer"-->
+      <!--                  [ngClass]="latestUrl === INVOICE_CONFIG ? 'sub-item-active' : ''"-->
+      <!--                >-->
+      <!--                  <div class="menu-icon">-->
+      <!--                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">-->
+      <!--                      <path-->
+      <!--                        d="M20 12C20 10.897 19.103 10 18 10H17V7C17 4.243 14.757 2 12 2C9.243 2 7 4.243 7 7V10H6C4.897 10 4 10.897 4 12V20C4 21.103 4.897 22 6 22H18C19.103 22 20 21.103 20 20V12ZM9 7C9 5.346 10.346 4 12 4C13.654 4 15 5.346 15 7V10H9V7Z"-->
+      <!--                        fill="#58647A"-->
+      <!--                      />-->
+      <!--                    </svg>-->
+      <!--                  </div>-->
+      <!--                  <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">Đổi mật khẩu</div>-->
+      <!--                </a>-->
+      <!--              </div>-->
+      <!--            </div>-->
+      <!--          </div>-->
+      <!--          <div class="menu-item has-sub" [ngClass]="sidebarOption.isShow ? '' : 'menu-item-custom'">-->
+      <!--            <a (click)="logout()" class="menu-link menu-parent">-->
+      <!--              <div class="menu-icon">-->
+      <!--                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">-->
+      <!--                  <path-->
+      <!--                    fill-rule="evenodd"-->
+      <!--                    clip-rule="evenodd"-->
+      <!--                    d="M7 2.33334C6.07174 2.33334 5.1815 2.70208 4.52513 3.35846C3.86875 4.01484 3.5 4.90508 3.5 5.83334V22.1667C3.5 23.0949 3.86875 23.9852 4.52513 24.6415C5.1815 25.2979 6.07174 25.6667 7 25.6667H14C14.9283 25.6667 15.8185 25.2979 16.4749 24.6415C17.1313 23.9852 17.5 23.0949 17.5 22.1667V5.83334C17.5 4.90508 17.1313 4.01484 16.4749 3.35846C15.8185 2.70208 14.9283 2.33334 14 2.33334H7ZM19.0085 8.5085C19.2273 8.28979 19.524 8.16692 19.8333 8.16692C20.1427 8.16692 20.4394 8.28979 20.6582 8.5085L25.3248 13.1752C25.5436 13.394 25.6664 13.6906 25.6664 14C25.6664 14.3094 25.5436 14.6061 25.3248 14.8248L20.6582 19.4915C20.4381 19.704 20.1434 19.8216 19.8375 19.819C19.5316 19.8163 19.239 19.6936 19.0227 19.4773C18.8064 19.261 18.6837 18.9684 18.681 18.6625C18.6784 18.3566 18.796 18.0619 19.0085 17.8418L21.6837 15.1667H11.6667C11.3572 15.1667 11.0605 15.0438 10.8417 14.825C10.6229 14.6062 10.5 14.3094 10.5 14C10.5 13.6906 10.6229 13.3938 10.8417 13.175C11.0605 12.9563 11.3572 12.8333 11.6667 12.8333H21.6837L19.0085 10.1582C18.7898 9.93939 18.6669 9.64269 18.6669 9.33334C18.6669 9.02398 18.7898 8.72728 19.0085 8.5085Z"-->
+      <!--                    fill="#58647A"-->
+      <!--                  />-->
+      <!--                </svg>-->
+      <!--              </div>-->
+      <!--              <div [ngClass]="sidebarOption.isShow ? 'menu-text' : 'menu-text-custom'">Đăng xuất</div>-->
+      <!--            </a>-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <!-- END scrollbar -->
+    </div>
+    <!--<div class="app-sidebar-bg"></div>-->
+    <div class="app-sidebar-mobile-backdrop"><a routerLink="#" data-dismiss="app-sidebar-mobile" class="stretched-link"></a></div>
+  </div>
+</div>

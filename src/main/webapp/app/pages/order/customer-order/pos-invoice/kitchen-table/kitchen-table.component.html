@@ -1,0 +1,206 @@
+<div class="header">
+  <ng-container *ngFor="let printName of listHeader">
+    <div [ngStyle]="utilsService.getStylePrint(printName, printConfigMap)">
+      <label>{{ utilsService.getValue(printName, printConfigMap).content }}</label>
+    </div>
+  </ng-container>
+</div>
+<div class="wrap-content-common-info">
+  <div class="item-content-common-info row" *ngIf="utilsService.getValue('InvTime', printConfigMap).isPrint">
+    <div class="col-6" [ngStyle]="utilsService.getStylePrint('InvTime', printConfigMap)">
+      <label>{{ orderSelected.code }}</label>
+    </div>
+    <div class="col-6">
+      <label>{{ orderSelected.createTime | mediumDateFormat }}</label>
+    </div>
+  </div>
+  <div class="item-content-common-info row" *ngIf="utilsService.getValue('TaxAuthorityCode', printConfigMap).isPrint">
+    <div class="col-6" jhiTranslate="global.info.taxCode">Mã cơ quan thuế</div>
+    <div class="col-6" [ngStyle]="utilsService.getStylePrint('TaxAuthorityCode', printConfigMap)">
+      <label>{{ orderSelected.taxAuthorityCode }}</label>
+    </div>
+  </div>
+  <div class="item-content-common-info row" *ngIf="utilsService.getValue('CustomerName', printConfigMap).isPrint">
+    <div class="customer-label col-6" jhiTranslate="easyPos.bill.info.customer">Khách hàng</div>
+    <div class="col-6" [ngStyle]="utilsService.getStylePrint('CustomerName', printConfigMap)">
+      <label>{{ orderSelected.customerName }}</label>
+    </div>
+  </div>
+  <div class="product-invoice">
+    <div class="item-product border-product">
+      <div class="text-bold" jhiTranslate="easyPos.product.info.name" style="text-align: left">SẢN PHẨM</div>
+      <div
+        class="text-bold"
+        jhiTranslate="easyPos.product.info.quantity"
+        *ngIf="utilsService.getValue('ProductUnitPrice', printConfigMap).isPrint"
+      >
+        SỐ LƯỢNG
+      </div>
+      <div
+        class="text-bold amount"
+        *ngIf="utilsService.getValue('ProductTotalPreTax', printConfigMap).isPrint"
+        jhiTranslate="easyPos.product.info.amount"
+      >
+        THÀNH TIỀN
+      </div>
+    </div>
+    <ng-container *ngFor="let product of orderSelected.products">
+      <ng-container *ngIf="(product.feature === 1 || product.feature === 2) && product.productCode !== 'SPDV'">
+        <div class="d-flex flex-column border-bottom-product">
+          <div [ngStyle]="utilsService.getStylePrint('ProductName', printConfigMap)">
+            {{ product.productName }}
+          </div>
+          <div class="item-product">
+            <div
+              *ngIf="utilsService.getValue('ProductUnitPrice', printConfigMap).isPrint"
+              [ngStyle]="utilsService.getStylePrint('ProductUnitPrice', printConfigMap)"
+            >
+              {{ product.unitPrice | number }}
+            </div>
+            <div [ngClass]="!utilsService.getValue('ProductUnitPrice', printConfigMap).isPrint ? 'text-left-item' : ''">
+              x{{ product.quantity }}
+              <span class="ms-5px" *ngIf="product.unit" [ngStyle]="utilsService.getStylePrint('ProductUnit', printConfigMap)"
+                >({{ product.unit }})
+              </span>
+            </div>
+            <div
+              *ngIf="utilsService.getValue('ProductTotalPreTax', printConfigMap).isPrint"
+              [ngStyle]="utilsService.getStylePrint('ProductTotalPreTax', printConfigMap)"
+            >
+              {{ product.amount | number }}
+            </div>
+          </div>
+          <div class="item-product" *ngIf="product.toppings?.length">
+            <div>{{ product.productToppingName }}</div>
+            <div></div>
+            <div *ngIf="product.totalAmountTopping">{{ product.totalAmountTopping | number }}</div>
+          </div>
+          <div
+            class="item-product"
+            *ngIf="utilsService.getValue('ProductDiscount', printConfigMap).isPrint"
+            [ngStyle]="utilsService.getStylePrint('ProductDiscount', printConfigMap)"
+          >
+            <div jhiTranslate="easyPos.product.info.discount" *ngIf="product.discountAmount"></div>
+            <div></div>
+            <div *ngIf="product.discountAmount">-{{ product.discountAmount | number }}</div>
+          </div>
+          <div class="item-product" *ngIf="product.vatRate > 0" [ngStyle]="utilsService.getStylePrint('ProductVat', printConfigMap)">
+            <div>Thuế suất ({{ product.vatRate }}%)</div>
+            <div></div>
+            <div *ngIf="product.displayVatAmount">{{ product.displayVatAmount | number }}</div>
+          </div>
+          <div
+            class="item-product"
+            *ngIf="product.discountVatRate > 0"
+            [ngStyle]="utilsService.getStylePrint('ProductVat', printConfigMap)"
+          >
+            <div>Thuế giảm trừ ({{ product.discountVatRate }}%)</div>
+            <div></div>
+            <div *ngIf="product.totalDiscount">{{ -product.totalDiscount | number }}</div>
+          </div>
+
+          <div [ngStyle]="utilsService.getStylePrint('ProductTotalAmount', printConfigMap)">
+            <div *ngIf="product.discountAmount || product.displayVatAmount">{{ product.displayTotalAmount | number }}</div>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+  <div class="wrap-amount-invoice row" *ngIf="utilsService.getValue('TotalProd', printConfigMap).isPrint">
+    <div class="col-6" jhiTranslate="easyPos.bill.checkout.amount">Tạm tính</div>
+    <div class="col-6" [ngStyle]="utilsService.getStylePrint('TotalProd', printConfigMap)">
+      <label>{{ orderSelected.amount | number }}</label>
+    </div>
+  </div>
+  <div class="wrap-amount-invoice row" *ngIf="utilsService.getValue('DiscountInv', printConfigMap).isPrint">
+    <div class="col-6" jhiTranslate="easyPos.bill.checkout.discountAmount">Giảm giá đơn hàng</div>
+    <div class="col-6" [ngStyle]="utilsService.getStylePrint('DiscountInv', printConfigMap)">
+      <label>{{ -orderSelected.discountAmount | number }}</label>
+    </div>
+  </div>
+  <div class="wrap-amount-invoice row" *ngIf="utilsService.getValue('Total', printConfigMap).isPrint">
+    <div class="col-6">Tổng cộng</div>
+    <div class="col-6" [ngStyle]="utilsService.getStylePrint('Total', printConfigMap)">
+      <label>{{ orderSelected.totalPreTax | number }}</label>
+    </div>
+  </div>
+  <div class="wrap-amount-invoice row" *ngIf="orderSelected?.extraConfig?.svc5">
+    <div class="col-6">SV Charge (5%)</div>
+    <div class="col-6 text-end">
+      <label>{{ orderSelected.extraConfig.svc5 | number }}</label>
+    </div>
+  </div>
+  <div class="wrap-amount-invoice row" *ngIf="orderSelected?.extraConfig?.amountVat8">
+    <div class="col-6">VAT (8%)</div>
+    <div class="col-6 text-end">
+      <label>{{ orderSelected.extraConfig.amountVat8 | number }}</label>
+    </div>
+  </div>
+  <div class="wrap-amount-invoice row" *ngIf="orderSelected?.extraConfig?.amountVat10">
+    <div class="col-6">VAT (10%)</div>
+    <div class="col-6 text-end">
+      <label>{{ orderSelected.extraConfig.amountVat10 | number }}</label>
+    </div>
+  </div>
+  <div class="wrap-amount-invoice row" *ngIf="utilsService.getValue('TotalVatAmount', printConfigMap).isPrint">
+    <div class="col-6" jhiTranslate="easyPos.bill.checkout.vatAmount">Tổng tiền thuế</div>
+    <div class="col-6" [ngStyle]="utilsService.getStylePrint('TotalVatAmount', printConfigMap)">
+      <label>{{ orderSelected.vatAmount | number }}</label>
+    </div>
+  </div>
+  <div class="wrap-amount-invoice row" *ngIf="utilsService.getValue('DiscountVat', printConfigMap).isPrint">
+    <div class="col-6" jhiTranslate="easyPos.bill.checkout.discountVatAmount">Giảm trừ thuế</div>
+    <div class="col-6" [ngStyle]="utilsService.getStylePrint('DiscountVat', printConfigMap)">
+      <label>{{ -orderSelected.discountVatAmount | number }}</label>
+    </div>
+  </div>
+  <div class="wrap-amount-invoice row" *ngIf="utilsService.getValue('TotalAmount', printConfigMap).isPrint">
+    <div class="col-6" jhiTranslate="easyPos.bill.checkout.customerMustPay">Khách phải trả</div>
+    <div class="col-6" [ngStyle]="utilsService.getStylePrint('TotalAmount', printConfigMap)">
+      <label>{{ orderSelected.totalAmount | number }}</label>
+    </div>
+  </div>
+  <div class="wrap-amount-invoice row" *ngIf="utilsService.getValue('CusAmount', printConfigMap).isPrint">
+    <div class="col-6" jhiTranslate="easyPos.bill.checkout.customerPay">Khách trả</div>
+    <div class="col-6" [ngStyle]="utilsService.getStylePrint('CusAmount', printConfigMap)">
+      <label>{{ orderSelected.payment.amount | number }}</label>
+    </div>
+  </div>
+  <div *ngIf="utilsService.getValue('Refund', printConfigMap).isPrint" class="wrap-amount-invoice row">
+    <div class="col-6" jhiTranslate="easyPos.bill.checkout.moneyRefund">Tiền thừa</div>
+    <div class="col-6" [ngStyle]="utilsService.getStylePrint('Refund', printConfigMap)">
+      <label>{{ orderSelected.payment.refund || 0 | number }}</label>
+    </div>
+  </div>
+</div>
+<div class="footer">
+  <div>
+    <div [ngStyle]="utilsService.getStylePrint('PaymentMethod', printConfigMap)">
+      <label
+        >Thanh toán <span class="paymentMethod">{{ orderSelected.payment.paymentMethod }}</span></label
+      >
+    </div>
+    <div [ngStyle]="utilsService.getStylePrint('Footer', printConfigMap)">
+      <label jhiTranslate="easyPos.bill.info.thankCustomer">CẢM ƠN QUÝ KHÁCH</label>
+    </div>
+  </div>
+  <div [ngStyle]="utilsService.getStylePrint('QrSearch', printConfigMap)">
+    <div class="border-top-product">
+      <label class="d-block" jhiTranslate="easyPos.bill.info.qr">Mã QR tra cứu</label>
+      <img class="qrcode" [src]="urlQR || '/assets/img/pos/qrcode.PNG'" alt="" />
+    </div>
+  </div>
+  <div [ngStyle]="utilsService.getStylePrint('Fkey', printConfigMap)">
+    <label class="d-block">Mã tra cứu </label>
+    <label>{{ orderSelected.taxAuthorityCode }}</label>
+  </div>
+  <div [ngStyle]="utilsService.getStylePrint('PortalLink', printConfigMap)">
+    <div jhiTranslate="easyPos.bill.info.searchInvoice">Tra cứu hóa đơn tại</div>
+    <label>{{ getValue('PortalLink').content || '0123456789hd.softdreams.vn' }}</label>
+  </div>
+  <div [ngStyle]="utilsService.getStylePrint('Description', printConfigMap)">
+    <label style="padding-top: 1em">{{
+      orderSelected.description ? orderSelected.description : isDefault ? getValue('Description').content : ''
+    }}</label>
+  </div>
+</div>

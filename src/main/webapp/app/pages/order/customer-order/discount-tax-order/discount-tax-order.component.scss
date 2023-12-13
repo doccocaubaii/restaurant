@@ -1,0 +1,44 @@
+.ng-select-input {
+  padding: 8px 10px !important;
+}
+
+.no-spinners::-webkit-inner-spin-button,
+.no-spinners::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.modal-header {
+  height: 56px !important;
+  background-color: #0074bd !important;
+
+  .modal-title {
+    color: #fff;
+  }
+
+  .btn-close {
+    color: #fff;
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    font-size: 16px;
+  }
+}
+
+.item-basic-infor {
+  margin: 0.75rem 0;
+}
+
+.title-info {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #58647a;
+}
+
+.input-text-custom input {
+  color: #004671 !important;
+  font-size: 15px !important;
+}

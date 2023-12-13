@@ -1,0 +1,264 @@
+<div style="padding: 8px 0 0 0; color: #004671">
+  <div class="area-unit-header m-line-24px">
+    <div class="flex-align-center" style="max-width: calc(100% - 120px); width: 80%">
+      <span class="truncate whitespace-pre" style="max-width: calc(100% - 80px); font-weight: bold; font-size: 16px">{{ area.name }}</span>
+      <div
+        class="flex-align-center hover-edit div-icon ms-10px"
+        title="Sửa tên khu vực "
+        (click)="openUpdateArea(area)"
+        *jhiHasAnyAuthority="authorUpdate"
+      >
+        <!--        <i class="far fa-pen-to-square fa-lg"></i>-->
+        <span [innerHTML]="ICON_UPDATE | safeHtml"></span>
+      </div>
+      <div
+        class="flex-align-center div-icon hover-delete ms-10px"
+        title="Xóa khu vực"
+        (click)="openDeleteArea()"
+        *jhiHasAnyAuthority="authorDelete"
+      >
+        <!--        <i class="far fa-trash-can fa-lg"></i>-->
+        <span [innerHTML]="ICON_DELETE | safeHtml"></span>
+      </div>
+    </div>
+    <div style="font-size: 14px; min-width: 100px" class="d-flex align-items-center">
+      <span jhiTranslate="easyPos.area.info.Empty">Còn trống</span> : {{ area.emptyTable }}
+    </div>
+  </div>
+  <div class="container-2">
+    <div
+      class="card-unit d-flex justify-content-center flex-column"
+      (click)="createUnit()"
+      style="background: white !important; color: #004671"
+      *jhiHasAnyAuthority="authorAdd"
+    >
+      <div class="parent-of-center-element">
+        <span [innerHTML]="ICON_CREATE | safeHtml"></span>
+      </div>
+      <div class="parent-of-center-element" style="padding: 0 10px; margin-top: 13px">
+        <span style="font-size: 16px; font-weight: bold" class="truncate" jhiTranslate="easyPos.area.info.new-table">Tạo bàn mới</span>
+      </div>
+    </div>
+    <ng-container *ngFor="let unit of area.units">
+      <div
+        (click)="openDetail(unit, area)"
+        class="card-unit unmark position-relative"
+        *ngIf="!unit.usingBills || !unit.usingBills.length; else elseBlock"
+      >
+        <div style="height: 20%; padding-top: 5px" class="d-flex justify-content-between">
+          <div class="hover-edit div-icon" style="width: calc(100% - 30px)"></div>
+          <div
+            title="Xóa bàn"
+            class="hover-delete div-icon"
+            (click)="openDeleteUnit($event, unit)"
+            style="
+              background: #d9eaf5;
+              border-radius: 2px;
+              width: 30px;
+              margin-right: 6px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            "
+          >
+            <span [innerHTML]="ICON_DELETE | safeHtml"></span>
+            <!--            <i title="Xóa bàn" class="far fa-lg fa-trash-can" style="margin-left: 5px; margin-top: 14px"></i>-->
+          </div>
+        </div>
+        <div style="height: 80%">
+          <div class="unit-content" style="">
+            <!--            <img class="img-large" src="content/icon/quan-ly/quanLyBan.svg" />-->
+            <span [innerHTML]="ICON_TABLE | safeHtml"></span>
+          </div>
+          <hr style="margin: 0 20px; background: #b0d4eb; color: #b0d4eb; height: 2px" />
+          <div class="unit-name parent-of-center-element d-flex">
+            <div style="width: 80%" class="truncate">
+              <span class="truncate center-text whitespace-pre" style="font-size: 14px">{{ unit.name }}</span>
+            </div>
+            <div style="width: 10%" title="Sửa tên bàn" class="hover-edit div-icon" (click)="openModelUnit($event, unit)">
+              <span [innerHTML]="ICON_EDIT_SM | safeHtml"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #elseBlock>
+        <div class="card-unit marked-border marked position-relative" (click)="openDetail(unit, area)">
+          <span (click)="getAreaUnit($event, unit, area)" *ngIf="!updateAreaUnit" [innerHTML]="ICON_GET_UNIT | safeHtml"></span>
+          <div class="unit-content flex-vertical d-flex" style="height: 76%; padding-left: 25px">
+            <div class="d-flex">
+              <div class="div-contain-small-icon">
+                <!--                <img class="small-icon" src="content/icon/quan-ly/donHang.svg" />-->
+                <span [innerHTML]="ICON_BILL_INFO | safeHtml"></span>
+              </div>
+              <span style="font-size: 12px" class="truncate"
+                >{{ unit.usingBills?.length }} <span jhiTranslate="easyPos.area.info.bill">đơn</span>
+              </span>
+            </div>
+            <div class="d-flex">
+              <div class="div-contain-small-icon">
+                <span [innerHTML]="ICON_TIME_TILL_NOW | safeHtml"></span>
+              </div>
+              <span style="font-size: 12px" class="truncate">{{ unit.timeTillNow }} </span>
+            </div>
+            <div class="d-flex">
+              <div class="div-contain-small-icon">
+                <span [innerHTML]="ICON_TOTAL_MONEY | safeHtml"></span>
+                <!--                <img class="small-icon" src="content/icon/quan-ly/coin.svg" />-->
+              </div>
+              <span style="font-size: 12px" class="truncate">{{ unit.totalMoney | number }}</span>
+            </div>
+          </div>
+          <hr style="margin: 0px 20px; background: white; color: white; height: 2px" />
+          <div class="unit-name arent-of-center-element marked-bold align-items-center d-flex" style="height: 24%">
+            <span class="truncate whitespace-pre" style="font-size: 14px">{{ unit.name }}</span>
+          </div>
+        </div>
+      </ng-template>
+    </ng-container>
+  </div>
+  <hr style="margin: 8px 0 0 0" />
+</div>
+
+<!--<ng-template #updateAreaModel let-dctt="dismiss">-->
+<!--  <div class="modal-header">-->
+<!--    <h3 class="modal-title">Chỉnh sửa khu vực</h3>-->
+<!--    <button type="button" class="btn-close" (click)="dctt('Close')" aria-label="Close" name="btnCloseCheckModal"></button>-->
+<!--  </div>-->
+<!--  <div class="modal-body">-->
+<!--    <div class="form-group">-->
+<!--      <label for="nameArea">Nhập tên khu vực <span style="color: red">(*)</span> : </label>-->
+<!--      <div>-->
+<!--        <input id="nameArea" class="row-info" name="name" placeholder="VD: khu vực A" required maxLength="50" [(ngModel)]="area.name" />-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class="modal-footer">-->
+<!--    <button type="button" class="btn btn-sm btn-default" (click)="dctt('Close')">Hủy</button>-->
+<!--    <button type="button" class="btn btn-sm btn-success" [disabled]="loading.isLoading" (click)="updateNameArea()">Cập nhật</button>-->
+<!--  </div>-->
+<!--</ng-template>-->
+<!--<ng-template #updateAreaModel let-dctt="dismiss">-->
+<!--  <div class="modal-header">-->
+<!--    <h5 class="modal-title" jhiTranslate="easyPos.area.update.title">Chỉnh sửa khu vực</h5>-->
+<!--    <button type="button" class="btn-close" (click)="dctt('Close')" aria-label="Close" name="btnCloseCheckModal"></button>-->
+<!--  </div>-->
+<!--  <div class="modal-body">-->
+<!--    <div class="form-group">-->
+<!--      <label class="form-label">-->
+<!--        <span jhiTranslate="easyPos.area.create.tableName">Tên khu vực</span><span style="color: red"> *</span>:-->
+<!--      </label>-->
+<!--      <input required class="option-title input-value form-control" placeholder="Nhập tên khu vực" maxLength="50" [(ngModel)]="tmp.name" />-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class="modal-footer">-->
+<!--    <button type="button" class="btn btn-sm btn-secondary" (click)="dctt('Close')">-->
+<!--      <fa-icon icon="cancel"></fa-icon>-->
+<!--      <label jhiTranslate="global.entity.action.cancel">Hủy</label>-->
+<!--    </button>-->
+<!--    <button type="button" class="btn btn-sm btn-success" [disabled]="loading.isLoading || tmp.name == ''" (click)="updateNameArea()">-->
+<!--      <fa-icon icon="edit"></fa-icon>-->
+<!--      <label jhiTranslate="global.entity.action.update">Cập nhật</label>-->
+<!--    </button>-->
+<!--  </div>-->
+<!--</ng-template>-->
+
+<ng-template #updateUnitModel let-dctt="dismiss">
+  <div class="modal-header">
+    <h5 class="modal-title" jhiTranslate="easyPos.area-unit.update.title">Chỉnh sửa bàn</h5>
+    <button type="button" class="btn-close" (click)="dctt('Close')" aria-label="Close" name="btnCloseCheckModal"></button>
+  </div>
+  <div class="modal-body">
+    <form class="detail-row" #cusForm="ngForm">
+      <div class="form-group">
+        <label for="name" class="form-label"
+          ><span jhiTranslate="easyPos.area-unit.create.tableName">Tên bàn </span><span style="color: red">*</span>
+        </label>
+        <div class="mt-10px input-text-custom">
+          <input
+            id="name"
+            class="input-box input-value form-control"
+            name="name"
+            placeholder="Nhập tên bàn"
+            required
+            maxLength="50"
+            [(ngModel)]="nameTmp.name"
+          />
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <!--    <button type="button" class="btn btn-sm btn-secondary" (click)="dctt('Close')">-->
+    <!--      <fa-icon icon="cancel"></fa-icon>-->
+    <!--      <label jhiTranslate="global.entity.action.cancel">Hủy</label>-->
+    <!--    </button>-->
+    <!--    <button-->
+    <!--      type="button"-->
+    <!--      class="btn btn-sm btn-success"-->
+    <!--      [disabled]="!cusForm.form.valid || loading.isLoading"-->
+    <!--      (click)="updateNameUnit(nameTmp)"-->
+    <!--    >-->
+    <!--      <fa-icon icon="edit" class="me-3px"></fa-icon><label jhiTranslate="global.entity.action.update">Cập nhật</label>-->
+    <!--    </button>-->
+
+    <button type="button" class="exit-button-dialog" (click)="dctt('Close')">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <label jhiTranslate="global.entity.action.cancel">Hủy</label>
+    </button>
+    <button type="button" class="save-button-dialog" [disabled]="!cusForm.form.valid || loading.isLoading" (click)="updateNameUnit(nameTmp)">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span jhiTranslate="global.entity.action.save">Lưu</span>
+    </button>
+  </div>
+</ng-template>
+
+<!--<ng-template #detailUnit let-dctt="dismiss">-->
+<!--  <div class="modal-header">-->
+<!--    <h5 class="modal-title" jhiTranslate="easyPos.area-unit.detail.title">Chọn đơn hàng để xử lý</h5>-->
+<!--    <button type="button" class="btn-close" (click)="dctt('Close')" aria-label="Close" name="btnCloseCheckModal"></button>-->
+<!--  </div>-->
+<!--  <div style="padding: 30px 10px 30px 10px">-->
+<!--    <div class="div-bill" style="margin-left: auto; margin-right: auto">-->
+<!--      <div-->
+<!--        *ngFor="let bill of unitDetail.usingBills; index as l"-->
+<!--        class="d-flex bill"-->
+<!--        style="box-shadow: inset 0 0 0 1px var(&#45;&#45;app-component-border-color-transparent)"-->
+<!--      >-->
+<!--        <div style="width: 50%">-->
+<!--          <div class="form-input-custom me-auto" style="max-width: 100px">-->
+<!--            <div class="user-input-text-div">-->
+<!--              <strong id="stt"><span jhiTranslate="easyPos.area-unit.detail.bill">Đơn hàng</span> {{ l + 1 }}</strong>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="form-input-custom me-auto" style="flex: 1">-->
+<!--            <div class="user-input-text-div">-->
+<!--              <strong id="createTime" style="font-weight: 400; font-size: 15px">{{ bill.createTime }}</strong>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div style="width: 50%">-->
+<!--          <div class="form-input-custom d-flex justify-content-end">-->
+<!--            <div class="user-input-text-div">-->
+<!--              <strong id="amount" style="color: #6697d6">{{ bill.totalAmount | number }}</strong>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="form-input-custom d-flex justify-content-end" style="min-width: 87px">-->
+<!--            <button (click)="dctt('Close'); getLink(BILL + bill.id)" class="btn btn-success btn-sm">-->
+<!--              <i class="fas fa-arrow-up-wide-short"></i>-->
+<!--              <span jhiTranslate="global.entity.action.detail">Chi tiết</span>-->
+<!--            </button>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class="modal-footer">-->
+<!--    <button type="button" class="btn btn-sm btn-secondary" (click)="dctt('Close')">-->
+<!--      <fa-icon icon="cancel"></fa-icon>-->
+<!--      <label jhiTranslate="global.entity.action.cancel">Hủy</label>-->
+<!--    </button>-->
+<!--    <button (click)="dctt('Close'); getLink(BILL + '?table=' + unitDetail.id)" type="button" class="btn btn-sm btn-success">-->
+<!--      <i class="icon-add fa-sharp fa-solid fa-plus me-3px"></i><span jhiTranslate="easyPos.area-unit.detail.create-bill">Tạo đơn mới</span>-->
+<!--    </button>-->
+<!--  </div>-->
+<!--</ng-template>-->

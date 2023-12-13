@@ -1,0 +1,135 @@
+<div class="login-page">
+  <div class="login-container">
+    <div class="login-content">
+      <div class="login-form">
+        <div class="login-body">
+          <div class="login-logo">
+            <img src="/content/img/login/easypos.png" />
+          </div>
+          <div class="login-form-custom">
+            <form class="fs-13px" autocomplete="new-form">
+              <div *ngIf="!companies">
+                <div class="login-username">
+                  <label class="login-title" jhiTranslate="global.info.account"></label>
+                  <div class="login-input" *ngIf="!companies">
+                    <div class="login-input-holder">
+                      <span [innerHTML]="ICON_ACCOUNT_INFO | safeHtml"></span>
+                      <!--                    <span *ngIf="!loginForm.username" jhiTranslate="global.info.account"></span>-->
+                    </div>
+                    <input
+                      type="text"
+                      class="form-control login-input-text"
+                      [(ngModel)]="loginForm.username"
+                      (keyup.enter)="onEnter()"
+                      name="username"
+                      placeholder="Tên đăng nhập"
+                      autocomplete="new-form"
+                    />
+                  </div>
+                </div>
+
+                <div class="login-password">
+                  <label class="login-title" jhiTranslate="global.info.password"></label>
+                  <div class="login-input" *ngIf="!companies">
+                    <div class="login-input-holder">
+                      <span [innerHTML]="ICON_PASSWORD_INFO | safeHtml"></span>
+                      <!--                    <span *ngIf="!loginForm.password" jhiTranslate="global.info.password"></span>-->
+                    </div>
+                    <input
+                      [type]="passwordVisible ? 'text' : 'password'"
+                      class="form-control login-input-text"
+                      [(ngModel)]="loginForm.password"
+                      (keyup.enter)="login()"
+                      name="password"
+                      placeholder="Mật khẩu"
+                      autocomplete="new-form"
+                    />
+                    <div (click)="showPassword()" class="position-absolute cursor-pointer" style="right: 10px">
+                      <span *ngIf="!passwordVisible" [innerHTML]="ICON_PASSWORD_VISIBLE | safeHtml"></span>
+                      <span *ngIf="passwordVisible" [innerHTML]="ICON_PASSWORD_INVISIBLE | safeHtml"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="forgot-password">
+                  <a class="cursor-pointer" (click)="forgot()">Quên mật khẩu?</a>
+                </div>
+              </div>
+              <div *ngIf="companies">
+                <label for="companyId" class="d-flex align-items-center fs-13px text-gray-600">Chọn công ty</label>
+                <ng-select id="companyId" name="companyId" [(ngModel)]="loginForm.companyId">
+                  <ng-option *ngFor="let com of companies; let i = index" (select)="(i == 0)" [value]="com.id">{{ com.name }}</ng-option>
+                </ng-select>
+              </div>
+            </form>
+          </div>
+          <div class="login-submit">
+            <button
+              type="submit"
+              class="save-button-dialog d-block h-45px w-100 btn-lg fs-14px"
+              (click)="login()"
+              [disabled]="isLoading"
+            >
+              <span jhiTranslate="global.info.signIn"></span>
+            </button>
+            <div class="register pt-2">
+              <label class="fs-14px fw-700"
+                >Bạn chưa có tài khoản?
+                <a (click)="getLink(REGISTER)"><span class="cursor-pointer" style="color: #0074bd">Đăng ký</span></a></label
+              >
+            </div>
+          </div>
+          <div class="login-message">
+            <div *ngIf="!companies && errorMessage">
+              <!--              <label class="text-danger font-weight-bold"><strong>Đăng nhập thất bại:</strong></label>-->
+              <!--              <label class="text-danger" jhiTranslate="{{ 'login.error.' + errorMessage }}"></label>-->
+            </div>
+          </div>
+          <div class="download-info">
+            <div class="image-download">
+              <img src="/content/img/login/qr-download.png" />
+            </div>
+            <label class="text-center">Tải App Mobile ứng dụng EasyPos trên điện thoại</label>
+          </div>
+        </div>
+      </div>
+      <img class="decorate" src="/content/img/login/decorate.png" />
+      <div class="background-image-ipad">
+        <img src="/content/img/login/background.png" />
+      </div>
+      <label class="copyright">Copyright © 2023 SoftDreams. All rights reserved</label>
+    </div>
+    <div class="login-decorate">
+      <div class="background-image">
+        <img src="/content/img/login/background.png" />
+      </div>
+      <div class="company-information">
+        <img src="/content/img/login/sds-logo%20(1).png" />
+        <div class="company-information-detail d-flex flex-column mt-10px">
+          <label>CÔNG TY CỔ PHẦN ĐẦU TƯ CÔNG NGHỆ VÀ THƯƠNG MẠI SOFTDREAMS</label>
+          <label>
+            <span [innerHTML]="ICON_LOCAL | safeHtml"></span>
+            Trụ sở chính: Nhà khách ATS, số 8 Phạm Hùng, Phường Mễ Trì, Quận Nam Từ Liêm, HN
+          </label>
+          <label>
+            <span [innerHTML]="ICON_LOCAL | safeHtml"></span>
+            Chi nhánh: Số H.46 đường Dương Thị Giang, Phường Tân Thới Nhất, Quận 12, TP HCM
+          </label>
+          <label>
+            <span [innerHTML]="ICON_PHONE | safeHtml"></span>
+            Tel: 1900 33 69 - 1900 56 56 53 - 1900 57 57 54
+            <span class="ps-2">
+              <span [innerHTML]="ICON_EMAIL | safeHtml"></span>
+              Email: contact@softdreams.vn
+            </span>
+          </label>
+          <label>
+            <span [innerHTML]="ICON_WEBSITE | safeHtml"></span>
+            Website: easyinvoice.vn | easybooks.vn | easyca.vn
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  <div class="panel-right"></div>-->
+</div>

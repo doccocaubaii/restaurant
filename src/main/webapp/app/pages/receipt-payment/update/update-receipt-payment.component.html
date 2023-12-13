@@ -1,0 +1,97 @@
+<div class="modal-header">
+  <div class="group-header">
+    <h5
+      *ngIf="!transactionUpdate.id"
+      [jhiTranslate]="transactionUpdate.type == 0 ? 'easyPos.receipt.update.title-rec' : 'easyPos.receipt.update.title-pay'"
+      class="modal-title"
+    >
+      Tao ...
+    </h5>
+    <h5 *ngIf="transactionUpdate.id" jhiTranslate="easyPos.receipt.update.title-update" class="modal-title">Tao ...</h5>
+    <button type="button" class="btn-close" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    </button>
+  </div>
+</div>
+<div class="border-header"></div>
+<div class="modal-body body-category">
+  <div class="pos-infor mt-0">
+    <label class="title-info"> <span jhiTranslate="easyPos.receipt.update.amount">Số tiền</span></label>
+    <input
+      class="option-title input-value form-control"
+      placeholder="{{ 'easyPos.receipt.update.amount' | translate }}"
+      [(ngModel)]="transactionUpdate.amount"
+      (input)="changeMoney($event)"
+      [readOnly]="canEdit"
+      jhiCurrencyNumber
+    />
+  </div>
+
+  <div class="pos-infor mb-0 mt-2">
+    <label jhiTranslate="easyPos.receipt.update.date" class="form-label with-label-name">Chọn thời gian giao dịch</label>
+    <div class="input-group">
+      <input
+        class="form-control"
+        placeholder="DD-MM-YYYY"
+        name="arisingDate"
+        dataformatas="yyyy/MM/dd HH:mm:ss"
+        id="arisingDate"
+        #d3="ngbDatepicker"
+        [(ngModel)]="date"
+        [maxDate]="utilsService.getFromToMoment(now)"
+        [readOnly]="canEdit"
+        ngbDatepicker
+        dateFormat
+      />
+      <button class="btn btn-outline-secondary" *ngIf="!canEdit" (click)="d3.toggle()" type="button">
+        <i class="fa fa-calendar"></i>
+      </button>
+    </div>
+  </div>
+  <div class="pos-infor mt-2">
+    <label class="form-label" jhiTranslate="easyPos.receipt.update.business">Phân loại</label>
+    <div class="custom-ng-select">
+      <ng-select
+        class="w-100"
+        [items]="lstBusinessTypeRes"
+        bindLabel="businessTypeName"
+        title="Tìm kiếm khách hàng"
+        placeholder="{{ 'easyPos.receipt.search.businessPlaceHolder' | translate }}"
+        bindValue="id"
+        [virtualScroll]="true"
+        [(ngModel)]="transactionUpdate.businessType"
+        [typeahead]="keywordBusiness$"
+        [readonly]="canEdit"
+      >
+      </ng-select>
+      <div class="icon-right" *ngIf="!canEdit" (click)="openModalCreateBusinessType(type)">
+        <i class="icon-add fa-sharp fa-solid fa-plus" style="color: #1484c6"></i>
+      </div>
+    </div>
+  </div>
+  <div class="pos-infor mt-2">
+    <label class="title-info"> <span jhiTranslate="easyPos.receipt.update.desc">Mô tả</span></label>
+    <input
+      class="option-title input-value form-control"
+      placeholder="{{ 'easyPos.receipt.update.desc' | translate }}"
+      [(ngModel)]="transactionUpdate.note"
+      [readOnly]="canEdit"
+    />
+  </div>
+  <div class="mt-3">
+    <span class="p-2 text-danger" *ngIf="canEdit" jhiTranslate="easyPos.receipt.notFix">Phieu nay khong duoc sua</span>
+  </div>
+</div>
+<div class="modal-footer justify-content-between d-flex">
+  <div></div>
+  <div class="btn-row d-flex col-md-7">
+    <button type="button" class="exit-button-dialog me-2 mb-1" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <span jhiTranslate="global.button.cancel"></span>
+    </button>
+    <button type="button" class="save-button-dialog me-1 mb-1 d-flex align-items-center" [disabled]="canEdit" (click)="updateTransaction()">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span jhiTranslate="global.button.save"></span>
+    </button>
+  </div>
+</div>

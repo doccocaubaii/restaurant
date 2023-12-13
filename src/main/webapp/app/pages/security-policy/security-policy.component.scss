@@ -1,0 +1,19 @@
+$color-default: #0074bd;
+$color-label: #58647a;
+$font-weight-title: 700;
+$font-weight-label: 500;
+$font-size: 16px;
+
+.policy {
+  &__items {
+    box-shadow: 0 4px 5px 0 #0074bd26;
+    background: white;
+    height: 200px;
+    border-radius: 6px;
+    label {
+      padding: 20px;
+      color: $color-default;
+      font-weight: $font-weight-title;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.label {
+  white-space: nowrap; /* Hiển thị nội dung trên cùng một dòng */
+  overflow: visible; /* Hiển thị đầy đủ nội dung, không ẩn đi */
+  /* Các thuộc tính khác cho label */
+}
+
+.i-caret-down {
+  float: left;
+  color: #0074bd;
+  margin-right: 5px !important;
+  margin-left: -12px;
+}
+.i-caret-right {
+  float: left;
+  color: #0074bd;
+  font-size: 16px;
+  margin-top: 3px !important;
+  margin-right: 5px !important;
+  margin-left: -12px;
+}
+
+.input-disabled {
+  pointer-events: none;
+}

@@ -1,0 +1,51 @@
+{
+  "easyPos": {
+    "customer": {
+      "update": {
+        "title": "Cập nhật khách hàng"
+      },
+      "create": {
+        "title": "Thêm khách hàng"
+      },
+      "title": "Danh sách khách hàng",
+      "info": {
+        "type": "Loại khách hàng",
+        "type-all": "Tất cả",
+        "type-customer": "Khách hàng",
+        "type-cus-and-supply": "Khách hàng và Nhà cung cấp",
+        "type-supply": "Nhà cung cấp",
+        "customerName": "Tên khách hàng",
+        "customer-code": "Mã khách hàng",
+        "Email": "Email",
+        "cccd": "Số CCCD/CMTND",
+        "address": "Địa chỉ",
+        "province": "Tỉnh",
+        "district": "Huyện",
+        "describe": "Mô tả",
+        "gender": "Giới tính",
+        "table-th": {
+          "taxCode": "Mã số thuế",
+          "phone-number": "Số điện thoại"
+        }
+      },
+      "action": {
+        "selectCustomer": "Chọn khách hàng",
+        "add": "Thêm khách hàng",
+        "delete": "Xoá khách hàng",
+        "inputMoney": "Nạp tiền",
+        "plusPoint": "Cộng điểm",
+        "minusPoint": "Trừ điểm",
+        "redeemPoint": "Quy đổi điểm",
+        "getInfo": "Lấy dữ liệu"
+      }
+    },
+
+    "alert": {
+      "nameCustomer": "Tên khách hàng không được để trống",
+      "phoneNumber": "Số điện thoại phải bắt đầu bằng 0 và có 10-14 chữ số",
+      "email": "Email không hợp lệ",
+      "cccd": "Số căn cước phải có 9-12 chữ số",
+      "taxCode": "Mã số thuế phải từ 10-14 chữ số"
+    }
+  }
+}

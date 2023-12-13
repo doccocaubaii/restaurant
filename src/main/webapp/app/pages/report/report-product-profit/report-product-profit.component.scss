@@ -1,0 +1,168 @@
+.amount-inoutward {
+  margin-bottom: 16px;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  box-shadow: 0px 4px 5px 0px #0074bd26;
+}
+.group-amount {
+  height: 100px;
+  width: 33.33%;
+  display: flex;
+  align-items: center;
+  padding: 0px 8px;
+}
+.group-icon-inward {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.inward-info {
+  display: grid;
+  margin-left: 14px;
+}
+.inward-value {
+  font-size: 28px;
+  color: #0074bd;
+  font-weight: bold;
+}
+.outward-value {
+  font-size: 28px;
+  color: #eb5624;
+  font-weight: bold;
+}
+.amount-outward {
+  color: #eb5624;
+  text-align: right;
+}
+.amount-inward {
+  color: #0074bd;
+  text-align: right;
+}
+.inoutward-amount {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.outward-info {
+  display: grid;
+  margin-left: 14px;
+}
+.group-icon-tax {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #edf6ee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tax-value {
+  font-size: 28px;
+  color: #4ba158;
+  font-weight: bold;
+}
+.border-amount {
+  height: 80px;
+  border: 1px solid #e6f1f8;
+}
+a.nav-link {
+  padding-left: 30px !important;
+  padding-right: 30px !important;
+}
+.select-value {
+  &:hover {
+    background-color: #e8e8e8;
+    border-opacity: 0.4;
+  }
+}
+.break-word-table {
+  word-wrap: break-word;
+}
+.create-date {
+  font-size: 14px;
+  font-weight: 500;
+  color: #58647a;
+  p {
+    margin: 0 !important;
+  }
+}
+.panel-header {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 12px;
+}
+.title-header {
+  font-size: 24px;
+  font-weight: 700;
+  color: #16243d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.group-action {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+.save-button-dialog {
+  min-width: 100px !important;
+}
+.group-icon-profit {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #fdeee9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.group-icon-revenue {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #e6f1f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.form-page-size {
+  color: #004671 !important;
+}
+.table-header-sticky {
+  position: sticky;
+  top: -1px;
+  z-index: 0;
+}
+.report {
+  box-shadow: 0px 4px 5px 0px #0074bd26;
+}
+.panel {
+  margin-bottom: 0 !important;
+}
+.table {
+  margin-bottom: 0 !important;
+}
+.group-page-size {
+  margin-top: 1rem;
+}
+.footer-table {
+  position: sticky;
+  z-index: 1;
+  bottom: -1px;
+  background-color: #d9eaf5;
+}
+.footer-content {
+  color: #004671;
+}
+.table-header-sticky {
+  position: sticky;
+  top: -1px;
+  z-index: 0;
+}

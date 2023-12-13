@@ -1,0 +1,29 @@
+<div class="modal-header">
+  <div class="group-header">
+    <h5 class="modal-title" jhiTranslate="easyPos.receipt.create.title2">Tao ...</h5>
+    <button type="button" class="btn-close" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    </button>
+  </div>
+</div>
+<div class="border-header"></div>
+<div class="modal-body body-category">
+  <div class="pos-infor mt-0">
+    <label class="title-info">
+      <span jhiTranslate="easyPos.receipt.create.name">Mã chung tu</span>
+    </label>
+    <input class="option-title input-value form-control mt-2" [(ngModel)]="name" (keyup.enter)="createBusinessType()" />
+  </div>
+</div>
+<div class="modal-footer d-flex">
+  <div class="btn-row col-md-12">
+    <button type="button" class="exit-button-dialog me-2 mb-1" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <span  jhiTranslate="global.entity.action.cancel"></span>
+    </button>
+    <button type="button" class="save-button-dialog me-1 mb-1" (click)="createBusinessType()" [disabled]="disableButton">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span  jhiTranslate="global.button.save"></span>
+    </button>
+  </div>
+</div>

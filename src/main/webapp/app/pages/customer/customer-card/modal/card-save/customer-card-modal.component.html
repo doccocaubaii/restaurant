@@ -1,0 +1,75 @@
+<div class="container">
+  <div class="modal-header">
+    <div class="group-header">
+      <h5 class="modal-title">{{ title }}</h5>
+      <button type="button" class="btn-close" (click)="dismiss($event)">
+        <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      </button>
+    </div>
+  </div>
+  <div class="border-header"></div>
+  <div class="modal-body">
+    <div class="customer-card-body--current-point d-flex justify-content-center" *ngIf="request.type === 2 || request.type === 3">
+      <label
+        >Số điểm hiện tại: <span style="color: #0074bd">{{ request.accumValue }}</span></label
+      >
+    </div>
+    <div [class]="request.type !== 3 ? 'customer-card-body' : 'customer-card-body-exchange'" class="">
+      <div class="my-2">
+        <label>{{ label }}<span style="color: red"> *</span></label>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="inputValue"
+          [placeholder]="inputHolder"
+          jhiCurrencyNumber
+          (ngModelChange)="exchangeValue()"
+        />
+      </div>
+      <div *ngIf="request.type === 3">
+        <label>{{ labelExchange }}<span style="color: red"> *</span></label>
+        <input class="form-control" [(ngModel)]="inputExchange" [placeholder]="inputHolderExchange" jhiCurrencyNumber />
+      </div>
+    </div>
+
+    <div class="customer-card-body--description">
+      <label>Mô tả</label>
+      <input class="form-control" type="text" [(ngModel)]="description" placeholder="Nhập mô tả" />
+    </div>
+  </div>
+  <div class="modal-footer d-flex">
+    <div class="btn-row col-md-12">
+      <button type="button" class="exit-button-dialog me-2 mb-1" (click)="dismiss($event)">
+        <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+        <span jhiTranslate="global.button.cancel"></span>
+      </button>
+      <button type="button" class="save-button-dialog me-1 mb-1" (click)="preSave()" [disabled]="!inputValue">
+        <span [innerHTML]="ICON_UPDATE_CONFIG | safeHtml"></span>
+        <span  jhiTranslate="global.button.save"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-template #confirmSave>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ confirm.title }}</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true" (click)="dismiss($event)"></button>
+  </div>
+  <div class="modal-body">
+    <label
+      >Thẻ <span style="font-weight: bold">{{ request.cardName }}</span> chưa có chính sách. Bạn có chắc chắn muốn quy đổi điểm
+      không?</label
+    >
+  </div>
+  <div class="modal-footer">
+    <button class="exit-button-dialog" data-bs-dismiss="modal" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <span jhiTranslate="global.entity.action.cancel">Hủy</span>
+    </button>
+    <button (click)="onSave()" class="ep-btn-custom" [ngClass]="'save-button-dialog'">
+      <fa-icon icon="check"></fa-icon>
+      <span>{{ confirm.btnText }}</span>
+    </button>
+  </div>
+</ng-template>

@@ -1,0 +1,518 @@
+<h1 class="page-header" jhiTranslate="easyPos.invoice.title">Danh sách hóa đơn1</h1>
+<div class="panel-custom">
+  <ul class="nav nav-pills mb-2">
+    <li class="nav-item" (click)="searchByType()">
+      <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link" [class.active]="!type && type !== 0">
+        <span class="d-sm-none" jhiTranslate="global.info.all">Tất cả</span>
+        <span class="d-sm-block d-none" jhiTranslate="global.info.all">Tất cả</span>
+      </a>
+    </li>
+    <li class="nav-item" (click)="searchByType(0)">
+      <a href="#nav-pills-tab-2" data-bs-toggle="tab" class="nav-link" [class.active]="type == 0">
+        <span class="d-sm-none" jhiTranslate="easyPos.invoice.status.0">Chưa phát hành</span>
+        <span class="d-sm-block d-none" jhiTranslate="easyPos.invoice.status.0">Chưa phát hành</span>
+      </a>
+    </li>
+    <li class="nav-item" (click)="searchByType(-1)">
+      <a href="#nav-pills-tab-5" data-bs-toggle="tab" class="nav-link" [class.active]="type == -1">
+        <span class="d-sm-none" jhiTranslate="easyPos.invoice.status.-1">Đang kiểm tra</span>
+        <span class="d-sm-block d-none" jhiTranslate="easyPos.invoice.status.-1">Đang kiểm tra</span>
+      </a>
+    </li>
+    <li class="nav-item" (click)="searchByType(1)">
+      <a href="#nav-pills-tab-3" data-bs-toggle="tab" class="nav-link" [class.active]="type == 1">
+        <span class="d-sm-none" jhiTranslate="easyPos.invoice.status.1">Hợp lệ</span>
+        <span class="d-sm-block d-none" jhiTranslate="easyPos.invoice.status.1">Hợp lệ</span>
+      </a>
+    </li>
+    <li class="nav-item" (click)="searchByType(-2)">
+      <a href="#nav-pills-tab-4" data-bs-toggle="tab" class="nav-link" [class.active]="type == -2">
+        <span class="d-sm-none" jhiTranslate="easyPos.invoice.status.-2">Không hợp lệ</span>
+        <span class="d-sm-block d-none" jhiTranslate="easyPos.invoice.status.-2">Không hợp lệ</span>
+      </a>
+    </li>
+  </ul>
+</div>
+<!--<div class="tab-content p-3 rounded-top panel rounded-0 m-0">-->
+<div class="d-flex justify-content-between mb-20px">
+  <div class="row p-0 me-5px" style="flex: 1">
+    <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+      <label class="form-label label-search" jhiTranslate="global.info.fromDate"></label>
+      <div class="item-search">
+        <input
+          class="form-control cursor-pointer"
+          placeholder="DD/MM/YYYY"
+          name="d3"
+          ngbDatepicker
+          #d3="ngbDatepicker"
+          [maxDate]="utilsService.getFromToMoment(toDate)"
+          [(ngModel)]="fromDate"
+          (ngModelChange)="filterOrderList()"
+        />
+        <button class="btn form-control btn-datepicker" (click)="d3.toggle()" type="button">
+          <fa-icon [icon]="'calendar-alt'"></fa-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+      <label class="form-label label-search" jhiTranslate="global.info.toDate"></label>
+      <div class="item-search">
+        <input
+          class="form-control cursor-pointer"
+          placeholder="DD/MM/YYYY"
+          name="d2"
+          #c2="ngModel"
+          [minDate]="utilsService.getFromToMoment(fromDate, true)"
+          [maxDate]="utilsService.getCurrentDate()"
+          [(ngModel)]="toDate"
+          ngbDatepicker
+          #d2="ngbDatepicker"
+          (ngModelChange)="filterOrderList()"
+        />
+        <button class="btn form-control btn-datepicker" (click)="d2.toggle()" type="button">
+          <fa-icon [icon]="'calendar-alt'"></fa-icon>
+        </button>
+      </div>
+    </div>
+    <!--  <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">-->
+    <!--    <label class="form-label label-search">Mẫu số hóa đơn</label>-->
+    <!--    <div class="item-search from-select">-->
+    <!--      <ng-select-->
+    <!--        class="form-control"-->
+    <!--        id="invoicePattern"-->
+    <!--        name="invoicePattern"-->
+    <!--        [(ngModel)]="filterInvoice.pattern"-->
+    <!--        #invoicePattern="ngModel"-->
+    <!--        [clearable]="true"-->
+    <!--        (change)="filterOrderList()"-->
+    <!--      >-->
+    <!--        <ng-option *ngFor="let pattern of patterns; let i = index" [value]="pattern.pattern">{{ pattern.pattern }}</ng-option>-->
+    <!--      </ng-select>-->
+    <!--    </div>-->
+    <!--  </div>-->
+    <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+      <label class="form-label label-search">Số hóa đơn</label>
+      <div class="item-search">
+        <input
+          name="keyword"
+          [(ngModel)]="filterInvoice.no"
+          (keyup.enter)="getListInvoice()"
+          class="form-control"
+          type="text"
+          placeholder="Số hóa đơn ..."
+        />
+      </div>
+    </div>
+    <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+      <label class="form-label label-search">Tên khách hàng</label>
+      <div class="item-search">
+        <input
+          name="keyword"
+          [(ngModel)]="filterInvoice.customerName"
+          (keyup.enter)="getListInvoice()"
+          class="form-control"
+          type="text"
+          placeholder="Tên khách hàng ..."
+        />
+      </div>
+    </div>
+  </div>
+  <div class="group-item-custom1">
+    <label class="form-label label-search d-block">&nbsp;</label>
+    <button (click)="getListInvoice()" class="btn-search">
+      <fa-icon icon="search"></fa-icon>
+      <span jhiTranslate="global.info.search"></span>
+    </button>
+  </div>
+</div>
+<div class="panel-action">
+  <div>
+    <ul *ngIf="type == 0" class="nav">
+      <li class="nav-action cursor-pointer" (click)="publishListInvoice()">
+        <a class="nav-link nav-link-action">
+          <fa-icon icon="arrow-up-from-bracket"></fa-icon>
+          <span class="d-sm-block ms-2">Phát hành</span>
+        </a>
+      </li>
+      <li
+        class="nav-action cursor-pointer"
+        [hidden]="paramCheckAll"
+        (click)="
+          paramCheckAll = true;
+          paramCheckAllPage = true;
+          utilsService.checkAll(listInvoice, listSelected, paramCheckAll, this.paramCheckAllPage)
+        "
+      >
+        <a class="nav-link nav-link-action">
+          <fa-icon icon="check"></fa-icon>
+          <span class="d-sm-block ms-2">Chọn tất cả</span>
+        </a>
+      </li>
+      <li
+        class="nav-action cursor-pointer"
+        [hidden]="!paramCheckAll"
+        (click)="
+          paramCheckAll = false;
+          paramCheckAllPage = false;
+          utilsService.checkAll(listInvoice, listSelected, paramCheckAll, this.paramCheckAllPage)
+        "
+      >
+        <a class="nav-link nav-link-action">
+          <span class="d-flex align-items-center" [innerHTML]="ICON_CANCEL_WHITE | safeHtml"></span>
+          <span class="d-sm-block ms-2">Bỏ chọn tất cả</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="d-flex justify-content-end align-items-center">
+    <div class="form-page-size">
+      <label
+        class="form-label form-label label-search me-2 mb-0 text-bold"
+        jhiTranslate="global.info.totalParam"
+        [translateValues]="{ count: totalItems || 0 }"
+      ></label>
+      <div class="form-select-size">
+        <ng-select
+          [items]="sizes"
+          class="select-value select-size"
+          bindLabel="name"
+          bindValue="id"
+          placeholder="Tất cả"
+          [(ngModel)]="itemsPerPage"
+          (ngModelChange)="onSearchPage()"
+        >
+        </ng-select>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="tab-pane fade active show">
+  <div class="row">
+    <div class="col-xl-12">
+      <div class="panel panel-inverse">
+        <div class="table-responsive" style="height: calc(100vh - 380px)">
+          <table class="table editing-table">
+            <thead class="table-header-sticky">
+              <tr class="table-custom-header">
+                <th *ngIf="type == 0">
+                  <div class="custom-checkbox custom-control col-checkbox">
+                    <input
+                      class="custom-control-input"
+                      id="checkAllForPage"
+                      type="checkbox"
+                      [disabled]="paramCheckAll"
+                      [(ngModel)]="paramCheckAllPage"
+                      (change)="utilsService.checkAllForPage(listInvoice, listSelected, paramCheckAllPage)"
+                    /><label class="custom-control-label" for="checkAllForPage"></label>
+                  </div>
+                </th>
+                <th jhiTranslate="global.info.Stt"></th>
+                <th jhiTranslate="easyPos.customer.info.customerName" style="width: 26%">Tên khách hàng</th>
+                <th jhiTranslate="easyPos.invoice.info.arisingDate">Ngày hóa đơn</th>
+                <th>Mẫu số hóa đơn</th>
+                <th>Số hóa đơn</th>
+                <th jhiTranslate="global.info.taxCode">Mã cơ quan thuế</th>
+                <th jhiTranslate="global.info.amount" style="min-width: 150px">Tổng tiền</th>
+                <th jhiTranslate="global.info.status">Trạng thái</th>
+                <th>Kết quả CQT</th>
+                <th jhiTranslate="global.info.action" class="text-center form-button">Thao tác</th>
+                <!--                  <th></th>-->
+              </tr>
+            </thead>
+            <tbody *ngIf="listInvoice.length > 0">
+              <ng-container *ngFor="let invoice of listInvoice; index as i">
+                <tr class="cursor-pointer table-custom-body" [class.editing-head]="idEditing == invoice.id">
+                  <td *ngIf="type == 0">
+                    <div class="custom-checkbox custom-contro col-checkbox">
+                      <input
+                        class="custom-control-input"
+                        id="exampleCustomCheckbox{{ i }}"
+                        name="exampleCustomCheckbox{{ i }}"
+                        type="checkbox"
+                        [(ngModel)]="invoice.check"
+                        (click)="getItem(invoice); utilsService.check(invoice, listSelected, paramCheckAll, selectedItem)"
+                      /><label class="custom-control-label" for="exampleCustomCheckbox{{ i }}"></label>
+                    </div>
+                  </td>
+                  <td class="text-center" (click)="viewInvoice(invoice); utilsService.scrollToTargets()">
+                    {{ i + 1 + (page - 1) * itemsPerPage }}
+                  </td>
+                  <td class="long-text" title="{{ invoice.customerName }}" (click)="viewInvoice(invoice)" style="max-width: 130px">
+                    {{ invoice.customerName }}
+                  </td>
+                  <td class="text-center" (click)="viewInvoice(invoice); utilsService.scrollToTargets()">{{ invoice.arisingDate }}</td>
+                  <td class="text-center" (click)="viewInvoice(invoice); utilsService.scrollToTargets()">{{ invoice.pattern }}</td>
+                  <td class="text-center" (click)="viewInvoice(invoice); utilsService.scrollToTargets()">{{ invoice.no }}</td>
+                  <td class="text-center" (click)="viewInvoice(invoice); utilsService.scrollToTargets()">{{ invoice.taxAuthorityCode }}</td>
+                  <td (click)="viewInvoice(invoice); utilsService.scrollToTargets()" class="text-right">
+                    {{ invoice.totalAmount | number }}
+                  </td>
+                  <td
+                    (click)="viewInvoice(invoice); utilsService.scrollToTargets()"
+                    [ngClass]="getColorStatus(invoice.status, invoice.type)"
+                  >
+                    <span> {{ invoice.status || invoice.status === 0 ? STATUS_MAP.get(invoice.status) : 'Chưa phát hành' }}</span>
+                  </td>
+                  <td
+                    (click)="viewInvoice(invoice); utilsService.scrollToTargets()"
+                    [ngClass]="getColorTctCheckStatus(invoice.taxCheckStatus)"
+                  >
+                    <span> {{ TCT_CHECK_STATUS_MAP.get(invoice.taxCheckStatus) }}</span>
+                  </td>
+                  <td class="text-center">
+                    <div class="list-action">
+                      <div class="fa-solid">
+                        <fa-icon
+                          *ngIf="!invoice.taxCheckStatus && (invoice.status === null || invoice.status === 0)"
+                          icon="arrow-up-from-bracket"
+                          ngbTooltip="{{ 'easyPos.invoice.action.publish' | translate }}"
+                          (click)="openModalPublish(invoice)"
+                        >
+                        </fa-icon>
+                      </div>
+                      <div class="fa-solid" *jhiHasAnyAuthority="authorUPDATE">
+                        <fa-icon
+                          *ngIf="!invoice.taxCheckStatus && invoice.status === null && invoiceConfiguration.invoiceMethod !== 2"
+                          icon="edit"
+                          ngbTooltip="{{ 'global.entity.action.edit' | translate }}"
+                          (click)="openModalEditInvoice(invoice)"
+                        >
+                        </fa-icon>
+                      </div>
+                      <!--                        <div class="fa-solid" *ngIf="!invoice.taxCheckStatus">-->
+                      <!--                          <fa-icon-->
+                      <!--                            icon="trash-can"-->
+                      <!--                            ngbTooltip="{{ 'global.entity.action.delete' | translate }}"-->
+                      <!--                            (click)="openModelDeleteInvoice(invoice)"-->
+                      <!--                          >-->
+                      <!--                          </fa-icon>-->
+                      <!--                        </div>-->
+                      <div class="fa-solid" *jhiHasAnyAuthority="authorVIEW">
+                        <fa-icon
+                          icon="eye"
+                          ngbTooltip="{{ 'easyPos.invoice.action.viewInvoice' | translate }}"
+                          *ngIf="[-1, 1, -2].includes(invoice.taxCheckStatus) || [0, 1].includes(invoice.status)"
+                          (click)="viewInvoicePdf(invoice)"
+                        >
+                        </fa-icon>
+                      </div>
+                      <div class="fa-solid" *ngIf="[-1, 1, -2].includes(invoice.taxCheckStatus) || [0, 1].includes(invoice.status)">
+                        <fa-icon
+                          icon="envelope-circle-check"
+                          ngbTooltip="{{ 'global.entity.action.send' | translate }}"
+                          (click)="openMailModal(invoice)"
+                        >
+                        </fa-icon>
+                      </div>
+                      <!--                        <i class="fa-solid fa-ellipsis-vertical"></i>-->
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf="invoice.id == idEditing && invoiceSelect" [class.editing-body]="idEditing == invoice.id" class="scroll-target">
+                  <td [attr.colspan]="getColspan()">
+                    <div class="row wrap-order-detail">
+                      <div class="col-sm-12 col-lg-12 col-xl-4 left-order-detail-content">
+                        <div class="text-danger" *ngIf="invoiceSelect.errorPublish" title="{{ invoiceSelect.errorPublish }}">
+                          <label *ngIf="invoiceSelect.errorPublish">{{ invoiceSelect.errorPublish }}</label>
+                        </div>
+                        <div class="text-danger" *ngIf="invoiceSelect.taxErrorMessage" title="{{ invoiceSelect.taxErrorMessage }}">
+                          <label *ngIf="invoiceSelect.taxErrorMessage">{{ invoiceSelect.taxErrorMessage }}</label>
+                        </div>
+                        <div class="form-group border-bottom form-input-custom">
+                          <label for="pattern" class="form-label with-label-name" jhiTranslate="global.info.pattern">Mẫu số: </label>
+                          <div class="user-input-text-div">
+                            <strong id="pattern">{{ invoiceSelect.pattern }}</strong>
+                          </div>
+                        </div>
+                        <div class="form-group border-bottom form-input-custom">
+                          <label for="taxAuthorityCode" class="form-label with-label-name" jhiTranslate="global.info.taxCode"
+                            >Mã cơ quan thuế
+                          </label>
+                          <div class="user-input-text-div">
+                            <strong id="taxAuthorityCode">{{ invoiceSelect.taxAuthorityCode }}</strong>
+                          </div>
+                        </div>
+                        <div class="form-group border-bottom form-input-custom">
+                          <label for="customerName" class="form-label with-label-name" jhiTranslate="easyPos.customer.info.customerName"
+                            >Tên khách hàng</label
+                          >
+                          <div class="user-input-text-div w-250px">
+                            <strong id="customerName" *ngIf="!invoiceSelect.isEdit">{{ invoiceSelect.customerName }}</strong>
+                          </div>
+                        </div>
+                        <div class="form-group border-bottom form-input-custom">
+                          <label for="paymentMethod" class="form-label with-label-name" jhiTranslate="global.info.paymentMethod"
+                            >Hình thức thanh toán</label
+                          >
+                          <div class="user-input-text-div">
+                            <strong id="paymentMethod">{{ invoiceSelect.paymentMethod }}</strong>
+                          </div>
+                        </div>
+                        <div class="form-group border-bottom form-input-custom">
+                          <label for="billCode" class="form-label with-label-name" jhiTranslate="easyPos.bill.info.billCode"
+                            >Mã đơn hàng</label
+                          >
+                          <div class="user-input-text-div">
+                            <strong id="billCode">{{ invoiceSelect.billCode }}</strong>
+                          </div>
+                        </div>
+                        <div class="form-group border-bottom form-input-custom">
+                          <label for="arisingDate" class="form-label with-label-name" jhiTranslate="easyPos.invoice.info.arisingDate"
+                            >Ngày hóa đơn</label
+                          >
+                          <div class="user-input-text-div">
+                            <strong id="arisingDate">{{ invoiceSelect.arisingDate }}</strong>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-12 col-lg-12 col-xl-8 right-order-detail-content">
+                        <div class="table-responsive" style="max-height: 250px">
+                          <table class="table mb-0 editing-table">
+                            <thead class="table-custom-body table-header-sticky">
+                              <tr class="table-custom-header">
+                                <th jhiTranslate="global.info.Stt">Stt</th>
+                                <th jhiTranslate="easyPos.product.info.productName">Tên sản phẩm</th>
+                                <th>ĐVT</th>
+                                <th>SL</th>
+                                <th jhiTranslate="global.info.price">Đơn giá</th>
+                                <th>Thành tiền</th>
+                                <th>Chiết khấu</th>
+                                <th *ngIf="![0, 1].includes(invoiceSelect.typeInv)">Thuế</th>
+                                <th *ngIf="![0, 1].includes(invoiceSelect.typeInv)">Tiền thuế</th>
+                                <th jhiTranslate="global.info.total">Tổng</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let product of invoiceSelect.invoiceProducts; index as i">
+                                <td *ngIf="product.code !== 'SP1'" class="text-center">
+                                  <label> {{ i + 1 }}</label>
+                                </td>
+                                <td *ngIf="product.code !== 'SP1'">
+                                  <label> {{ product.name }}</label>
+                                </td>
+                                <td *ngIf="product.code !== 'SP1'">
+                                  <label *ngIf="product.unit"> {{ product.unit }}</label>
+                                </td>
+                                <td *ngIf="product.code !== 'SP1'">
+                                  <label> {{ product.quantity ? (product.quantity | number) : '' }} </label>
+                                </td>
+                                <td *ngIf="product.code !== 'SP1'">
+                                  <label> {{ product.unitPrice ? (product.unitPrice | number) : '' }}</label>
+                                </td>
+                                <td *ngIf="product.code !== 'SP1'">
+                                  <label> {{ product.totalAmount ? (product.totalAmount | number) : '' }}</label>
+                                </td>
+                                <td *ngIf="product.code !== 'SP1'">
+                                  <label> {{ product.discountAmount ? (product.discountAmount | number) : '' }}</label>
+                                </td>
+                                <td *ngIf="![0, 1].includes(invoiceSelect.typeInv) && product.code !== 'SP1'">
+                                  <label
+                                    *ngIf="[-1, -2, -3, -4].includes(product.vatRate)"
+                                    jhiTranslate="global.vatRate.{{ product.vatRate }}"
+                                  >
+                                  </label>
+                                  <label *ngIf="![-1, -2, -3, -4].includes(product.vatRate)"> {{ product.vatRate }} %</label>
+                                </td>
+                                <td *ngIf="![0, 1].includes(invoiceSelect.typeInv) && product.code !== 'SP1'">
+                                  <label> {{ product.vatAmount ? (product.vatAmount | number) : '' }}</label>
+                                </td>
+                                <td *ngIf="product.code !== 'SP1'">
+                                  <label *ngIf="product.code === 'SPGC'" class="text-danger"
+                                    >({{ invoiceSelect.discountVatAmount ? (invoiceSelect.discountVatAmount | number) : '' }} )</label
+                                  >
+                                  <label *ngIf="!(product.code === 'SPGC')">
+                                    {{ product.totalAmount ? (product.totalAmount | number) : '' }}</label
+                                  >
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+
+                        <div class="panel-payment">
+                          <div class="pos-sidebar-footer mt-5px p-15px">
+                            <div class="wrap-item text-bold">
+                              <span
+                                class="text mb-10px"
+                                jhiTranslate="easyPos.product.info.totalProduct"
+                                [translateValues]="{
+                                  count: invoiceSelect.invoiceProducts?.length - (invoiceSelect.discountAmount ? 1 : 0) | number
+                                }"
+                              ></span>
+                              <span> {{ invoiceSelect.amount | number }} đ</span>
+                            </div>
+                            <div class="wrap-item text-bold">
+                              <span class="text mb-10px" jhiTranslate="global.info.discountAmount">Giảm giá đơn hàng</span>
+                              <span>{{ invoiceSelect.discountAmount | number }} đ </span>
+                            </div>
+                            <div class="wrap-item text-bold">
+                              <span class="text mb-10px">Tổng tiền trước thuế</span>
+                              <span> {{ invoiceSelect.totalPreTax | number }} đ </span>
+                            </div>
+                            <div
+                              *ngIf="[1, 2].includes(invoiceSelect.typeInv)"
+                              class="d-flex justify-content-between align-items-center text-bold"
+                            >
+                              <span class="text mb-10px">Tổng tiền thuế</span>
+                              <span> {{ invoiceSelect.vatAmount | number }} đ </span>
+                            </div>
+                            <div
+                              *ngIf="invoiceSelect.discountVatAmount"
+                              class="d-flex justify-content-between align-items-center text-bold"
+                            >
+                              <span class="text mb-10px">Giảm trừ thuế</span>
+                              <span> {{ invoiceSelect.discountVatAmount | number }} đ </span>
+                            </div>
+                            <div class="wrap-item total-amount text-bold text-info">
+                              <span class="text mb-10px" jhiTranslate="global.info.totalAmount">Tổng tiền thanh toán</span>
+                              <span> {{ invoiceSelect.totalAmount | number }} đ </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="group-page-size" *ngIf="listInvoice.length > 0">
+  <div class="from-pagination d-flex justify-content-center" *ngIf="listInvoice.length > 0">
+    <ngb-pagination
+      [collectionSize]="totalItems"
+      [page]="page"
+      [pageSize]="itemsPerPage"
+      [maxSize]="5"
+      [rotate]="true"
+      [boundaryLinks]="true"
+      (pageChange)="navigateToPage($event)"
+    ></ngb-pagination>
+  </div>
+</div>
+
+<!--</div>-->
+<ng-template #sendMailModal let-dctt="dismiss">
+  <div class="modal-header">
+    <h5 class="modal-title" jhiTranslate="global.entity.action.sendEmail">Gửi mail</h5>
+    <button type="button" class="btn-close" (click)="dctt('Close')" aria-label="Close" name="btnCloseCheckModal"></button>
+  </div>
+  <div class="modal-body">
+    <input type="text" class="form-control h-45px fs-13px" placeholder="Nhập Email ..." id="email" [(ngModel)]="email" name="email" />
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="exit-button-dialog" (click)="dctt('Close')">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <label jhiTranslate="global.entity.action.cancel">Hủy</label>
+    </button>
+    <button type="button" class="save-button-dialog" [disabled]="loading.isLoading" (click)="sendMail(); dctt('Close')">
+      <fa-icon icon="envelope-circle-check"></fa-icon>
+      <label jhiTranslate="global.entity.action.send">Gửi</label>
+    </button>
+  </div>
+</ng-template>

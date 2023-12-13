@@ -1,0 +1,234 @@
+$color-default: #0074bd;
+$label-color: #9ba3b1;
+$text-color: #58647a;
+
+button i {
+  margin-right: 5px;
+}
+
+.with-label-name {
+  width: 150px !important;
+}
+
+.disable-button {
+  opacity: 0.6;
+}
+td {
+  padding-right: 15px !important;
+}
+.td-chi-tiet-kh {
+  .customer-detail {
+    border: 1px solid #9ba3b1;
+    box-shadow: 1px 3px 6px rgba(0, 116, 189, 0.5);
+    border-radius: 9px;
+    padding: 14px;
+
+    .custom-sub-panel {
+      ul li a.nav-link {
+        font-size: 16px !important;
+        color: $label-color;
+
+        &:hover {
+          color: $color-default !important;
+        }
+      }
+
+      ul li a.active {
+        font-size: 16px !important;
+        border-bottom: 2px solid $color-default !important;
+      }
+    }
+
+    .wrap-order-detail {
+      border: 0 !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      padding: 0 !important;
+      .left-order-detail-content {
+        .form-input-custom {
+          min-height: 50px !important;
+          label {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 0 !important;
+          }
+          .user-input-text-div {
+            strong {
+              font-size: 14px;
+              font-weight: 700;
+              height: auto !important;
+            }
+          }
+        }
+      }
+
+      .user-input-text-div {
+        width: calc(100% - 180px);
+      }
+
+      .form-group strong {
+        word-wrap: break-word;
+        margin-left: auto;
+      }
+
+      .divbtn-editing-zone {
+        display: flex;
+        justify-content: flex-end;
+        margin-left: 3px;
+        max-height: 40px;
+        //padding-right: 30px;
+      }
+
+      .btn-space-right {
+        margin-left: 10px;
+      }
+
+      .td-ma-khach-hang {
+        max-width: 20ch;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .marin_bottom-label {
+        margin-bottom: 0.25rem;
+      }
+
+      .my-col-form-label {
+        padding-top: calc(0.4375rem + 1px);
+        padding-bottom: calc(0.4375rem + 1px);
+        margin-bottom: 0;
+        font-size: inherit;
+        /* font-weight: 500; */
+        line-height: 1.5;
+      }
+
+      button[type='submit'] {
+        text-indent: -999px;
+        overflow: hidden;
+        width: 40px;
+        padding: 0;
+        margin: 0;
+        border: 1px solid transparent;
+        border-radius: inherit;
+        background: transparent
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E")
+          no-repeat center;
+        cursor: pointer;
+        opacity: 0.7;
+      }
+
+      button[type='submit']:hover {
+        opacity: 1;
+      }
+
+      button[type='submit']:focus {
+        box-shadow: 0 0 0 0.25rem rgba(66, 133, 244, 0.25);
+        border-color: #1183d6;
+        outline: none;
+      }
+
+      form {
+        color: #555;
+        display: flex;
+        padding: 2px;
+        //border: 1px solid currentColor;
+        border-radius: 5px;
+
+        //margin: 0 0 30px;
+      }
+
+      form.nosubmit {
+        border: none;
+        padding: 0;
+        width: 100%;
+      }
+
+      input.nosubmit {
+        border: 1px solid #555;
+        width: 100%;
+        padding-left: 33px;
+        background: transparent
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E")
+          no-repeat 13px center;
+      }
+      td {
+        padding-right: 15px !important;
+      }
+
+      /* Tablet Styles */
+      @media only screen and (min-width: 401px) and (max-width: 991px) {
+        .table th:nth-child(2),
+        .table td:nth-child(2) {
+          display: none; /* Ẩn cột thứ 3 */
+        }
+        .td-chi-tiet-kh {
+          grid-column: span 4;
+        }
+        .td-ten-khach-hang {
+          max-width: 150px;
+        }
+      }
+
+      @media only screen and (min-width: 992px) {
+        .td-chi-tiet-kh {
+          grid-column: span 5;
+        }
+      }
+    }
+  }
+}
+
+.list-action {
+  fa-icon:last-child {
+    &:focus {
+    }
+  }
+
+  .card-action {
+    position: absolute;
+    visibility: hidden;
+    background: #ffffff;
+    right: 14px;
+    bottom: -200px;
+    z-index: 2;
+  }
+  .enable-card-action {
+    visibility: visible !important;
+    border-radius: 8px;
+    border: 1px solid #9ba3b1;
+    box-shadow: 1px 3px 6px rgba(0, 116, 189, 0.5);
+    ul {
+      list-style-type: none;
+      padding: 8px !important;
+      margin-bottom: 0 !important;
+      li a {
+        padding: 8px;
+        svg path {
+          //fill: $text-color;
+        }
+        span {
+          color: $text-color;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}
+
+table {
+  .thead--customers {
+    top: -1px;
+    position: sticky;
+  }
+}
+.td-ten-khach-hang {
+  max-width: 40ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+table thead {
+  position: sticky;
+  top: -1px;
+}

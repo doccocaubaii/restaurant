@@ -1,0 +1,282 @@
+<div class="modal-header" style="background-color: #0074bd; border-radius: 4px 4px 0px 0px; height: 56px">
+  <h5 style="color: white" class="modal-title">Áp dụng voucher</h5>
+  <!--  {{map | json}}-->
+  <button type="button" class="btn-close" (click)="dismiss()">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+
+<div class="modal-body pb-0" style="max-height: 65vh; overflow-y: auto">
+  <div class="group-form-custom gap-3">
+    <div style="flex: 1">
+      <!--      <label class="form-label label-search" jhiTranslate="global.info.keyword"></label>-->
+      <div class="item-search">
+        <input
+          name="keyword"
+          [(ngModel)]="keyword"
+          class="form-control"
+          type="search"
+          placeholder="Nhập để tìm kiếm..."
+          (ngModelChange)="onDeleteKeywordSearch()"
+          (keyup.enter)="getApplyVoucher(voucher.applyType)"
+        />
+      </div>
+    </div>
+    <div class="form-btn-search">
+      <button (click)="getApplyVoucher(voucher.applyType)" class="btn-search">
+        <fa-icon icon="search"></fa-icon>
+        <span jhiTranslate="global.info.search"></span>
+      </button>
+    </div>
+  </div>
+  <div class="my-form-group position-relative d-flex my-3">
+    <div class="d-flex align-items-center justify-content-between" style="width: 70%; padding-right: 15%">
+      <label class="my-form-label" style="white-space: nowrap; margin-right: 46px"
+        ><span style="white-space: nowrap">Áp dụng cho</span><span style="color: red"> *</span></label
+      >
+      <!--      <div class="delivery-item d-flex justify-content-center align-items-center" style="margin-right: 46px">-->
+      <!--        <input-->
+      <!--          class="me-10px"-->
+      <!--          [(ngModel)]="voucher.applyType"-->
+      <!--          type="radio"-->
+      <!--          id="all"-->
+      <!--          name="applyType"-->
+      <!--          [value]="3"-->
+      <!--          (change)="handleApplyTypeChange()"-->
+      <!--        />-->
+      <!--        <label for="all" style="white-space: nowrap; font-size: 14px" class="my-form-label">Tất cả khách hàng </label><br />-->
+      <!--      </div>-->
+      <div class="delivery-item d-flex justify-content-center align-items-center" style="margin-right: 46px">
+        <input
+          class="me-10px"
+          [(ngModel)]="voucher.applyType"
+          type="radio"
+          id="byCard"
+          name="applyType"
+          [value]="1"
+          (change)="handleApplyTypeChange($event, 1)"
+        />
+        <label for="byCard" style="white-space: nowrap; font-size: 14px" class="my-form-label">Thẻ khách hàng</label><br />
+      </div>
+      <div class="delivery-item d-flex justify-content-center align-items-center" style="margin-right: 46px">
+        <input
+          class="me-10px"
+          [(ngModel)]="voucher.applyType"
+          type="radio"
+          id="byCus"
+          name="applyType"
+          [value]="2"
+          (change)="handleApplyTypeChange($event, 2)"
+        />
+        <label for="byCus" style="white-space: nowrap; font-size: 14px" class="my-form-label">Chọn khách hàng</label><br />
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-between align-items-center mb-8px">
+    <span>Danh sách áp dụng cho</span>
+    <div class="cursor-pointer" style="width: 20%; min-width: 172px" ngbDropdown>
+      <div
+        style="min-width: 100px; border: 1px solid #9ba3b1; padding: 9px 16px; border-radius: 8px"
+        class="form-group d-flex"
+        id="dropdownBasic1"
+        ngbDropdownToggle
+      >
+        <span>
+          <!--          Có {{ dem }}-->
+          <!--          <span *ngIf="voucher.applyType == 1">thẻ</span>-->
+          <!--          <span *ngIf="voucher.applyType == 2">khách hàng</span>-->
+          <!--          được chọn-->
+          Hành động
+        </span>
+        <svg style="margin-left: auto" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.5 9L11.5 15L17.5 9" stroke="#67808F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+      <div class="card-action enable-card-action" ngbDropdownMenu aria-labelledby="dropdownBasic1">
+        <span class="d-sm-block" ngbDropdownItem (click)="checkOrUncheckAll(true)">Chọn tất cả</span>
+        <span class="d-sm-block" ngbDropdownItem (click)="checkOrUncheckAll(false)">Bỏ chọn tất cả</span>
+      </div>
+    </div>
+  </div>
+  <ng-container *ngIf="voucher.applyType == 1">
+    <div class="card-page-data">
+      <div class="tab-pane fade active show">
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="panel panel-inverse mb-3">
+              <div class="table-responsive" style="max-height: 38vh !important">
+                <table class="table editing-table">
+                  <thead>
+                    <tr class="table-custom-header">
+                      <th>
+                        <div class="custom-checkbox custom-control col-checkbox">
+                          <input
+                            class="custom-control-input"
+                            id="checkAllForPageCard"
+                            type="checkbox"
+                            [(ngModel)]="paramCheckAllPage"
+                            (ngModelChange)="checkAllPageForMap(paramCheckAllPage)"
+                          />
+                        </div>
+                      </th>
+                      <th>STT</th>
+                      <th>Tên thẻ</th>
+                      <th>Số khách hàng</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let card of lstCard; index as i">
+                      <tr class="table-custom-body">
+                        <td>
+                          <div class="custom-checkbox custom-contro col-checkbox">
+                            <input
+                              class="custom-control-input"
+                              id="exampleCustomCheckbox{{ i }}"
+                              name="exampleCustomCheckbox{{ i }}"
+                              type="checkbox"
+                              [(ngModel)]="card.check"
+                              (click)="checkBoxForMap(card)"
+                            /><label class="custom-control-label" for="exampleCustomCheckbox{{ i }}"></label>
+                          </div>
+                          <!--                          {{card.check}}-->
+                        </td>
+                        <td>{{ i + 1 + (page - 1) * pageSize }}</td>
+                        <td class="break-word-table">{{ card.cardName }}</td>
+                        <td>{{ card.totalCustomer }}</td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                  <tbody *ngIf="!lstCard || lstCard.length == 0">
+                    <tr class="table-not-data">
+                      <td colspan="8">
+                        <span jhiTranslate="easyPos.product.info.notData"></span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="voucher.applyType == 2">
+    <div class="tab-content rounded-top panel rounded-0 m-0">
+      <div class="tab-pane fade active show">
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="panel panel-inverse mb-3">
+              <div class="table-responsive" style="max-height: 38vh !important">
+                <table class="table editing-table">
+                  <thead>
+                    <tr class="table-custom-header">
+                      <th>
+                        <div class="custom-checkbox custom-control col-checkbox">
+                          <input
+                            class="custom-control-input"
+                            id="checkAllForPage"
+                            type="checkbox"
+                            [(ngModel)]="paramCheckAllPage"
+                            (ngModelChange)="checkAllPageForMap(paramCheckAllPage)"
+                          />
+                        </div>
+                      </th>
+                      <th><span jhiTranslate="global.info.Stt">STT</span></th>
+                      <th><span jhiTranslate="easyPos.customer.info.customer-code">Mã khách hàng</span></th>
+                      <th jhiTranslate="easyPos.customer.info.table-th.taxCode">Mã số thuế</th>
+                      <th jhiTranslate="easyPos.customer.info.customerName" style="max-width: 150px" class="text-wrap">Tên khách hàng</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngIf="cusArray.length">
+                      <ng-container *ngFor="let cus of cusArray; index as i">
+                        <tr class="table-custom-body">
+                          <td>
+                            <div class="custom-checkbox custom-contro col-checkbox">
+                              <input
+                                class="custom-control-input"
+                                id="exampleCustomCheckbox{{ i }}"
+                                name="exampleCustomCheckbox{{ i }}"
+                                type="checkbox"
+                                [(ngModel)]="cus.check"
+                                (click)="checkBoxForMap(cus)"
+                              /><label class="custom-control-label" for="exampleCustomCheckbox{{ i }}"></label>
+                            </div>
+                            <!--                            {{cus.check}}-->
+                          </td>
+                          <td>{{ i + 1 + (page - 1) * pageSize }}</td>
+                          <td>
+                            <div class="td-ma-khach-hang">
+                              {{ cus.code2 }}
+                            </div>
+                          </td>
+                          <td>
+                            <!--                          Chuyển từ hiển thị mã khách hàng sang mã số thuế-->
+                            <div class="td-ma-khach-hang">{{ cus.taxCode }}</div>
+                          </td>
+                          <td>
+                            <div class="td-ten-khach-hang" placement="top" [ngbTooltip]="cus.customerName">{{ cus.customerName }}</div>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="!cusArray || cusArray.length == 0">
+                      <tr>
+                        <td colspan="5" style="text-align: center">
+                          <span>Không có khách hàng khả dụng.</span>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="voucher.applyType == 1 || voucher.applyType == 2">
+    <div class="group-page-size" style="padding-bottom: 20px" *ngIf="totalSize">
+      <div class="form-page-size">
+        <label class="label-total mr-5px" jhiTranslate="global.info.totalParam" [translateValues]="{ count: totalSize || 0 }"></label>
+        <div class="form-select-size">
+          <ng-select
+            [items]="sizes"
+            class="select-value select-size"
+            bindLabel="name"
+            bindValue="id"
+            placeholder="Tất cả"
+            [(ngModel)]="pageSize"
+            (ngModelChange)="loadMore()"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <div class="from-pagination d-flex justify-content-center" *ngIf="totalSize > 0">
+        <ngb-pagination
+          class="pagination"
+          [collectionSize]="totalSize"
+          [(page)]="page"
+          [pageSize]="pageSize"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="loadMore()"
+        ></ngb-pagination>
+      </div>
+    </div>
+  </ng-container>
+</div>
+<div class="modal-footer">
+  <button type="button" class="exit-button-dialog" (click)="dismiss()">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <label jhiTranslate="global.entity.action.cancel">Hủy</label>
+  </button>
+  <button type="button" class="save-button-dialog" [disabled]="isLoading" (click)="close()">
+    <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.save">Lưu</span>
+  </button>
+</div>

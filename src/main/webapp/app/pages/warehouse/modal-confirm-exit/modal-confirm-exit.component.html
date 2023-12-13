@@ -1,0 +1,19 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="exampleModalLongTitle">Thông báo</h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="dismiss(2)"></button>
+</div>
+<div class="modal-body">Dữ liệu đã bị thay đổi, bạn có muốn lưu lại?</div>
+<div class="modal-footer">
+  <div class="btn-row col-md-12" style="margin: 0; justify-content: end; display: flex">
+    <button type="button" class="exit-button-dialog me-2 mb-1" (click)="dismiss(3)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+
+      <span >Không lưu</span>
+    </button>
+
+    <button type="button" class="save-button-dialog me-1 mb-1" (click)="onSave()">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span  jhiTranslate="global.button.save"></span>
+    </button>
+  </div>
+</div>

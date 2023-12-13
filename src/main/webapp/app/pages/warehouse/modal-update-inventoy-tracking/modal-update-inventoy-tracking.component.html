@@ -1,0 +1,71 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="exampleModalLongTitle">Thêm thông tin tồn kho</h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="dismiss(2)"></button>
+</div>
+<div class="modal-body">
+  <div class="d-flex">
+    <div class="product-title">Tên sản phẩm:</div>
+    <span class="title-info ms-2"> {{ productInfo.productName }} </span>
+  </div>
+  <div class="addition-infor">
+    <div class="d-flex align-items-center">
+      <label class="title-info">Theo dõi hàng tồn kho</label>
+      <div class="form-check form-switch">
+        <input
+          type="checkbox"
+          name=""
+          id="inventoryTracking"
+          [ngModel]="productInfo.inventoryTracking"
+          class="form-check-input ng-valid ng-touched ng-dirty"
+          style="margin: 0px"
+          (ngModelChange)="onChangeInventoryTracking()"
+        />
+        <label for="inventoryTracking" class="form-check-label"></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="addition-infor" *ngIf="productInfo.inventoryTracking">
+    <div class="group-info input-text-custom">
+      <label class="title-info">Giá nhập <span style="color: red; margin: 0px">*</span></label>
+      <input
+        class="input-value form-control"
+        [(ngModel)]="productInfo.purchasePrice"
+        placeholder="0"
+        type="text"
+        jhiCurrencyNumber
+        [numberRound]="6"
+      />
+    </div>
+    <div class="group-info input-text-custom">
+      <label class="title-info">Số lượng <span style="color: red; margin: 0px">*</span></label>
+      <input
+        class="input-value form-control"
+        [(ngModel)]="productInfo.inventoryCount"
+        placeholder="0"
+        type="text"
+        jhiCurrencyNumber
+        [numberRound]="6"
+      />
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <div class="btn-row col-md-12" style="margin: 0; justify-content: end; display: flex">
+    <button type="button" class="exit-button-dialog me-2 mb-1" (click)="dismiss(3)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+
+      <span >Không lưu</span>
+    </button>
+
+    <button
+      type="button"
+      class="save-button-dialog me-1 mb-1"
+      (click)="onSave()"
+      [disabled]="disableBtn || !productInfo.inventoryTracking"
+    >
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span  jhiTranslate="global.button.save"></span>
+    </button>
+  </div>
+</div>

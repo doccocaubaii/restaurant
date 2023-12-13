@@ -1,0 +1,43 @@
+export interface ITM052BKQTTTNCN {
+  id?: string;
+  tM05QTTTNCNID?: string;
+  col06?: any;
+  col07?: any;
+  col08?: any;
+  col09a?: any;
+  col09b?: any;
+  col09?: any;
+  col10?: any;
+  col11?: any;
+  col12?: any;
+  col13?: any;
+  col14?: any;
+  col15?: any;
+  col16?: any;
+  col17?: any;
+  orderPriority?: any;
+  isHaveTaxCode?: any;
+}
+
+export class TM052BKQTTTNCN implements ITM052BKQTTTNCN {
+  constructor(
+    public id?: string,
+    public tM05QTTTNCNID?: string,
+    public col06?: any,
+    public col07?: any,
+    public col08?: any,
+    public col09a?: any,
+    public col09b?: any,
+    public col09?: any,
+    public col10?: any,
+    public col11?: any,
+    public col12?: any,
+    public col13?: any,
+    public col14?: any,
+    public col15?: any,
+    public col16?: any,
+    public col17?: any,
+    public orderPriority?: any,
+    public isHaveTaxCode?: any
+  ) {}
+}

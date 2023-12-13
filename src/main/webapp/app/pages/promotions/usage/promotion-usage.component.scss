@@ -1,0 +1,40 @@
+$color-default: #0074bd;
+$color-label: #58647a;
+$font-weight-title: 700;
+$font-size: 16px;
+
+.modal-header {
+  background-color: #0074bd;
+  border-radius: 4px 4px 0px 0px;
+  height: 56px;
+  max-height: 56px !important;
+  .btn-close {
+    color: #ffffff;
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    font-size: 16px;
+    i {
+      margin: 0 !important;
+      font-size: 20px;
+    }
+  }
+}
+
+.modal-body {
+  .pagination {
+    margin-top: 16px !important;
+  }
+  table {
+    thead {
+      top: -1px;
+      position: sticky;
+    }
+  }
+}
+
+:host::ng-deep .form-control {
+  border-radius: 8px;
+}

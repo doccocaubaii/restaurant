@@ -1,0 +1,106 @@
+<div class="wrap" *ngIf="invoice">
+  <div class="close" (click)="closeModal()"><i class="fa-solid fa-xmark"></i></div>
+  <h2>Thông tin hóa đơn điện tử</h2>
+  <div class="vat-code d-flex justify-content-between">
+    <div>Mẫu số:</div>
+    <div>{{ invoice.pattern }}</div>
+  </div>
+  <div class="vat-code d-flex justify-content-between">
+    <div>Mã cơ quan thuế</div>
+    <div>{{ invoice.taxAuthorityCode }}</div>
+  </div>
+  <div class="d-flex justify-content-between border-item p-15px">
+    <div class="d-flex flex-nowrap">
+      <i class="fa-solid fa-circle-user fs-20px me-10px"></i>
+      <div>{{ invoice.customerName }}</div>
+    </div>
+    <div class="d-flex flex-nowrap">
+      <i class="fa-solid fa-file-invoice-dollar fs-20px me-10px"></i>
+      <div>{{ invoice.paymentMethod }}</div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-between border-item p-15px">
+    <div class="d-flex flex-nowrap">
+      <i class="fa-solid fa-circle-user fs-20px me-10px"></i>
+      <div>{{ invoice.billCode }}</div>
+    </div>
+    <div class="d-flex flex-nowrap">
+      <i class="fa-solid fa-file-invoice-dollar fs-20px me-10px"></i>
+      <div>{{ invoice.arisingDate }}</div>
+    </div>
+  </div>
+  <div class="pos-sidebar-body h-100">
+    <div class="tab-content h-100">
+      <div class="list-product-title">Danh sách sản phẩm</div>
+      <div class="tab-pane fade h-100 show active" id="newOrderTab">
+        <div class="pos-table">
+          <ng-container *ngFor="let product of invoice.invoiceProducts">
+            <div class="row pos-table-row">
+              <div class="col-9">
+                <div class="pos-product-thumb">
+                  <!--                  <div-->
+                  <!--                    class="img"-->
+                  <!--                    [style]="{-->
+                  <!--                      'background-image': 'url(' + (!!product.imageUrl ? product.imageUrl : '/assets/img/pos/product.jpg') + ')'-->
+                  <!--                    }"-->
+                  <!--                  ></div>-->
+                  <div class="info d-flex justify-content-between align-items-start flex-column">
+                    <div class="title fw-500">{{ product.name }}</div>
+                    <div class="qty" [class.mb-2px]="!product.discountAmount">
+                      {{ product.unitPrice | number }} x {{ product.quantity }} ({{ product.unit }})
+                    </div>
+                    <div *ngIf="product.discountAmount" class="discount-amount title">Giảm giá</div>
+                    <div class="vat-rate-border vat-rate title">Thuế suất {{ product.vatRate ? product.vatRate : 0 }} %</div>
+                    <div *ngIf="product.vatAmount" class="vat-amount title">Tổng</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-3 total-price d-flex justify-content-start align-items-end flex-column">
+                <div class="visibility-hidden">x</div>
+                <div>{{ product.totalAmount | number }} đ</div>
+                <div class="discount-amount" *ngIf="product.discountAmount">- {{ product.discountAmount }} đ</div>
+                <div class="vat-rate" *ngIf="product.vatAmount">+ {{ product.vatAmount }} đ</div>
+                <div class="total-amount" *ngIf="product.vatAmount">{{ product.totalAmount }} đ</div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="tab-pane fade h-100" id="orderHistoryTab">
+        <div class="h-100 d-flex align-items-center justify-content-center text-center p-20">
+          <div>
+            <div class="mb-3 mt-n5">
+              <span [innerHTML]="ICON_RESULTS_NULL | safeHtml"></span>
+            </div>
+            <h4>No order history found</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pos-sidebar-footer">
+    <div class="d-flex justify-content-between align-items-center">
+      <span class="text mb-10px">Tổng số ( {{ invoice.invoiceProducts.length }} sản phẩm )</span>
+      <span> {{ invoice.totalPreTax | number }} đ</span>
+    </div>
+    <div class="discount-order d-flex justify-content-between align-items-center cursor-pointer">
+      <span class="text mb-10px">Giảm giá đơn hàng</span>
+      <span>{{ invoice.vatAmount }} đ </span>
+    </div>
+    <div class="d-flex justify-content-between align-items-center vat-rate-color">
+      <span class="text mb-10px"></span>
+      <span> {{ invoice.totalAmount | number }} đ </span>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <a href="javascript:;" class="btn btn-white" data-bs-dismiss="modal" (click)="closeModal()">Thoát</a>
+  <a *ngIf="!invoice.taxCheckStatus" (click)="publishInvoice()" class="btn btn-success">Phát hành</a>
+  <a *ngIf="!invoice.taxCheckStatus" (click)="editInvoice()" class="btn btn-warning">
+    <fa-icon icon="edit"></fa-icon> <span jhiTranslate="global.entity.action.edit">Sửa</span></a
+  >
+  <a *ngIf="!invoice.taxCheckStatus" (click)="deleteInvoice()" class="btn btn-danger">Xóa</a>
+  <a *ngIf="invoice.taxCheckStatus === -1" (click)="viewInvoice()" class="btn btn-success">Xem hóa đơn</a>
+  <a *ngIf="invoice.taxCheckStatus === -1" (click)="sendMail()" class="btn btn-primary">Gửi mail</a>
+</div>

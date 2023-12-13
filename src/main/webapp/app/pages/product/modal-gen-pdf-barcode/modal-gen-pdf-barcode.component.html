@@ -1,0 +1,41 @@
+<div style="min-height: 220px">
+  <div class="d-flex flex-wrap" id="data"></div>
+  <div class="loading-overlay flex-column" [ngClass]="{ show: isLoading }">
+    <div class="spinner mb-3"></div>
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
+    </div>
+    <span class="percentage" id="percentage">0%</span>
+    <div class="message-info d-flex flex-column justify-content-center align-items-center">
+      <span class="ms-2 me-1 icon-warning" *ngIf="totalBarcode >= limitNumber">Số lượng tem mã vạch quý khách yêu cầu khá lớn</span>
+      <span class="ms-2 me-1 icon-warning">Xin vui lòng chờ trong giây lát!</span>
+    </div>
+  </div>
+</div>
+<!--<div *ngIf="!isLoading">-->
+<!--  <div class="modal-header header-product" style="max-height: 6vh">-->
+<!--    <h3 class="modal-title text-bold text-white">Xác nhận in</h3>-->
+<!--    <button type="button" class="btn-close" (click)="dismiss($event)">-->
+<!--      <i class="fa-solid fa-xmark"></i>-->
+<!--    </button>-->
+<!--  </div>-->
+<!--  <div class="modal-body">-->
+<!--    <div class="message-info">Số lượng tem mã vạch bạn yêu cầu khá lớn. Việc này sẽ đòi hỏi một khoảng thời gian đáng kể</div>-->
+<!--    <div class="message-info">-->
+<!--      <i class="fa-solid fa-triangle-exclamation icon-warning"></i>-->
+<!--      <span class="ms-2 me-1 icon-warning">Bạn có chắc chắn muốn tiếp tục?</span>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class="modal-footer">-->
+<!--    <div class="btn-row col-lg-12" style="margin: 0; justify-content: end; display: flex">-->
+<!--      <button type="button" class="exit-button-dialog me-2 mb-1" (click)="dismiss($event)">-->
+<!--        <span [innerHTML]="ICON_CANCEL | safeHtml"></span>-->
+<!--        <span jhiTranslate="global.button.cancel"></span>-->
+<!--      </button>-->
+<!--      <button type="button" class="save-button-dialog me-2 mb-1" (click)="onClickContinue()">-->
+<!--        <span [innerHTML]="ICON_SAVE | safeHtml"></span>-->
+<!--        <span>Tiếp tục</span>-->
+<!--      </button>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->

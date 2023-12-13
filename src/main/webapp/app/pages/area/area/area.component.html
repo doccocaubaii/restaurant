@@ -1,0 +1,209 @@
+<h1 class="page-header" jhiTranslate="easyPos.area.title">Danh sách khu vực</h1>
+<div class="group-form-custom mb-15px">
+  <div class="group-item-custom mt-0 mb-0">
+    <label class="form-label label-search" jhiTranslate="global.info.keyword"></label>
+    <div class="item-search">
+      <input
+        name="keyword"
+        (keyup.enter)="getAreas()"
+        [(ngModel)]="keyword"
+        class="form-control"
+        type="search"
+        placeholder="Tìm kiếm..."
+        (ngModelChange)="onDeleteKeywordSearch()"
+      />
+    </div>
+  </div>
+  <div class="form-btn-search">
+    <button (click)="getAreas()" class="btn-search">
+      <fa-icon icon="search"></fa-icon>
+      <span jhiTranslate="global.info.search"></span>
+    </button>
+  </div>
+</div>
+<div class="panel-action">
+  <ul class="nav" *jhiHasAnyAuthority="authorADD">
+    <li class="nav-action" (click)="openCreateArea()">
+      <a class="nav-link nav-link-action">
+        <i class="fa-solid fa-plus"></i>
+        <span class="d-sm-block ms-2" jhiTranslate="easyPos.area.button.add">Thêm khu vực</span>
+      </a>
+    </li>
+  </ul>
+  <div class="form-page-size">
+    <label
+      class="form-label form-label label-search me-2 mb-0 text-bold"
+      jhiTranslate="global.info.totalParam"
+      [translateValues]="{ count: totalSize || 0 }"
+    ></label>
+    <div class="form-select-size">
+      <ng-select
+        [items]="sizes"
+        class="select-value select-size"
+        bindLabel="name"
+        bindValue="id"
+        placeholder="Tất cả"
+        [(ngModel)]="pageSize"
+        (ngModelChange)="getAreas()"
+      >
+      </ng-select>
+    </div>
+  </div>
+  <!--  <div class="d-flex justify-content-end align-items-center">-->
+  <!--    <div class="form-page-size">-->
+  <!--      <label-->
+  <!--        class="form-label form-label label-search me-2 mb-0 text-bold"-->
+  <!--        jhiTranslate="global.info.totalParam"-->
+  <!--        [translateValues]="{ count: totalSize || 0 }"-->
+  <!--      ></label>-->
+  <!--      <div class="form-select-size">-->
+  <!--        <ng-select-->
+  <!--          [items]="sizes"-->
+  <!--          class="select-value select-size"-->
+  <!--          bindLabel="name"-->
+  <!--          bindValue="id"-->
+  <!--          placeholder="Tất cả"-->
+  <!--          [(ngModel)]="pageSize"-->
+  <!--          (ngModelChange)="getAreas()"-->
+  <!--        >-->
+  <!--        </ng-select>-->
+  <!--      </div>-->
+  <!--    </div>-->
+  <!--  </div>-->
+</div>
+
+<div class="tab-content rounded-top panel rounded-0 m-0">
+  <div class="tab-pane fade active show">
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="table-responsive">
+          <table class="table editing-table">
+            <thead>
+              <tr class="table-custom-header">
+                <th style="width: 10%"><span jhiTranslate="global.info.Stt">STT</span></th>
+                <th class="not-too-big"><span jhiTranslate="easyPos.area.table-th.area-name">Tên khu vực</span></th>
+                <th><span jhiTranslate="easyPos.area.table-th.total-unit">Tổng số bàn</span></th>
+                <th><span jhiTranslate="easyPos.area.table-th.unit-empty">Số bàn trống</span></th>
+                <th><span jhiTranslate="easyPos.area.table-th.unit-inuse">Số bàn sử dụng</span></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngIf="areaArray && areaArray.length >= (currentPage - 1) * pageSize">
+                <ng-container *ngFor="let area of areaArray.slice((currentPage - 1) * pageSize, currentPage * pageSize); index as i">
+                  <tr class="table-custom-body">
+                    <td style="width: 10%">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                    <td>
+                      <div class="td-name truncate not-too-big">
+                        <span class="whitespace-pre"> {{ area.name }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="td-area-name truncate text-end">
+                        <span class="whitespace-pre"> {{ area.units.length }}</span>
+                      </div>
+                    </td>
+                    <td class="text-end">{{ area.emptyTable }}</td>
+                    <td class="text-end">{{ area.units.length - area.emptyTable }}</td>
+                    <td>
+                      <div class="list-action">
+                        <i
+                          (click)="getLink(AREA_UNIT + '/' + area.id)"
+                          ngbTooltip="{{ 'global.entity.action.detail' | translate }}"
+                          class="fa-solid fas fa-arrow-up-wide-short"
+                        >
+                        </i>
+                        <i
+                          (click)="openUpdateArea(area)"
+                          class="fa-solid fa-edit"
+                          ngbTooltip="{{ 'global.entity.action.edit' | translate }}"
+                          *jhiHasAnyAuthority="authorUPDATE"
+                        >
+                        </i>
+                        <i
+                          (click)="openDeleteArea(area.id)"
+                          class="fa-solid fa-trash-can"
+                          ngbTooltip="{{ 'easyPos.bill.action.delete' | translate }}"
+                          *jhiHasAnyAuthority="authorDELETE"
+                        >
+                        </i>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br />
+<div>
+  <!--  <div class="tab-pane fade active show">-->
+  <!--    <div class="d-flex justify-content-center">-->
+  <!--      <ngb-pagination-->
+  <!--        [collectionSize]="totalSize"-->
+  <!--        [(page)]="currentPage"-->
+  <!--        [pageSize]="pageSize"-->
+  <!--        [maxSize]="5"-->
+  <!--        [rotate]="true"-->
+  <!--        [boundaryLinks]="true"-->
+  <!--      ></ngb-pagination>-->
+  <!--    </div>-->
+  <!--  </div>-->
+  <div class="group-page-size">
+    <!--    <div class="form-page-size">-->
+    <!--      <label class="label-total mr-5px" jhiTranslate="global.info.totalParam" [translateValues]="{ count: totalSize || 0 }"></label>-->
+    <!--      <div class="form-select-size">-->
+    <!--        <ng-select-->
+    <!--          [items]="sizes"-->
+    <!--          class="select-value select-size"-->
+    <!--          bindLabel="name"-->
+    <!--          bindValue="id"-->
+    <!--          placeholder="Tất cả"-->
+    <!--          [(ngModel)]="pageSize"-->
+    <!--          (ngModelChange)="getAreas()"-->
+    <!--        >-->
+    <!--        </ng-select>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <div class="from-pagination d-flex justify-content-center" *ngIf="totalSize > 0">
+      <ngb-pagination
+        class="pagination"
+        [collectionSize]="totalSize"
+        [(page)]="currentPage"
+        [pageSize]="pageSize"
+        [maxSize]="5"
+        [rotate]="true"
+        [boundaryLinks]="true"
+      ></ngb-pagination>
+    </div>
+  </div>
+</div>
+
+<!--<ng-template #updateAreaModel let-dctt="dismiss">-->
+<!--  <div class="modal-header">-->
+<!--    <h5 class="modal-title" jhiTranslate="easyPos.area.update.title">Chỉnh sửa khu vực</h5>-->
+<!--    <button type="button" class="btn-close" (click)="dctt('Close')" aria-label="Close" name="btnCloseCheckModal"></button>-->
+<!--  </div>-->
+<!--  <div class="modal-body">-->
+<!--    <div class="form-group">-->
+<!--      <label class="form-label">-->
+<!--        <span jhiTranslate="easyPos.area.create.tableName">Tên khu vực</span><span style="color: red"> *</span>:-->
+<!--      </label>-->
+<!--      <input required class="option-title input-value form-control" placeholder="Nhập tên khu vực" maxLength="50" [(ngModel)]="tmp.name" />-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class="modal-footer">-->
+<!--    <button type="button" class="btn btn-sm btn-secondary" (click)="dctt('Close')">-->
+<!--      <fa-icon icon="cancel"></fa-icon>-->
+<!--      <label jhiTranslate="global.entity.action.cancel">Hủy</label>-->
+<!--    </button>-->
+<!--    <button type="button" class="btn btn-sm btn-success" [disabled]="loading.isLoading || tmp.name == ''" (click)="updateNameArea()">-->
+<!--      <fa-icon icon="edit"></fa-icon>-->
+<!--      <label jhiTranslate="global.entity.action.update">Cập nhật</label>-->
+<!--    </button>-->
+<!--  </div>-->
+<!--</ng-template>-->

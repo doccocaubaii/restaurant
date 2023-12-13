@@ -1,0 +1,231 @@
+<div *ngIf="cardPolicy">
+  <h1 class="page-header">Chính Sách Thẻ</h1>
+  <div cass="card-policy-contaner" style="height: 100%">
+    <div class="card-policy-content">
+      <div class="card-policy-condition">
+        <label class="card-policy-condition-title">Căn cứ xét hạng</label>
+        <div class="border-header"></div>
+        <div class="card-policy-condition-detail">
+          <div (click)="changeType(1)">
+            <input type="radio" id="target" name="condition" [(ngModel)]="type" [value]="1" />
+            <label for="target">Theo tổng chỉ tiêu</label>
+          </div>
+          <div (click)="changeType(2)">
+            <input type="radio" id="point" name="condition" [(ngModel)]="type" [value]="2" />
+            <label for="point">Theo tổng tiền nạp trong thẻ</label>
+          </div>
+        </div>
+        <div class="card-policy-note">
+          <span>Lưu ý</span>
+          <ul>
+            <li>
+              Hệ thống tự động nâng/hạ hạng thẻ khi khách hàng có tổng chi tiêu hoặc tổng tiền nạp trong thẻ đạt/không đạt mức hạng thẻ
+              tương ứng
+            </li>
+            <li><b>Giá trị nâng hạng</b>: Khách hàng có thể được nâng hạng tổng các đơn hàng thanh toán đạt đủ điều kiện.</li>
+            <li><b>Giá trị tích điểm</b>: Khách hàng có thể tích lũy điểm thưởng khi thanh toán đơn hàng</li>
+            <li><b>Giá trị quy đổi</b>: Khách hàng có thể quy đổi một điểm thưởng thành tiền tương ứng để thanh toán đơn hàng</li>
+            <li><b>Thời gian</b>: Thời gian quy định Khách hàng thanh toán đơn hàng đạt giá trị nâng hạng</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card-policy-cards-apply">
+        <label>Danh sách thẻ áp dụng</label>
+        <div class="tab-content rounded-top panel rounded-0 m-0">
+          <div class="tab-pane fade active show">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="table-responsive">
+                  <table class="table editing-table">
+                    <thead>
+                      <tr class="table-custom-header">
+                        <th>
+                          <div class="custom-checkbox custom-control col-checkbox">
+                            <!--                              <input-->
+                            <!--                                class="custom-control-input"-->
+                            <!--                                id="checkAllForPage"-->
+                            <!--                                type="checkbox"-->
+                            <!--                                [disabled]="paramCheckAll || !cardPolicy.editTable"-->
+                            <!--                                [(ngModel)]="paramCheckAllPage"-->
+                            <!--                                (change)="checkAllForPageCustom(cardPolicy.conditions, listSelected, paramCheckAllPage)"-->
+                            <!--                              />-->
+                          </div>
+                        </th>
+                        <th style="padding-right: 15px !important">STT</th>
+                        <th>Tên thẻ</th>
+                        <th style="width: 180px">Giá trị nâng hạng</th>
+                        <th>Thời gian nâng hạng (Tháng)</th>
+                        <th style="border-right: 1px solid #b0d4eb !important; width: 220px">Giá trị tích điểm</th>
+                        <th style="width: 220px">Giá trị quy đổi</th>
+                        <!--                          <th style="border-right: 1px solid #b0d4eb !important">Mức đổi quy điểm (đ) = 1 điểm</th>-->
+                        <!--                          <th>1 điểm = mức tiền quy đổi (đ)</th>-->
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <ng-container *ngFor="let item of conditions; index as i">
+                        <tr
+                          class="table-custom-body"
+                          (click)="idEditing = idEditing == item.cardId ? -1 : item.cardId"
+                          [class.editing-head]="cardPolicy.editTable && idEditing == item.cardId"
+                        >
+                          <td>
+                            <div class="custom-checkbox custom-control col-checkbox">
+                              <input
+                                class="custom-control-input"
+                                id="exampleCustomCheckbox{{ i }}"
+                                name="exampleCustomCheckbox{{ i }}"
+                                type="checkbox"
+                                [disabled]="!cardPolicy.editTable || item.isDefault"
+                                [(ngModel)]="item.checked"
+                                (click)="
+                                  getItem(item); utilsService.check(item, listSelected, paramCheckAll, selectedItem); changeItem(item)
+                                "
+                              />
+                            </div>
+                          </td>
+                          <td>{{ i + 1 + (currentPage - 1) * pageSize }}</td>
+                          <td>
+                            <div class="loyalty-card-name">{{ item.cardName }}</div>
+                          </td>
+                          <td style="padding-right: 15px !important">
+                            <!--                              <ng-container *ngIf="!item.isDefault">-->
+                            <input
+                              [ngClass]="!cardPolicy.editTable ? '' : 'editable'"
+                              class="input-table-detail"
+                              [disabled]="item.isDefault"
+                              [readOnly]="!cardPolicy.editTable"
+                              [(ngModel)]="item.upgradeValue"
+                              (ngModelChange)="upgradeValueChange(item)"
+                              jhiCurrencyNumber
+                              [numberRound]="0"
+                            />
+                            <!--                              </ng-container>-->
+                          </td>
+                          <td style="padding-right: 15px !important">
+                            <input
+                              [ngClass]="!cardPolicy.editTable ? '' : 'editable'"
+                              class="input-table-detail"
+                              [readOnly]="!cardPolicy.editTable"
+                              [(ngModel)]="item.upgradeTime"
+                              jhiCurrencyNumber
+                              [numberRound]="0"
+                            />
+                          </td>
+                          <td style="padding-right: 15px !important">
+                            <div class="td-custom">
+                              <input
+                                [ngClass]="!cardPolicy.editTable ? '' : 'editable'"
+                                class="input-table-detail"
+                                [ngStyle]="!cardPolicy.editTable && item.accumValue ? { width: '60%' } : { width: '100%' }"
+                                [readOnly]="!cardPolicy.editTable"
+                                [(ngModel)]="item.accumValue"
+                                jhiCurrencyNumber
+                                [numberRound]="0"
+                                [ngbTooltip]="!cardPolicy.editTable ? '' : 'Vd: 1.000đ = 1 điểm'"
+                                tooltipClass="my-custom-class"
+                              />
+                              <span style="font-size: inherit" *ngIf="!cardPolicy.editTable && item.accumValue">= 1 điểm</span>
+                            </div>
+                          </td>
+                          <td style="padding-right: 15px !important">
+                            <div class="td-custom">
+                              <span style="font-size: inherit" *ngIf="!cardPolicy.editTable && item.redeemValue">1 điểm =</span>
+                              <input
+                                [ngClass]="!cardPolicy.editTable ? '' : 'editable'"
+                                class="input-table-detail"
+                                [ngStyle]="!cardPolicy.editTable && item.redeemValue ? { width: '60%' } : { width: '100%' }"
+                                [readOnly]="!cardPolicy.editTable"
+                                [(ngModel)]="item.redeemValue"
+                                jhiCurrencyNumber
+                                [numberRound]="0"
+                                [ngbTooltip]="!cardPolicy.editTable ? '' : 'Vd: 1 điểm = 1.000đ'"
+                                tooltipClass="my-custom-class"
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="group-page-size">
+          <div class="from-pagination d-flex justify-content-center" *ngIf="totalItems > 10">
+            <ngb-pagination
+              class="pagination mb-0"
+              [collectionSize]="totalItems"
+              [(page)]="currentPage"
+              [pageSize]="pageSize"
+              [maxSize]="5"
+              [rotate]="true"
+              [boundaryLinks]="true"
+              (pageChange)="onPageChange($event)"
+            ></ngb-pagination>
+          </div>
+        </div>
+        <div class="card-policy-apply-date group-item-custom1 w-100">
+          <label>Thời gian áp dụng</label>
+          <div class="group-form-custom mt-5px mb-20px row">
+            <div class="group-item-custom1 col-sm-6 col-md-6 col-lg-4">
+              <label class="form-label label-search" jhiTranslate="global.info.fromDate"></label>
+              <div class="item-search">
+                <input
+                  (click)="cardPolicy.editTable ? d3.toggle() : ''"
+                  class="form-control cursor-pointer"
+                  placeholder="DD-MM-YYYY"
+                  name="d3"
+                  ngbDatepicker
+                  readonly
+                  style="border-color: #dadce0"
+                  #d3="ngbDatepicker"
+                  [(ngModel)]="fromDate"
+                  [disabled]="!cardPolicy.editTable"
+                />
+                <button
+                  [disabled]="!cardPolicy.editTable"
+                  class="btn form-control btn-datepicker"
+                  type="button"
+                  (click)="cardPolicy.editTable ? d3.toggle() : ''"
+                >
+                  <fa-icon [icon]="'calendar-alt'"></fa-icon>
+                </button>
+              </div>
+            </div>
+
+            <!--            <div class="group-item-custom1 col-sm-6 col-md-6 col-lg-6">-->
+            <!--              <label class="form-label label-search">Thời gian</label>-->
+            <!--              <div class="col-sm-12 col-md-12 col-lg-6 d-flex justify-content-center align-items-center">-->
+            <!--                <input-->
+            <!--                  style="height: 40px"-->
+            <!--                  class="form-control"-->
+            <!--                  placeholder="Thời gian"-->
+            <!--                  [(ngModel)]="cardPolicy.upgradeTime"-->
+            <!--                  jhiCurrencyNumber-->
+            <!--                  [disabled]="!cardPolicy.editTable"-->
+            <!--                />-->
+            <!--                <label class="col-sm-3 col-md-3 col-lg-3 ms-1">(Tháng)</label>-->
+            <!--              </div>-->
+            <!--            </div>-->
+          </div>
+        </div>
+        <div class="d-flex justify-content-end align-items-center pe-3">
+          <button *ngIf="!cardPolicy.editTable" type="button" class="exit-button-dialog me-2 mb-1" (click)="editCardPolicy()">
+            <span [innerHTML]="ICON_EDIT_CART | safeHtml"></span>
+            <span>Sửa</span>
+          </button>
+          <button *ngIf="cardPolicy.editTable" type="button" class="exit-button-dialog me-2 mb-1" (click)="dismiss()">
+            <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+            <span >Huỷ bỏ</span>
+          </button>
+          <button [disabled]="!enableButtonSave" type="button" class="save-button-dialog me-1 mb-1" (click)="save()">
+            <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+            <span  jhiTranslate="global.button.save"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

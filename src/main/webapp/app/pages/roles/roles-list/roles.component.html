@@ -1,0 +1,145 @@
+<h1 class="page-header mb-0">Vai trò</h1>
+
+<div class="group-form-custom mb-25px">
+  <div class="group-item-custom" style="flex: 1">
+    <div class="item-search input-text-custom">
+      <input
+        [(ngModel)]="filterRoles.keyword"
+        name="keyword"
+        class="form-control"
+        type="search"
+        placeholder="Nhập tên vai trò"
+        (ngModelChange)="onDeleteKeyWord()"
+        (keyup.enter)="onSearch()"
+      />
+    </div>
+  </div>
+  <div class="form-btn-search" style="margin-left: auto">
+    <button class="btn-search" type="button" (click)="onSearch()">
+      <fa-icon icon="search"></fa-icon>
+      <span jhiTranslate="global.info.search"></span>
+    </button>
+  </div>
+</div>
+
+<div class="panel-action">
+  <ul class="nav" *ngIf="checkUser">
+    <li class="nav-action" (click)="onCreateRole()">
+      <a class="nav-link nav-link-action">
+        <i class="fa-solid fa-plus"></i>
+        <span class="d-sm-block ms-2">Thêm mới</span>
+      </a>
+    </li>
+  </ul>
+
+  <div class="d-flex justify-content-end align-items-center" style="margin-left: auto; height: 45px">
+    <div class="form-page-size">
+      <label
+        class="form-label form-label label-search me-2 mb-0 text-bold"
+        jhiTranslate="global.info.totalParam"
+        [translateValues]="{ count: totalItems || 0 }"
+      ></label>
+      <div class="form-select-size">
+        <ng-select
+          [items]="sizes"
+          class="select-value select-size"
+          bindLabel="name"
+          bindValue="id"
+          placeholder="Tất cả"
+          [(ngModel)]="filterRoles.size"
+          (ngModelChange)="getRoles()"
+        >
+        </ng-select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-pane fade active show">
+  <div class="row">
+    <div class="col-xl-12">
+      <div class="panel panel-inverse">
+        <div class="table-responsive">
+          <table class="table editing-table">
+            <thead class="table-header-sticky">
+              <tr class="table-custom-header">
+                <th>STT</th>
+                <th>Mã vai trò</th>
+                <th>Tên vai trò</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let r of roles; index as i">
+                <tr class="table-custom-body">
+                  <td class="text-center" style="width: 100px" (click)="view(r.id)">
+                    {{ (filterRoles.page - 1) * filterRoles.size + i + 1 }}
+                  </td>
+                  <td class="break-word-table" style="width: 600px" (click)="view(r.id)">
+                    {{ r.code }}
+                  </td>
+                  <td class="break-word-table td-text-overflow" (click)="view(r.id)">
+                    {{ r.name }}
+                  </td>
+                  <td style="width: 200px">
+                    <div class="list-action">
+                      <div *jhiHasAnyAuthority="authorUpdate">
+                        <span
+                          [innerHTML]="ICON_UPDATE | safeHtml"
+                          class="fa-solid"
+                          ngbTooltip="{{ 'global.entity.action.edit' | translate }}"
+                          (click)="onDetailRoles(r.id)"
+                          *ngIf="r.comId"
+                        ></span>
+                      </div>
+                      <span
+                        [innerHTML]="ICON_COPY | safeHtml"
+                        class="fa-solid"
+                        style="display: flex; align-items: center"
+                        ngbTooltip="{{ 'global.button.copy' | translate }}"
+                        (click)="copyPermissions(r.id)"
+                        *jhiHasAnyAuthority="authorCopy"
+                      ></span>
+
+                      <div *jhiHasAnyAuthority="authorDelete">
+                        <span
+                          [innerHTML]="ICON_DELETE | safeHtml"
+                          class="fa-solid"
+                          ngbTooltip="{{ 'easyPos.bill.action.delete' | translate }}"
+                          (click)="delete(r)"
+                          *ngIf="r.comId"
+                        ></span>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+            <tbody *ngIf="totalItems === 0">
+              <tr class="table-not-data">
+                <td colspan="8">
+                  <span jhiTranslate="easyPos.product.info.notData"></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-page-size">
+    <div class="from-pagination d-flex justify-content-center" *ngIf="totalItems > 0">
+      <ngb-pagination
+        class="pagination"
+        [collectionSize]="totalItems || 0"
+        [pageSize]="filterRoles.size"
+        [(page)]="filterRoles.page"
+        aria-label="Default pagination"
+        [directionLinks]="true"
+        [maxSize]="5"
+        (pageChange)="getRoles()"
+      ></ngb-pagination>
+    </div>
+  </div>
+</div>

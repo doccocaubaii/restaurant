@@ -1,0 +1,255 @@
+<div class="modal-header" style="background-color: #0074bd; border-radius: 4px 4px 0px 0px; height: 56px">
+  <div [hidden]="isView">
+    <h5 *ngIf="staff.id < 1" style="color: white" class="modal-title" jhiTranslate="easyPos.staff.titleCreate">Thêm nhân viên</h5>
+    <h5 *ngIf="staff.id > 0" style="color: white" class="modal-title" jhiTranslate="easyPos.staff.titleUpdate">Cập nhật nhân viên</h5>
+  </div>
+  <div [hidden]="!isView">
+    <h5 style="color: white" class="modal-title">Chi tiết nhân viên</h5>
+  </div>
+  <!--  <button type="button" style="color: white" class="btn-close" (click)="dismiss()" aria-label="Close" name="btnCloseCheckModal"></button>-->
+  <button type="button" class="btn-close" (click)="dismiss()">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+<div class="modal-body" style="min-height: 300px">
+  <form class="detail-row" #cusForm="ngForm">
+    <div class="flex-container">
+      <div class="div-input">
+        <label for="ten-khach-hang" class="my-form-label"
+          ><span jhiTranslate="easyPos.staff.info.nameStaff">Tên nhân viên </span><span style="color: red">*</span>
+        </label>
+        <div class="user-input-text-div">
+          <input
+            class="option-title input-value form-control"
+            placeholder="Nhập tên nhân viên"
+            id="ten-khach-hang"
+            required
+            name="ten-khach-hang"
+            #name="ngModel"
+            [(ngModel)]="staff.name"
+            maxlength="400"
+            [disabled]="isView"
+          />
+        </div>
+        <div
+          id="aler-name"
+          class="my-form-group pt-0 position-absolute"
+          [hidden]="name.valid || name.untouched"
+          placement="right"
+          ngbTooltip="{{ 'easyPos.staff.error.emptyName' | translate }}"
+        >
+          <div class="alert-user-input">
+            <i class="fas fa-circle-exclamation"></i>
+            <!--              <span jhiTranslate="easyPos.staff.error.emptyName">Phải điền tên nhân viên</span>-->
+          </div>
+        </div>
+      </div>
+      <div class="div-input">
+        <label class="my-form-label" for="phoneNumber"
+          ><span jhiTranslate="easyPos.staff.info.phoneNumber">Điện thoại </span><span style="color: red"> *</span></label
+        >
+        <div class="user-input-text-div position-relative">
+          <input
+            class="input-value form-control"
+            placeholder="Nhập số điện thoại"
+            id="phoneNumber"
+            type="text"
+            required
+            name="phoneNumber"
+            #phoneNumber="ngModel"
+            [(ngModel)]="staff.phoneNumber"
+            maxlength="14"
+            minlength="10"
+            jhiStringNumberOnly
+            [disabled]="staff.id > 0"
+          />
+          <span class="position-absolute" style="bottom: 0; right: 6px; bottom: 8px; font-size: 0.8em"
+            >{{ staff.phoneNumber.length }}/14</span
+          >
+        </div>
+        <div
+          id="alert-phone-number"
+          class="my-form-group position-absolute"
+          placement="right"
+          ngbTooltip="{{ 'easyPos.alert.phoneNumber' | translate }}"
+          [hidden]="(phoneNumber.value && phoneNumber.value!.startsWith('0')) || phoneNumber.untouched"
+        >
+          <div class="alert-user-input">
+            <i class="fas fa-circle-exclamation"></i>
+            <!--              <span jhiTranslate="easyPos.staff.error.invalidNumber">Số điện thoại phải bắt đầu bằng 0 và có 10-14 chữ số</span>-->
+          </div>
+        </div>
+      </div>
+      <div class="div-input">
+        <label class="my-form-label" for="email"><span jhiTranslate="easyPos.staff.info.email">Email</span> </label>
+        <div class="user-input-text-div">
+          <input
+            id="email"
+            placeholder="Nhập email"
+            class="input-value form-control"
+            name="email"
+            email="true"
+            [(ngModel)]="staff.email"
+            #email="ngModel"
+            maxlength="50"
+            [disabled]="isView"
+          />
+        </div>
+        <div
+          placement="left"
+          ngbTooltip="{{ 'easyPos.staff.error.invalidEmail' | translate }}"
+          [hidden]="(email.valid && testMail(email.value)) || email.untouched || email.value == ''"
+          id="alert-email"
+          class="my-form-group position-absolute"
+        >
+          <div class="alert-user-input">
+            <i class="fas fa-circle-exclamation"></i>
+            <!--              <span jhiTranslate="easyPos.staff.error.invalidEmail">Email không hợp lệ</span>-->
+          </div>
+        </div>
+      </div>
+      <div class="div-input" *ngIf="staff.companies.length > 0 && !isParent">
+        <label class="my-form-label" for="roles"><span>Phân quyền</span> </label>
+        <div class="user-input-text-div">
+          <ng-select
+            *ngIf="staff.companies"
+            id="roles2"
+            name="roles"
+            [items]="staff.companies[0].listRole"
+            bindLabel="roleName"
+            bindValue="roleId"
+            [multiple]="true"
+            [selectableGroup]="true"
+            [(ngModel)]="staff.companies[0].roleIds"
+            [disabled]="isView"
+            [closeOnSelect]="false"
+          >
+          </ng-select>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div *ngIf="isParent">
+    <label class="my-form-label" for="roles"><span>Phân quyền</span> </label>
+    <div class="tab-pane fade active show">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="panel panel-inverse" style="margin: 0 !important; min-height: 340px">
+            <div class="table-responsive" style="max-height: 350px !important; min-height: 320px">
+              <table class="table editing-table">
+                <thead class="table-header-sticky" style="z-index: 1051 !important">
+                  <tr class="table-custom-header">
+                    <th style="width: 60px">
+                      <div class="custom-checkbox custom-control col-checkbox">
+                        <input
+                          class="custom-control-input"
+                          id="checkAllForPage"
+                          type="checkbox"
+                          [(ngModel)]="paramCheckAll"
+                          (change)="utilsService.checkAll(staff.companies, listSelected, paramCheckAll); checkRolIds()"
+                          [disabled]="isView"
+                        /><label class="custom-control-label" for="checkAllForPage"></label>
+                      </div>
+                    </th>
+                    <th style="width: 60px">STT</th>
+                    <th style="width: 400px">Tên nhà hàng</th>
+                    <th style="border-left: 1px solid #b0d4eb">Vai trò</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let c of staff.companies; index as i">
+                    <tr class="table-custom-body tr-vertical-align">
+                      <td>
+                        <div class="custom-checkbox custom-control col-checkbox">
+                          <input
+                            class="custom-control-input"
+                            id="exampleCustomCheckbox{{ i }}"
+                            name="exampleCustomCheckbox{{ i }}"
+                            type="checkbox"
+                            [(ngModel)]="c.check"
+                            (click)="isView ? null : utilsService.check(c, listSelected, paramCheckAll, selectedItem); checkRolIds()"
+                            [disabled]="isView"
+                          />
+                          <label class="custom-control-label" for="exampleCustomCheckbox{{ i }}"></label>
+                        </div>
+                      </td>
+                      <td (click)="isView ? null : utilsService.check(c, listSelected, paramCheckAll, selectedItem); checkRolIds()">
+                        {{ i + 1 }}
+                      </td>
+                      <td
+                        class="break-word-table"
+                        (click)="isView ? null : utilsService.check(c, listSelected, paramCheckAll, selectedItem); checkRolIds()"
+                      >
+                        {{ c.companyName }}
+                      </td>
+                      <td>
+                        <div class="user-input-text-div">
+                          <ng-select
+                            id="roles"
+                            name="roles"
+                            class="input-value"
+                            [items]="c.listRole"
+                            bindLabel="roleName"
+                            bindValue="roleId"
+                            [multiple]="true"
+                            [selectableGroup]="true"
+                            [(ngModel)]="c.roleIds"
+                            (change)="errPermissions(c); checkRolIds()"
+                            [disabled]="isView"
+                            [closeOnSelect]="false"
+                          >
+                          </ng-select>
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+                <tbody *ngIf="totalItems === 0">
+                  <tr class="table-not-data">
+                    <td colspan="8">
+                      <span jhiTranslate="easyPos.product.info.notData"></span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="exit-button-dialog" (click)="dismiss()">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <label jhiTranslate="global.entity.action.cancel">Hủy</label>
+  </button>
+  <button
+    *ngIf="staff.id > 0"
+    type="button"
+    class="save-button-dialog"
+    [disabled]="!cusForm.form.valid || !testMail(email.value) || loading.isLoading || onLoading"
+    (click)="close('edit')"
+  >
+    <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.save">Lưu</span>
+  </button>
+  <button
+    *ngIf="staff.id < 1"
+    type="button"
+    class="save-button-dialog"
+    [disabled]="
+      !cusForm.form.valid ||
+      !testMail(email.value) ||
+      loading.isLoading ||
+      (phoneNumber.value && !phoneNumber.value!.startsWith('0')) ||
+      onLoading
+    "
+    (click)="close('add')"
+  >
+    <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.save">Lưu</span>
+  </button>
+</div>

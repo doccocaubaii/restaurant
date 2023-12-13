@@ -1,0 +1,48 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="exampleModalLongTitle">Thông báo</h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="dismiss($event)"></button>
+</div>
+<div class="modal-body" *ngIf="!checkDeleteMulti">
+  {{ title }} <strong *ngIf="title2">{{ title2 }}</strong>
+</div>
+<div class="modal-body" *ngIf="checkDeleteMulti">
+  <span>Bạn đã chọn</span>
+  <span class="text-bold">{{ quantity }} {{ type }}</span>
+  <span style="margin-left: -2px">, vui lòng nhập</span>
+  <span class="text-bold"> {{ quantity }} </span>
+  <span>để xóa!</span>
+
+  <div class="input-text-custom mt-8px" *ngIf="checkDeleteMulti">
+    <input
+      class="option-title input-value form-control"
+      placeholder=""
+      type="text"
+      [(ngModel)]="quantityInput"
+      (keyup.enter)="onEnterQuantity()"
+      jhiCurrencyNumber
+    />
+  </div>
+</div>
+<div class="modal-footer">
+  <div class="btn-row col-md-12" style="margin: 0; justify-content: end; display: flex">
+    <button type="button" class="exit-button-dialog me-2 mb-1" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <span jhiTranslate="global.button.cancel"></span>
+    </button>
+
+    <button
+      *ngIf="!isBlueButton"
+      (click)="onDeteleConvertUnit()"
+      [disabled]="checkDeleteMulti && quantityInput !== quantity ? true : false"
+      class="btn-delete mb-1"
+    >
+      <fa-icon icon="trash-can" class="me-2"></fa-icon>
+      <span jhiTranslate="global.entity.action.delete">Xóa</span>
+    </button>
+
+    <button *ngIf="isBlueButton" (click)="onConfirm()" class="save-button-dialog">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span>Lưu</span>
+    </button>
+  </div>
+</div>

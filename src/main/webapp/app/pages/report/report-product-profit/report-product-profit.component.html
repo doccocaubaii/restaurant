@@ -1,0 +1,126 @@
+<!--<h1 class="page-header" jhiTranslate="easyPos.reportProductProfit.title"></h1>-->
+
+<div class="group-action">
+  <button type="button" class="save-button-dialog me-3" (click)="onOpenModalFilter()">
+    <span [innerHTML]="ICON_SELECT_PARAM | safeHtml"></span>
+    <span>Chọn tham số</span>
+  </button>
+  <button type="button" class="save-button-dialog me-3" (click)="onSearch()" [disabled]="isResetData">
+    <span *ngIf="!isResetData" [innerHTML]="ICON_RESET | safeHtml"></span>
+    <fa-icon *ngIf="isResetData" icon="sync" [spin]="true"></fa-icon>
+    <span>Lấy lại dữ liệu</span>
+  </button>
+  <button type="button" class="save-button-dialog me-3" (click)="onExportPdf()" [disabled]="isSavingPdf" *jhiHasAnyAuthority="authorPdf">
+    <span *ngIf="!isSavingPdf" [innerHTML]="ICON_PDF | safeHtml"></span>
+    <fa-icon *ngIf="isSavingPdf" icon="sync" [spin]="true"></fa-icon>
+    <span>Kết xuất PDF</span>
+  </button>
+  <button type="button" class="save-button-dialog" (click)="onExportExcel()" [disabled]="isSavingExcel" *jhiHasAnyAuthority="authorExcel">
+    <span *ngIf="!isSavingExcel" [innerHTML]="ICON_EXCEL | safeHtml"></span>
+    <fa-icon *ngIf="isSavingExcel" icon="sync" [spin]="true"></fa-icon>
+    <span>Kết xuất Excel</span>
+  </button>
+</div>
+
+<div class="report">
+  <div class="panel-header">
+    <div class="title-header">
+      <span>THỐNG KÊ LỢI NHUẬN SẢN PHẨM</span>
+      <div class="create-date">
+        <p>
+          Từ ngày {{ reportProductProfitRes.fromDate | date: 'dd/MM/yyyy' }} đến ngày
+          {{ reportProductProfitRes.toDate | date: 'dd/MM/yyyy' }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-pane fade active show">
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="panel panel-inverse">
+          <div class="table-responsive">
+            <table class="table editing-table">
+              <thead class="table-header-sticky">
+                <tr class="table-custom-header">
+                  <th>STT</th>
+                  <th>Tên sản phẩm</th>
+                  <th>Đơn vị tính</th>
+                  <th>Số lượng sản phẩm</th>
+                  <th style="border-right: 1px solid #b0d4eb !important">Doanh thu</th>
+                  <th>Lợi nhuận</th>
+                </tr>
+              </thead>
+              <tbody *ngIf="totalItems > 0">
+                <ng-container *ngFor="let data of reportProductProfitRes.detail; index as i">
+                  <tr class="table-custom-body">
+                    <td>{{ i + 1 }}</td>
+                    <td class="break-word-table">{{ data.name }}</td>
+                    <td class="break-word-table text-center">{{ data.unitName }}</td>
+                    <td class="break-word-table text-end">{{ data.quantity ? (data.quantity | number) : '' }}</td>
+                    <td class="break-word-table text-end">{{ data.revenue ? (data.revenue | number) : '' }}</td>
+                    <td class="break-word-table text-end">{{ data.profit ? (data.profit | number) : '' }}</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+              <tbody *ngIf="totalItems === 0">
+                <tr class="table-not-data">
+                  <td colspan="6">
+                    <span jhiTranslate="easyPos.product.info.notData"></span>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot class="footer-table">
+                <tr class="footer-content">
+                  <th style="text-align: inherit; border-right: 1px solid #b0d4eb !important" colspan="3">Tổng cộng</th>
+                  <th class="break-word-table text-end" style="border-right: 1px solid #b0d4eb !important">
+                    {{ reportProductProfitRes.totalQuantity ? (reportProductProfitRes.totalQuantity | number) : '' }}
+                  </th>
+                  <th class="break-word-table text-end" style="border-right: 1px solid #b0d4eb !important">
+                    {{ reportProductProfitRes.totalRevenue ? (reportProductProfitRes.totalRevenue | number) : '' }}
+                  </th>
+                  <th class="break-word-table text-end" style="border-right: 1px solid #b0d4eb !important">
+                    {{ reportProductProfitRes.totalProfit ? (reportProductProfitRes.totalProfit | number) : '' }}
+                  </th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="group-page-size">
+  <div class="form-page-size">
+    <label
+      class="form-label label-search me-2 mb-0 text-bold"
+      jhiTranslate="global.info.totalParam"
+      [translateValues]="{ count: totalItems || 0 }"
+    ></label>
+    <div class="form-select-size">
+      <ng-select
+        [items]="sizes"
+        class="select-value select-size"
+        bindLabel="name"
+        bindValue="id"
+        placeholder="Tất cả"
+        [(ngModel)]="searchReq.size"
+        (ngModelChange)="getData()"
+      >
+      </ng-select>
+    </div>
+  </div>
+  <div class="from-pagination d-flex justify-content-center" *ngIf="totalItems > 0">
+    <ngb-pagination
+      class="pagination"
+      [collectionSize]="totalItems || 0"
+      [pageSize]="searchReq.size"
+      [page]="searchReq.page"
+      aria-label="Default pagination"
+      [directionLinks]="true"
+      [maxSize]="5"
+      (pageChange)="loadMore($event)"
+    ></ngb-pagination>
+  </div>
+</div>

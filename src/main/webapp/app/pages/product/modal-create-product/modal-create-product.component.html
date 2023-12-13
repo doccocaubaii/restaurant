@@ -1,0 +1,464 @@
+<div class="modal-header header-product">
+  <h3 class="modal-title text-bold" id="exampleModalPopoversLabel">{{ selectedProduct.id ? 'Chi tiết sản phẩm' : 'Thêm sản phẩm' }}</h3>
+  <button type="button" class="btn-close" (click)="dismiss($event)">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+<div class="modal-body" id="modalBody" #modalBody>
+  <div class="panel-custom">
+    <ul class="nav nav-pills">
+      <li class="nav-item" (click)="onSelectTab(0)">
+        <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link" [class.active]="type == 0">
+          <span class="d-sm-none">Thông tin cơ bản</span>
+          <span class="d-sm-block d-none">Thông tin cơ bản</span>
+        </a>
+      </li>
+      <li class="nav-item" (click)="onSelectTab(1)">
+        <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link" [class.active]="type == 1">
+          <span class="d-sm-none">Thông tin bổ sung</span>
+          <span class="d-sm-block d-none">Thông tin bổ sung</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="type == 0">
+    <div class="group-basic-infor">
+      <div class="product-basic-infor">
+        <div class="item-basic-infor input-text-custom">
+          <label class="title-info">Tên sản phẩm <span style="color: red; margin: 0px">*</span></label>
+          <input class="input-value form-control" [(ngModel)]="selectedProduct.name" placeholder="Ví dụ: Thịt lợn" jhiNoEmoji />
+        </div>
+        <div class="item-basic-infor">
+          <label class="title-info">Nhóm sản phẩm</label>
+          <div class="double-product-infor group-select-addition ng-select-custom">
+            <ng-select
+              [items]="categories"
+              class="select-value select-add-value"
+              bindLabel="name"
+              bindValue="id"
+              [multiple]="true"
+              [selectableGroup]="true"
+              placeholder="Chọn nhóm sản phẩm"
+              [(ngModel)]="selectedProduct.groups"
+              (change)="onCategorySelected($event)"
+              [closeOnSelect]="false"
+            >
+            </ng-select>
+            <div class="button-add-value" (click)="onCreateCategory()">
+              <i class="fa-solid fa-plus"></i>
+            </div>
+          </div>
+        </div>
+        <div class="double-product-infor item-basic-infor">
+          <div class="first-infor input-text-custom">
+            <label class="title-info">Mã sản phẩm</label>
+            <input class="input-value form-control" placeholder="Mã sản phẩm" [(ngModel)]="selectedProduct.code2" jhiNoEmoji />
+          </div>
+          <div class="second-infor input-text-custom group-input-limit">
+            <label class="title-info">Mã vạch</label>
+            <input
+              class="input-limit form-control"
+              placeholder="Nhập mã vạch"
+              [(ngModel)]="selectedProduct.barcode"
+              [maxLength]="50"
+              (ngModelChange)="onCountInputChar()"
+              jhiNoEmoji
+            />
+            <div class="char-limit-display">{{ currentCount }}/50</div>
+          </div>
+        </div>
+        <div class="item-basic-infor double-product-infor">
+          <div class="first-infor input-text-custom">
+            <label class="title-info"
+              >Giá nhập
+              <span *ngIf="selectedProduct.inventoryTracking" style="color: red; margin: 0px">*</span>
+            </label>
+            <input
+              class="input-value form-control"
+              placeholder="Nhập giá nhập"
+              type="text"
+              [(ngModel)]="selectedProduct.purchasePrice"
+              jhiCurrencyNumber
+            />
+          </div>
+          <div class="second-infor input-text-custom">
+            <label
+              ><span class="title-info" jhiTranslate="easyPos.product.info.salePrice"></span
+              ><span style="color: red; margin: 0px">*</span></label
+            >
+            <input
+              class="input-value form-control"
+              placeholder="Nhập giá bán"
+              type="text"
+              [(ngModel)]="selectedProduct.salePrice"
+              jhiCurrencyNumber
+            />
+          </div>
+        </div>
+      </div>
+      <div class="group-img">
+        <div class="item-img" (click)="onInputFile()">
+          <span  *ngIf="!selectedProduct.imageUrl"
+                 class="img-default"
+                 [innerHTML]="ICON_SELECT_IMG |safeHtml">
+          </span>
+          <div class="product-img" *ngIf="selectedProduct.imageUrl">
+            <img [src]="selectedProduct.imageUrl" />
+            <!-- <div class="background-img" [style.background-image]="'url(' + (selectedProduct.imageUrl) +')'"></div>-->
+          </div>
+          <input type="file" accept="image/*" #imageInput style="display: none" (change)="onImageSelected($event)" />
+        </div>
+      </div>
+    </div>
+    <div class="pos-group-infor" id="formUnitInfor">
+      <div class="header-group-infor" (click)="dropdownUnit()">
+        <span class="title-header-infor" jhiTranslate="easyPos.product.info.unit"></span>
+        <i *ngIf="checkDropUnit" class="fa-sharp fa-solid fa-angle-down"></i>
+        <i *ngIf="!checkDropUnit" class="fa-sharp fa-solid fa-angle-up"></i>
+      </div>
+      <div *ngIf="checkDropUnit" class="unit-infor input-text-custom">
+        <div
+          *ngIf="!firstUnitId"
+          class="double-product-infor group-select-addition ng-select-custom"
+          [ngClass]="checkDropTopping ? 'select-face-down' : 'select-face-up'"
+        >
+          <ng-select
+            [items]="lstUnit"
+            class="select-value select-add-value"
+            bindLabel="name"
+            bindValue="id"
+            placeholder="Đơn vị tính"
+            [(ngModel)]="selectedProduct.unitId"
+            (change)="onChangeUnit($event)"
+          >
+          </ng-select>
+          <div class="button-add-value" (click)="onCreateUnit(false, 0)">
+            <i class="fa-solid fa-plus"></i>
+          </div>
+        </div>
+        <input
+          *ngIf="firstUnitId"
+          class="input-value form-control"
+          placeholder="Chỉnh sửa đơn vị"
+          type="text"
+          [(ngModel)]="selectedProduct.unit"
+          (blur)="disableUnit()"
+        />
+      </div>
+      <div *ngIf="checkDropUnit" class="border-unit">
+        <hr />
+      </div>
+      <div *ngIf="checkDropUnit">
+        <div class="unit-infor" *ngFor="let convertUnit of selectedProduct.conversionUnits; index as i">
+          <div class="convert-unit" *ngIf="!convertUnit.checkUnit">
+            <label class="title-convert-unit">
+              <span jhiTranslate="easyPos.product.info.convertUnit"></span>
+              <span style="color: red; margin: 0px">*</span>
+            </label>
+            <div class="double-product-infor ng-select-custom" [ngClass]="checkDropTopping ? 'select-face-down' : 'select-face-up'">
+              <ng-select
+                [items]="lstUnit"
+                class="select-value select-convert-unit"
+                bindLabel="name"
+                bindValue="id"
+                placeholder="Đơn vị"
+                [(ngModel)]="convertUnit.productUnitId"
+                (change)="onChangeUnitConvert($event, convertUnit)"
+              >
+              </ng-select>
+              <div class="button-add-value" (click)="onCreateUnit(true, i)">
+                <i class="fa-solid fa-plus"></i>
+              </div>
+            </div>
+          </div>
+          <div class="convert-unit input-text-custom" *ngIf="convertUnit.checkUnit">
+            <label class="title-convert-unit">
+              <span jhiTranslate="easyPos.product.info.convertUnit"></span>
+              <span style="color: red; margin: 0px">*</span>
+            </label>
+            <input
+              class="option-title input-value form-control"
+              placeholder="Đơn vị"
+              [(ngModel)]="convertUnit.unitName"
+              (ngModelChange)="onChangeConvertRate(convertUnit)"
+            />
+          </div>
+          <div class="convert-barcode input-text-custom">
+            <label class="title-convert-unit">
+              <span jhiTranslate="easyPos.product.info.barcode"></span>
+            </label>
+            <input
+              class="option-title input-value form-control"
+              placeholder="Mã vạch"
+              [(ngModel)]="convertUnit.barcode"
+              [maxLength]="50"
+              jhiNoEmoji
+            />
+          </div>
+          <div class="convert-unit-infor input-text-custom">
+            <label class="title-convert-unit">
+              <span jhiTranslate="easyPos.product.info.convertRate"></span> <span style="color: red; margin: 0px">*</span></label
+            >
+            <input
+              class="option-title input-value form-control"
+              placeholder="Giá trị quy đổi"
+              type="text"
+              [(ngModel)]="convertUnit.convertRate"
+              (ngModelChange)="onChangeConvertRate(convertUnit)"
+              jhiCurrencyNumber
+            />
+          </div>
+          <div class="convert-unit-infor input-text-custom">
+            <label>
+              <span class="title-convert-unit" jhiTranslate="easyPos.product.info.salePrice"></span>
+              <span style="color: red; margin: 0px">*</span></label
+            >
+            <input
+              class="option-title input-value form-control"
+              placeholder="Giá bán"
+              type="text"
+              [(ngModel)]="convertUnit.salePrice"
+              (change)="onChangeSalePrice()"
+              jhiCurrencyNumber
+            />
+          </div>
+          <div class="convert-unit-infor ng-select-custom">
+            <label>
+              <span class="title-convert-unit">Khu vực chế biến</span>
+            </label>
+            <ng-select
+              [items]="listProcessingArea"
+              class="select-value"
+              bindLabel="name"
+              bindValue="id"
+              placeholder="Chọn khu vực chế biến"
+              [(ngModel)]="convertUnit.processingArea"
+              (scrollToEnd)="loadMoreProcessingArea()"
+            >
+            </ng-select>
+          </div>
+          <div class="convert-unit-infor input-text-custom">
+            <label>
+              <span class="title-convert-unit" jhiTranslate="easyPos.product.info.desc"></span>
+            </label>
+            <input class="option-title input-value form-control" placeholder="" disabled="true" [(ngModel)]="convertUnit.description" />
+          </div>
+          <div class="direct-sale-group">
+            <label></label>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                value=""
+                id="flexCheckChecked"
+                [checked]="convertUnit.directSale"
+                [(ngModel)]="convertUnit.directSale"
+              />
+              <label class="form-check-label" for="flexCheckChecked">
+                <span jhiTranslate="easyPos.product.info.directSale"></span>
+              </label>
+            </div>
+          </div>
+          <div class="group-delete" title="Xóa" (click)="deleteProductConversionUnit(convertUnit)">
+            <label></label>
+            <div class="item-delete-convert-unit">
+              <span [innerHTML]="ICON_DELETE_RED | safeHtml"></span>
+            </div>
+          </div>
+          <div *ngIf="checkDropUnit" class="w-100 mt-8px">
+            <hr />
+          </div>
+        </div>
+      </div>
+      <div class="unit-infor" *ngIf="checkDropUnit">
+        <div class="btn-add-convert-unit" (click)="onCreateConversionUnit()">
+          <span [innerHTML]="ICON_PLUS | safeHtml"></span>
+          <span class="title-add-btn-convert-unit ms-2" jhiTranslate="easyPos.product.info.createConvertUnit"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pos-group-infor" id="formToppingInfor" style="margin-top: 18px">
+      <div class="header-group-infor" (click)="dropdownTopping()">
+        <span class="title-header-infor" jhiTranslate="easyPos.product.info.topping"></span>
+        <i *ngIf="checkDropTopping" class="fa-sharp fa-solid fa-angle-down"></i>
+        <i *ngIf="!checkDropTopping" class="fa-sharp fa-solid fa-angle-up"></i>
+      </div>
+      <div class="group-topping-infor" *ngIf="checkDropTopping">
+        <div class="addition-infor mt-0">
+          <label class="title-info" jhiTranslate="easyPos.product.info.isTopping"></label>
+          <div class="form-check form-switch">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              style="margin: 0px"
+              [checked]="selectedProduct.isTopping"
+              [(ngModel)]="selectedProduct.isTopping"
+            />
+            <label class="form-check-label" for="inventoryTracking"></label>
+          </div>
+        </div>
+        <div class="group-list-topping">
+          <div class="list-topping">
+            <label class="title-info" jhiTranslate="easyPos.product.info.listProductTopping"></label>
+            <div class="ng-select-custom select-face-up">
+              <ng-select
+                [items]="listProductTopping"
+                class="select-value"
+                bindLabel="name"
+                bindValue="id"
+                [multiple]="true"
+                [selectableGroup]="true"
+                placeholder="Chọn sản phẩm bán kèm"
+                [(ngModel)]="productToppings"
+                (scrollToEnd)="loadMoreToppings()"
+                [typeahead]="keywordToppings$"
+                [closeOnSelect]="false"
+              >
+              </ng-select>
+            </div>
+          </div>
+          <div class="list-topping">
+            <label class="title-info" jhiTranslate="easyPos.product.info.listGroupTopping"></label>
+            <div class="ng-select-custom select-face-up">
+              <ng-select
+                [items]="listGroupTopping"
+                class="select-value select-face-up"
+                bindLabel="name"
+                bindValue="id"
+                [multiple]="true"
+                [selectableGroup]="true"
+                placeholder="Chọn nhóm bán kèm"
+                [(ngModel)]="groupToppings"
+                (scrollToEnd)="loadMoreToppings()"
+                [typeahead]="keywordToppings$"
+                [closeOnSelect]="false"
+              >
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="type == 1">
+    <div class="addition-infor">
+      <label class="title-info" jhiTranslate="easyPos.product.info.inventoryTracking"></label>
+      <div class="form-check form-switch">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          name=""
+          id="inventoryTracking"
+          style="margin: 0px"
+          [checked]="selectedProduct.inventoryTracking"
+          [(ngModel)]="selectedProduct.inventoryTracking"
+          (click)="onCheckboxChange()"
+        />
+        <label class="form-check-label" for="inventoryTracking"></label>
+      </div>
+    </div>
+    <div class="addition-infor" *ngIf="selectedProduct.inventoryTracking">
+      <label class="title-info"
+        ><span jhiTranslate="easyPos.product.info.warehouse"></span><span style="color: red; margin: 0px">*</span></label
+      >
+      <div class="quantity-group">
+        <a class="btn-minus" (click)="minus()">
+          <i class="fa-solid fa-minus"></i>
+        </a>
+        <input
+          #inventoryCount
+          type="text"
+          class="form-control input-quantity"
+          [(ngModel)]="selectedProduct.inventoryCount"
+          jhiCurrencyNumber
+        />
+        <a class="btn btn-plus" (click)="plus()">
+          <i class="fa-solid fa-plus"></i>
+        </a>
+      </div>
+    </div>
+    <div class="item-addition-infor ng-select-custom">
+      <label class="title-info" jhiTranslate="easyPos.product.info.isVatRate"></label>
+      <ng-select
+        [items]="lstVatRate"
+        class="select-value"
+        bindLabel="title"
+        bindValue="value"
+        placeholder="Thuế tính ..."
+        [(ngModel)]="selectedProduct.vatRate"
+      >
+      </ng-select>
+    </div>
+    <div class="item-addition-infor">
+      <label class="title-info">Khu vực chế biến</label>
+      <div class="double-product-infor group-select-addition ng-select-custom">
+        <ng-select
+          [items]="listProcessingArea"
+          class="select-value select-add-value"
+          bindLabel="name"
+          bindValue="id"
+          placeholder="Chọn khu vực chế biến"
+          [(ngModel)]="selectedProduct.processingArea"
+          (scrollToEnd)="loadMoreProcessingArea()"
+        >
+        </ng-select>
+        <div class="button-add-value" (click)="onCreateProcessingArea()">
+          <i class="fa-solid fa-plus"></i>
+        </div>
+      </div>
+      <span style="font-size: small; color: red"
+        >Sản phẩm cần được gán vào khu vực chế biến để in ra khi tạo đơn hoặc hiển thị trên màn bếp.</span
+      >
+    </div>
+    <div class="pos-group-infor" id="formDiscountVatRate" *ngIf="taxReductionType === 1">
+      <div class="header-group-infor" (click)="dropdownDiscountVatRate()">
+        <span class="title-header-infor" jhiTranslate="easyPos.product.info.discountVatRateInfo"></span>
+        <i *ngIf="checkDropDiscountVatRate" class="fa-sharp fa-solid fa-angle-down"></i>
+        <i *ngIf="!checkDropDiscountVatRate" class="fa-sharp fa-solid fa-angle-up"></i>
+      </div>
+      <div class="group-topping-infor" *ngIf="checkDropDiscountVatRate">
+        <div class="mb-16px">
+          <label class="title-info" jhiTranslate="easyPos.product.info.discountVatRate"></label>
+          <div class="ng-select-custom">
+            <ng-select
+              [items]="listDiscountVatRate"
+              class="select-value"
+              bindLabel="name"
+              bindValue="id"
+              placeholder="Thuế giảm trừ ..."
+              [(ngModel)]="selectedProduct.discountVatRate"
+            >
+            </ng-select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pos-group-infor desc input-text-custom">
+      <div class="header-group-infor">
+        <span class="title-header-infor" jhiTranslate="easyPos.product.info.desc"></span>
+      </div>
+      <textarea
+        class="form-control"
+        id="desciption"
+        rows="9"
+        style="max-height: 400px"
+        placeholder="Nhập mô tả"
+        [(ngModel)]="selectedProduct.description"
+      >
+      </textarea>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <div class="btn-row col-md-12">
+    <button type="button" class="exit-button-dialog me-2" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <span jhiTranslate="global.button.cancel"></span>
+    </button>
+    <button type="button" class="save-button-dialog" (click)="onSaveProduct()" [disabled]="disableButton">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span jhiTranslate="global.button.save"></span>
+    </button>
+  </div>
+</div>

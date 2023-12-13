@@ -1,0 +1,40 @@
+{
+  "reset": {
+    "request": {
+      "title": "Reset your password",
+      "title2": "Reset your password",
+      "title3": "Reset your password",
+      "label": "Email or Phone Number",
+      "form": {
+        "button": "Reset password",
+        "continue": "Continue"
+      },
+      "messages": {
+        "info": "Enter the username you used to register",
+        "phone.text1": "OTP code has been sent to your phone number ",
+        "phone.text2": " , please check",
+        "email.text1": "OTP code has been sent to your email ",
+        "email.text2": " , please check",
+        "username.text1": "OTP code has been sent to your username ",
+        "username.text2": " , please check",
+        "success": "Please check your message/email and enter the verification code",
+        "resend": "You did not receive the code? ",
+        "resend1": "Resend code after",
+        "resend-otp": "Resend code",
+        "second": "seconds"
+      }
+    },
+    "finish": {
+      "title": "Reset password",
+      "form": {
+        "button": "Change password"
+      },
+      "messages": {
+        "info": "Choose a new password",
+        "success": "<strong>Your password has been reset.</strong> Please ",
+        "keymissing": "The reset key is missing.",
+        "error": "Your password couldn't be reset. Remember a password request is only valid for 24 hours."
+      }
+    }
+  }
+}

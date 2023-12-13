@@ -1,0 +1,140 @@
+<div class="group-action">
+  <button type="button" class="save-button-dialog me-3" (click)="onOpenModalFilter()">
+    <span [innerHTML]="ICON_SELECT_PARAM | safeHtml"></span>
+    <span>Chọn tham số</span>
+  </button>
+  <button type="button" class="save-button-dialog me-3" (click)="onSearch()" [disabled]="isResetData">
+    <span [innerHTML]="ICON_RESET | safeHtml"></span>
+    <fa-icon *ngIf="isResetData" icon="sync" [spin]="true"></fa-icon>
+    <span>Lấy lại dữ liệu</span>
+  </button>
+  <button type="button" class="save-button-dialog me-3" (click)="onExportPdf()" [disabled]="isSavingPdf" *jhiHasAnyAuthority="authorPdf">
+    <span *ngIf="!isSavingPdf" [innerHTML]="ICON_PDF | safeHtml"></span>
+    <fa-icon *ngIf="isSavingPdf" icon="sync" [spin]="true"></fa-icon>
+    <span>Kết xuất PDF</span>
+  </button>
+  <button type="button" class="save-button-dialog" (click)="onExportExcel()" [disabled]="isSavingExcel" *jhiHasAnyAuthority="authorExcel">
+    <span *ngIf="!isSavingExcel" [innerHTML]="ICON_EXCEL | safeHtml"></span>
+    <fa-icon *ngIf="isSavingExcel" icon="sync" [spin]="true"></fa-icon>
+    <span>Kết xuất Excel</span>
+  </button>
+</div>
+<div class="report">
+  <div class="panel-header">
+    <div class="title-header">
+      <span>THỐNG KÊ HÀNG HÓA BÁN RA</span>
+      <div class="create-date">
+        <p>Từ ngày {{ data.fromDate | date: 'dd/MM/yyyy' }} đến ngày {{ data.toDate | date: 'dd/MM/yyyy' }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane fade active show">
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="panel panel-inverse">
+          <div class="table-responsive">
+            <table class="table editing-table">
+              <thead class="table-header-sticky">
+                <tr class="table-custom-header">
+                  <th rowspan="2" style="vertical-align: middle">STT</th>
+                  <th colspan="3" style="vertical-align: middle">Hóa đơn chứng từ bán</th>
+                  <th rowspan="2" style="vertical-align: middle">Tên người mua</th>
+                  <th rowspan="2" style="vertical-align: middle">Mã số thuế người mua</th>
+                  <th rowspan="2" style="vertical-align: middle">Doanh số bán chưa có thuế</th>
+                  <th rowspan="2" style="border-right: 1px solid #b0d4eb !important; vertical-align: middle">Thuế GTGT</th>
+                  <th rowspan="2" style="vertical-align: middle">Ghi chú</th>
+                </tr>
+                <tr class="table-custom-header">
+                  <th style="vertical-align: middle">Ký hiệu mẫu hóa đơn</th>
+                  <th style="border-right: 1px solid #b0d4eb !important; vertical-align: middle">Số hóa đơn</th>
+                  <th style="border-right: 1px solid #b0d4eb !important; vertical-align: middle">Ngày, tháng, năm phát hành</th>
+                </tr>
+              </thead>
+              <tbody *ngIf="paginatedData?.length > 0">
+                <ng-container *ngFor="let dataTable of paginatedData; index as i">
+                  <tr class="table-custom-body" *ngIf="dataTable?.checkTitle">
+                    <td colspan="9" class="title-table">{{ dataTable?.title }}</td>
+                  </tr>
+                  <tr class="table-custom-body" *ngIf="dataTable.rowNumber">
+                    <td class="text-center">{{ dataTable.rowNumber }}</td>
+                    <td class="break-word-table text-center">{{ dataTable.pattern }}</td>
+                    <td class="break-word-table text-end">{{ dataTable.no && dataTable.no !== '0' ? dataTable.no : '' }}</td>
+                    <td class="break-word-table text-center">{{ dataTable.arisingDate | date: 'dd/MM/YYYY' }}</td>
+                    <td class="break-word-table">{{ dataTable.customerName }}</td>
+                    <td class="break-word-table text-end">{{ dataTable.customerTaxCode }}</td>
+                    <td class="break-word-table text-end">{{ dataTable.totalPreTax ? (dataTable.totalPreTax | number) : '' }}</td>
+                    <td class="break-word-table text-end">{{ dataTable.vatAmount ? (dataTable.vatAmount | number) : '' }}</td>
+                    <td class="break-word-table">{{ dataTable.description }}</td>
+                  </tr>
+                  <tr class="table-custom-body text-bold" *ngIf="dataTable?.checkAmount">
+                    <td style="text-align: inherit; border-right: 1px solid #b0d4eb !important" colspan="6">{{ dataTable.title }}</td>
+                    <td class="break-word-table text-end" style="border-right: 1px solid #b0d4eb !important">
+                      {{ dataTable.totalTotalPreTax ? (dataTable.totalTotalPreTax | number) : '' }}
+                    </td>
+                    <td class="break-word-table text-end" style="border-right: 1px solid #b0d4eb !important">
+                      {{ dataTable.totalVatAmount ? (dataTable.totalVatAmount | number) : '' }}
+                    </td>
+                    <td style="border-right: 1px solid #b0d4eb !important"></td>
+                  </tr>
+                </ng-container>
+              </tbody>
+              <tbody *ngIf="paginatedData?.length === 0">
+                <tr class="table-not-data">
+                  <td colspan="9">
+                    <span jhiTranslate="easyPos.product.info.notData"></span>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot class="footer-table">
+                <tr class="footer-content">
+                  <th style="text-align: inherit; border-right: 1px solid #b0d4eb !important" colspan="6">Tổng cộng</th>
+                  <th class="break-word-table text-end" style="border-right: 1px solid #b0d4eb !important">
+                    {{ data.sumTotalPreTax ? (data.sumTotalPreTax | number) : '' }}
+                  </th>
+                  <th class="break-word-table text-end" style="border-right: 1px solid #b0d4eb !important">
+                    {{ data.sumVatAmount ? (data.sumVatAmount | number) : '' }}
+                  </th>
+                  <th style="border-right: 1px solid #b0d4eb !important"></th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="group-page-size">
+  <div class="form-page-size">
+    <label
+      class="form-label label-search me-2 mb-0 text-bold"
+      jhiTranslate="global.info.totalParam"
+      [translateValues]="{ count: totalItems || 0 }"
+    ></label>
+    <div class="form-select-size">
+      <ng-select
+        [items]="sizes"
+        class="select-value select-size"
+        bindLabel="name"
+        bindValue="id"
+        placeholder="Tất cả"
+        [(ngModel)]="searchReq.size"
+        (ngModelChange)="paginateData()"
+      >
+      </ng-select>
+    </div>
+  </div>
+  <div class="from-pagination d-flex justify-content-center">
+    <ngb-pagination
+      class="pagination"
+      [collectionSize]="totalItems || 0"
+      [pageSize]="searchReq.size"
+      [page]="searchReq.page"
+      aria-label="Default pagination"
+      [directionLinks]="true"
+      [maxSize]="5"
+      (pageChange)="loadMore($event)"
+    ></ngb-pagination>
+  </div>
+</div>
+<!-- END pos-stock-body -->

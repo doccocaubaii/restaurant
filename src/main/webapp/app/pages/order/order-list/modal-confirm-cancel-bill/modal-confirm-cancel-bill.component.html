@@ -1,0 +1,20 @@
+<div class="modal-header">
+  <h5 class="modal-title">Thông báo</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true" (click)="close($event)"></button>
+</div>
+<div class="modal-body">
+  <label class="title-content" style="font-size: 21px">Bạn có chắc chắn muốn huỷ đơn hàng này?</label>
+  <label class="title-content" style="font-size: 15px"
+    >(Hủy đơn hàng đồng thời hủy hóa đơn phát hành. Bạn vui lòng làm thông báo sai sót trên trang web Hóa đơn điện tử!)</label
+  >
+</div>
+<div class="modal-footer">
+  <button class="exit-button-dialog" data-bs-dismiss="modal" (click)="close($event)">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.cancel">Hủy</span>
+  </button>
+  <button (click)="onConfirm()" class="save-button-dialog">
+    <span [innerHTML]="ICON_CONFIRM | safeHtml"></span>
+    <span>Xác nhận</span>
+  </button>
+</div>

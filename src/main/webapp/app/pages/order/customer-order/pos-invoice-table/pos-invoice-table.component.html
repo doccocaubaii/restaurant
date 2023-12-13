@@ -1,0 +1,304 @@
+<div class="modal-header" *ngIf="!statusPrint" [hidden]="isHide">
+  <h4 class="modal-title" jhiTranslate="easyPos.invoice.titleDetail">Chi tiết hóa đơn</h4>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true" (click)="closeModal()"></button>
+</div>
+<div id="print">
+  <div [class.layout-invoice]="!statusPrint" [ngClass]="!statusPrint ? 'wrap-invoice' : 'wrap-invoice-print'">
+    <div class="header">
+      <div
+        *ngIf="getValue('StoreName').isPrint"
+        [ngStyle]="{
+          fontWeight: getValue('StoreName').isBold ? 'bold' : 'normal',
+          fontSize: getValue('StoreName').fontSize + 'px',
+          textAlign: getValue('StoreName').alignText == 0 ? 'left' : getValue('StoreName').alignText == 1 ? 'center' : 'right'
+        }"
+      >
+        <label>{{ getValue('StoreName').content }}</label>
+      </div>
+      <div
+        *ngIf="getValue('PhoneNumber').isPrint"
+        [ngStyle]="{
+          fontWeight: getValue('PhoneNumber').isBold ? 'bold' : 'normal',
+          fontSize: getValue('PhoneNumber').fontSize + 'px',
+          textAlign: getValue('PhoneNumber').alignText == 0 ? 'left' : getValue('PhoneNumber').alignText == 1 ? 'center' : 'right'
+        }"
+      >
+        <label class="hotline-address">{{ getValue('PhoneNumber').content }}</label>
+      </div>
+      <div
+        *ngIf="getValue('StoreAddress').isPrint"
+        [ngStyle]="{
+          fontWeight: getValue('StoreAddress').isBold ? 'bold' : 'normal',
+          fontSize: getValue('StoreAddress').fontSize + 'px',
+          textAlign: getValue('StoreAddress').alignText == 0 ? 'left' : getValue('StoreAddress').alignText == 1 ? 'center' : 'right'
+        }"
+      >
+        <label class="hotline-address">{{ getValue('StoreAddress').content }}</label>
+      </div>
+      <div
+        *ngIf="getValue('Title').isPrint"
+        [ngStyle]="{
+          fontWeight: getValue('Title').isBold ? 'bold' : 'normal',
+          fontSize: getValue('Title').fontSize + 'px',
+          textAlign: getValue('Title').alignText == 0 ? 'left' : getValue('Title').alignText == 1 ? 'center' : 'right'
+        }"
+      >
+        <label class="hotline-address">{{ getValue('Title').content }}</label>
+      </div>
+    </div>
+    <div class="wrap-content-common-info">
+      <div class="item-content-common-info row" *ngIf="getValue('InvTime').isPrint">
+        <div
+          class="col-6"
+          [ngStyle]="{
+            fontWeight: getValue('InvTime').isBold ? 'bold' : 'normal',
+            fontSize: getValue('InvTime').fontSize + 'px',
+            textAlign: getValue('InvTime').alignText == 0 ? 'left' : getValue('InvTime').alignText == 1 ? 'center' : 'right'
+          }"
+        >
+          <label>{{ orderSelected.code }}</label>
+        </div>
+        <div class="col-6">
+          <label>{{ orderSelected.createTime }}</label>
+        </div>
+      </div>
+      <div class="item-content-common-info row" *ngIf="getValue('TaxAuthorityCode').isPrint">
+        <div class="col-6" jhiTranslate="global.info.taxCode">Mã cơ quan thuế</div>
+        <div
+          class="col-6"
+          [ngStyle]="{
+            fontWeight: getValue('TaxAuthorityCode').isBold ? 'bold' : 'normal',
+            fontSize: getValue('TaxAuthorityCode').fontSize + 'px',
+            textAlign:
+              getValue('TaxAuthorityCode').alignText == 0 ? 'left' : getValue('TaxAuthorityCode').alignText == 1 ? 'center' : 'right'
+          }"
+        >
+          <label>{{ orderSelected.taxAuthorityCode }}</label>
+        </div>
+      </div>
+      <div class="item-content-common-info row" *ngIf="getValue('CustomerName').isPrint">
+        <div class="customer-label col-6" jhiTranslate="easyPos.bill.info.customer">Khách hàng</div>
+        <div
+          class="col-6"
+          [ngStyle]="{
+            fontWeight: getValue('CustomerName').isBold ? 'bold' : 'normal',
+            fontSize: getValue('CustomerName').fontSize + 'px',
+            textAlign: getValue('CustomerName').alignText == 0 ? 'left' : getValue('CustomerName').alignText == 1 ? 'center' : 'right'
+          }"
+        >
+          <label>{{ orderSelected.customerName }}</label>
+        </div>
+      </div>
+      <div class="product-invoice">
+        <div class="header-product-invoice text-bold">
+          <div class="col-4">Món</div>
+          <div class="col-4">ĐVT</div>
+          <div class="col-4 amount">SL</div>
+        </div>
+        <ng-container *ngFor="let product of orderSelected.products">
+          <ng-container *ngIf="product.feature === 1">
+            <div class="content-product-invoice">
+              <div class="col-4">
+                <div>{{ product.productName }}</div>
+                <div>{{ product.unitPrice | number }}</div>
+                <div *ngIf="product.discountAmount" jhiTranslate="easyPos.product.info.discount">Giảm giá</div>
+                <div *ngIf="product.vatRate > 0">{{ product.vatRateName }}</div>
+              </div>
+              <div class="among-product col-4">
+                <div class="visibility-hidden">.</div>
+                <div class="quantity">x{{ product.quantity }}</div>
+              </div>
+              <div class="right-content-product col-4">
+                <div class="visibility-hidden">.</div>
+                <div>{{ product.amount | number }}</div>
+                <div *ngIf="product.discountAmount">-{{ product.discountAmount | number }}</div>
+                <div *ngIf="product.vatAmount">{{ product.vatAmount | number }}</div>
+                <div *ngIf="product.discountAmount || product.vatAmount">{{ product.totalAmount | number }}</div>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+      <div class="wrap-amount-invoice row" *ngIf="getValue('TotalProd').isPrint">
+        <div class="col-6" jhiTranslate="easyPos.bill.checkout.amount">Tạm tính</div>
+        <div
+          class="col-6"
+          [ngStyle]="{
+            fontWeight: getValue('TotalProd').isBold ? 'bold' : 'normal',
+            fontSize: getValue('TotalProd').fontSize + 'px',
+            textAlign: getValue('TotalProd').alignText == 0 ? 'left' : getValue('TotalProd').alignText == 1 ? 'center' : 'right'
+          }"
+        >
+          <label>{{ orderSelected.amount | number }}</label>
+        </div>
+      </div>
+      <div class="wrap-amount-invoice row" *ngIf="getValue('DiscountInv').isPrint">
+        <div class="col-6" jhiTranslate="easyPos.bill.checkout.discountAmount" *ngIf="getValue('DiscountInv').isPrint">
+          Giảm giá đơn hàng
+        </div>
+        <div
+          class="col-6"
+          [ngStyle]="{
+            fontWeight: getValue('DiscountInv').isBold ? 'bold' : 'normal',
+            fontSize: getValue('DiscountInv').fontSize + 'px',
+            textAlign: getValue('DiscountInv').alignText == 0 ? 'left' : getValue('DiscountInv').alignText == 1 ? 'center' : 'right'
+          }"
+        >
+          <label>{{ orderSelected.discountAmount | number }}</label>
+        </div>
+      </div>
+      <div class="wrap-amount-invoice row" *ngIf="getValue('Total').isPrint">
+        <div class="col-6">Tổng cộng</div>
+        <div
+          class="col-6"
+          [ngStyle]="{
+            fontWeight: getValue('Total').isBold ? 'bold' : 'normal',
+            fontSize: getValue('Total').fontSize + 'px',
+            textAlign: getValue('Total').alignText == 0 ? 'left' : getValue('Total').alignText == 1 ? 'center' : 'right'
+          }"
+        >
+          <label>{{ orderSelected.totalPreTax | number }}</label>
+        </div>
+      </div>
+      <div class="wrap-amount-invoice row" *ngIf="getValue('TotalProd').isPrint">
+        <div class="col-6" jhiTranslate="easyPos.bill.checkout.vatAmount">Tổng tiền thuế</div>
+        <div
+          class="col-6"
+          [ngStyle]="{
+            fontWeight: getValue('TotalVatAmount').isBold ? 'bold' : 'normal',
+            fontSize: getValue('TotalVatAmount').fontSize + 'px',
+            textAlign: getValue('TotalVatAmount').alignText == 0 ? 'left' : getValue('TotalVatAmount').alignText == 1 ? 'center' : 'right'
+          }"
+        >
+          <label>{{ orderSelected.vatAmount | number }}</label>
+        </div>
+      </div>
+      <div class="wrap-amount-invoice row" *ngIf="getValue('TotalProd').isPrint">
+        <div class="col-6" jhiTranslate="easyPos.bill.checkout.customerMustPay">Khách phải trả</div>
+        <div
+          class="col-6"
+          [ngStyle]="{
+            fontWeight: getValue('TotalAmount').isBold ? 'bold' : 'normal',
+            fontSize: getValue('TotalAmount').fontSize + 'px',
+            textAlign: getValue('TotalAmount').alignText == 0 ? 'left' : getValue('TotalAmount').alignText == 1 ? 'center' : 'right'
+          }"
+        >
+          <label>{{ orderSelected.totalAmount | number }}</label>
+        </div>
+      </div>
+      <div class="wrap-amount-invoice row" *ngIf="getValue('CusAmount').isPrint">
+        <div class="col-6" jhiTranslate="easyPos.bill.checkout.customerPay">Khách trả</div>
+        <div
+          class="col-6"
+          [ngStyle]="{
+            fontWeight: getValue('CusAmount').isBold ? 'bold' : 'normal',
+            fontSize: getValue('CusAmount').fontSize + 'px',
+            textAlign: getValue('CusAmount').alignText == 0 ? 'left' : getValue('CusAmount').alignText == 1 ? 'center' : 'right'
+          }"
+        >
+          <label>{{ orderSelected.payment.amount | number }}</label>
+        </div>
+      </div>
+      <div *ngIf="getValue('Refund').isPrint" class="wrap-amount-invoice row">
+        <div class="col-6" jhiTranslate="easyPos.bill.checkout.moneyRefund">Tiền thừa</div>
+        <div
+          class="col-6"
+          [ngStyle]="{
+            fontWeight: getValue('Refund').isBold ? 'bold' : 'normal',
+            fontSize: getValue('Refund').fontSize + 'px',
+            textAlign: getValue('Refund').alignText == 0 ? 'left' : getValue('Refund').alignText == 1 ? 'center' : 'right'
+          }"
+        >
+          <label>{{ orderSelected.payment.refund | number }}</label>
+        </div>
+      </div>
+      <div *ngIf="getValue('Refund').isPrint" class="wrap-amount-invoice row">
+        <div class="col-6" jhiTranslate="easyPos.bill.checkout.moneyDebt">Dư nợ</div>
+        <div class="col-6">{{ orderSelected.payment.debt | number }}</div>
+
+        <!-- <div
+                [ngStyle]="{
+                  fontWeight: getValue('TaxAuthorityCode').isBold ? 'bold' : 'normal',
+                  fontSize: getValue('TaxAuthorityCode').fontSize + 'px',
+                  textAlign: getValue('TaxAuthorityCode').alignText == 0 ? 'left' : getValue('TaxAuthorityCode').alignText == 1 ? 'center' : 'right'
+                }"
+              >
+                <label>{{orderSelected.customerName}}</label>
+              </div>
+            </div> -->
+      </div>
+    </div>
+    <div class="footer">
+      <div class="head-footer">
+        <div
+          [ngStyle]="{
+            fontWeight: getValue('PaymentMethod').isBold ? 'bold' : 'normal',
+            fontSize: getValue('PaymentMethod').fontSize + 'px',
+            textAlign: getValue('PaymentMethod').alignText == 0 ? 'left' : getValue('PaymentMethod').alignText == 1 ? 'center' : 'right'
+          }"
+        >
+          <label
+            >Thanh toán <span class="paymentMethod">{{ orderSelected.payment.paymentMethod }}</span></label
+          >
+        </div>
+        <div
+          [ngStyle]="{
+            fontWeight: getValue('Footer').isBold ? 'bold' : 'normal',
+            fontSize: getValue('Footer').fontSize + 'px',
+            textAlign: getValue('Footer').alignText == 0 ? 'left' : getValue('Footer').alignText == 1 ? 'center' : 'right'
+          }"
+        >
+          <label jhiTranslate="easyPos.bill.info.thankCustomer">CẢM ƠN QUÝ KHÁCH</label>
+        </div>
+      </div>
+      <div
+        [ngStyle]="{
+          fontWeight: getValue('Fkey').isBold ? 'bold' : 'normal',
+          fontSize: getValue('Fkey').fontSize + 'px',
+          textAlign: getValue('Fkey').alignText == 0 ? 'left' : getValue('Fkey').alignText == 1 ? 'center' : 'right'
+        }"
+      >
+        <label jhiTranslate="easyPos.bill.info.qr">Mã QR tra cứu</label>
+      </div>
+      <div
+        [ngStyle]="{
+          fontWeight: getValue('QrSearch').isBold ? 'bold' : 'normal',
+          fontSize: getValue('QrSearch').fontSize + 'px',
+          textAlign: getValue('QrSearch').alignText == 0 ? 'left' : getValue('QrSearch').alignText == 1 ? 'center' : 'right'
+        }"
+      >
+        <img class="qrcode" [src]="urlQR || '/assets/img/pos/qrcode.PNG'" alt="" />
+      </div>
+      <div jhiTranslate="easyPos.bill.info.searchInvoice">Tra cứu hóa đơn tại</div>
+      <div
+        [ngStyle]="{
+          fontWeight: getValue('PortalLink').isBold ? 'bold' : 'normal',
+          fontSize: getValue('PortalLink').fontSize + 'px',
+          textAlign: getValue('PortalLink').alignText == 0 ? 'left' : getValue('PortalLink').alignText == 1 ? 'center' : 'right'
+        }"
+      >
+        <label>{{ getValue('PortalLink').content || '0123456789hd.softdreams.vn' }}</label>
+      </div>
+      <div
+        *ngIf="getValue('Description').isPrint"
+        [ngStyle]="{
+          fontWeight: getValue('Description').isBold ? 'bold' : 'normal',
+          fontSize: getValue('Description').fontSize + 'px',
+          textAlign: getValue('Description').alignText == 0 ? 'left' : getValue('Description').alignText == 1 ? 'center' : 'right'
+        }"
+      >
+        <label style="padding-top: 1em">{{ orderSelected.description ? orderSelected.description : '' }}</label>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer" *ngIf="!statusPrint" [hidden]="isHide">
+  <button class="save-button-dialog" (click)="printInvoid()" href="javascript:;">
+    <i class="fa-solid fa-print"></i>
+    <span jhiTranslate="easyPos.bill.action.printInvoice">In hóa đơn</span>
+  </button>
+  <button class="exit-button-dialog" data-bs-dismiss="modal" (click)="closeModal()">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.cancel">Hủy</span>
+  </button>
+</div>

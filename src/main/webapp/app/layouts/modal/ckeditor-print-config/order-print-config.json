@@ -1,0 +1,221 @@
+{
+  "order-print-config": [
+    {
+      "variable": "{Ten_cua_hang}",
+      "columnName": "companyName",
+      "tableName": "",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{So_dien_thoai}",
+      "columnName": "phoneNumber",
+      "tableName": "",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{Dia_chi_cua_hang}",
+      "columnName": "address",
+      "tableName": "",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{Tieu_de}",
+      "columnName": "title",
+      "tableName": "",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{Ma_don}",
+      "columnName": "billCode",
+      "tableName": "",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{Thoi_gian_in}",
+      "columnName": "createdDate",
+      "tableName": "",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{Ma_co_quan_thue}",
+      "columnName": "taxAuthorityCode",
+      "tableName": "",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{Ten_khach_hang}",
+      "columnName": "customerName",
+      "tableName": "",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{Ten_san_pham}",
+      "columnName": "productName",
+      "tableName": "billProducts",
+      "isTable": true,
+      "isTopping": false
+    },
+    {
+      "variable": "{Gia_san_pham}",
+      "columnName": "unitPrice",
+      "tableName": "billProducts",
+      "isTable": true,
+      "isTopping": false
+    },
+    {
+      "variable": "{So_luong}",
+      "columnName": "quantity",
+      "tableName": "billProducts",
+      "isTable": true,
+      "isTopping": false
+    },
+    {
+      "variable": "{Thanh_tien}",
+      "columnName": "totalAmount",
+      "tableName": "billProducts",
+      "isTable": true,
+      "isTopping": false
+    },
+    {
+      "variable": "{Giam_gia_san_Pham}",
+      "columnName": "discountAmount",
+      "tableName": "billProducts",
+      "isTable": true,
+      "isTopping": false
+    },
+    {
+      "variable": "{San_pham_ban_kem}",
+      "columnName": "productName",
+      "tableName": "topping",
+      "isTable": true,
+      "isTopping": true
+    },
+    {
+      "variable": "{Tong_tien_ban_kem}",
+      "columnName": "totalAmount",
+      "tableName": "topping",
+      "isTable": true,
+      "isTopping": true
+    },
+    {
+      "variable": "{Thue_suat}",
+      "columnName": "vatRate",
+      "tableName": "billProducts",
+      "isTable": true,
+      "isTopping": false
+    },
+    {
+      "variable": "{Tong_tien_thue_suat}",
+      "columnName": "displayVatAmount",
+      "tableName": "billProducts",
+      "isTable": true,
+      "isTopping": false
+    },
+    {
+      "variable": "{Tong_tien_san_pham}",
+      "columnName": "displayAmount",
+      "tableName": "billProducts",
+      "isTable": true,
+      "isTopping": false
+    },
+    {
+      "variable": "{Tam_tinh}",
+      "columnName": "amount",
+      "tableName": "",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{Giam_gia}",
+      "columnName": "discountAmount",
+      "tableName": "",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{Tong_cong}",
+      "columnName": "totalPreTax",
+      "tableName": "",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{Tong_tien_thue}",
+      "columnName": "vatAmount",
+      "tableName": "",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{Giam_tru_thue}",
+      "columnName": "discountVatAmount",
+      "tableName": "",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{Khach_phai_tra}",
+      "columnName": "totalAmount",
+      "tableName": "",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{Khach_tra}",
+      "columnName": "amount",
+      "tableName": "billPayment",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{Tien_thua}",
+      "columnName": "refund",
+      "tableName": "billPayment",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{Phuong_thuc_thanh_toan}",
+      "columnName": "paymentMethod",
+      "tableName": "billPayment",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{Ma_tra_cuu}",
+      "columnName": "lookupCode",
+      "tableName": "",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{Link_tra_cuu}",
+      "columnName": "lookupCode",
+      "tableName": "",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{qrCode}",
+      "columnName": "qrCode",
+      "tableName": "",
+      "isTable": false,
+      "isTopping": false
+    },
+    {
+      "variable": "{Mo_ta}",
+      "columnName": "description",
+      "tableName": "",
+      "isTable": false,
+      "isTopping": false
+    }
+  ]
+}

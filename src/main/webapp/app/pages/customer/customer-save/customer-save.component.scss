@@ -1,0 +1,236 @@
+$color-default: #0074bd;
+$label-color: #9ba3b1;
+$text-color: #58647a;
+
+.detail-row {
+  width: 100%;
+  border-radius: 5%;
+}
+
+.btn-space-right {
+  margin-left: 10px;
+}
+
+.row-flex {
+  flex-wrap: wrap;
+}
+
+.form-group {
+  //display: flex;
+  padding: 20px 0;
+}
+.form-control:disabled {
+  background-color: #ffffff;
+  opacity: 1;
+}
+.input-value {
+  outline: none;
+  width: 100%;
+  &:hover {
+    background-color: #e8e8e8;
+    border-opacity: 0.4;
+  }
+}
+.title-info {
+  color: #909090;
+  font-size: 13px;
+  font-weight: 500;
+}
+.my-form-label {
+  word-wrap: break-word;
+  font-weight: 500;
+}
+textarea {
+  resize: none;
+}
+//.form-group input {
+//  font-size: 1rem;
+//  padding: 0 0;
+//  width: 100%;
+//  word-wrap: break-word;
+//  //margin-left: auto;
+//  //border-top: none;
+//  //border-right: none;
+//  //border-left: none;
+//  border-radius: 0;
+//  //border-bottom: 1px solid rgb(175, 172, 172);
+//}
+
+//.form-group input:focus {
+//  outline: none;
+//  border-bottom: 2px solid #71a4f7;
+//  box-shadow: none;
+//  //box-shadow: 0 0 0 0.25rem rgba(66, 133, 244, 0.25) !important;
+//}
+
+.editting-head {
+  background-color: rgb(203, 236, 181) !important;
+  border-top: 1px solid green;
+  border-left: 1px solid green;
+  border-right: 1px solid green;
+}
+
+.editting-body {
+  background-color: rgb(255, 255, 255) !important;
+  border-left: 1px solid green;
+  border-right: 1px solid green;
+  border-bottom: 1px solid green;
+}
+.row-1 {
+  margin-bottom: 5px;
+  margin-left: 5px;
+  margin-top: 5px;
+}
+.divbtn-editting-zone {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 30px;
+}
+
+.ng-invalid:not(form).ng-touched {
+  border-color: red !important; /* green */
+}
+
+.alert-user-input {
+  font-size: calc(1em - 2px);
+  color: red;
+}
+.select-value {
+  &:hover {
+    background-color: #e8e8e8;
+    border-opacity: 0.4;
+  }
+}
+.col-left > div {
+  margin-bottom: 5px;
+}
+.col-right > div {
+  margin-bottom: 5px;
+}
+.my-form-label {
+  color: #58647a;
+  font-weight: 700;
+  font-size: 16px;
+}
+.col-in-row {
+  display: flex;
+  padding-inline: 5px;
+}
+
+.col-left {
+  padding-right: 5px;
+}
+.col-right {
+  padding-left: 5px;
+}
+
+#alert-name,
+#alert-email {
+  top: 54%;
+  right: -4%;
+}
+
+.user-input-text-div {
+  display: flex;
+  padding: 0;
+}
+.position-relative {
+  flex-grow: 1;
+}
+.ep-btn-custom {
+  margin-left: 6px;
+}
+@media only screen and (max-width: 995px) {
+  .none-pl-when-small {
+    padding-left: 10px;
+    padding-right: 0;
+  }
+  .row-flex {
+    display: flex;
+  }
+  .my-form-label {
+    width: 100%;
+  }
+  .col-md-6 {
+    width: 100%;
+  }
+  .none-pl-when-small {
+    padding-left: 0 !important;
+    padding-right: 10px;
+  }
+  .user-input-text-div {
+    display: block !important;
+  }
+  .ep-btn-custom {
+    margin-left: 0px !important;
+  }
+  .modal-footer {
+    padding-right: 26px !important;
+  }
+}
+.modal-body {
+  overflow: auto;
+  max-height: 80vh !important;
+}
+.modal-footer {
+  border: none !important;
+  height: 69px;
+  padding-right: 20px;
+  margin-top: -10px;
+}
+.btn-close {
+  color: #ffffff;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  font-size: 16px;
+}
+.btn-close {
+  i {
+    margin: 0 !important;
+    font-size: 20px;
+  }
+}
+.modal-header {
+  background-color: #0074bd;
+  border-radius: 4px 4px 0px 0px;
+  height: 56px;
+  max-height: 56px !important;
+}
+
+.modal-body {
+  .ng-select {
+    width: 100% !important;
+  }
+
+  .custom-sub-panel {
+    ul li a.nav-link {
+      font-size: 16px !important;
+      color: $label-color;
+
+      &:hover {
+        color: $color-default !important;
+      }
+    }
+
+    ul li a.active {
+      font-size: 16px !important;
+      border-bottom: 2px solid $color-default !important;
+    }
+  }
+
+  .gender {
+    label {
+      color: #58647a;
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+}
+
+.user-input-text-div .save-button-dialog {
+  height: 36px !important;
+  margin-left: 8px;
+}

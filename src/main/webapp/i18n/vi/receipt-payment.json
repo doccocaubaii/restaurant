@@ -1,0 +1,63 @@
+{
+  "easyPos": {
+    "receipt": {
+      "title": "Thu chi",
+      "receipt": "Phiếu Thu",
+      "payment": "Phiếu Chi",
+      "cash": "Tiền mặt",
+      "notFix": "Giao dịch này không được sửa",
+      "info": {
+        "totalAmount": "Tổng",
+        "search": "Tìm kiếm"
+      },
+      "search": {
+        "fromDate": "Từ Ngày",
+        "toDate": "Đến Ngày",
+        "keyword": "Từ Khóa",
+        "customerPlaceHolder": "Tìm kiếm khách hàng",
+        "businessPlaceHolder": "Chọn phân loại",
+        "placeHolder": "Tìm kiếm giao dịch "
+      },
+      "detail": {
+        "date": "Ngày",
+        "customer": "Khách Hàng",
+        "typeDesc": "Mô Tả",
+        "note": "Ghi Chú",
+        "no": "Mã giao dịch",
+        "num": "#",
+        "amount": "Số Tiền",
+        "action": "Thao Tác"
+      },
+      "update": {
+        "no": "Mã giao dịch",
+        "title-rec": "Tạo khoản thu",
+        "title-pay": "Tạo khoản chi",
+        "title-update": "Cập nhật giao dịch",
+        "customer": "Chọn khách hàng",
+        "business": "Phân loại",
+        "fund": "Mã chứng từ",
+        "rec": "Tổng thu",
+        "pay": "Tổng chi",
+        "date": "Chọn thời gian giao dịch",
+        "type": "Loại chứng từ",
+        "amount": "Số tiền",
+        "desc": "Mô tả",
+        "note": "Ghi chú",
+        "btn": "Cập nhật"
+      },
+      "create": {
+        "title": "Tạo chứng từ",
+        "btn": "Tạo",
+        "title2": "Tạo phân loại nghiệp vụ",
+        "name": "Tên nghiệp vụ"
+      },
+      "delete": {
+        "title": "Xóa giao dịch",
+        "text1": "Bạn đã chọn ",
+        "text2": " giao dịch, vui lòng nhập ",
+        "text4": " để xác nhận xóa",
+        "text3": "Bạn có chắc chắn muốn xóa giao dịch này không?"
+      }
+    }
+  }
+}

@@ -1,0 +1,79 @@
+.discount {
+  color: var(--bs-primary);
+  cursor: pointer;
+}
+
+.ng-select-input {
+  padding: 8px 10px !important;
+}
+
+.wrap-discount-tax {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.discount-amount {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.modal-body {
+  flex: 0 0 auto !important;
+  padding: 0.3rem !important;
+}
+
+.btn-close {
+  background: none !important;
+}
+
+.wrap-input {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px;
+}
+
+.form-control:hover {
+  background-color: var(--app-component-disabled-bg) !important;
+}
+
+.form-control:disabled {
+  background-color: transparent !important;
+}
+
+.modal-header {
+  height: 56px !important;
+  background-color: #0074bd !important;
+
+  .modal-title {
+    color: #fff;
+  }
+
+  .btn-close {
+    color: #fff;
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    font-size: 16px;
+  }
+}
+
+.title-info {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #58647a;
+}
+
+.input-text-custom input {
+  color: #004671 !important;
+  font-size: 15px !important;
+}

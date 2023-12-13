@@ -1,0 +1,69 @@
+<script src="company-modal-update.component.ts"></script>
+<div class="modal-header">
+  <div class="group-header">
+    <h5 class="modal-title" jhiTranslate="easyPos.company.info.updateCompany"></h5>
+    <button type="button" class="btn-close" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    </button>
+  </div>
+</div>
+<div class="border-header"></div>
+<div class="modal-body body-category row">
+  <div class="pos-infor mt-0 input-text-custom col-xl-6 col-lg-12">
+    <label class="my-form-label title-info">
+      <span jhiTranslate="easyPos.company.info.companyName"></span> <span style="color: red; margin: 0px">*</span></label
+    >
+    <input
+      class="option-title input-value form-control"
+      placeholder="Nhập tên cửa hàng, chi nhánh"
+      [(ngModel)]="companySelected.name"
+      (keyup.enter)="onSaveUpdateCompany()"
+    />
+  </div>
+
+  <div class="pos-infor mt-0 input-text-custom col-xl-6 col-lg-12">
+    <label class="my-form-label title-info"> <span jhiTranslate="easyPos.company.info.companyPhone"></span></label>
+    <input
+      class="option-title input-value form-control"
+      placeholder="Nhập số điện thoại"
+      jhiStringNumberOnly
+      maxlength="14"
+      minlength="10"
+      [(ngModel)]="companySelected.phone"
+      (keyup.enter)="onSaveUpdateCompany()"
+    />
+  </div>
+
+  <div class="pos-infor mt-0 input-text-custom">
+    <label class="my-form-label title-info"> <span jhiTranslate="easyPos.company.info.companyAddress"></span></label>
+    <input
+      class="option-title input-value form-control"
+      placeholder="Nhập địa chỉ"
+      [(ngModel)]="companySelected.address"
+      (keyup.enter)="onSaveUpdateCompany()"
+    />
+  </div>
+
+  <div class="pos-infor mt-0 input-text-custom">
+    <label class="my-form-label title-info"> <span jhiTranslate="easyPos.company.info.companyDescription"></span></label>
+    <input
+      placeholder="Nhập mô tả"
+      class="option-title input-value form-control"
+      id="description"
+      [(ngModel)]="companySelected.description"
+      (keyup.enter)="onSaveUpdateCompany()"
+    />
+  </div>
+</div>
+<div class="modal-footer d-flex">
+  <div class="btn-row col-md-12">
+    <button type="button" class="exit-button-dialog me-2 mb-1" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <span jhiTranslate="global.button.cancel"></span>
+    </button>
+    <button type="button" class="save-button-dialog me-1 mb-1" (click)="onSaveUpdateCompany()" [disabled]="loading.isLoading">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span  jhiTranslate="global.button.save"></span>
+    </button>
+  </div>
+</div>

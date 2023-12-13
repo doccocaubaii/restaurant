@@ -1,0 +1,403 @@
+<div class="modal-header header-product" (click)="showInfoTemplate()">
+  <h3 class="modal-title text-bold" id="exampleModalPopoversLabel">Cấu hình mẫu in</h3>
+  <div class="icon-info ms-3" (click)="showInfoTemplate($event)"><i class="fa-solid fa-info"></i></div>
+  <div *ngIf="isShowInfo" (click)="$event.stopPropagation(); isShowInfo = true" class="form-info">
+    <div class="label-info">
+      Danh sách token mẫu in
+      <div class="icon-info-sm ms-2"><i class="fa-solid fa-info"></i></div>
+    </div>
+    <div style="display: flex">
+      <div style="width: 50%" class="pe-2">
+        <div class="item-info">
+          <span>{{ '{Ten_cua_hang}' }}:</span>
+          <span>Tên cửa hàng</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{So_dien_thoai}' }}:</span>
+          <span>Số điện thoại</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Dia_chi_cua_hang}' }}:</span>
+          <span>Địa chỉ cửa hàng</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Tieu_de}' }}:</span>
+          <span>Tiêu đề</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Ma_don}' }}:</span>
+          <span>Mã đơn</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Ma_co_quan_thue}' }}:</span>
+          <span>Mã cơ quan thuế</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Ten_khach_hang}' }}:</span>
+          <span>Tên khách hàng</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Khu_vuc}' }}:</span>
+          <span>Khu vực - Bàn</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Ten_san_pham}' }}:</span>
+          <span>Tên sản phẩm</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Gia_san_pham}' }}:</span>
+          <span>Giá sản phẩm</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{So_luong}' }}:</span>
+          <span>Số lượng</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Don_vi}' }}:</span>
+          <span>Đơn vị</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Thanh_tien}' }}:</span>
+          <span>Thành tiền</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Giam_gia_san_pham}' }}:</span>
+          <span>Giảm giá sản phẩm</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{San_pham_ban_kem}' }}:</span>
+          <span>Sản phẩm bán kèm</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Gia_topping}' }}:</span>
+          <span>Giá bán kèm</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{So_luong_topping}' }}:</span>
+          <span>Số lượng bán kèm</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Don_vi_topping}' }}:</span>
+          <span>Đơn vị bán kèm</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Tong_tien_ban_kem}' }}:</span>
+          <span>Tổng tiền bán kèm</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Thue_suat}' }}:</span>
+          <span>Thuế suất</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Tong_tien_thue_suat}' }}:</span>
+          <span>Tổng tiền thuế suất</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Thue_giam_tru}' }}:</span>
+          <span>Thuế giảm trừ</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Giam_tru_thue_sp}' }}:</span>
+          <span>Giảm trừ thuế sản phẩm</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Tong_tien_san_pham}' }}:</span>
+          <span>Tổng tiền sản phẩm</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Tam_tinh}' }}:</span>
+          <span>Tạm tính</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Giam_gia}' }}:</span>
+          <span>Giảm giá</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Tong_cong}' }}:</span>
+          <span>Tổng tiền trước thuế</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Tong_tien_thue}' }}:</span>
+          <span>Tổng tiền thuế</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Giam_tru_thue}' }}:</span>
+          <span>Giảm trừ thuế</span>
+        </div>
+      </div>
+      <div style="width: 50%" class="ps-2">
+        <div class="item-info">
+          <span>{{ '{Thue_suat_10}' }}:</span>
+          <span>Thuế suất 10%</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Thue_suat_8}' }}:</span>
+          <span>Thuế suất 8%</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Sv_charge_5}' }}:</span>
+          <span>Phí dịch vụ 5%</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Khach_phai_tra}' }}:</span>
+          <span>Khách phải trả</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Khach_tra}' }}:</span>
+          <span>Khách trả</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Tien_thua}' }}:</span>
+          <span>Tiền thừa</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Phuong_thuc_thanh_toan}' }}:</span>
+          <span>Phương thức thanh toán</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Ma_tra_cuu}' }}:</span>
+          <span>Mã tra cứu</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Link_tra_cuu}' }}:</span>
+          <span>Link tra cứu</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Mo_ta}' }}:</span>
+          <span>Mô tả</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Thoi_gian_in}' }}:</span>
+          <span>Thời gian in (dd/mm/yyyy HH:mm:ss)</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Thoi_gian_in_Date_NTN}' }}:</span>
+          <span>Thời gian in (Ngày...tháng...năm)</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Thoi_gian_in_Date_N/T/N}' }}:</span>
+          <span>Thời gian in (dd/mm/yyyy)</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Thoi_gian_in_Date_N-T-N}' }}:</span>
+          <span>Thời gian in (dd-mm-yyyy)</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{stt}' }}:</span>
+          <span>Số thứ tự (Sản phẩm chính, bán kèm)</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Ma_san_pham}' }}:</span>
+          <span>Mã sản phẩm</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Ma_ban_kem}' }}:</span>
+          <span>Mã bán kèm</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Ma_so_thue_cua_hang}' }}:</span>
+          <span>Mã số thuế cửa hàng</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Ma_khach_hang}' }}:</span>
+          <span>Mã khách hàng</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Dia_chi_khach_hang}' }}:</span>
+          <span>Địa chỉ khách hàng</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Dien_thoai_khach_hang}' }}:</span>
+          <span>Số điện thoại khách hàng</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Ma_so_thue_khach_hang}' }}:</span>
+          <span>Mã số thuế khách hàng</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Can_cuoc_cong_dan}' }}:</span>
+          <span>CCCD Khách hàng</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Ten_nguoi_mua}' }}:</span>
+          <span>Tên người mua</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Mau_so}' }}:</span>
+          <span>Ký hiệu mẫu số hóa đơn</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{So_hoa_don}' }}:</span>
+          <span>Số hóa đơn</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Ten_nhan_vien}' }}:</span>
+          <span>Tên nhân viên</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{Ma_nhan_vien}' }}:</span>
+          <span>Mã nhân viên</span>
+        </div>
+        <div class="item-info">
+          <span>{{ '{So_dien_thoai_nhan_vien}' }}:</span>
+          <span>Số điện thoại nhân viên</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button type="button" class="btn-close" (click)="closeModal()">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+<div class="modal-body" [ngClass]="isShowInfo ? 'opacity-03' : ''" (click)="showInfoTemplate()">
+  <div class="col-12">
+    <div class="custom-hr-print">
+      <ul class="nav nav-pills">
+        <li class="nav-item" (click)="getConfigByType(0)">
+          <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link" [class.active]="type === 0">
+            <span class="d-sm-none">Tạm tính</span>
+            <span class="d-sm-block d-none">Tạm tính</span>
+          </a>
+        </li>
+        <li class="nav-item" (click)="getConfigByType(1)">
+          <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link" [class.active]="type === 1">
+            <span class="d-sm-none">Thanh toán</span>
+            <span class="d-sm-block d-none">Thanh toán</span>
+          </a>
+        </li>
+        <li class="nav-item" (click)="getConfigByType(2)">
+          <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link" [class.active]="type === 2">
+            <span class="d-sm-none">Chế biến</span>
+            <span class="d-sm-block d-none">Chế biến</span>
+          </a>
+        </li>
+        <li class="nav-item" (click)="getConfigByType(3)">
+          <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link" [class.active]="type === 3">
+            <span class="d-sm-none">Hủy món</span>
+            <span class="d-sm-block d-none">Hủy món</span>
+          </a>
+        </li>
+        <li class="nav-item" (click)="getConfigByType(4)">
+          <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link" [class.active]="type === 4">
+            <span class="d-sm-none">Cung ứng</span>
+            <span class="d-sm-block d-none">Cung ứng</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="body-print row">
+    <div class="panel panel-default p-15px from-content col-6">
+      <div class="header-template">
+        <div class="group-info-template">
+          <div class="form-page-size" *ngIf="checkView">
+            <label class="form-label me-2 mb-0">Mẫu in</label>
+            <div class="form-select-size">
+              <ng-select
+                [items]="listTemplateByType"
+                class="select-value select-size"
+                bindLabel="name"
+                bindValue="id"
+                [(ngModel)]="idTemplate"
+                (ngModelChange)="changeTemplate()"
+              >
+              </ng-select>
+            </div>
+          </div>
+          <div class="reset-data" *ngIf="checkView">
+            <button type="button" class="edit-button-dialog me-3" (click)="updateTemplate()" *jhiHasAnyAuthority="authorUPDATE">
+              <i class="fa-solid fa-pen-to-square"></i>
+              <span>Sửa mẫu in</span>
+            </button>
+          </div>
+          <div class="reset-data" *ngIf="checkView">
+            <button type="button" class="save-button-dialog me-3" (click)="createTemplate()" *jhiHasAnyAuthority="authorADD">
+              <i class="fa-solid fa-plus"></i>
+              <span>Thêm mẫu in</span>
+            </button>
+          </div>
+          <div class="reset-data" *ngIf="checkView">
+            <button
+              class="btn-delete"
+              (click)="deleteTemplate()"
+              [class.disabled-btn]="listTemplateByType.length < 2"
+              [disabled]="listTemplateByType.length < 2"
+              *jhiHasAnyAuthority="authorDELETE"
+            >
+              <fa-icon icon="trash-can" class="me-2"></fa-icon>
+              <span>Xóa mẫu in</span>
+            </button>
+          </div>
+          <div class="form-page-size" *ngIf="!checkView">
+            <div class="convert-unit-infor input-text-custom">
+              <label class="form-label me-2 mb-0">Tên mẫu in</label>
+              <input class="form-control" placeholder="Nhập tên mẫu in" type="text" [(ngModel)]="data.name" />
+            </div>
+          </div>
+          <div class="form-page-size" *ngIf="!checkView">
+            <label class="form-label me-3 mb-0">Khổ in</label>
+            <div class="form-select-size">
+              <ng-select
+                [items]="sizes"
+                class="select-value select-size"
+                bindLabel="name"
+                bindValue="name"
+                placeholder="Tất cả"
+                [(ngModel)]="data.pageSize"
+              >
+              </ng-select>
+            </div>
+          </div>
+        </div>
+        <div class="reset-data" *ngIf="!checkView">
+          <button type="button" class="save-button-dialog me-3" (click)="resetData()">
+            <span [innerHTML]="ICON_RESET | safeHtml"></span>
+            <span>Lấy lại dữ liệu</span>
+          </button>
+
+          <div class="cancel-edit" (click)="cancel()">
+            <span [innerHTML]="ICON_CANCEL_WHITE | safeHtml"></span>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between col-md-12">
+        <div class="raw-content" *ngIf="checkView">
+          <div class="col-md-12" ngNonBindable [innerHTML]="data.content | safeHtml"></div>
+        </div>
+        <tinymce
+          class="cke-content"
+          [(ngModel)]="data.content"
+          [config]="config"
+          [class.view]="!checkView"
+          [class.hide]="checkView"
+          (ngModelChange)="updateContent()"
+        ></tinymce>
+        <div style="border-right: 1px solid #cccccc"></div>
+        <div style="width: 50%">
+          <div class="title-review">
+            <span>Xem trước mẫu in</span>
+          </div>
+          <div class="data-content" ngNonBindable [innerHTML]="reviewContent | safeHtml"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <div class="btn-row col-md-12">
+    <button type="button" class="exit-button-dialog me-2" (click)="closeModal()">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <label>Thoát</label>
+    </button>
+    <button
+      type="button"
+      class="save-button-dialog"
+      [class.disabled-btn]="disabledButton"
+      [disabled]="disabledButton"
+      (click)="savePrintConfig()"
+    >
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      Lưu cấu hình
+    </button>
+  </div>
+</div>

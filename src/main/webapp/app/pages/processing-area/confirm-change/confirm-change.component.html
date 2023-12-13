@@ -1,0 +1,44 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="exampleModalLongTitle">Thông báo</h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="dismiss($event)"></button>
+</div>
+<div class="modal-body" *ngIf="!checkDeleteMulti">{{ title }}<br />{{ title2 }}</div>
+<div class="modal-body" *ngIf="checkDeleteMulti">
+  <span>Bạn đã chọn</span>
+  <span class="text-bold">{{ quantity }} {{ type }}</span>
+  <span style="margin-left: -2px">, vui lòng nhập</span>
+  <span class="text-bold"> {{ quantity }} </span>
+  <span>để xóa!</span>
+
+  <div class="input-text-custom mt-8px" *ngIf="checkDeleteMulti">
+    <input
+      class="option-title input-value form-control"
+      placeholder=""
+      type="text"
+      [(ngModel)]="quantityInput"
+      (keyup.enter)="onEnterQuantity()"
+      jhiCurrencyNumber
+    />
+  </div>
+</div>
+<div class="modal-footer">
+  <div class="btn-row col-md-12" style="margin: 0; justify-content: end; display: flex">
+    <button type="button" class="exit-button-dialog me-2 mb-1" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <span>Huỷ</span>
+    </button>
+
+    <!--    <button (click)="onDeteleConvertUnit()" [disabled]="checkDeleteMulti && quantityInput !== quantity ? true : false" class="btn btn-sm btn-save mb-1">-->
+    <!--      <span>Có</span>-->
+    <!--    </button>-->
+    <button
+      type="button"
+      class="save-button-dialog"
+      (click)="onDeteleConvertUnit()"
+      [disabled]="checkDeleteMulti && quantityInput !== quantity ? true : false"
+    >
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span>Xác nhận</span>
+    </button>
+  </div>
+</div>

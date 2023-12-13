@@ -1,0 +1,39 @@
+<div class="modal-header">
+  <h4 class="modal-title" jhiTranslate="easyPos.bill.action.typeVatRate">Nhập thuế suất (%)</h4>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true" (click)="closeModal()">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+<div class="modal-body">
+  <ng-container *ngIf="productName; else order">
+    <label class="title-info" jhiTranslate="easyPos.product.info.nameParam" [translateValues]="{ productName: productName }"
+      >Sản phẩm: {{ productName }}</label
+    >
+  </ng-container>
+  <ng-template #order>
+    <label class="title-info" jhiTranslate="easyPos.bill.info.name">Đơn hàng</label>
+  </ng-template>
+</div>
+<div class="modal-body">
+  <div class="item-basic-infor input-text-custom input">
+    <label class="title-info" jhiTranslate="easyPos.bill.action.typeVatRate">Nhập thuế suất (%)</label>
+    <input
+      #focus
+      class="input-value form-control"
+      type="number"
+      [(ngModel)]="vatRate"
+      (keypress)="checkVatRate($event)"
+      (keydown)="preventIncrement($event)"
+    />
+  </div>
+</div>
+<div class="modal-footer">
+  <button href="javascript:;" class="exit-button-dialog" data-bs-dismiss="modal" (click)="closeModal()">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.cancel">Hủy</span>
+  </button>
+  <button (click)="saveVatRateProduct()" href="javascript:;" class="save-button-dialog">
+    <span [innerHTML]="ICON_CONFIRM | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.confirm">Xác nhận</span>
+  </button>
+</div>

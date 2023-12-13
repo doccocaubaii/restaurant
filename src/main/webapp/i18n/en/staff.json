@@ -1,0 +1,26 @@
+{
+  "easyPos": {
+    "staff": {
+      "button": {
+        "add": "Thêm nhân viên",
+        "delete": "Xoá nhân viên"
+      },
+      "title": "Danh sách nhân viên",
+      "titleCreate": "Thêm nhân viên",
+      "titleUpdate": "Cập nhật nhân viên",
+      "action": {},
+      "info": {
+        "order": "STT",
+        "nameStaff": "Tên nhân viên ",
+        "position": "Chức vụ ",
+        "phoneNumber": "Điện thoại ",
+        "email": "Email"
+      },
+      "error": {
+        "emptyName": "Tên nhân viên không được để trống",
+        "invalidEmail": "Email không hợp lệ",
+        "invalidNumber": "Số điện thoại phải bắt đầu bằng 0 và có 10-14 chữ số"
+      }
+    }
+  }
+}

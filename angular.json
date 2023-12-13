@@ -1,0 +1,135 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "easy-pos-front-end": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "",
+      "sourceRoot": "src/main/webapp",
+      "prefix": "jhi",
+      "architect": {
+        "build": {
+          "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+            "customWebpackConfig": {
+              "path": "./webpack/webpack.custom.js"
+            },
+            "outputPath": "target/classes/static/",
+            "index": "src/main/webapp/index.html",
+            "main": "src/main/webapp/main.ts",
+            "polyfills": "src/main/webapp/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "src/main/webapp/content",
+              "src/main/webapp/assets",
+              {
+                "glob": "**/*",
+                "input": "src/main/webapp/content/font/SanFranciscoPro",
+                "output": "/fonts/"
+              }
+            ],
+            "styles": [
+              "src/main/webapp/assets/app.min.css",
+              "src/main/webapp/assets/vendor.min.css",
+              "src/main/webapp/content/scss/global.scss",
+              "src/main/webapp/content/scss/variables.scss",
+              "./node_modules/@fullcalendar/bootstrap/main.css",
+              "./node_modules/@fullcalendar/common/main.css",
+              "./node_modules/@fullcalendar/daygrid/main.css",
+              "./node_modules/@fullcalendar/list/main.css",
+              "./node_modules/@fullcalendar/timegrid/main.css",
+              "node_modules/ngx-toastr/toastr.css",
+              "src/style-print.scss"
+            ],
+            "scripts": [
+              "src/main/webapp/assets/vendor.min.js",
+              "src/main/webapp/assets/app.min.js",
+              "src/main/webapp/assets/highlight.min.js",
+              "src/main/webapp/assets/render.highlight.js",
+              "src/main/webapp/app/config/service/hwcrypto.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "serviceWorker": true,
+              "ngswConfigPath": "ngsw-config.json",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "3mb",
+                  "maximumError": "3mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "3mb",
+                  "maximumError": "3mb"
+                }
+              ]
+            },
+            "development": {
+              "serviceWorker": false,
+              "ngswConfigPath": "ngsw-config.json",
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
+            "serviceWorker": false,
+            "ngswConfigPath": "ngsw-config.json"
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-builders/custom-webpack:dev-server",
+          "options": {
+            "browserTarget": "easy-pos-front-end:build:development",
+            "port": 4200
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "easy-pos-front-end:build:production"
+            },
+            "development": {
+              "browserTarget": "easy-pos-front-end:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular-builders/jest:run",
+          "options": {
+            "configPath": "jest.conf.js"
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "cache": {
+      "enabled": true,
+      "path": "./target/angular/",
+      "environment": "all"
+    },
+    "packageManager": "npm",
+    "analytics": "8f2fadcf-b698-4954-8cde-4b20ecdc6755"
+  }
+}

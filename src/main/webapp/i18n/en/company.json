@@ -1,0 +1,38 @@
+{
+  "easyPos": {
+    "company": {
+      "title": "Danh sách cửa hàng, chi nhánh",
+      "info": {
+        "generalInfo": "Thông tin công ty",
+        "generalInfoComName": "Tên công ty",
+        "generalInfoComTaxCode": "Mã số thuế",
+        "generalInfoComAddress": "Địa chỉ",
+        "type-all": "Tất cả",
+        "type-company": "Khách hàng",
+        "type-branch": "Chi nhánh",
+        "companyNameError": "Vui lòng nhập tên cửa hàng",
+        "companyOwnerError": "Vui lòng chọn công ty",
+        "companyPhoneError": "Số điện thoại không hợp lệ",
+        "message": "Thông báo",
+        "companyName": "Tên cửa hàng, chi nhánh",
+        "companyPhone": "Số điện thoại",
+        "companyAddress": "Địa chỉ",
+        "companyDescription": "Mô tả",
+        "selectCompany": "Chọn công ty",
+        "createCompany": "Thêm cửa hàng",
+        "updateCompany": "Chỉnh sửa thông tin cửa hàng",
+        "table-th": {
+          "comName": "Tên chi nhánh",
+          "comPhone": "Số điện thoại",
+          "comAddress": "Địa chỉ",
+          "comDescription": "Mô tả"
+        }
+      },
+      "action": {
+        "selectCompany": "Chọn công ty",
+        "add": "Thêm cửa hàng",
+        "getInfo": "Lấy dữ liệu"
+      }
+    }
+  }
+}

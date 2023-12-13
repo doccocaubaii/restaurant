@@ -1,0 +1,245 @@
+<div class="modal-header header-product">
+  <h3 class="modal-title text-bold" id="exampleModalPopoversLabel">Bảng kê lợi nhuận sản phẩm</h3>
+  <button type="button" class="btn-close" (click)="dismiss($event)">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+
+<div class="modal-body">
+  <div class="group-item-search">
+    <div class="item-search">
+      <label class="title-info">Kỳ báo cáo</label>
+      <ng-select
+        [items]="periods"
+        class="field-search"
+        bindLabel="name"
+        bindValue="id"
+        placeholder="Chọn kỳ báo cáo"
+        [(ngModel)]="period"
+        (ngModelChange)="updateDates($event)"
+      >
+      </ng-select>
+    </div>
+    <div class="item-search">
+      <label class="title-info">Sắp xếp</label>
+      <ng-select [items]="sortTypes" class="field-search" bindLabel="name" bindValue="id" [(ngModel)]="sortType"> </ng-select>
+    </div>
+  </div>
+  <div class="group-item-search">
+    <div class="input-text-custom item-search">
+      <label class="title-info">Từ ngày</label>
+      <input
+        class="form-control field-search"
+        placeholder="DD/MM/YYYY"
+        name="d2"
+        #c3="ngModel"
+        [maxDate]="utilsService.getFromToMoment(toDate)"
+        [minDate]="utilsService.getFromToMoment(minDate, true)"
+        [(ngModel)]="fromDate"
+        ngbDatepicker
+        #d3="ngbDatepicker"
+        dateFormat
+        (ngModelChange)="changeFromDate($event)"
+        maxlength="10"
+      />
+      <button class="btn form-control btn-datepicker" (click)="d3.toggle()" type="button">
+        <fa-icon [icon]="'calendar-alt'"></fa-icon>
+      </button>
+    </div>
+    <div class="input-text-custom item-search">
+      <label class="title-info">Đến ngày</label>
+      <input
+        class="form-control field-search"
+        placeholder="DD/MM/YYYY"
+        [minDate]="utilsService.getFromToMoment(fromDate, true)"
+        [maxDate]="utilsService.getCurrentDate()"
+        name="d2"
+        #c2="ngModel"
+        [(ngModel)]="toDate"
+        ngbDatepicker
+        #d2="ngbDatepicker"
+        dateFormat
+        (ngModelChange)="changeToDate($event)"
+        maxlength="10"
+      />
+      <button class="btn form-control btn-datepicker" (click)="d2.toggle()" type="button">
+        <fa-icon [icon]="'calendar-alt'"></fa-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="panel-action">
+    <ul class="nav">
+      <li
+        class="nav-action cursor-pointer"
+        [hidden]="paramCheckAll"
+        (click)="
+          paramCheckAll = true;
+          paramCheckAllPage = true;
+          utilsService.checkAll(lstProduct, listSelected, paramCheckAll, this.paramCheckAllPage)
+        "
+      >
+        <a class="nav-link nav-link-action">
+          <input class="custom-control-input" type="checkbox" [checked]="paramCheckAll" />
+          <span class="d-sm-block ms-2">Chọn tất cả</span>
+        </a>
+      </li>
+      <li
+        class="nav-action cursor-pointer"
+        [hidden]="!paramCheckAll"
+        (click)="
+          paramCheckAll = false;
+          paramCheckAllPage = false;
+          utilsService.checkAll(lstProduct, listSelected, paramCheckAll, this.paramCheckAllPage)
+        "
+      >
+        <a class="nav-link nav-link-action">
+          <input class="custom-control-input" type="checkbox" [checked]="paramCheckAll" />
+          <span class="d-sm-block ms-2">Bỏ chọn tất cả</span>
+        </a>
+      </li>
+    </ul>
+    <div class="d-flex justify-content-end align-items-center">
+      <div class="form-page-size">
+        <label
+          class="form-label label-search me-2 mb-0 text-bold"
+          jhiTranslate="global.info.totalParam"
+          [translateValues]="{ count: totalItems || 0 }"
+        ></label>
+        <div class="form-select-size" *ngIf="totalItems > 0">
+          <ng-select
+            [items]="sizes"
+            class="select-value select-size"
+            bindLabel="name"
+            bindValue="id"
+            placeholder="Tất cả"
+            [(ngModel)]="filterProduct.size"
+            (ngModelChange)="getLstProduct()"
+          >
+          </ng-select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-pane fade active show">
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="panel panel-inverse">
+          <div class="table-responsive">
+            <table class="table editing-table">
+              <thead class="table-header-sticky">
+                <tr class="table-custom-header">
+                  <th style="width: 5%">
+                    <div class="custom-checkbox custom-control col-checkbox">
+                      <input
+                        class="custom-control-input"
+                        id="checkAllForPage"
+                        type="checkbox"
+                        [disabled]="paramCheckAll"
+                        [(ngModel)]="paramCheckAllPage"
+                        (change)="checkAllForPage(lstProduct, listSelected, paramCheckAllPage)"
+                      /><label class="custom-control-label" for="checkAllForPage"></label>
+                    </div>
+                  </th>
+                  <th style="width: 8%">STT</th>
+                  <th style="border-right: 1px solid #b0d4eb !important; width: 50%">Tên sản phẩm</th>
+                  <th style="border: 1px solid #b0d4eb">Đơn vị tính</th>
+                </tr>
+              </thead>
+              <tbody class="table-input-search-sticky">
+                <tr class="row-search">
+                  <td></td>
+                  <td></td>
+                  <td class="input-search-table">
+                    <input
+                      name="keywordName"
+                      [(ngModel)]="filterProduct.keywordName"
+                      (ngModelChange)="onSearch()"
+                      class="form-control"
+                      type="search"
+                      placeholder="Tìm kiếm tên sản phẩm"
+                      autocomplete="off"
+                    />
+                    <div class="icon-search-table">
+                      <span [innerHTML]="ICON_SEARCH_SM | safeHtml"></span>
+                    </div>
+                  </td>
+                  <td class="input-search-table">
+                    <input
+                      name="keywordUnit"
+                      [(ngModel)]="filterProduct.keywordUnit"
+                      (ngModelChange)="onSearch()"
+                      class="form-control"
+                      type="search"
+                      placeholder="Tìm kiếm đơn vị tính"
+                      autocomplete="off"
+                    />
+                    <div class="icon-search-table">
+                      <span [innerHTML]="ICON_SEARCH_SM | safeHtml"></span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+              <tbody *ngIf="totalItems > 0">
+                <ng-container *ngFor="let product of lstProduct; index as i">
+                  <tr class="table-custom-body" (dblclick)="getItem(product); check(product, listSelected, paramCheckAll, selectedItem)">
+                    <td>
+                      <div class="custom-checkbox custom-control mb-3 col-checkbox">
+                        <input
+                          class="custom-control-input"
+                          id="exampleCustomCheckbox{{ i }}"
+                          name="exampleCustomCheckbox{{ i }}"
+                          type="checkbox"
+                          [(ngModel)]="product.check"
+                          (click)="getItem(product); check(product, listSelected, paramCheckAll, selectedItem)"
+                        /><label class="custom-control-label" for="exampleCustomCheckbox{{ i }}"></label>
+                      </div>
+                    </td>
+                    <td class="text-center">{{ i + 1 + (filterProduct.page - 1) * filterProduct.size }}</td>
+                    <td class="break-word-table">{{ product.productName }}</td>
+                    <td class="break-word-table">{{ product.unit }}</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+              <tbody *ngIf="totalItems === 0">
+                <tr class="table-not-data">
+                  <td colspan="8">
+                    <span jhiTranslate="easyPos.product.info.notData"></span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="group-page-size">
+      <div class="from-pagination d-flex justify-content-center" *ngIf="totalItems > 0">
+        <ngb-pagination
+          class="pagination"
+          [collectionSize]="totalItems || 0"
+          [pageSize]="filterProduct.size"
+          [page]="filterProduct.page"
+          aria-label="Default pagination"
+          [directionLinks]="true"
+          [maxSize]="5"
+          (pageChange)="loadMore($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <div class="btn-row col-md-12">
+    <button type="button" class="exit-button-dialog me-2" (click)="onClose($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <span>Thoát</span>
+    </button>
+    <button type="button" class="save-button-dialog" (click)="onSave()">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span>Xem báo cáo</span>
+    </button>
+  </div>
+</div>

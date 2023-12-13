@@ -1,0 +1,29 @@
+<div class="wrap-box-modal">
+  <div class="close" (click)="closeModal()"><i class="fa-solid fa-xmark"></i></div>
+  <h2 class="d-flex justify-content-center">Thao tác</h2>
+  <div class="wrap-content">
+    <div class="wrap-action" (click)="modifyOrder()">
+      <div class="wrap-icon modify">
+        <i class="fa-solid fa-pencil"></i>
+      </div>
+      <div>Sửa đơn hàng</div>
+    </div>
+    <div class="wrap-action" (click)="addNewOrder()">
+      <div class="wrap-icon add">
+        <i class="fa-solid fa-plus"></i>
+      </div>
+      <div>Thêm mới đơn</div>
+    </div>
+    <div class="wrap-action">
+      <div class="wrap-icon print">
+        <i class="fa-solid fa-print"></i>
+      </div>
+      <div>In lại</div>
+    </div>
+    <div class="wrap-action" (click)="cancelOrder()">
+      <div class="wrap-icon delete">
+        <i class="fa-solid fa-xmark"></i>
+      </div>
+    </div>
+  </div>
+</div>

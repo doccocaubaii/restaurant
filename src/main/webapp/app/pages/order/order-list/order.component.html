@@ -1,0 +1,270 @@
+<div class="title-order-local" [class.align-items-center]="!statusNotification" *ngIf="totalOrderOffline">
+  <div class="left-content" [class.align-items-center]="!statusNotification">
+    <div class="icon">
+      <img src="content/icon/quan-ly/donHang.svg" />
+    </div>
+    <div class="info-order-local" [class.align-items-center]="statusNotification">
+      <div class="w-100" [class.mb-5px]="statusNotification">
+        <div class="header" jhiTranslate="easyPos.bill.offline.notify1" [translateValues]="{ quantity: totalOrderOffline || 0 }">
+          Bạn có {{ totalOrderOffline || 0 }} đơn hàng chưa đồng bộ
+        </div>
+        <div *ngIf="statusNotification" jhiTranslate="easyPos.bill.offline.notify2">Đơn này sẽ không thống kê ở mục báo cáo</div>
+      </div>
+      <button
+        jhiTranslate="easyPos.bill.offline.notify3"
+        *ngIf="statusNotification"
+        class="view-detail"
+        (click)="navigateToOrderListOffline()"
+      >
+        Xem chi tiết
+      </button>
+    </div>
+  </div>
+  <div class="icon-select" (click)="toggleNotification()">
+    <i *ngIf="statusNotification" class="fa-solid fa-chevron-up"></i>
+    <i *ngIf="!statusNotification" class="fa-solid fa-chevron-down"></i>
+  </div>
+</div>
+
+<h1 class="page-header" jhiTranslate="easyPos.bill.title">Danh sách đơn hàng</h1>
+<div class="panel-custom">
+  <ul class="nav">
+    <li class="nav-item" (click)="filterListOrder()">
+      <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link active">
+        <span class="d-sm-block" jhiTranslate="easyPos.customer.info.type-all">Tất cả</span>
+      </a>
+    </li>
+    <ng-container *ngFor="let status of listStatusOrder">
+      <li class="nav-item" (click)="filterListOrder(status.id)" [style]="utilsService.getStyleByCode(status.code)">
+        <a href="#nav-pills-tab-3" data-bs-toggle="tab" class="nav-link">
+          <span jhiTranslate="easyPos.bill.status.{{ status.id }}" class="d-sm-block" [jhiJsonCustom]="status.code"></span>
+        </a>
+      </li>
+    </ng-container>
+  </ul>
+</div>
+<!--<div class="panel-padding"></div>-->
+
+<div class="group-form-custom mt-10px mb-25px row">
+  <!--    formdate -->
+  <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+    <label class="form-label label-search" jhiTranslate="global.info.fromDate"></label>
+    <div class="item-search">
+      <input
+        class="form-control"
+        placeholder="DD/MM/YYYY"
+        name="d2"
+        #c3="ngModel"
+        [(ngModel)]="model1"
+        ngbDatepicker
+        #d3="ngbDatepicker"
+        (ngModelChange)="filterOrderList()"
+      />
+      <button class="btn form-control btn-datepicker" (click)="d3.toggle()" type="button">
+        <fa-icon [icon]="'calendar-alt'"></fa-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+    <label class="form-label label-search" jhiTranslate="global.info.toDate"></label>
+    <div class="item-search">
+      <input
+        class="form-control"
+        placeholder="DD/MM/YYYY"
+        name="d2"
+        #c2="ngModel"
+        [(ngModel)]="model2"
+        ngbDatepicker
+        #d2="ngbDatepicker"
+        (ngModelChange)="filterOrderList()"
+      />
+      <button class="btn form-control btn-datepicker" (click)="d2.toggle()" type="button">
+        <fa-icon [icon]="'calendar-alt'"></fa-icon>
+      </button>
+    </div>
+  </div>
+
+  <!--    end todate-->
+  <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+    <label class="form-label label-search" jhiTranslate="global.info.keyword"></label>
+    <div class="item-search">
+      <input
+        name="keyword"
+        [(ngModel)]="filterOrder.keyword"
+        class="form-control"
+        type="search"
+        placeholder="Tìm kiếm..."
+        (ngModelChange)="onDeleteKeyWord()"
+        (keyup.enter)="onSearch()"
+      />
+    </div>
+  </div>
+  <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+    <div class="label-search d-block">
+      <button (click)="onSearch()" class="btn-search">
+        <fa-icon icon="search"></fa-icon>
+        <span jhiTranslate="global.info.search"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="panel-action">
+  <ul class="nav" *jhiHasAnyAuthority="authorAdd">
+    <li class="nav-action cursor-pointer" (click)="addNewOrder($event)">
+      <a class="nav-link nav-link-action">
+        <i class="fa-solid fa-plus"></i>
+        <span class="d-sm-block ms-2" jhiTranslate="easyPos.bill.action.add">Thêm mới đơn</span>
+      </a>
+    </li>
+  </ul>
+
+  <div class="d-flex justify-content-end align-items-center" style="margin-left: auto; height: 45px">
+    <div class="form-page-size">
+      <label
+        class="form-label form-label label-search me-2 mb-0 text-bold"
+        jhiTranslate="global.info.totalParam"
+        [translateValues]="{ count: filterOrder.totalItem || 0 }"
+      ></label>
+      <div class="form-select-size">
+        <ng-select
+          [items]="sizes"
+          class="select-value select-size"
+          bindLabel="name"
+          bindValue="id"
+          placeholder="Tất cả"
+          [(ngModel)]="filterOrder.size"
+          (ngModelChange)="getListOrder()"
+        >
+        </ng-select>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="tab-content rounded-top rounded-0 m-0">
+  <div class="tab-pane fade active show">
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="panel panel-inverse">
+          <div class="table-responsive">
+            <table class="table editing-table">
+              <thead class="thead--customers">
+                <tr class="table-custom-header">
+                  <th jhiTranslate="global.info.Stt">STT</th>
+                  <th>Mã đơn hàng</th>
+                  <th class="col-3" jhiTranslate="easyPos.customer.info.customerName">Tên khách hàng</th>
+                  <th jhiTranslate="global.info.createDate">Ngày tạo</th>
+                  <th jhiTranslate="global.info.amount">Tổng tiền</th>
+                  <th jhiTranslate="global.info.paymentMethod">Phương thức thanh toán</th>
+                  <th jhiTranslate="global.info.status">Trạng thái</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let order of listOrder; let index = index">
+                  <tr
+                    class="table-custom-body"
+                    (click)="viewOrder(order)"
+                    (click)="utilsService.scrollToTargets()"
+                    [class.editing-head]="idEditing == order.id"
+                  >
+                    <td>{{ indexItem + index + 1 }}</td>
+                    <td>{{ order.code }}</td>
+                    <td>{{ order.customerName }}</td>
+                    <td class="text-center">{{ order.billDate | shortDateFormat }}</td>
+                    <td class="text-end">{{ order.totalAmount | number }} đ</td>
+                    <td>{{ order.status ? order.paymentMethod : '' }}</td>
+                    <td
+                      [ngClass]="{
+                        canceled: order.status === 2,
+                        processing: order.status === 0,
+                        done: order.status === 1
+                      }"
+                    >
+                      {{ order.statusName }}
+                    </td>
+                    <td>
+                      <div class="list-action">
+                        <div>
+                          <i
+                            class="fa-solid fa-rotate-left"
+                            ngbTooltip="{{ 'easyPos.bill.action.return' | translate }}"
+                            (click)="returnOrderCustomer(order.id, $event)"
+                            *ngIf="order.status == statusOrder.COMPLETE && !order.debt"
+                          ></i>
+                        </div>
+                        <div *jhiHasAnyAuthority="authorBillDone">
+                          <i
+                            class="fa-solid fa-dollar"
+                            ngbTooltip="{{ 'easyPos.bill.action.pay' | translate }}"
+                            (click)="checkoutOrderCustomer(order.id, order.customerId, $event)"
+                            *ngIf="!order.status || (order.status == statusOrder.COMPLETE && order.debt)"
+                          ></i>
+                        </div>
+                        <div *jhiHasAnyAuthority="authorBillUpdate">
+                          <i
+                            class="fa-solid fa-pen-to-square"
+                            ngbTooltip="{{ 'easyPos.bill.action.edit' | translate }}"
+                            (click)="modifyOrder(order.id, $event)"
+                            *ngIf="!order.status"
+                          ></i>
+                        </div>
+                        <div *jhiHasAnyAuthority="authorBillCancel">
+                          <i
+                            class="fa-solid fa-trash-can"
+                            ngbTooltip="{{ 'easyPos.bill.action.cancel' | translate }}"
+                            (click)="cancelOrder(order.id, $event, order)"
+                            *ngIf="order.status === statusOrder.NOT_COMPLETE || order.status === statusOrder.COMPLETE"
+                          ></i>
+                        </div>
+                        <div *jhiHasAnyAuthority="authorBillPrintShare">
+                          <i
+                            class="fa-solid fa-print"
+                            ngbTooltip="{{ 'easyPos.bill.action.printAgain' | translate }}"
+                            *ngIf="order.status !== statusOrder.CANCELED"
+                            (click)="printOrder(order.id, $event)"
+                          ></i>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr [class.editing-body]="idEditing == order.id" *ngIf="order.id == idEditing">
+                    <td colspan="8">
+                      <jhi-view-detail-order
+                        class="scroll-target"
+                        [idOrderSelected]="order.id"
+                        (dataOnChange)="handleEvent($event)"
+                      ></jhi-view-detail-order>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+              <tbody *ngIf="!filterOrder.totalItem">
+                <tr class="table-not-data">
+                  <td colspan="8">
+                    <span jhiTranslate="easyPos.product.info.noData"></span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center">
+      <ng-container *ngIf="filterOrder && filterOrder.totalItem && filterOrder.size">
+        <ngb-pagination
+          class="pagination"
+          [collectionSize]="filterOrder.totalItem || 0"
+          [pageSize]="filterOrder.size"
+          [page]="filterOrder.page"
+          aria-label="Default pagination"
+          [directionLinks]="true"
+          [maxSize]="5"
+          (pageChange)="onChangedPage($event)"
+        ></ngb-pagination>
+      </ng-container>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,63 @@
+{
+  "easyPos": {
+    "receipt": {
+      "title": "Receipt Payment",
+      "receipt": "Receipt",
+      "payment": "Payment",
+      "cash": "Cash",
+      "notFix": "This transaction cannot be edited",
+      "info": {
+        "totalAmount": "Total",
+        "search": "Search"
+      },
+      "search": {
+        "fromDate": "From Date",
+        "toDate": "To Date",
+        "keyword": "Keyword",
+        "customerPlaceHolder": "Search Customer",
+        "businessPlaceHolder": "Search Business Type",
+        "placeHolder": "Enter keyword search..."
+      },
+      "detail": {
+        "date": "Date",
+        "customer": "Customer",
+        "typeDesc": "Description",
+        "note": "Note",
+        "no": "No",
+        "num": "#",
+        "amount": "Amount",
+        "action": "Action"
+      },
+      "update": {
+        "no": "Transaction No",
+        "title-rec": "Create Receipt",
+        "title-pay": "Create Payment",
+        "title-update": "Update Transaction",
+        "customer": "Customer",
+        "business": "Business Type",
+        "fund": "Transaction No",
+        "rec": "Receipt Amount",
+        "pay": "Payment Amount",
+        "date": "Date",
+        "type": "Transaction Type",
+        "amount": "Amount",
+        "desc": "Description",
+        "note": "Note",
+        "btn": "Update"
+      },
+      "create": {
+        "title": "Create Transaction",
+        "btn": "Create",
+        "title2": "Create Business Type",
+        "name": "Name"
+      },
+      "delete": {
+        "title": "Delete Transaction",
+        "text1": "You have selected ",
+        "text2": " transactions, please enter ",
+        "text4": " to confirm deletion",
+        "text3": "Are you sure you want to delete this transaction?"
+      }
+    }
+  }
+}

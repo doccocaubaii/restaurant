@@ -1,0 +1,43 @@
+<div class="modal-header header-product" *ngIf="!statusPrint" [hidden]="isHide">
+  <h4 class="modal-title text-bold" jhiTranslate="easyPos.invoice.titleDetail">Chi tiết hóa đơn</h4>
+  <button type="button" class="btn-close" (click)="closeModal()">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+<div id="print">
+  <div [class.layout-invoice]="!statusPrint" [ngClass]="!statusPrint ? 'wrap-invoice' : 'wrap-invoice-print'">
+    <!--    <jhi-pos-invoice-print-->
+    <!--      *ngIf="printConfigs && printConfigs.length && type === 0"-->
+    <!--      [isHide]="true"-->
+    <!--      [type]="0"-->
+    <!--      [orderSelected]="orderSelected ? orderSelected : null"-->
+    <!--      [isDefault]="isDefault"-->
+    <!--      [printConfigMap]="getPrintByType(0)"-->
+    <!--    ></jhi-pos-invoice-print>-->
+    <div class="col-md-12" style="background-color: #ffffff; padding: 0px 8px" ngNonBindable [innerHTML]="reviewContent | safeHtml"></div>
+    <!--    <kitchen-table-print-->
+    <!--      *ngIf="printConfigs && printConfigs.length && type === 1"-->
+    <!--      [isHide]="true"-->
+    <!--      [type]="1"-->
+    <!--      [isDefault]="isDefault"-->
+    <!--      [orderSelected]="orderSelected ? orderSelected : null"-->
+    <!--      [printConfigMap]="getPrintByType(1)"-->
+    <!--    ></kitchen-table-print>-->
+  </div>
+</div>
+<div class="modal-footer" *ngIf="!statusPrint" [hidden]="isHide">
+  <button class="exit-button-dialog" data-bs-dismiss="modal" (click)="closeModal()">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.cancel">Hủy</span>
+  </button>
+  <button type="button" class="button-green" (click)="printToPDF()" [disabled]="isSavingPdf">
+    <span *ngIf="!isSavingPdf" [innerHTML]="ICON_PDF | safeHtml"></span>
+    <fa-icon *ngIf="isSavingPdf" icon="sync" [spin]="true"></fa-icon>
+    <span>Kết xuất PDF</span>
+  </button>
+  <button type="button" class="save-button-dialog" (click)="printInvoid()" [disabled]="isPrint">
+    <i *ngIf="!isPrint" class="fa-solid fa-print"></i>
+    <fa-icon *ngIf="isPrint" icon="sync" [spin]="true"></fa-icon>
+    <span>In hóa đơn</span>
+  </button>
+</div>

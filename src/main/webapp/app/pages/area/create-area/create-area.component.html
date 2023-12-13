@@ -1,0 +1,48 @@
+<div class="modal-header">
+  <h5 *ngIf="!area.id" class="modal-title" jhiTranslate="easyPos.area.create.title">Thêm khu vực</h5>
+  <h5 *ngIf="area.id" class="modal-title" jhiTranslate="easyPos.area.update.title">Chỉnh sửa khu vực</h5>
+  <button type="button" class="btn-close" (click)="dismiss()" aria-label="Close" name="btnCloseCheckModal"></button>
+</div>
+
+<div class="modal-body">
+  <div class="form-group input-text-custom">
+    <label class="form-label">
+      <span jhiTranslate="easyPos.area.create.tableName">Tên khu vực</span><span style="color: red">*</span>
+    </label>
+    <input
+      required
+      class="input-box input-value form-control"
+      style="height: 40px"
+      placeholder="Nhập tên khu vực"
+      maxLength="50"
+      [(ngModel)]="area.name"
+    />
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="exit-button-dialog" (click)="dismiss()">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <label jhiTranslate="global.entity.action.cancel">Hủy</label>
+  </button>
+  <button
+    *ngIf="!area.id"
+    type="button"
+    class="save-button-dialog"
+    [disabled]="area.name.length < 1 || loading.isLoading"
+    (click)="close('add')"
+  >
+    <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.save">Lưu</span>
+  </button>
+  <button
+    *ngIf="area.id"
+    type="button"
+    class="save-button-dialog"
+    [disabled]="area.name.length < 1 || loading.isLoading"
+    (click)="close('update')"
+  >
+    <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.save">Lưu</span>
+  </button>
+</div>

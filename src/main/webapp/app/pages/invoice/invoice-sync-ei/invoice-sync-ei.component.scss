@@ -1,0 +1,144 @@
+$color-default: #0074bd;
+
+.modal-header {
+  max-height: 56px;
+  border: none;
+  background-color: $color-default;
+}
+
+.border-header {
+  width: 85%;
+  border-bottom: 1px solid #d9eaf5;
+  margin-left: 7.5%;
+}
+
+.btn-close {
+  color: #ffffff;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  font-size: 16px;
+  position: absolute;
+  right: 0;
+  top: 8px;
+}
+.modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+}
+.group-header {
+  position: relative;
+  width: 100%;
+}
+:host::ng-deep .form-control {
+  border-radius: 8px;
+}
+.modal-footer {
+  border: none !important;
+}
+.btn-row {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  margin: 0;
+}
+:host::ng-deep .btn.disabled,
+.btn:disabled,
+fieldset:disabled .btn {
+  color: #ffffff;
+  pointer-events: none;
+  background-color: #1484c6;
+  border-color: #1484c6;
+  opacity: 0.5;
+}
+
+.table-responsive {
+  table {
+    overflow: auto;
+    thead {
+      position: sticky;
+      top: -1px;
+      z-index: 1;
+    }
+    th:first-child {
+      padding: 6px !important;
+    }
+    .list-action {
+      color: $color-default;
+    }
+  }
+}
+
+::ng-deep .invoice-sync {
+  .modal-dialog {
+    max-width: 70%;
+  }
+}
+
+::ng-deep .my-tooltip-class .tooltip-inner {
+  background-color: whitesmoke;
+  color: $color-default;
+  font-weight: 500;
+  z-index: 2;
+}
+::ng-deep .bs-tooltip-end .tooltip-arrow::before {
+  border-right-color: whitesmoke;
+}
+::ng-deep .bs-tooltip-start .tooltip-arrow::before {
+  border-left-color: whitesmoke;
+}
+::ng-deep .bs-tooltip-top .tooltip-arrow::before {
+  border-top-color: whitesmoke;
+}
+::ng-deep .bs-tooltip-bottom .tooltip-arrow::before {
+  border-bottom-color: whitesmoke;
+}
+
+@media only screen and (min-width: 1700px) {
+  .group-item-custom1 {
+    .btn-search {
+      width: 30% !important;
+    }
+  }
+}
+
+@media only screen and (min-width: 1700px) {
+  .group-item-custom1 {
+    .btn-search {
+      width: 32% !important;
+    }
+  }
+}
+
+@media only screen and (max-width: 1699px) {
+  .group-item-custom1 {
+    .btn-search {
+      width: 32% !important;
+      padding: 8px 8px;
+    }
+  }
+}
+@media only screen and (max-width: 1420px) {
+  .modal-body {
+    font-size: 14px !important;
+    .panel-inverse {
+      max-height: 380px !important;
+    }
+    .group-item-custom1 {
+      .btn-search {
+        font-size: 14px !important;
+        width: 33% !important;
+        margin-top: 20px;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 1025px) {
+  .group-page-size {
+    justify-content: center !important;
+  }
+}

@@ -1,0 +1,72 @@
+<div class="group-action">
+  <button type="button" class="save-button-dialog me-3" (click)="onOpenModalFilter()">
+    <span [innerHTML]="ICON_SELECT_PARAM | safeHtml"></span>
+    <span>Chọn tham số</span>
+  </button>
+  <button type="button" class="save-button-dialog me-3" (click)="onSearch()" [disabled]="isResetData">
+    <span *ngIf="!isResetData" [innerHTML]="ICON_RESET | safeHtml"></span>
+    <fa-icon *ngIf="isResetData" icon="sync" [spin]="true"></fa-icon>
+    <span>Lấy lại dữ liệu</span>
+  </button>
+  <button type="button" class="save-button-dialog me-3" (click)="onExportPdf()" [disabled]="isSavingPdf" *jhiHasAnyAuthority="authorPdf">
+    <span *ngIf="!isSavingPdf" [innerHTML]="ICON_PDF | safeHtml"></span>
+    <fa-icon *ngIf="isSavingPdf" icon="sync" [spin]="true"></fa-icon>
+    <span>Kết xuất PDF</span>
+  </button>
+  <button type="button" class="save-button-dialog" (click)="onExportExcel()" [disabled]="isSavingExcel" *jhiHasAnyAuthority="authorExcel">
+    <span *ngIf="!isSavingExcel" [innerHTML]="ICON_EXCEL | safeHtml"></span>
+    <fa-icon *ngIf="isSavingExcel" icon="sync" [spin]="true"></fa-icon>
+    <span>Kết xuất Excel</span>
+  </button>
+</div>
+<div class="report">
+  <div class="panel-header">
+    <div class="title-header">
+      <span>THỐNG KÊ LỢI NHUẬN (ƯỚC TÍNH)</span>
+      <div class="create-date">
+        <p>
+          Từ ngày {{ reportRevenueCommonRes.fromDate | date: 'dd/MM/yyyy' }} đến này
+          {{ reportRevenueCommonRes.toDate | date: 'dd/MM/yyyy' }}
+        </p>
+      </div>
+    </div>
+
+    <div class="amount-inoutward">
+      <div class="group-amount">
+        <div class="inoutward-amount">
+          <div class="group-icon-revenue">
+            <span [innerHTML]="ICON_REVENUE | safeHtml"></span>
+          </div>
+          <div class="inward-info">
+            <span class="inward-value">{{ (reportRevenueCommonRes.revenue | number) || 0 }}</span>
+            <span class="label-inoutward">Tổng doanh thu hàng hóa , dịch vụ bán ra trước thuế</span>
+          </div>
+        </div>
+      </div>
+      <div class="border-amount"></div>
+      <div class="group-amount">
+        <div class="inoutward-amount">
+          <div class="group-icon-profit">
+            <span [innerHTML]="ICON_PROFIT_ORANGE | safeHtml"></span>
+          </div>
+          <div class="outward-info">
+            <span class="outward-value">{{ (reportRevenueCommonRes.profit | number) || 0 }}</span>
+            <span class="label-inoutward">Tổng doanh thu hàng hóa , dịch vụ bán ra chịu thuế GTGT</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 chart-report">
+    <div class="col-12 overflow-auto">
+      <canvas id="canvas" height="420">{{ chart }}</canvas>
+    </div>
+    <div class="note-formular" *ngIf="searchReq.type === 3">
+      <div class="result">*Doanh thu bán hàng trung bình theo giờ =</div>
+      <div class="formular">
+        <div class="numerator">Tổng doanh thu trong một giờ</div>
+        <div class="denominator">Tổng số ngày trong kỳ</div>
+      </div>
+    </div>
+  </div>
+</div>

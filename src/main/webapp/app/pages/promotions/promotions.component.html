@@ -1,0 +1,223 @@
+<article>
+  <h1 class="page-header">Danh sách Chương trình khuyến mại</h1>
+
+  <div class="group-form-custom mb-25px">
+    <div class="group-item-custom" style="flex: 1">
+      <!--      <label class="form-label label-search" jhiTranslate="global.info.keyword"></label>-->
+      <div class="item-search">
+        <input
+          name="keyword"
+          [(ngModel)]="keyword"
+          class="form-control"
+          type="search"
+          placeholder="Nhập để tìm kiếm..."
+          (ngModelChange)="onSearch()"
+          (keyup.enter)="getAll()"
+        />
+      </div>
+    </div>
+    <div class="form-btn-search">
+      <button (click)="getAll()" class="btn-search">
+        <fa-icon icon="search"></fa-icon>
+        <span jhiTranslate="global.info.search"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="panel-action">
+    <ul class="nav">
+      <!--      <li class="nav-action" (click)="openCreate()">-->
+      <li class="nav-action" (click)="onCreate(null)">
+        <a class="nav-link nav-link-action">
+          <i class="fa-solid fa-plus"></i>
+          <span class="d-sm-block ms-2">Thêm mới</span>
+        </a>
+      </li>
+    </ul>
+    <div class="d-flex justify-content-end align-items-center">
+      <div class="form-page-size">
+        <label
+          class="form-label form-label label-search me-2 mb-0 text-bold"
+          jhiTranslate="global.info.totalParam"
+          [translateValues]="{ count: totalSize || 0 }"
+        ></label>
+        <div class="form-select-size">
+          <ng-select
+            [items]="sizes"
+            class="select-value select-size"
+            bindLabel="name"
+            bindValue="id"
+            placeholder="Tất cả"
+            [(ngModel)]="pageSize"
+            (ngModelChange)="getAll()"
+          >
+          </ng-select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content rounded-top panel rounded-0 m-0">
+    <div class="tab-pane fade active show">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="panel panel-inverse">
+            <div class="table-responsive">
+              <table class="table editing-table">
+                <thead>
+                  <tr class="table-custom-header">
+                    <th><span jhiTranslate="global.info.Stt">STT</span></th>
+                    <th>Mã voucher</th>
+                    <th style="max-width: 150px" class="text-wrap">Tên voucher</th>
+                    <th>Từ ngày</th>
+                    <th style="min-width: 130px">Đến ngày</th>
+                    <th style="min-width: 130px">Áp dụng</th>
+                    <th style="min-width: 130px">Trạng thái</th>
+                    <th style="width: 230px"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let promotion of promotions; index as i">
+                    <tr class="table-custom-body" [class.editing-head]="idEditing == promotion.id">
+                      <td (click)="idEditing = idEditing == promotion.id ? -1 : promotion.id">{{ i + 1 + (page - 1) * pageSize }}</td>
+                      <td (click)="idEditing = idEditing == promotion.id ? -1 : promotion.id">
+                        <div class="td-ma-khach-hang">{{ promotion.code }}</div>
+                      </td>
+                      <td (click)="idEditing = idEditing == promotion.id ? -1 : promotion.id">
+                        <div class="td-ten-khach-hang">{{ promotion.name }}</div>
+                      </td>
+                      <td (click)="idEditing = idEditing == promotion.id ? -1 : promotion.id">
+                        {{ promotion.startTime | shortDateFormat }}
+                      </td>
+                      <td (click)="idEditing = idEditing == promotion.id ? -1 : promotion.id">
+                        {{ promotion.endTime ? (promotion.endTime | shortDateFormat) : null }}
+                      </td>
+                      <td (click)="idEditing = idEditing == promotion.id ? -1 : promotion.id">{{ promotion.applyType }}</td>
+                      <td (click)="idEditing = idEditing == promotion.id ? -1 : promotion.id">
+                        <span *ngIf="promotion.status == 0" style="color: #00d931">Chưa chạy</span>
+                        <span *ngIf="promotion.status == 1" style="color: #0aa7e5">Đang chạy</span>
+                        <span *ngIf="promotion.status == 2" style="color: #dd8514">Tạm ngừng</span>
+                        <span *ngIf="promotion.status == 3" style="color: #d90000">Đã xong</span>
+                      </td>
+                      <td>
+                        <div class="list-action">
+                          <span (click)="openApply(promotion)">
+                            <svg
+                              class="list-action__svg-icon"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="18"
+                              height="18"
+                              viewBox="0 0 18 18"
+                              fill="none"
+                            >
+                              <path
+                                d="M6.75 11.25L11.25 6.75"
+                                stroke="#4BA158"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                              <path
+                                d="M7.125 7.5C7.33211 7.5 7.5 7.33211 7.5 7.125C7.5 6.91789 7.33211 6.75 7.125 6.75C6.91789 6.75 6.75 6.91789 6.75 7.125C6.75 7.33211 6.91789 7.5 7.125 7.5Z"
+                                fill="#4BA158"
+                                stroke="#4BA158"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                              <path
+                                d="M10.875 11.25C11.0821 11.25 11.25 11.0821 11.25 10.875C11.25 10.6679 11.0821 10.5 10.875 10.5C10.6679 10.5 10.5 10.6679 10.5 10.875C10.5 11.0821 10.6679 11.25 10.875 11.25Z"
+                                fill="#4BA158"
+                                stroke="#4BA158"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                              <path
+                                d="M3.74986 5.39937C3.74986 4.96176 3.9237 4.54208 4.23313 4.23264C4.54257 3.92321 4.96225 3.74937 5.39986 3.74937H6.14986C6.58553 3.74912 7.00343 3.57657 7.31236 3.26937L7.83736 2.74437C7.99069 2.59017 8.173 2.4678 8.37379 2.3843C8.57458 2.3008 8.7899 2.25781 9.00736 2.25781C9.22482 2.25781 9.44013 2.3008 9.64093 2.3843C9.84172 2.4678 10.024 2.59017 10.1774 2.74437L10.7024 3.26937C11.0113 3.57657 11.4292 3.74912 11.8649 3.74937H12.6149C13.0525 3.74937 13.4721 3.92321 13.7816 4.23264C14.091 4.54208 14.2649 4.96176 14.2649 5.39937V6.14937C14.2651 6.58504 14.4377 7.00294 14.7449 7.31187L15.2699 7.83687C15.4241 7.9902 15.5464 8.17251 15.6299 8.3733C15.7134 8.57409 15.7564 8.78941 15.7564 9.00687C15.7564 9.22433 15.7134 9.43965 15.6299 9.64044C15.5464 9.84123 15.4241 10.0235 15.2699 10.1769L14.7449 10.7019C14.4377 11.0108 14.2651 11.4287 14.2649 11.8644V12.6144C14.2649 13.052 14.091 13.4717 13.7816 13.7811C13.4721 14.0905 13.0525 14.2644 12.6149 14.2644H11.8649C11.4292 14.2646 11.0113 14.4372 10.7024 14.7444L10.1774 15.2694C10.024 15.4236 9.84172 15.5459 9.64093 15.6294C9.44013 15.7129 9.22482 15.7559 9.00736 15.7559C8.7899 15.7559 8.57458 15.7129 8.37379 15.6294C8.173 15.5459 7.99069 15.4236 7.83736 15.2694L7.31236 14.7444C7.00343 14.4372 6.58553 14.2646 6.14986 14.2644H5.39986C4.96225 14.2644 4.54257 14.0905 4.23313 13.7811C3.9237 13.4717 3.74986 13.052 3.74986 12.6144V11.8644C3.74961 11.4287 3.57706 11.0108 3.26986 10.7019L2.74486 10.1769C2.59066 10.0235 2.46829 9.84123 2.38479 9.64044C2.30129 9.43965 2.2583 9.22433 2.2583 9.00687C2.2583 8.78941 2.30129 8.57409 2.38479 8.3733C2.46829 8.17251 2.59066 7.9902 2.74486 7.83687L3.26986 7.31187C3.57706 7.00294 3.74961 6.58504 3.74986 6.14937V5.39937Z"
+                                stroke="#4BA158"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          </span>
+                          <span (click)="onCreate(promotion)">
+                            <svg
+                              class="list-action__svg-icon"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 16 16"
+                              fill="none"
+                            >
+                              <g clip-path="url(#clip0_3313_23874)">
+                                <path
+                                  d="M13.7813 1.83906L14.1594 2.21719C14.4531 2.51094 14.4531 2.98594 14.1594 3.27656L13.25 4.18906L11.8094 2.74844L12.7188 1.83906C13.0125 1.54531 13.4875 1.54531 13.7781 1.83906H13.7813ZM6.55625 8.00469L10.75 3.80781L12.1906 5.24844L7.99375 9.44219C7.90313 9.53281 7.79063 9.59844 7.66875 9.63281L5.84063 10.1547L6.3625 8.32656C6.39688 8.20469 6.4625 8.09219 6.55313 8.00156L6.55625 8.00469ZM11.6594 0.779688L5.49375 6.94219C5.22188 7.21406 5.025 7.54844 4.92188 7.91406L4.02813 11.0391C3.95313 11.3016 4.025 11.5828 4.21875 11.7766C4.4125 11.9703 4.69375 12.0422 4.95625 11.9672L8.08125 11.0734C8.45 10.9672 8.78438 10.7703 9.05313 10.5016L15.2188 4.33906C16.0969 3.46094 16.0969 2.03594 15.2188 1.15781L14.8406 0.779688C13.9625 -0.0984375 12.5375 -0.0984375 11.6594 0.779688ZM2.75 1.99844C1.23125 1.99844 0 3.22969 0 4.74844V13.2484C0 14.7672 1.23125 15.9984 2.75 15.9984H11.25C12.7688 15.9984 14 14.7672 14 13.2484V9.74844C14 9.33281 13.6656 8.99844 13.25 8.99844C12.8344 8.99844 12.5 9.33281 12.5 9.74844V13.2484C12.5 13.9391 11.9406 14.4984 11.25 14.4984H2.75C2.05938 14.4984 1.5 13.9391 1.5 13.2484V4.74844C1.5 4.05781 2.05938 3.49844 2.75 3.49844H6.25C6.66563 3.49844 7 3.16406 7 2.74844C7 2.33281 6.66563 1.99844 6.25 1.99844H2.75Z"
+                                  fill="#004671"
+                                />
+                              </g>
+                              <defs>
+                                <clipPath id="clip0_3313_23874">
+                                  <rect width="16" height="16" fill="white" />
+                                </clipPath>
+                              </defs>
+                            </svg>
+                          </span>
+                          <span>
+                            <svg
+                              (click)="openDelete(promotion.id)"
+                              class="list-action__svg-icon"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="18"
+                              height="18"
+                              viewBox="0 0 18 18"
+                              fill="none"
+                            >
+                              <path
+                                d="M7.5 4.5H10.5C10.5 4.10217 10.342 3.72064 10.0607 3.43934C9.77936 3.15804 9.39782 3 9 3C8.60217 3 8.22064 3.15804 7.93934 3.43934C7.65804 3.72064 7.5 4.10217 7.5 4.5ZM6 4.5C6 3.70435 6.31607 2.94129 6.87868 2.37868C7.44129 1.81607 8.20435 1.5 9 1.5C9.79565 1.5 10.5587 1.81607 11.1213 2.37868C11.6839 2.94129 12 3.70435 12 4.5H15.75C15.9489 4.5 16.1397 4.57902 16.2803 4.71967C16.421 4.86032 16.5 5.05109 16.5 5.25C16.5 5.44891 16.421 5.63968 16.2803 5.78033C16.1397 5.92098 15.9489 6 15.75 6H15.0885L14.424 13.755C14.3601 14.5038 14.0175 15.2014 13.4639 15.7098C12.9103 16.2181 12.1861 16.5001 11.4345 16.5H6.5655C5.81393 16.5001 5.08971 16.2181 4.53611 15.7098C3.98252 15.2014 3.63988 14.5038 3.576 13.755L2.9115 6H2.25C2.05109 6 1.86032 5.92098 1.71967 5.78033C1.57902 5.63968 1.5 5.44891 1.5 5.25C1.5 5.05109 1.57902 4.86032 1.71967 4.71967C1.86032 4.57902 2.05109 4.5 2.25 4.5H6ZM11.25 9C11.25 8.80109 11.171 8.61032 11.0303 8.46967C10.8897 8.32902 10.6989 8.25 10.5 8.25C10.3011 8.25 10.1103 8.32902 9.96967 8.46967C9.82902 8.61032 9.75 8.80109 9.75 9V12C9.75 12.1989 9.82902 12.3897 9.96967 12.5303C10.1103 12.671 10.3011 12.75 10.5 12.75C10.6989 12.75 10.8897 12.671 11.0303 12.5303C11.171 12.3897 11.25 12.1989 11.25 12V9ZM7.5 8.25C7.69891 8.25 7.88968 8.32902 8.03033 8.46967C8.17098 8.61032 8.25 8.80109 8.25 9V12C8.25 12.1989 8.17098 12.3897 8.03033 12.5303C7.88968 12.671 7.69891 12.75 7.5 12.75C7.30109 12.75 7.11032 12.671 6.96967 12.5303C6.82902 12.3897 6.75 12.1989 6.75 12V9C6.75 8.80109 6.82902 8.61032 6.96967 8.46967C7.11032 8.32902 7.30109 8.25 7.5 8.25ZM5.07 13.6275C5.10195 14.0021 5.27338 14.351 5.55033 14.6051C5.82729 14.8593 6.18959 15.0002 6.5655 15H11.4345C11.8102 14.9999 12.1721 14.8588 12.4487 14.6046C12.7254 14.3505 12.8966 14.0018 12.9285 13.6275L13.5825 6H4.4175L5.07 13.6275Z"
+                                fill="#FF0000"
+                              />
+                            </svg>
+                          </span>
+                          <!--                        <span>-->
+                          <!--                          <svg class="list-action__svg-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"-->
+                          <!--                               fill="none">-->
+                          <!--                            <path-->
+                          <!--                              d="M11.875 16.25C11.875 16.7473 11.6775 17.2242 11.3258 17.5758C10.9742 17.9275 10.4973 18.125 10 18.125C9.50272 18.125 9.02581 17.9275 8.67417 17.5758C8.32254 17.2242 8.125 16.7473 8.125 16.25C8.125 15.7527 8.32254 15.2758 8.67417 14.9242C9.02581 14.5725 9.50272 14.375 10 14.375C10.4973 14.375 10.9742 14.5725 11.3258 14.9242C11.6775 15.2758 11.875 15.7527 11.875 16.25ZM11.875 10C11.875 10.4973 11.6775 10.9742 11.3258 11.3258C10.9742 11.6775 10.4973 11.875 10 11.875C9.50272 11.875 9.02581 11.6775 8.67417 11.3258C8.32254 10.9742 8.125 10.4973 8.125 10C8.125 9.50272 8.32254 9.02581 8.67417 8.67417C9.02581 8.32254 9.50272 8.125 10 8.125C10.4973 8.125 10.9742 8.32254 11.3258 8.67417C11.6775 9.02581 11.875 9.50272 11.875 10ZM11.875 3.75C11.875 4.24728 11.6775 4.72419 11.3258 5.07583C10.9742 5.42746 10.4973 5.625 10 5.625C9.50272 5.625 9.02581 5.42746 8.67417 5.07583C8.32254 4.72419 8.125 4.24728 8.125 3.75C8.125 3.25272 8.32254 2.77581 8.67417 2.42417C9.02581 2.07254 9.50272 1.875 10 1.875C10.4973 1.875 10.9742 2.07254 11.3258 2.42417C11.6775 2.77581 11.875 3.25272 11.875 3.75Z"-->
+                          <!--                              fill="#004671"/>-->
+                          <!--                          </svg>-->
+                          <!--                        </span>-->
+                        </div>
+                      </td>
+                    </tr>
+                    <tr *ngIf="promotion.id == idEditing" [class.editing-body]="idEditing == promotion.id">
+                      <td colspan="8">
+                        <promotions-detail [promotion]="promotion"></promotions-detail>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br />
+
+  <div class="group-page-size">
+    <div class="from-pagination d-flex justify-content-center" *ngIf="totalSize > 0">
+      <ngb-pagination
+        class="pagination"
+        [collectionSize]="totalSize"
+        [(page)]="page"
+        [pageSize]="pageSize"
+        [maxSize]="5"
+        [rotate]="true"
+        [boundaryLinks]="true"
+        (pageChange)="getAll()"
+      ></ngb-pagination>
+    </div>
+  </div>
+</article>

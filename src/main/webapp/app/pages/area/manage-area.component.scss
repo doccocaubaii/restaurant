@@ -1,0 +1,196 @@
+.modal-mysize {
+  max-width: 800px;
+}
+
+.header {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.header-content-add {
+  margin-left: 10px;
+}
+.btn {
+  height: 36px;
+}
+button i {
+  margin-right: 10px;
+}
+
+.row-info {
+  width: 100%;
+  margin-left: auto;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-bottom: 1px solid rgb(175, 172, 172);
+  height: 47px;
+}
+
+.area-div {
+  margin: 30px 0;
+}
+.custom-select-wrapper {
+  width: 200px;
+  position: relative;
+}
+.custom-select-wrapper .ng-select ::ng-deep .ng-arrow-wrapper {
+  margin-right: 20px !important;
+}
+.icon-right {
+  position: absolute;
+  transform: translateY(-50%);
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  width: 20px;
+  z-index: 1;
+  top: 21px;
+  color: #009688;
+  right: 20px;
+}
+
+.icon-div {
+  width: 21px;
+  height: 21px;
+  margin-right: 10px;
+}
+.area-unit-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.info-general {
+  margin-top: 15px;
+  display: flex;
+  border-radius: 10px;
+  border: 1px solid rgba(112, 155, 225);
+  box-shadow: 0 0.5rem 1rem #00000026;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 7px;
+  width: 100%;
+  .icon {
+    width: 21px;
+    height: 21px;
+  }
+  span {
+    padding-left: 2px;
+  }
+}
+
+.select-value {
+  &:hover {
+    background-color: #e8e8e8;
+    border-opacity: 0.4;
+  }
+}
+
+.info {
+  width: 50%;
+  display: flex;
+  align-items: center; /* Canh giữa phần tử con theo chiều dọc */
+  padding-left: 15px;
+  &:first-child {
+    border-right: 1px solid;
+  }
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bill {
+  background-color: #f4f4f4;
+  margin-bottom: 15px;
+  border-radius: 8px;
+}
+.receipt-payment-container {
+  padding-right: 0;
+}
+
+.box-left {
+  margin-right: 0 !important;
+}
+.receipt-box:first-child {
+  border-right: solid #d5d8dd 1px;
+}
+.icon-receipt {
+  background: #d9eaf5;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+.icon-payment {
+  background: #fce6de;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+.total-money-receipt,
+.total-money-payment {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 150%;
+  display: flex;
+  align-items: center;
+  color: #eb5624;
+}
+.total-money-receipt {
+  color: #0074bd;
+}
+.total-text {
+  font-family: 'San Francisco Display';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 150%;
+  display: flex;
+  align-items: center;
+  color: #58647a;
+}
+.panel-1 {
+  background: #ffffff;
+  box-shadow: 2px 5px 11px rgba(0, 116, 189, 0.15);
+  border-radius: 4px;
+}
+.input-value:hover {
+  background-color: #e8e8e8;
+  border-opacity: 0.4;
+}
+@media only screen and (min-width: 401px) and (max-width: 960px) {
+  .not-too-big {
+    max-width: 120px;
+  }
+  .table th:nth-child(2),
+  .table th:nth-child(3),
+  .table td:nth-child(2),
+  .table td:nth-child(3) {
+    max-width: 25%; /* Ẩn cột thứ 3 */
+  }
+  .div-bill {
+    width: 100%;
+  }
+  .receipt-payment-container {
+    flex-direction: column;
+    padding-right: 0;
+  }
+}
+
+@media only screen and (min-width: 960px) {
+  .table th:nth-child(2),
+  .table th:nth-child(3),
+  .table td:nth-child(2),
+  .table td:nth-child(3) {
+    width: 25%;
+  }
+  .with-label-name {
+    margin-right: 5px;
+  }
+  .div-bill {
+    width: 90%;
+  }
+}

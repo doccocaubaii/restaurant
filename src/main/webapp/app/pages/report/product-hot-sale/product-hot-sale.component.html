@@ -1,0 +1,132 @@
+<h1 class="page-header">Thống kê sản phẩm bán chạy</h1>
+<div class="panel-custom">
+  <ul class="nav">
+    <li class="nav-item" (click)="searchByType(0)">
+      <a href="#nav-pills-tab-0" data-bs-toggle="tab" class="nav-link active">
+        <span class="d-sm-block">Doanh thu giảm dần</span>
+      </a>
+    </li>
+    <li class="nav-item" (click)="searchByType(1)">
+      <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link">
+        <span class="d-sm-block">Số lượng giảm dần</span>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<div class="group-form-custom mt-10px mb-10px row">
+  <!--    formdate -->
+  <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+    <label class="form-label label-search" jhiTranslate="global.info.fromDate"></label>
+    <div class="item-search">
+      <input
+        class="form-control"
+        placeholder="DD/MM/YYYY"
+        name="d2"
+        #c3="ngModel"
+        [maxDate]="utilsService.getFromToMoment(toDate)"
+        [(ngModel)]="fromDate"
+        ngbDatepicker
+        #d3="ngbDatepicker"
+        dateFormat
+      />
+      <button class="btn form-control btn-datepicker" (click)="d3.toggle()" type="button">
+        <fa-icon [icon]="'calendar-alt'"></fa-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+    <label class="form-label label-search" jhiTranslate="global.info.toDate"></label>
+    <div class="item-search">
+      <input
+        class="form-control"
+        placeholder="DD/MM/YYYY"
+        [minDate]="utilsService.getFromToMoment(fromDate, true)"
+        [maxDate]="utilsService.getCurrentDate()"
+        name="d2"
+        #c2="ngModel"
+        [(ngModel)]="toDate"
+        ngbDatepicker
+        #d2="ngbDatepicker"
+        dateFormat
+      />
+      <button class="btn form-control btn-datepicker" (click)="d2.toggle()" type="button">
+        <fa-icon [icon]="'calendar-alt'"></fa-icon>
+      </button>
+    </div>
+  </div>
+  <button (click)="getData()" class="btn btn-sm btn-blue btn-search" style="width: fit-content; margin-left: 8px">
+    <fa-icon icon="search"></fa-icon>
+    <span jhiTranslate="global.info.search"></span>
+  </button>
+</div>
+
+<div class="panel-action">
+  <ul class="nav">
+    <li class="nav-action cursor-pointer" (click)="onExportPdf()" *jhiHasAnyAuthority="authorPdf">
+      <a class="nav-link nav-link-action" [ngClass]="listData?.length > 0 ? '' : 'disabled'">
+        <span [innerHTML]="ICON_PDF | safeHtml"></span>
+        <span class="d-sm-block ms-2">Kết xuất PDF</span>
+      </a>
+    </li>
+    <li class="nav-action cursor-pointer" (click)="onExportExcel()" *jhiHasAnyAuthority="authorExcel">
+      <a class="nav-link nav-link-action" [ngClass]="listData?.length > 0 ? '' : 'disabled'">
+        <span [innerHTML]="ICON_EXCEL | safeHtml"></span>
+        <span class="d-sm-block ms-2">Kết xuất Excel</span>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<div class="tab-pane fade active show">
+  <div class="row">
+    <div class="col-xl-12">
+      <div class="panel panel-inverse">
+        <div class="table-responsive">
+          <table class="table editing-table">
+            <thead class="table-header-sticky">
+              <tr class="table-custom-header">
+                <th>STT</th>
+                <th>Tên sản phẩm</th>
+                <th>Tên đơn vị tính</th>
+                <th style="border-right: 1px solid #b0d4eb !important">Tổng số lượng</th>
+                <th>Tổng tiền doanh thu</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="listData?.length > 0">
+              <ng-container *ngFor="let data of listData; index as i">
+                <tr class="table-custom-body">
+                  <td>{{ i + 1 }}</td>
+                  <td class="break-word-table">{{ data.name }}</td>
+                  <td class="break-word-table text-center">{{ data.unitName }}</td>
+                  <td class="break-word-table text-end">{{ data.totalQuantity | number }}</td>
+                  <td class="break-word-table text-end">{{ data.totalAmount | number }}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+            <tbody *ngIf="listData?.length === 0">
+              <tr class="table-not-data">
+                <td colspan="8">
+                  <span jhiTranslate="easyPos.product.info.notData"></span>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot class="footer-table">
+              <tr class="footer-content">
+                <th style="text-align: inherit; border-right: 1px solid #b0d4eb !important" colspan="3">Tổng cộng</th>
+                <th class="break-word-table text-end" style="border-right: 1px solid #b0d4eb !important">
+                  {{ data.sumQuantity ? (data.sumQuantity | number) : 0 }}
+                </th>
+                <th class="break-word-table text-end" style="border-right: 1px solid #b0d4eb !important">
+                  {{ data.sumAmount ? (data.sumAmount | number) : 0 }}
+                </th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END pos-stock-body -->

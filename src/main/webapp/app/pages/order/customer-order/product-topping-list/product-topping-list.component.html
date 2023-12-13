@@ -1,0 +1,113 @@
+<!-- BEGIN #modalPosItem -->
+<div class="modal modal-pos-item">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body p-0">
+        <a (click)="closeModal()" data-bs-dismiss="modal" class="btn-close position-absolute top-0 end-0 m-4"></a>
+        <div class="form-product">
+          <div class="product-primary">
+            <div
+              class="product-img"
+              [style]="{
+                'background-image':
+                  'url(' + (productOrderLocal?.imageUrl ? productOrderLocal?.imageUrl : 'content/icon/san-pham/products.svg') + ')'
+              }"
+            ></div>
+            <div class="product-primary-info">
+              <span class="product-name">{{ productOrderLocal.productName }}</span>
+              <span class="product-unit-price">{{ productOrderLocal.unitPrice | number }}đ</span>
+            </div>
+          </div>
+          <!-- <div>{{ productOrderLocal | json }}</div> -->
+          <div class="list-topping-product">
+            <ng-container *ngFor="let listTopping of listProductTopping">
+              <div class="form-topping">
+                <div class="name-group-topping" *ngIf="listTopping.isGroupTopping">
+                  <span>{{ listTopping.name }}</span>
+                  <ng-container *ngIf="listTopping.requiredOptional; else notRequire">
+                    <label class="require">(Bắt buộc)</label>
+                  </ng-container>
+                  <ng-template #notRequire>
+                    <label class="optional">Không bắt buộc</label>
+                  </ng-template>
+                </div>
+                <div class="form-list-product-topping">
+                  <ng-container *ngFor="let productTopping of listTopping.products">
+                    <div class="form-product-topping">
+                      <div class="left-product-topping col-8">
+                        <div>{{ productTopping.productName }}</div>
+                        <div>{{ productTopping.salePrice | number }}đ</div>
+                      </div>
+                      <div class="right-product-topping col-4">
+                        <ng-container *ngIf="!productTopping.inProductOrder; else outProductOrder">
+                          <div class="add-icon" (click)="addToppingToProduct(productTopping)"><i class="fa fa-plus"></i></div>
+                        </ng-container>
+                        <ng-template #outProductOrder>
+                          <div class="input-group qty col-6">
+                            <div class="input-group-append" (click)="decreaseProduct(productTopping, false)">
+                              <a class="btn btn-default"><i class="fa fa-minus"></i></a>
+                            </div>
+                            <input
+                              type="text"
+                              [(ngModel)]="productTopping.quantity"
+                              (ngModelChange)="changeProductToppingQuantity(productTopping)"
+                              (blur)="checkProductToppingQuantity(productTopping)"
+                              class="form-control"
+                              jhiCurrencyNumber
+                              [maxvalue]="
+                                !invoiceConfiguration.overStock && productTopping.inventoryTracking
+                                  ? productTopping.inventoryCount
+                                  : undefined
+                              "
+                              [numberRound]="lastCompany.roundScaleQuantity"
+                            />
+                            <div class="input-group-prepend" (click)="increaseProduct(productTopping, false)">
+                              <a class="btn btn-default"><i class="fa fa-plus"></i></a>
+                            </div>
+                          </div>
+                        </ng-template>
+                        <div *ngIf="!invoiceConfiguration.overStock && productTopping.inventoryTracking">
+                          Còn: {{ productTopping.inventoryCount | number }}
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="bottom-modal">
+          <div class="quantity">
+            <span class="me-10px">Số lượng</span>
+            <div class="input-group qty">
+              <div class="input-group-append" (click)="decreaseProduct(productOrderLocal, true)">
+                <a class="btn btn-default"><i class="fa fa-minus"></i></a>
+              </div>
+              <input
+                [(ngModel)]="productOrderLocal.quantity"
+                (ngModelChange)="updateProductOrder(productOrderLocal)"
+                type="text"
+                class="form-control"
+                jhiCurrencyNumber
+                [maxvalue]="
+                  !invoiceConfiguration.overStock && productOrderLocal.inventoryTracking ? productOrderLocal.quantityProduct : undefined
+                "
+                [numberRound]="lastCompany.roundScaleQuantity"
+              />
+              <div class="input-group-prepend" (click)="increaseProduct(productOrderLocal, true)">
+                <a class="btn btn-default"><i class="fa fa-plus"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="add-to-cart" (click)="saveProduct()">
+            <i class="fa-solid fa-cart-shopping me-5px"></i>
+            <span class="me-5px">Thêm vào giỏ hàng</span>
+            <span> | {{ productOrderLocal.displayAmount || 0 | number }}đ</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END #modalPosItem -->

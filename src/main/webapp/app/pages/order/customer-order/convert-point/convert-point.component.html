@@ -1,0 +1,71 @@
+<div class="modal-header">
+  <h4 class="modal-title">Quy đổi điểm</h4>
+  <button type="button" class="btn-close" (click)="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<div class="modal-body">
+  <!-- <div>{{productDiscountTaxOrderLocal | json}}</div> -->
+  <div class="item-basic-infor input-text-custom input col-6">
+    <label class="title-info">Điểm tích lũy</label>
+    <input
+      disabled="true"
+      [ngModel]="orderSelected.pointBalanceCustomer | number"
+      class="input-value form-control"
+      type="text"
+      placeholder="Nhập điểm quy đổi"
+    />
+  </div>
+  <div class="item-basic-infor input-text-custom input col-6">
+    <label class="title-info">Tiền tích lũy</label>
+    <input
+      disabled="true"
+      [ngModel]="orderSelected.moneyBalanceCustomer | number"
+      class="input-value form-control"
+      type="text"
+      placeholder="Nhập điểm quy đổi"
+    />
+  </div>
+  <div *ngIf="orderSelected.cardCustomerInfo.redeemValue" class="item-basic-infor input-text-custom input col-12">
+    <label class="title-info">Mức quy đổi</label>
+    <input
+      disabled="true"
+      value="1 điểm tương đương {{ orderSelected.cardCustomerInfo.redeemValue | number }}đ"
+      class="input-value form-control"
+      type="text"
+      placeholder="Mức quy đổi"
+    />
+  </div>
+  <div class="item-basic-infor input-text-custom input col-6">
+    <label class="title-info">Điểm quy đổi</label>
+    <input
+      [(ngModel)]="savePointInput.point"
+      jhiCurrencyNumber
+      [maxvalue]="orderSelected.pointBalanceCustomer"
+      [numberRound]="lastCompany.roundScaleAmount"
+      (ngModelChange)="convertPointCustomer()"
+      class="input-value form-control"
+      type="text"
+      placeholder="Nhập điểm quy đổi"
+    />
+  </div>
+  <div class="item-basic-infor input-text-custom input col-6">
+    <label class="title-info">Tiền quy đổi</label>
+    <input
+      [(ngModel)]="savePointInput.amount"
+      jhiCurrencyNumber
+      [numberRound]="lastCompany.roundScaleAmount"
+      class="input-value form-control"
+      type="text"
+      placeholder="Tiền quy đổi"
+    />
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="exit-button-dialog" data-bs-dismiss="modal" (click)="closeModal()">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.cancel">Hủy</span>
+  </button>
+  <button class="save-button-dialog" (click)="savePointCustomer()">
+    <span [innerHTML]="ICON_CONFIRM | safeHtml"></span>
+    <span>Quy đổi</span>
+  </button>
+</div>

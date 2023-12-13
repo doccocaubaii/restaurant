@@ -1,0 +1,200 @@
+<!--<div class="modal-header" style="padding: 2px 10px; padding-top: 10px">-->
+<!--  <div class="d-flex flex-wrap col-md-11">-->
+<!--    <h6 class="modal-title-detail">-->
+<!--      <img src="../../../../content/images/icon-logo.png" height="24px" width="24px" />-->
+<!--      <span class="text-uppercase" jhiTranslate="ebwebApp.saBill.titleRefVoucher"></span>-->
+<!--    </h6>-->
+<!--  </div>-->
+<!--</div>-->
+<!--<div class="modal-body" style="padding: 20px !important">-->
+<!--  <div class="row form-group">-->
+<!--    <div class="col-md-3">-->
+<!--      <label jhiTranslate="global.commonInfo.typeSearch.title">Loại tìm kiếm</label>-->
+<!--      <select-->
+<!--        name="typeSearch"-->
+<!--        id="field_typeSearch"-->
+<!--        class="form-control"-->
+<!--        [(ngModel)]="typeSearch"-->
+<!--        (ngModelChange)="changeTypeSearch()"-->
+<!--        [tabIndex]="70001"-->
+<!--      >-->
+<!--        <option [ngValue]="1" jhiTranslate="global.commonInfo.typeSearch.type" selected>Loại chứng từ</option>-->
+<!--        <option [ngValue]="2" jhiTranslate="global.commonInfo.typeSearch.no">Số chứng từ</option>-->
+<!--        <option [ngValue]="3" jhiTranslate="global.commonInfo.typeSearch.invoiceNo">Số hóa đơn</option>-->
+<!--      </select>-->
+<!--    </div>-->
+<!--    <div class="col-md-6">-->
+<!--      <label jhiTranslate="global.commonInfo.typeSearch.value">Giá trị</label>-->
+<!--      <combo-box-->
+<!--        *ngIf="typeSearch === 1"-->
+<!--        name="typeGroups"-->
+<!--        [dataList]="typeGroups"-->
+<!--        [listColumns]="['typeGroupName']"-->
+<!--        [isOutTable]="true"-->
+<!--        valueName="id"-->
+<!--        displayMember="typeGroupName"-->
+<!--        [headerColumns]="['Giá Trị']"-->
+<!--        [isObject]="true"-->
+<!--        [(ngModel)]="typeGroup"-->
+<!--        [tabindex]="70002"-->
+<!--      ></combo-box>-->
+<!--      <input type="text" class="form-control" id="no" [(ngModel)]="no" *ngIf="typeSearch === 2" name="no" [tabIndex]="2" />-->
+<!--      <input-->
+<!--        type="text"-->
+<!--        class="form-control"-->
+<!--        id="invoiceNo"-->
+<!--        [(ngModel)]="invoiceNo"-->
+<!--        *ngIf="typeSearch === 3"-->
+<!--        name="invoiceNo"-->
+<!--        [tabIndex]="70003"-->
+<!--      />-->
+<!--    </div>-->
+<!--    <div class="col-md-3">-->
+<!--      <label jhiTranslate="global.commonInfo.status">Trạng thái</label>-->
+<!--      <select name="status" id="field_status" class="form-control" [(ngModel)]="recorded" [tabIndex]="70004">-->
+<!--        <option [ngValue]="null" selected></option>-->
+<!--        <option [ngValue]="1" jhiTranslate="global.commonInfo.recorded.recorded">Đã ghi sổ</option>-->
+<!--        <option [ngValue]="0" jhiTranslate="global.commonInfo.recorded.unrecored">Chưa ghi sổ</option>-->
+<!--      </select>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class="row form-group">-->
+<!--    <div class="col-3">-->
+<!--      <label jhiTranslate="ebwebApp.receiveBill.detail.time">Chọn thời gian</label>-->
+<!--      <combo-box-->
+<!--        style=""-->
+<!--        name="timeLine"-->
+<!--        [dataList]="listTimeLine"-->
+<!--        [listColumns]="utilsService.listColumnsTimeLine"-->
+<!--        [isOutTable]="true"-->
+<!--        displayMember="display"-->
+<!--        valueName="value"-->
+<!--        [headerColumns]="utilsService.listHeaderColumnsTimeLine"-->
+<!--        [isObject]="false"-->
+<!--        [(ngModel)]="timeLineVoucher"-->
+<!--        (ngModelChange)="selectChangeBeginDateAndEndDate(timeLineVoucher)"-->
+<!--        [tabindex]="70005"-->
+<!--      ></combo-box>-->
+<!--    </div>-->
+<!--    <div class="col-md-3">-->
+<!--      <label jhiTranslate="ebwebApp.saBill.invoice.fromDate">date</label>-->
+<!--      <eb-date-picker [(ngModel)]="fromDate" name="fromdate" format="YYYYMMDD" [tabindex]="70006"></eb-date-picker>-->
+<!--    </div>-->
+<!--    <div class="col-md-3">-->
+<!--      <label jhiTranslate="ebwebApp.saBill.invoice.toDate">date</label>-->
+<!--      <eb-date-picker-->
+<!--        [(ngModel)]="toDate"-->
+<!--        name="todate"-->
+<!--        format="YYYYMMDD"-->
+<!--        [tabindex]="70007"-->
+<!--        (keydown.end)="search()"-->
+<!--        (keydown.enter)="search()"-->
+<!--      ></eb-date-picker>-->
+<!--    </div>-->
+<!--    <div class="col-md-3">-->
+<!--      <label>&nbsp;</label>-->
+<!--      <div>-->
+<!--        <button (click)="search(true)" class="btn btn-eb" jhiTranslate="entity.searchform.search" [tabindex]="70008"></button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div>-->
+<!--    <div id="table-scroll-ref" class="table-scroll-resizable">-->
+<!--      <table id="main-table-ref" class="main-table">-->
+<!--        <thead>-->
+<!--          <tr>-->
+<!--            <th scope="col">-->
+<!--              <div class="custom-control custom-checkbox">-->
+<!--                <input-->
+<!--                  type="checkbox"-->
+<!--                  class="custom-control-input"-->
+<!--                  id="check-all"-->
+<!--                  [checked]="isCheckAll()"-->
+<!--                  [(ngModel)]="this.paramCheckAll"-->
+<!--                  (click)="checkAll()"-->
+<!--                  [tabindex]="70009"-->
+<!--                  [disabled]=""-->
+<!--                />-->
+<!--                <label class="custom-control-label" [for]="!viewVouchers || !viewVouchers.length ? 'namoc' : 'check-all'"></label>-->
+<!--              </div>-->
+<!--            </th>-->
+<!--            <th scope="col" jhiTranslate="global.commonInfo.vDate">Ngày chứng từ</th>-->
+<!--            <th scope="col" jhiTranslate="global.commonInfo.postedDate">Ngày hạch toán</th>-->
+<!--            <th scope="col" jhiTranslate="global.commonInfo.noFBook">Số chứng từ</th>-->
+<!--            <th scope="col" jhiTranslate="global.commonInfo.reason">Diễn giải</th>-->
+<!--          </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--          <tr *ngFor="let viewVoucher of viewVouchers; let i = index">-->
+<!--            <td class="text-center">-->
+<!--              <div class="custom-control custom-checkbox">-->
+<!--                <input-->
+<!--                  type="checkbox"-->
+<!--                  class="custom-control-input"-->
+<!--                  name="{{ 'checkbox' + i }}"-->
+<!--                  id="{{ 'checkbox' + i }}"-->
+<!--                  [(ngModel)]="viewVoucher.checked"-->
+<!--                  (click)="check(viewVoucher)"-->
+<!--                  [tabIndex]="70010 + i"-->
+<!--                />-->
+<!--                <label class="custom-control-label" for="{{ 'checkbox' + i }}"></label>-->
+<!--              </div>-->
+<!--            </td>-->
+<!--            <td class="text-center">{{ viewVoucher.date | date: 'dd/MM/yyyy' }}</td>-->
+<!--            <td class="text-center">{{ viewVoucher.postedDate | date: 'dd/MM/yyyy' }}</td>-->
+<!--            <td (click)="view(viewVoucher, $event)" style="color: blue; text-decoration: underline">{{ viewVoucher.no }}</td>-->
+<!--            <td class="">{{ viewVoucher.reason }}</td>-->
+<!--          </tr>-->
+<!--          <tr *ngFor="let bill of newArr(10 - viewVouchers.length)">-->
+<!--            <td style="padding: 0; margin: 0; min-width: 150px">-->
+<!--              <input type="text" class="input-table-detail" readonly />-->
+<!--            </td>-->
+<!--            <td></td>-->
+<!--            <td></td>-->
+<!--            <td></td>-->
+<!--            <td></td>-->
+<!--          </tr>-->
+<!--        </tbody>-->
+<!--      </table>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class="row justify-content-end" style="height: 32px" style="margin: 10px 0 0 0">-->
+<!--    <div class="col-lg-2">-->
+<!--      <div class="form-group row">-->
+<!--        <label class="col-sm-7 col-form-label text-right" for="itemsPerPage">-->
+<!--          <span jhiTranslate="ebwebApp.mCPayment.select"></span>: {{ getNumberSelect() + '/' + totalItems }}-->
+<!--        </label>-->
+<!--        <div class="col-sm-5 pd-l-0">-->
+<!--          <select-->
+<!--            class="form-control form-control-sm"-->
+<!--            name="itemsPerPage"-->
+<!--            id="itemsPerPage"-->
+<!--            style="background-color: #f5f7fa"-->
+<!--            [(ngModel)]="itemsPerPage"-->
+<!--            (ngModelChange)="search()"-->
+<!--          >-->
+<!--            <option [value]="10">10</option>-->
+<!--            <option [value]="20">20</option>-->
+<!--            <option [value]="30">30</option>-->
+<!--          </select>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="justify-content-end">-->
+<!--      <ngb-pagination-->
+<!--        [size]="'sm'"-->
+<!--        [collectionSize]="totalItems"-->
+<!--        [(page)]="page"-->
+<!--        [pageSize]="itemsPerPage"-->
+<!--        [maxSize]="5"-->
+<!--        [rotate]="true"-->
+<!--        [boundaryLinks]="true"-->
+<!--        (pageChange)="search()"-->
+<!--      ></ngb-pagination>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class="float-right" style="margin-left: 10px; margin-bottom: 10px">-->
+<!--    <button class="btn btn-eb" (click)="apply()"><span jhiTranslate="entity.action.choose"></span></button>-->
+<!--    <button class="btn btn-outline-dark" (click)="close()"><span jhiTranslate="entity.action.close"></span></button>-->
+<!--  </div>-->
+<!--</div>-->

@@ -1,0 +1,122 @@
+<div class="row" *ngIf="lastCompany">
+  <div class="col-xl-3 col-lg-12 top-product">
+    <div class="widget widget-stats">
+      <h1 class="page-header" jhiTranslate="easyPos.company.info.generalInfo">Thông tin công ty</h1>
+      <div class="border-bottom"></div>
+      <div class="my-form-group position-relative">
+        <label class="my-form-label"><span jhiTranslate="easyPos.company.info.generalInfoComName">Tên công ty </span> </label>
+        <br />
+        <div class="mb-2">
+          <input name="keyword" disabled [(ngModel)]="lastCompany.name" class="form-control" type="search" />
+        </div>
+
+        <label class="my-form-label"><span jhiTranslate="easyPos.company.info.generalInfoComTaxCode">Mã số thuế</span> </label>
+        <br />
+        <div class="mb-2">
+          <input name="keyword" disabled [(ngModel)]="lastCompany.taxcode" class="form-control" type="search" />
+        </div>
+
+        <label class="my-form-label"><span jhiTranslate="easyPos.company.info.generalInfoComAddress">Địa chỉ</span> </label>
+        <br />
+        <div class="">
+          <input name="keyword" disabled [(ngModel)]="lastCompany.address" class="form-control" type="search" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-9 col-lg-12 top-product">
+    <div class="widget widget-stats">
+      <article>
+        <h1 class="page-header" jhiTranslate="easyPos.company.title">Danh sách cửa hàng, chi nhánh</h1>
+        <div class="border-bottom"></div>
+        <br />
+
+        <div class="panel-action" style="margin-bottom: 15px">
+          <ul class="nav">
+            <li class="nav-action" (click)="openCreate()" *jhiHasAnyAuthority="authorADD">
+              <a class="nav-link nav-link-action">
+                <i class="fa-solid fa-plus"></i>
+                <span class="d-sm-block ms-2" jhiTranslate="easyPos.company.action.add">Thêm cửa hàng</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <ng-container *ngFor="let company of companyArray; index as i">
+          <div class="company-title cursor-pointer" (click)="toggleCompany(company)">
+            <div class="d-flex justify-content-between p-15px">
+              <div>{{ company.taxCode }} - {{ company.name }}</div>
+              <div>
+                <label class="form-label form-label label-search me-2 mb-0 fs-16px">
+                  Chi nhánh<span>: {{ getCount(company) }}</span>
+                </label>
+                <i *ngIf="posSidebarFooterStatus !== company.id" class="fa-solid fa-chevron-down"></i>
+                <i *ngIf="posSidebarFooterStatus === company.id" class="fa-solid fa-chevron-up"></i>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="getCount(company) > 0 && posSidebarFooterStatus == company.id" class="tab-content rounded-top panel rounded-0 m-0">
+            <div class="tab-pane fade active show">
+              <div class="row">
+                <div class="col-xl-12">
+                  <div class="panel panel-inverse">
+                    <div class="table-responsive">
+                      <table class="table editing-table">
+                        <thead class="table-header-sticky">
+                          <tr class="table-custom-header">
+                            <th><span jhiTranslate="global.info.Stt">STT</span></th>
+                            <th jhiTranslate="easyPos.company.info.table-th.comName">Tên chi nhánh</th>
+                            <th jhiTranslate="easyPos.company.info.table-th.comPhone" class="text-wrap">Số điện thoại</th>
+                            <th jhiTranslate="easyPos.company.info.table-th.comAddress">Địa chỉ</th>
+                            <th jhiTranslate="easyPos.company.info.table-th.comDescription">Mô tả</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <ng-container *ngFor="let branch of company.companies; index as i">
+                            <ng-container *ngIf="!branch.parent">
+                              <tr
+                                [class.show-detail]="idEditing == branch.id"
+                                class="hover-row table-custom-body"
+                                (click)="idEditing = idEditing == branch.id ? -1 : branch.id; openUpdate(branch)"
+                              >
+                                <td>{{ i }}</td>
+
+                                <td>
+                                  <div class="text-break">{{ branch.name }}</div>
+                                </td>
+                                <td class="text-break">{{ branch.phone }}</td>
+                                <td class="text-break">{{ branch.address }}</td>
+                                <td>
+                                  <div class="text-break">{{ branch.description }}</div>
+                                </td>
+                                <td>
+                                  <div class="list-action">
+                                    <i
+                                      style="color: #0074bd"
+                                      (click)="openUpdate(branch)"
+                                      class="fa-solid fa-edit"
+                                      ngbTooltip="{{ 'global.entity.action.edit' | translate }}"
+                                      *jhiHasAnyAuthority="authorUpdate"
+                                    >
+                                    </i>
+                                    <span *ngIf="lastCompany.id === branch.id" [innerHTML]="ICON_EDIT_BLUE"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            </ng-container>
+                          </ng-container>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </article>
+    </div>
+  </div>
+</div>

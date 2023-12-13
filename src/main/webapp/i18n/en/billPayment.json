@@ -1,0 +1,43 @@
+{
+  "easyPosFrontEndApp": {
+    "invoice": {
+      "status": {
+        "1": "Hóa đơn hợp lệ",
+        "-2": "Hóa đơn không hợp lệ",
+        "-1": "Hóa đơn đang kiểm tra",
+        "0": "Hóa đơn chưa phát hành"
+      }
+    },
+    "billPayment": {
+      "home": {
+        "title": "Bill Payments",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Bill Payment",
+        "createOrEditLabel": "Create or edit a Bill Payment",
+        "notFound": "No Bill Payments found"
+      },
+      "created": "A new Bill Payment is created with identifier {{ param }}",
+      "updated": "A Bill Payment is updated with identifier {{ param }}",
+      "deleted": "A Bill Payment is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Bill Payment {{ id }}?"
+      },
+      "detail": {
+        "title": "Bill Payment"
+      },
+      "id": "ID",
+      "billID": "Bill ID",
+      "paymentMethod": "Payment Method",
+      "amount": "Amount",
+      "refund": "Refund",
+      "debtType": "Debt Type",
+      "debt": "Debt",
+      "creator": "Creator",
+      "updater": "Updater",
+      "createTime": "Create Time",
+      "updateTime": "Update Time",
+      "paymentTime": "Payment Time",
+      "totalBill": "Total Bill"
+    }
+  }
+}

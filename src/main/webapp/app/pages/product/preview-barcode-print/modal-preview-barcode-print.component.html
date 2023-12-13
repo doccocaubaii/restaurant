@@ -1,0 +1,252 @@
+<div class="modal-header header-product" style="max-height: 6vh">
+  <h3 class="modal-title text-bold text-white">In mã vạch</h3>
+  <button type="button" class="btn-close" (click)="dismiss($event)">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+<div class="border-header"></div>
+<div style="max-height: 85vh; overflow: auto">
+  <div class="modal-body">
+    <div class="d-flex content-container">
+      <div class="d-flex flex-column col-lg-7 col-xs-12" style="max-height: 71vh">
+        <div class="left-first p-3">
+          <div class="group-form-custom mb-2">
+            <div class="group-item-custom" style="flex: 1">
+              <div class="item-search">
+                <input
+                  (keyup.enter)="onSearch()"
+                  [(ngModel)]="keyword"
+                  (ngModelChange)="onDeleteKeywordSearch()"
+                  name="keyword"
+                  class="form-control"
+                  type="search"
+                  placeholder="Nhập tên sản phẩm ..."
+                />
+              </div>
+            </div>
+            <div class="form-btn-search">
+              <button class="btn-search" (click)="onSearch()" [disabled]="!transerProducts || transerProducts.length == 0" appDisableButton>
+                <fa-icon icon="search"></fa-icon>
+                <span jhiTranslate="global.info.search"></span>
+              </button>
+            </div>
+          </div>
+          <div class="tab-pane fade active show">
+            <div class="row" style="max-height: 26vh">
+              <div class="col-xl-12">
+                <div class="panel panel-inverse">
+                  <div class="table-responsive" style="max-height: 25vh; min-height: 25vh">
+                    <table class="table editing-table">
+                      <thead class="table-header-sticky">
+                        <tr class="table-custom-header">
+                          <th>Mã vạch</th>
+                          <th jhiTranslate="easyPos.product.info.productName"></th>
+                          <th jhiTranslate="easyPos.product.info.unit"></th>
+                          <th>Số lượng tem</th>
+                          <th jhiTranslate="easyPos.product.info.salePrice"></th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody *ngIf="totalItems > 0">
+                        <ng-container *ngFor="let product of products; index as i">
+                          <tr class="table-custom-body cursor-default">
+                            <td class="long-text" style="max-width: 8vw">{{ product.barcode }}</td>
+                            <td class="long-text" style="max-width: 7vw">{{ product.name }}</td>
+                            <td>{{ product.unit }}</td>
+                            <td class="break-word-table">
+                              <div class="quantity-group">
+                                <a class="btn btn-minus" (click)="minus(product)">
+                                  <i class="fa-solid fa-minus"></i>
+                                </a>
+                                <input
+                                  type="text"
+                                  class="form-control input-quantity"
+                                  [(ngModel)]="product.inventoryCount"
+                                  (ngModelChange)="onChangeInventory(product)"
+                                  jhiPositiveNumber
+                                />
+                                <a class="btn btn-plus" (click)="plus(product)">
+                                  <i class="fa-solid fa-plus"></i>
+                                </a>
+                              </div>
+                            </td>
+                            <td>
+                              <input
+                                class="form-control input-value"
+                                [(ngModel)]="product.salePrice"
+                                (ngModelChange)="onChangeSalePrice(product)"
+                                jhiCurrencyNumber
+                              />
+                            </td>
+                            <td>
+                              <div class="list-action" style="padding-right: 0">
+                                <i
+                                  class="fa-solid fa-trash-can cursor-pointer"
+                                  ngbTooltip="{{ 'global.button.delete' | translate }}"
+                                  (click)="onClickDelete(product)"
+                                ></i>
+                              </div>
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </tbody>
+                      <tbody *ngIf="totalItems === 0">
+                        <tr class="table-not-data">
+                          <td colspan="12">
+                            <span jhiTranslate="easyPos.product.info.notData"></span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="group-page-size">
+              <div class="from-pagination d-flex justify-content-center" *ngIf="totalItems > 0">
+                <ngb-pagination
+                  class="pagination"
+                  [collectionSize]="totalItems || 0"
+                  [pageSize]="size"
+                  [page]="page"
+                  aria-label="Default pagination"
+                  [directionLinks]="true"
+                  [maxSize]="5"
+                  (pageChange)="loadMore($event)"
+                ></ngb-pagination>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="left-second mt-3 p-3">
+          <div class="d-flex justify-content-between col-5">
+            <h3 class="modal-title text-bold">Mẫu tem in</h3>
+            <button type="button" class="save-button-dialog me-1 mb-1" (click)="isSort = !isSort">
+              <span class="d-flex" *ngIf="isSort" [innerHTML]="ICON_CHECK | safeHtml"></span>
+              <span class="d-flex" *ngIf="!isSort" [innerHTML]="ICON_SORT_PAGE_ITEM | safeHtml"></span>
+              <span>{{ isSort ? 'Hoàn thành' : 'Sắp xếp' }}</span>
+            </button>
+          </div>
+          <div class="d-flex justify-content-between">
+            <div class="d-flex">
+              <div
+                class="d-flex flex-column"
+                [ngClass]="isSort ? 'example-list' : ''"
+                cdkDropList
+                [cdkDropListDisabled]="!isSort"
+                (cdkDropListDropped)="onDrop($event)"
+              >
+                <div
+                  *ngFor="let pageSize of barcodeItems"
+                  class="d-flex justify-content-between mt-3"
+                  [ngClass]="isSort ? 'example-box' : ''"
+                  cdkDrag
+                  [cdkDragDisabled]="!isSort || getBarCodeItem(pageSize.id) == 0"
+                  [cdkDragData]="pageSize"
+                  cdkDragBoundary=".modal-body"
+                  cdkDragLockAxis="y"
+                >
+                  <div [ngClass]="isSort ? 'example-custom-placeholder' : ''" *cdkDragPlaceholder></div>
+                  <div class="d-flex align-items-center gap-2">
+                    <div *ngIf="isSort">
+                      <span class="d-flex" [innerHTML]="ICON_SORT_BARCODE | safeHtml"></span>
+                    </div>
+                    <label class="title-info" [ngClass]="isSort ? 'cursor-move' : ''" [for]="pageSize.id">{{ pageSize.text }}</label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input
+                      *ngIf="!isSort"
+                      class="form-check-input switch-button"
+                      type="checkbox"
+                      [disabled]="isSort"
+                      [id]="pageSize.id"
+                      style="margin: 0"
+                      [(ngModel)]="pageSize.value"
+                      (ngModelChange)="onChangeSwitch(pageSize)"
+                    />
+                    <label *ngIf="isSort" class="text-bold cursor-move">
+                      {{ pageSize.position }}
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex flex-column align-items-center">
+              <span
+                *ngIf="getBarCodeItem('companyName') == 1"
+                class="template-product-name template-company-name text-bold"
+                [style.order]="getBarCodeItemPosition('companyName')"
+                >{{ lastCompany?.name }}
+              </span>
+              <span
+                *ngIf="getBarCodeItem('productName') == 1"
+                class="template-product-name"
+                [style.order]="getBarCodeItemPosition('productName')"
+                >Bánh mì (Cái)</span
+              >
+              <div [style.order]="getBarCodeItemPosition('barcode')">
+                <canvas
+                  id="template-barcode"
+                  [style]="getBarCodeItem('barcode') == 1 ? 'display: block; width: 100%; height: 110px' : 'display: none'"
+                ></canvas>
+              </div>
+              <span
+                *ngIf="getBarCodeItem('salePrice') == 1"
+                [style.order]="getBarCodeItemPosition('salePrice')"
+                class="template-product-name text-bold"
+                >100.000 VND</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5 col-xs-12 d-flex justify-content-around flex-wrap right-first ms-3" style="max-height: 71vh; overflow: auto">
+        <div
+          *ngFor="let pageSize of pageSizes"
+          class="col-lg-5 p-4 mb-2 page-size-item ms-3 me-3 mt-3"
+          (click)="changePageSize(pageSize)"
+          [ngClass]="pageSize.value == 1 ? 'page-size-active' : ''"
+          style="height: fit-content; flex: 1"
+        >
+          <img class="image-page-size" alt="page size" [src]="pageSize.image" />
+          <div class="d-flex align-items-baseline mt-2">
+            <input [id]="pageSize.id" name="hello" type="radio" [checked]="pageSize.value" />
+            <label [for]="pageSize.id" class="ms-2">{{ pageSize.text }}</label>
+          </div>
+        </div>
+        <div *ngIf="pageSizes.length % 2 == 1" class="col-lg-5 p-4 mb-2 ms-3 me-3 mt-3" style="height: fit-content; flex: 1"></div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer d-flex" style="max-height: 10vh">
+    <div class="btn-row col-lg-12" style="margin: 0; justify-content: end; display: flex">
+      <button type="button" class="exit-button-dialog me-2 mb-1" (click)="dismiss($event)">
+        <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+        <span jhiTranslate="global.button.cancel"></span>
+      </button>
+      <button
+        type="button"
+        class="save-button-dialog me-1 mb-1"
+        [disabled]="!transerProducts || transerProducts.length == 0"
+        appDisableButton
+        (click)="onExportExcel()"
+      >
+        <span [innerHTML]="ICON_EXCEL | safeHtml"></span>
+        <span>Kết xuất Excel</span>
+      </button>
+      <button
+        type="button"
+        class="save-button-dialog me-2 mb-1"
+        [disabled]="!transerProducts || transerProducts.length == 0 || isSavingPdf"
+        (click)="printToPDF()"
+      >
+        <span *ngIf="!isSavingPdf" [innerHTML]="ICON_PDF | safeHtml"></span>
+        <span *ngIf="isSavingPdf" [innerHTML]="SYNC_ICON | safeHtml"></span>
+        <span>Kết xuất PDF</span>
+      </button>
+    </div>
+    <div>
+      <span style="color: #58647a">Lưu ý: File Excel xuất ra để sử dụng thiết kế mẫu in mã vạch trên các phần mềm chuyên nghiệp khác</span>
+    </div>
+  </div>
+</div>

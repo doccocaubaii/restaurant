@@ -1,0 +1,283 @@
+$color-default: #0074bd;
+
+input[type='radio'] {
+  height: 20px;
+  width: 20px;
+}
+
+.delivery-item {
+  cursor: pointer !important;
+}
+
+.btn-close {
+  color: #ffffff;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  font-size: 16px;
+}
+.btn-close {
+  i {
+    margin: 0 !important;
+    font-size: 20px;
+  }
+}
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.td-ma-khach-hang {
+  max-width: 20ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.td-ten-khach-hang {
+  max-width: 40ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+table {
+  td:first-child {
+    padding: 10px 5px !important;
+    text-align: center;
+  }
+}
+
+.panel {
+  margin-bottom: 15px !important;
+}
+
+.wrap-product-voucher {
+  height: auto;
+  background-color: white;
+}
+
+.modal-body {
+  // height: 70vh;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+}
+
+.tab-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.modal-body {
+  padding: 0.5rem 1rem !important;
+}
+
+input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+td p:first-child {
+  margin-bottom: 5px !important;
+}
+
+td p:last-child {
+  color: red;
+}
+
+.quantity {
+  text-align: end;
+}
+
+.input-group.qty .btn {
+  background: #e9e9e9;
+  padding: 0;
+  color: #7a7a7a;
+  border: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark-mode .input-group.qty .btn {
+  background: #7a7a7a;
+  color: #d3d3d3;
+}
+
+.input-group.qty .btn:focus,
+.input-group.qty .btn:hover {
+  color: #32538b;
+  background: #b3cefb;
+}
+
+.qty {
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  width: 105px !important;
+  margin: 5px 0;
+}
+
+.input-group-append,
+.input-group-prepend {
+  a {
+    border-radius: 5px !important;
+  }
+}
+
+.input-group-prepend {
+  a {
+    color: #ffffff !important;
+    background-color: $color-default !important;
+  }
+}
+
+.input-group.qty .form-control {
+  margin: 0;
+  background: 0 0;
+  border: 0;
+  padding: 0;
+  text-align: center;
+  line-height: 1;
+  height: 26px;
+  font-weight: 500;
+}
+
+.form-product-promo-apply {
+  .product-voucher {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    // .product-name{
+    //   display: flex;
+    //   justify-content:
+    // }
+  }
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.product-promo {
+  background-color: #1484c6;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  padding: 5px 10px;
+
+  &:disabled {
+    opacity: 0.7;
+  }
+}
+
+.disable {
+  opacity: 0.6;
+}
+
+.loading-voucher {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.desc-voucher {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.voucher-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-voucher {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 5px 0 0;
+
+  .product-price {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    align-items: flex-end;
+
+    .add-icon {
+      cursor: pointer;
+      color: #ffffff;
+      background-color: $color-default;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 8px;
+    }
+  }
+}
+
+::ng-deep .my-tooltip-class .tooltip-inner {
+  background-color: whitesmoke;
+  color: $color-default;
+  font-weight: 600;
+}
+::ng-deep .bs-tooltip-end .tooltip-arrow::before {
+  border-right-color: whitesmoke;
+}
+::ng-deep .bs-tooltip-start .tooltip-arrow::before {
+  border-left-color: whitesmoke;
+}
+::ng-deep .bs-tooltip-top .tooltip-arrow::before {
+  border-top-color: whitesmoke;
+}
+::ng-deep .bs-tooltip-bottom .tooltip-arrow::before {
+  border-bottom-color: whitesmoke;
+}
+
+form {
+  position: relative;
+
+  .search-voucher-order {
+    border: none;
+    background: transparent;
+    margin: 0;
+    padding: 7px 8px;
+    font-size: 14px;
+    color: inherit;
+    border: 1px solid #0074bd;
+    border-radius: 19px;
+    width: 100%;
+    padding: 9px 4px 10px 20px;
+    outline: none;
+  }
+
+  .search-icon {
+    cursor: pointer;
+    position: absolute;
+    right: 3px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #1484c6;
+    color: white;
+    height: 36px;
+    border-radius: 19px;
+    width: 96px;
+  }
+}

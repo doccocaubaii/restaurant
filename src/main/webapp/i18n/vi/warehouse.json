@@ -1,0 +1,57 @@
+{
+  "easyPos": {
+    "warehouse": {
+      "title": "Quản lý xuất nhập kho",
+      "info": {
+        "all": "Tất cả",
+        "inWard": "Nhập kho",
+        "outWard": "Xuất kho",
+        "search": "Tìm kiếm",
+        "totalAmount": "Tổng: ",
+        "intakeWarehouse": "Nhập kho",
+        "createProduct": "Thêm sản phẩm",
+        "message": "Thông báo",
+        "quantityError": "Số lượng phải lớn hơn 0!",
+        "customerError": "Nhà cung cấp không được để trống!",
+        "lstIntakeError": "Danh sách sản phẩm không được để trống!",
+        "payMethodError": "Chưa chọn hình thức thanh toán!",
+        "purchasePriceError": "Giá nhập hàng không hợp lệ!",
+        "discountError1": "Giá trị chiết khấu không được lớn hơn tiền hàng!",
+        "discountError2": "Giá trị chiết khấu không được lớn hơn 100%",
+        "valueError": "Giá trị không hợp lệ",
+        "payMethodError1": "Vui lòng nhập hình thức thanh toán",
+        "isPrimaryError": "Sản phẩm là đơn vị tính chuyển đổi không thể bật tồn kho"
+      },
+      "button": {
+        "intakeWarehouse": "Nhập kho"
+      },
+      "table": {
+        "stt": "STT",
+        "no": "Mã lô hàng",
+        "time": "Thời gian",
+        "date": "Ngày giao dịch",
+        "customerName": "Khách hàng",
+        "supplierName": "Nhà cung cấp",
+        "type": "Phân loại",
+        "note": "Ghi chú",
+        "quantity": "Số lượng",
+        "totalAmount": "Tổng tiền",
+        "productCode": "Mã sản phẩm",
+        "productName": "Tên sản phẩm",
+        "unitName": "Đơn vị",
+        "unitPrice": "Đơn giá",
+        "amount": "Thành tiền",
+        "discountAmount": "Chiết khấu",
+        "totalQuantity": "Tổng số",
+        "totalAmountProduct": "Tổng tiền hàng",
+        "totalDiscount": "Tổng chiết khấu",
+        "costAmount": "Chi phí phát sinh",
+        "totalPaymentAmount": "Tổng tiền thanh toán"
+      },
+      "error": {
+        "message": "Thông báo",
+        "formatDate": "Định dạng ngày không hợp lệ"
+      }
+    }
+  }
+}

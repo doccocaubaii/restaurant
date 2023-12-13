@@ -1,0 +1,312 @@
+<!-- BEGIN #header -->
+<div (click)="onHidePolicy($event)" id="header" [class]="'app-header ' + (sidebarOption.isShow ? 'show-all-content' : 'mini-content')">
+  <!-- BEGIN navbar-header -->
+  <div class="navbar-header">
+    <!--    <button-->
+    <!--      type="button"-->
+    <!--      class="navbar-desktop-toggler"-->
+    <!--      data-toggle="app-sidebar-minify"-->
+    <!--      *ngIf="this.appSidebarTwo"-->
+    <!--      (click)="toggleAppSidebarNone()"-->
+    <!--    >-->
+    <!--      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">-->
+    <!--        <circle cx="14" cy="14" r="13.5" fill="white" stroke="#B0D4EB"/>-->
+    <!--        <path d="M12.3969 10.003C12.3318 9.93739 12.2544 9.88531 12.1691 9.84978C12.0838 9.81424 11.9923 9.79594 11.8999 9.79594C11.8075 9.79594 11.716 9.81424 11.6307 9.84978C11.5454 9.88531 11.4679 9.93739 11.4029 10.003L7.90286 13.503C7.83725 13.5681 7.78517 13.6455 7.74964 13.7308C7.7141 13.8161 7.6958 13.9076 7.6958 14C7.6958 14.0924 7.7141 14.1839 7.74964 14.2692C7.78517 14.3545 7.83725 14.4319 7.90286 14.497L11.4029 17.997C11.4679 18.0626 11.5454 18.1147 11.6307 18.1502C11.716 18.1858 11.8075 18.2041 11.8999 18.2041C11.9923 18.2041 12.0838 18.1858 12.1691 18.1502C12.2544 18.1147 12.3318 18.0626 12.3969 17.997C12.4625 17.9319 12.5145 17.8545 12.5501 17.7692C12.5856 17.6839 12.6039 17.5924 12.6039 17.5C12.6039 17.4076 12.5856 17.3161 12.5501 17.2308C12.5145 17.1455 12.4625 17.0681 12.3969 17.003L9.38686 14L12.3969 10.997C12.4625 10.9319 12.5145 10.8545 12.5501 10.7692C12.5856 10.6839 12.6039 10.5924 12.6039 10.5C12.6039 10.4076 12.5856 10.3161 12.5501 10.2308C12.5145 10.1455 12.4625 10.0681 12.3969 10.003ZM20.0969 13.503L16.5969 10.003C16.5316 9.93773 16.4541 9.88596 16.3688 9.85064C16.2836 9.81532 16.1922 9.79714 16.0999 9.79714C15.9134 9.79714 15.7347 9.87119 15.6029 10.003C15.5376 10.0683 15.4858 10.1457 15.4505 10.231C15.4152 10.3163 15.397 10.4077 15.397 10.5C15.397 10.6864 15.471 10.8652 15.6029 10.997L18.6129 14L15.6029 17.003C15.5373 17.0681 15.4852 17.1455 15.4496 17.2308C15.4141 17.3161 15.3958 17.4076 15.3958 17.5C15.3958 17.5924 15.4141 17.6839 15.4496 17.7692C15.4852 17.8545 15.5373 17.9319 15.6029 17.997C15.6679 18.0626 15.7454 18.1147 15.8307 18.1502C15.916 18.1858 16.0075 18.2041 16.0999 18.2041C16.1923 18.2041 16.2838 18.1858 16.3691 18.1502C16.4544 18.1147 16.5318 18.0626 16.5969 17.997L20.0969 14.497C20.1625 14.4319 20.2145 14.3545 20.2501 14.2692C20.2856 14.1839 20.3039 14.0924 20.3039 14C20.3039 13.9076 20.2856 13.8161 20.2501 13.7308C20.2145 13.6455 20.1625 13.5681 20.0969 13.503Z" fill="#004671"/>-->
+    <!--      </svg>-->
+    <!--    </button>-->
+    <!--    <a routerLink="index.html" class="navbar-brand">-->
+    <!--      <img src="/content/img/logo/logo2.png" alt="EasyPos" />-->
+    <!--    </a>-->
+    <!--    <button type="button" class="navbar-mobile-toggler" data-bs-toggle="collapse" data-bs-target="#top-navbar">-->
+    <!--      <span class="fa-stack fa-lg">-->
+    <!--        <i class="far fa-square fa-stack-2x"></i>-->
+    <!--        <i class="fa fa-cog fa-stack-1x mt-1px"></i>-->
+    <!--      </span>-->
+    <!--    </button>-->
+    <!--    <button type="button" class="navbar-mobile-toggler" data-toggle="app-sidebar-mobile">-->
+    <!--      <span class="icon-bar"></span>-->
+    <!--      <span class="icon-bar"></span>-->
+    <!--      <span class="icon-bar"></span>-->
+    <!--    </button>-->
+  </div>
+  <!-- END navbar-header -->
+  <!-- BEGIN navbar-collapse -->
+  <div class="collapse d-md-block me-auto" id="top-navbar">
+    <div class="navbar-nav"></div>
+  </div>
+  <!-- END navbar-collapse -->
+
+  <!-- BEGIN header-nav -->
+  <div class="navbar-nav">
+    <!--    <li ngbDropdown class="nav-item dropdown pointer" display="dynamic" *ngIf="languages && languages.length > 1">-->
+    <!--      <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="languagesnavBarDropdown">-->
+    <!--        <div class="language-custom">-->
+    <!--          <div class="language-item">-->
+    <!--            <span jhiTranslate="global.menu.language" class="">Language</span>-->
+    <!--            <svg xmlns="http://www.w3.org/2000/svg" width="8" height="5" viewBox="0 0 8 5" fill="none">-->
+    <!--              <path-->
+    <!--                d="M7.52669 0.206682C7.46502 0.144879 7.39176 0.0958475 7.31111 0.0623932C7.23046 0.0289389 7.14401 0.0117187 7.05669 0.0117188C6.96938 0.0117187 6.88293 0.0289389 6.80228 0.0623932C6.72163 0.0958475 6.64837 0.144879 6.58669 0.206682L4.00003 2.79335L1.41336 0.206682C1.28871 0.0820298 1.11964 0.012001 0.94336 0.012001C0.767076 0.012001 0.598011 0.0820298 0.473359 0.206682C0.348707 0.331333 0.278679 0.500397 0.278679 0.676682C0.278679 0.852966 0.348707 1.02203 0.473359 1.14668L3.53336 4.20668C3.59504 4.26848 3.66829 4.31752 3.74894 4.35097C3.82959 4.38442 3.91605 4.40164 4.00336 4.40164C4.09067 4.40164 4.17713 4.38442 4.25778 4.35097C4.33842 4.31752 4.41168 4.26848 4.47336 4.20668L7.53336 1.14668C7.78669 0.893348 7.78669 0.466682 7.52669 0.206682Z"-->
+    <!--                fill="#58647A"-->
+    <!--              />-->
+    <!--            </svg>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--      </a>-->
+    <!--      <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="languagesnavBarDropdown">-->
+    <!--        <li *ngFor="let language of languages">-->
+    <!--          <a class="dropdown-item" href="javascript:void(0);" (click)="changeLanguage(language)">{{ language | findLanguageFromKey }}</a>-->
+    <!--        </li>-->
+    <!--      </ul>-->
+    <!--    </li>-->
+    <div class="navbar-item navbar-user dropdown">
+      <!--      <div class="navbar-icon d-flex">-->
+      <!--        <div (click)="viewChat()" class="navbar-chat">-->
+      <!--          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">-->
+      <!--            <path-->
+      <!--              fill-rule="evenodd"-->
+      <!--              clip-rule="evenodd"-->
+      <!--              d="M13.629 20.472L13.087 21.388C12.604 22.204 11.397 22.204 10.913 21.388L10.371 20.472C9.951 19.762 9.741 19.406 9.403 19.21C9.065 19.013 8.64 19.006 7.79 18.991C6.534 18.97 5.747 18.893 5.087 18.619C4.48037 18.3677 3.92917 17.9994 3.46487 17.5351C3.00057 17.0708 2.63227 16.5196 2.381 15.913C2 14.995 2 13.83 2 11.5V10.5C2 7.227 2 5.59 2.737 4.388C3.14904 3.7152 3.71445 3.14945 4.387 2.737C5.59 2 7.228 2 10.5 2H13.5C16.773 2 18.41 2 19.613 2.737C20.2854 3.14917 20.8508 3.71456 21.263 4.387C22 5.59 22 7.228 22 10.5V11.5C22 13.83 22 14.995 21.62 15.913C21.3686 16.5197 21.0002 17.071 20.5357 17.5353C20.0712 17.9996 19.5198 18.3678 18.913 18.619C18.253 18.893 17.466 18.969 16.21 18.991C15.36 19.006 14.935 19.013 14.597 19.21C14.259 19.406 14.049 19.761 13.629 20.472ZM8 11.75C7.80109 11.75 7.61032 11.829 7.46967 11.9697C7.32902 12.1103 7.25 12.3011 7.25 12.5C7.25 12.6989 7.32902 12.8897 7.46967 13.0303C7.61032 13.171 7.80109 13.25 8 13.25H13.5C13.6989 13.25 13.8897 13.171 14.0303 13.0303C14.171 12.8897 14.25 12.6989 14.25 12.5C14.25 12.3011 14.171 12.1103 14.0303 11.9697C13.8897 11.829 13.6989 11.75 13.5 11.75H8ZM7.25 9C7.25 8.80109 7.32902 8.61032 7.46967 8.46967C7.61032 8.32902 7.80109 8.25 8 8.25H16C16.1989 8.25 16.3897 8.32902 16.5303 8.46967C16.671 8.61032 16.75 8.80109 16.75 9C16.75 9.19891 16.671 9.38968 16.5303 9.53033C16.3897 9.67098 16.1989 9.75 16 9.75H8C7.80109 9.75 7.61032 9.67098 7.46967 9.53033C7.32902 9.38968 7.25 9.19891 7.25 9Z"-->
+      <!--              fill="white"-->
+      <!--            />-->
+      <!--          </svg>-->
+      <!--        </div>-->
+      <!--        <div (click)="viewNotify()" class="navbar-notify">-->
+      <!--          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">-->
+      <!--            <path-->
+      <!--              d="M20.6288 15.9989C20.551 15.9052 20.4745 15.8114 20.3995 15.7209C19.3683 14.4736 18.7444 13.7208 18.7444 10.1897C18.7444 8.36156 18.307 6.86156 17.445 5.73656C16.8094 4.90547 15.9502 4.275 14.8177 3.80906C14.8031 3.80096 14.7901 3.79032 14.7792 3.77766C14.3719 2.41359 13.2572 1.5 12 1.5C10.7428 1.5 9.62861 2.41359 9.22127 3.77625C9.2104 3.78845 9.19756 3.79875 9.1833 3.80672C6.54049 4.89469 5.25611 6.98203 5.25611 10.1883C5.25611 13.7208 4.63314 14.4736 3.60095 15.7195C3.52595 15.81 3.44955 15.9019 3.37174 15.9975C3.17074 16.2399 3.04339 16.5348 3.00476 16.8473C2.96613 17.1598 3.01784 17.4769 3.15377 17.7609C3.44299 18.3703 4.05939 18.7486 4.76299 18.7486H19.2422C19.9425 18.7486 20.5547 18.3708 20.8449 17.7642C20.9814 17.4801 21.0336 17.1628 20.9953 16.8499C20.957 16.537 20.8298 16.2417 20.6288 15.9989ZM12 22.5C12.6774 22.4995 13.342 22.3156 13.9233 21.9679C14.5046 21.6202 14.981 21.1217 15.3019 20.5252C15.317 20.4966 15.3245 20.4646 15.3236 20.4322C15.3227 20.3999 15.3134 20.3684 15.2967 20.3407C15.28 20.313 15.2564 20.2901 15.2283 20.2742C15.2001 20.2583 15.1683 20.25 15.136 20.25H8.86502C8.83264 20.2499 8.80078 20.2582 8.77255 20.274C8.74432 20.2899 8.72067 20.3128 8.70392 20.3405C8.68716 20.3682 8.67787 20.3997 8.67694 20.4321C8.67601 20.4645 8.68347 20.4965 8.69861 20.5252C9.01949 21.1216 9.49579 21.6201 10.077 21.9678C10.6582 22.3155 11.3227 22.4994 12 22.5Z"-->
+      <!--              fill="white"-->
+      <!--            />-->
+      <!--            <circle cx="17.5" cy="6.5" r="3.5" fill="#EB5624" />-->
+      <!--          </svg>-->
+      <!--        </div>-->
+      <!--      </div>-->
+
+      <div class="navbar-icon navbar-button" *jhiHasAnyAuthority="authorBillAdd">
+        <div (click)="ClickOrder()" id="order" style="align-items: center; display: flex; gap: 8px">
+          <span style="color: white; font-size: 16px">Bán hàng</span>
+          <span [innerHTML]="ICON_ORDER | safeHtml"></span>
+        </div>
+      </div>
+      <div class="navbar-icon navbar-button">
+        <div
+          (click)="showSecurityPolicy = false; changeShowSupport()"
+          id="support-icon"
+          style="align-items: center; display: flex; gap: 8px"
+        >
+          <span [innerHTML]="ICON_SUPPORT | safeHtml"></span>
+          <span>Hỗ trợ</span>
+        </div>
+        <div class="overlay-container" *ngIf="showSupport" id="support-overlay-container">
+          <div class="icon-arrow">
+            <span [innerHTML]="ICON_SHOW_SUPPORT | safeHtml"></span>
+          </div>
+          <div class="overlay">
+            <a
+              class="overlay-item pointer"
+              style="justify-content: normal; padding: 3px 10px; text-decoration: none"
+              href="https://app.easyposs.vn/client/file/EasyPosConnect_1.0.0.6.msi"
+              target="_blank"
+            >
+              <!--              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">-->
+              <!--                <path-->
+              <!--                  d="M5.472 13.2857H3.84515C3.39049 13.2857 2.95445 13.1051 2.63296 12.7836C2.31147 12.4621 2.13086 12.0261 2.13086 11.5714L2.13086 8.14285C2.13086 7.68819 2.31147 7.25216 2.63296 6.93067C2.95445 6.60917 3.39049 6.42856 3.84515 6.42856L14.1429 6.42856C14.5975 6.42856 15.0336 6.60917 15.355 6.93067C15.6765 7.25216 15.8571 7.68819 15.8571 8.14285V11.5714C15.8571 12.0261 15.6765 12.4621 15.355 12.7836C15.0336 13.1051 14.5975 13.2857 14.1429 13.2857H12.4286"-->
+              <!--                  stroke="#16243D"-->
+              <!--                  stroke-linecap="round"-->
+              <!--                  stroke-linejoin="round"-->
+              <!--                />-->
+              <!--                <path-->
+              <!--                  d="M5.57129 4.71426V2.99997C5.57129 2.77265 5.6616 2.55463 5.82234 2.39388C5.98309 2.23314 6.2011 2.14283 6.42843 2.14283H11.5713C11.7986 2.14283 12.0166 2.23314 12.1774 2.39388C12.3381 2.55463 12.4284 2.77265 12.4284 2.99997V4.71426M5.57129 15V10.7134H12.4284V15C12.4284 15.2273 12.3381 15.4453 12.1774 15.6061C12.0166 15.7668 11.7986 15.8571 11.5713 15.8571H6.42843C6.2011 15.8571 5.98309 15.7668 5.82234 15.6061C5.6616 15.4453 5.57129 15.2273 5.57129 15Z"-->
+              <!--                  stroke="#16243D"-->
+              <!--                  stroke-linecap="round"-->
+              <!--                  stroke-linejoin="round"-->
+              <!--                />-->
+              <!--                <path-->
+              <!--                  d="M14.5717 8.57138C14.5717 8.098 14.188 7.71424 13.7146 7.71424C13.2412 7.71424 12.8574 8.098 12.8574 8.57138C12.8574 9.04477 13.2412 9.42853 13.7146 9.42853C14.188 9.42853 14.5717 9.04477 14.5717 8.57138Z"-->
+              <!--                  fill="#16243D"-->
+              <!--                />-->
+              <!--              </svg>-->
+              <img src="/content/img/logo/EasyPos.jpg" class="logo-img" alt="EasyPos" style="margin-right: 0" />
+              <span class="icon-text">Tải EasyPos kết nối máy in</span>
+            </a>
+            <a
+              class="overlay-item pointer"
+              style="justify-content: normal; padding: 3px 10px; text-decoration: none"
+              href="https://easyinvoice.vn/wp-content/uploads/2023/09/EasyInvoiceSigningTool-2.3.1.zip"
+              target="_blank"
+            >
+              <img src="/content/img/logo/EasyPos.jpg" class="logo-img" alt="EasyPos" style="margin-right: 0" />
+              <span class="icon-text">Tải công cụ ký số</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="navbar-icon navbar-button" style="color: black">
+        <div class="me-0" id="notification-icon" (click)="showNotification = !showNotification">
+          <div style="align-items: center; display: flex; gap: 8px" class="position-relative" [ngbTooltip]="'Thông báo'">
+            <span [innerHTML]="ICON_NOTIFICATION | safeHtml"></span>
+            <span
+              *ngIf="notificationCount"
+              class="number-notification position-absolute"
+              [style]="notificationCount == '9+' ? 'padding: 1px 3px' : ''"
+              >{{ notificationCount }}</span
+            >
+          </div>
+        </div>
+        <div class="overlay-container" *ngIf="showNotification">
+          <div class="icon-arrow">
+            <span [innerHTML]="ICON_SHOW_PROFILE | safeHtml"></span>
+          </div>
+          <div class="overlay overlay-notification" style="right: -293px; width: auto">
+            <jhi-notification style="position: relative; cursor: default"></jhi-notification>
+          </div>
+        </div>
+      </div>
+      <div class="navbar-icon navbar-button me-0" *jhiHasAnyAuthority="authorCOMPANY_CHANGE_SESSION">
+        <div (click)="changeWorkingSession()" style="align-items: center; display: flex; gap: 8px">
+          <span [innerHTML]="ICON_CHANGE_WORKING_SESSION | safeHtml"></span>
+          <span [ngbTooltip]="'Đổi phiên làm việc'">{{ lastUser.comName }} </span>
+        </div>
+      </div>
+      <div class="d-flex ms-10px" (click)="changeShowRoles()" id="show-role" style="cursor: pointer">
+        <div class="bg-white rounded-circle me-15px p-6px">
+          <span [innerHTML]="ICON_USER | safeHtml"></span>
+        </div>
+
+        <div class="navbar-icon navbar-button">
+          <div id="profile" style="align-items: center; display: flex; gap: 8px">
+            <span>{{ lastUser!.fullname }}</span>
+          </div>
+          <div class="overlay-container" *ngIf="showRoles" id="roles">
+            <div class="icon-arrow">
+              <span [innerHTML]="ICON_SHOW_PROFILE | safeHtml"></span>
+            </div>
+            <div class="overlay">
+              <div *jhiHasAnyAuthority="authorEmployView" [style]="utilsService.getStyleByCode('NV/US')">
+                <a (click)="getLink(EMPLOYEE)" class="overlay-item pointer div-login">
+                  <div class="menu-icon">
+                    <span [innerHTML]="ICON_EMPLOYEE | safeHtml"></span>
+                  </div>
+                  <!--                  <span class="icon-text">Nhân viên</span>-->
+                  <span class="icon-text" jhiJsonCustom="NV/US"></span>
+                </a>
+              </div>
+              <div *jhiHasAnyAuthority="authorRoleView" [style]="utilsService.getStyleByCode('VT/US')">
+                <a class="overlay-item pointer div-login" (click)="getLink(PERMISSIONS)">
+                  <div class="menu-icon">
+                    <span [innerHTML]="ICON_ROLE | safeHtml"></span>
+                  </div>
+                  <!--                  <span class="icon-text">Phân quyền</span>-->
+                  <span class="icon-text" jhiJsonCustom="VT/US"></span>
+                </a>
+              </div>
+
+              <div>
+                <a (click)="openPasswordChange()" class="overlay-item pointer div-login">
+                  <span [innerHTML]="ICON_CHANGE_PASSWORD | safeHtml"></span>
+                  <span class="icon-text">Đổi mật khẩu</span>
+                </a>
+              </div>
+
+              <div
+                *ngIf="lastUser && lastUser.username && SECURITY_POLICY_USERNAMES.includes(lastUser.username)"
+                style="border-top: 1px solid #d5d8dd"
+              >
+                <a (click)="getLink(SECURITY_POLICY)" class="overlay-item pointer div-login">
+                  <span [innerHTML]="ICON_SECURITY_POLICY | safeHtml"></span>
+                  <span class="icon-text">Chính sách bảo mật</span>
+                </a>
+              </div>
+
+              <div style="border-top: 1px solid #d5d8dd">
+                <a (click)="logout()" class="overlay-item pointer div-login">
+                  <span [innerHTML]="ICON_LOGOUT | safeHtml"></span>
+                  <span class="icon-text">Đăng xuất</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--      <div class="position-relative cursor-pointer" id="easypos-policy">-->
+      <!--        <a (click)="onChangeShowPolicy()" class="cursor-pointer navbar-link d-flex align-items-center">-->
+      <!--          <div class="bg-white rounded-circle me-15px p-6px">-->
+      <!--            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+      <!--              <path-->
+      <!--                d="M23 16C23.7956 16 24.5587 16.3161 25.1213 16.8787C25.6839 17.4413 26 18.2044 26 19V20C26 23.942 22.28 28 16 28C9.72 28 6 23.942 6 20V19C6 18.2044 6.31607 17.4413 6.87868 16.8787C7.44129 16.3161 8.20435 16 9 16H23ZM16 3C17.4587 3 18.8576 3.57946 19.8891 4.61091C20.9205 5.64236 21.5 7.04131 21.5 8.5C21.5 9.95869 20.9205 11.3576 19.8891 12.3891C18.8576 13.4205 17.4587 14 16 14C14.5413 14 13.1424 13.4205 12.1109 12.3891C11.0795 11.3576 10.5 9.95869 10.5 8.5C10.5 7.04131 11.0795 5.64236 12.1109 4.61091C13.1424 3.57946 14.5413 3 16 3Z"-->
+      <!--                fill="#0074BD"-->
+      <!--              />-->
+      <!--            </svg>-->
+      <!--          </div>-->
+      <!--          <span class="d-md-inline" style="color: white; font-size: 16px">{{ lastUser!.fullname }}</span>-->
+      <!--          &lt;!&ndash;        <fa-icon icon="angle-down"></fa-icon>&ndash;&gt;-->
+      <!--        </a>-->
+      <!--                <div style="position: absolute; top: 46px; right: 30px" class="overlay-container" *ngIf="showSecurityPolicy">-->
+      <!--                  <div class="icon-arrow" style="top: 14px">-->
+      <!--                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="13" viewBox="0 0 22 13" fill="none">-->
+      <!--                      <path-->
+      <!--                        d="M10.2504 0.848912C10.6485 0.398108 11.3515 0.398108 11.7496 0.848912L20.7909 11.0881C21.361 11.7337 20.9026 12.75 20.0413 12.75H1.95873C1.09744 12.75 0.639049 11.7337 1.20914 11.0881L10.2504 0.848912Z"-->
+      <!--                        fill="white"-->
+      <!--                      />-->
+      <!--                    </svg>-->
+      <!--                  </div>-->
+      <!--                  <div class="overlay">-->
+      <!--                    <a-->
+      <!--                      class="overlay-item pointer"-->
+      <!--                      style="justify-content: normal; padding: 3px 10px; text-decoration: none"-->
+      <!--                      (click)="getLink(SECURITY_POLICY, ''); showSecurityPolicy = !showSecurityPolicy"-->
+      <!--                      target="_blank"-->
+      <!--                    >-->
+      <!--                      &lt;!&ndash;              <img src="/content/img/logo/EasyPos.jpg" class="logo-img" alt="EasyPos" style="margin-right: 0" />&ndash;&gt;-->
+      <!--                      <span class="icon-text">Chính sách bảo mật dữ liệu</span>-->
+      <!--                    </a>-->
+      <!--                  </div>-->
+      <!--                </div>-->
+      <!--      </div>-->
+    </div>
+  </div>
+  <!-- END header-nav -->
+</div>
+<!-- END #header -->
+<div>
+  <ng-template #modalWorkingSession let-dctt="dismiss">
+    <div class="modal-header">
+      <div class="group-header">
+        <span class="modal-title">Phiên làm việc</span>
+        <button type="button" class="btn-close" (click)="dctt('Close'); dismiss($event)">
+          <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+        </button>
+      </div>
+    </div>
+    <div class="border-header"></div>
+    <div class="modal-body">
+      <div class="change-session mt-0 input-text-custom">
+        <label class="title-info">Cửa hàng</label>
+        <div>
+          <ng-select
+            [items]="companies"
+            class="select-value select-search"
+            bindLabel="name"
+            bindValue="id"
+            id="tctd"
+            [(ngModel)]="currentCompanyId"
+            (change)="onChangeCompanySession(currentCompanyId)"
+          >
+          </ng-select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer d-flex">
+      <div class="btn-row col-md-12">
+        <button type="button" class="exit-button-dialog me-2 mb-1" (click)="dismiss($event)">
+          <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+          <span jhiTranslate="global.button.cancel"></span>
+        </button>
+        <button type="button" class="save-button-dialog me-1 mb-1" (click)="saveChangeSession()">
+          <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+          <span jhiTranslate="global.button.save"></span>
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</div>

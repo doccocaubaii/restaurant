@@ -1,0 +1,17 @@
+.countRow {
+  background-color: #7db5dd !important;
+  width: 100%;
+  color: #000000;
+}
+.css-tool-in {
+  padding: 0px !important;
+  font-size: 14px;
+  font-family: 'Times New Roman';
+}
+
+.css-tool-in-red {
+  padding: 0px !important;
+  font-size: 14px;
+  font-family: 'Times New Roman';
+  color: red;
+}

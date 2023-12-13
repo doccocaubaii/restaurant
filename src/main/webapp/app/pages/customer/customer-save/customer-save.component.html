@@ -1,0 +1,456 @@
+<div [ngStyle]="indexUpdate === 0 ? { height: '688px' } : { height: '334px' }" class="d-flex flex-column">
+  <div class="modal-header">
+    <h3
+      class="modal-title text-bold"
+      style="color: white"
+      [jhiTranslate]="cus.id ? 'easyPos.customer.update.title' : 'easyPos.customer.create.title'"
+    >
+      Thêm khách hàng
+    </h3>
+    <button type="button" class="btn-close" (click)="dismiss()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="panel-custom custom-sub-panel mb-2">
+      <ul class="nav">
+        <li class="nav-item" (click)="onChangeUpdateDetail(0)">
+          <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link active">
+            <span class="d-sm-block">Thông tin cơ bản</span>
+          </a>
+        </li>
+        <li *ngIf="cus.type != 3" class="nav-item" (click)="onChangeUpdateDetail(1)">
+          <a href="#nav-pills-tab-2" data-bs-toggle="tab" class="nav-link">
+            <span class="d-sm-block">Thông tin bổ sung</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <form class="detail-row" #cusForm="ngForm">
+      <div *ngIf="indexUpdate === 0" class="mb-0">
+        <div class="col-in-row">
+          <div class="col col-left">
+            <!--          mã khách hàng-->
+            <div>
+              <label for="ma-khach-hang" class="my-form-label title-info"
+                ><span *ngIf="!isSuplier" jhiTranslate="easyPos.customer.info.customer-code">Mã khách hàng</span>
+                <span *ngIf="isSuplier">Mã nhà cung cấp</span>
+              </label>
+              <div class="user-input-text-div">
+                <input
+                  class="form-control input-value"
+                  type="text"
+                  id="ma-khach-hang"
+                  name="ma-khach-hang"
+                  placeholder="Ví dụ: BM01"
+                  [(ngModel)]="cus.code2"
+                  maxlength="100"
+                />
+              </div>
+            </div>
+
+            <!--              dánh sách khách hàng-->
+            <div>
+              <label for="nhom-khach-hang" class="my-form-label title-info"
+                ><span *ngIf="!isSuplier" jhiTranslate="easyPos.customer.info.type">Loại khách hàng</span>
+                <span *ngIf="isSuplier">Loại nhà cung cấp</span> <span style="color: red">*</span>
+              </label>
+              <div class="user-input-text-div">
+                <ng-select
+                  id="nhom-khach-hang"
+                  name="nhom-khach-hang"
+                  class="select-value"
+                  [clearable]="false"
+                  [searchable]="false"
+                  [(ngModel)]="cus.type"
+                >
+                  <ng-option [value]="1" jhiTranslate="easyPos.customer.info.type-customer">Khách hàng</ng-option>
+                  <ng-option [value]="2" jhiTranslate="easyPos.customer.info.type-cus-and-supply">Khách hàng và Nhà cung cấp </ng-option>
+                  <ng-option [value]="3" jhiTranslate="easyPos.customer.info.type-supply">Nhà cung cấp</ng-option>
+                </ng-select>
+              </div>
+            </div>
+
+            <!--        số điện thoại-->
+            <div class="position-relative">
+              <label class="my-form-label title-info" for="so-dien-thoai"
+                ><span jhiTranslate="easyPos.customer.info.table-th.phone-number">Số điện thoại</span></label
+              >
+              <div class="user-input-text-div position-relative">
+                <input
+                  class="form-control"
+                  type="text"
+                  id="so-dien-thoai"
+                  name="so-dien-thoai"
+                  jhiStringNumberOnly
+                  #sdt="ngModel"
+                  [(ngModel)]="cus.phoneNumber"
+                  maxlength="14"
+                  minlength="10"
+                  placeholder="Ví dụ: 01234567890"
+                />
+                <span class="position-absolute title-info" style="bottom: 8px; right: 8px; font-size: 0.8em"
+                  >{{ cus.phoneNumber?.length }}/14</span
+                >
+              </div>
+              <div
+                class="position-absolute"
+                id="alert-sdt"
+                ngbTooltip="{{ 'easyPos.alert.phoneNumber' | translate }}"
+                placement="right"
+                [hidden]="(sdt.valid && isNumericWithZero(sdt.value)) || sdt.untouched || sdt.value == ''"
+                style="left: -18px; top: 32px"
+              >
+                <div class="alert-user-input">
+                  <i class="fas fa-circle-exclamation"></i>
+                  <!--                <span jhiTranslate="easyPos.alert.phoneNumber">Số điện thoại phải từ 10-14 chữ số</span>-->
+                </div>
+              </div>
+            </div>
+
+            <!--        mã số thuế -->
+            <div class="position-relative">
+              <label class="my-form-label title-info p-0" for="ma-so-thue">
+                <span jhiTranslate="easyPos.customer.info.table-th.taxCode">Mã số thuế</span>
+              </label>
+              <div class="user-input-text-div">
+                <div class="position-relative">
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="ma-so-thue"
+                    name="ma-so-thue"
+                    jhiTaxCode
+                    #taxCode="ngModel"
+                    [(ngModel)]="cus.taxCode"
+                    maxlength="14"
+                    minlength="10"
+                    placeholder="Ví dụ: 0123456789"
+                  />
+                  <span class="position-absolute title-info" style="bottom: 8px; right: 8px; font-size: 0.8em"
+                    >{{ cus.taxCode?.length }}/14</span
+                  >
+                </div>
+                <button
+                  [disabled]="cus.taxCode?.length < 10 || loading.isLoading || !isNumeric(taxCode.value)"
+                  class="save-button-dialog"
+                  (click)="getInfoFromTax()"
+                >
+                  <i class="fas fa-sync"></i><span jhiTranslate="easyPos.customer.action.getInfo">Lấy dữ liệu</span>
+                </button>
+              </div>
+              <div
+                class="position-absolute"
+                ngbTooltip="{{ 'easyPos.alert.taxCode' | translate }}"
+                placement="right"
+                id="alert-tax-code"
+                style="left: -19px; top: 9px"
+                [hidden]="
+                  (taxCode.valid && isNumeric(taxCode.value) && isValidTaxCode(taxCode.value)) || taxCode.untouched || taxCode.value == ''
+                "
+              >
+                <label class="title-info"></label>
+                <div class="alert-user-input">
+                  <i class="fas fa-circle-exclamation"></i>
+                  <!--                <span jhiTranslate="easyPos.alert.taxCode">Mã số thuế phải từ 10-14 chữ số</span>-->
+                </div>
+              </div>
+            </div>
+            <!--        huyện-->
+            <div>
+              <label class="my-form-label title-info" for="huyen"><span jhiTranslate="easyPos.customer.info.district">Huyện</span> </label>
+              <div class="user-input-text-div">
+                <input
+                  class="form-control"
+                  id="huyen"
+                  name="huyen"
+                  [(ngModel)]="cus.district"
+                  maxlength="100"
+                  placeholder="Ví dụ: Cầu Giấy"
+                />
+              </div>
+            </div>
+
+            <!--          ngày sinh-->
+            <div class="group-item-custom1 mt-0">
+              <label class="my-form-label title-info p-0 m-0" for="birthday"><span>Ngày sinh</span></label>
+              <div class="item-search">
+                <input
+                  id="birthday"
+                  class="form-control cursor-pointer"
+                  placeholder="DD-MM-YYYY"
+                  name="d3"
+                  ngbDatepicker
+                  readonly
+                  required="false"
+                  style="border-color: #dadce0"
+                  #d3="ngbDatepicker"
+                  [(ngModel)]="birthday"
+                  [maxDate]="utilsService.getCurrentDate()"
+                />
+                <button class="btn form-control btn-datepicker" type="button" (click)="d3.toggle()">
+                  <fa-icon [icon]="'calendar-alt'"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col col-right">
+            <!--          tên khách hàng-->
+            <div class="position-relative">
+              <label for="ten-khach-hang" class="my-form-label title-info"
+                ><span *ngIf="!isSuplier" jhiTranslate="easyPos.customer.info.customerName">Tên khách hàng</span>
+                <span *ngIf="isSuplier">Tên nhà cung cấp</span> <span style="color: red">*</span>
+              </label>
+              <div class="user-input-text-div">
+                <input
+                  class="form-control"
+                  id="ten-khach-hang"
+                  required
+                  name="ten-khach-hang"
+                  #name="ngModel"
+                  [(ngModel)]="cus.name"
+                  maxlength="400"
+                  placeholder="Ví dụ: Nguyễn Văn A"
+                />
+              </div>
+              <div
+                class="position-absolute"
+                [hidden]="name.valid || name.untouched"
+                id="alert-name"
+                ngbTooltip="{{ 'easyPos.alert.nameCustomer' | translate }}"
+                placement="left"
+              >
+                <div class="alert-user-input">
+                  <i class="fas fa-circle-exclamation"></i>
+                  <!--                <span jhiTranslate="easyPos.alert.nameCustomer">Tên khách hàng không được để trống</span>-->
+                </div>
+              </div>
+            </div>
+            <!--            số cccd-->
+            <div class="position-relative">
+              <label class="my-form-label title-info" for="so-can-cuoc"
+                ><span jhiTranslate="easyPos.customer.info.cccd">Số CCCD/CMTND</span>
+              </label>
+              <div class="user-input-text-div d-flex">
+                <div class="position-relative" style="flex-grow: 1">
+                  <input
+                    class="form-control"
+                    id="so-can-cuoc"
+                    name="so-can-cuoc"
+                    jhiStringNumberOnly
+                    #cccd="ngModel"
+                    [(ngModel)]="cus.idNumber"
+                    maxlength="12"
+                    minlength="9"
+                    placeholder="Ví dụ: 01234567890"
+                  />
+                  <span class="position-absolute title-info" style="bottom: 8px; right: 8px; font-size: 0.8em"
+                    >{{ cus.idNumber?.length }}/12</span
+                  >
+                </div>
+              </div>
+              <div
+                class="position-absolute"
+                id="alert-cccd"
+                [hidden]="(cccd.valid && isNumeric(cccd.value)) || cccd.untouched || cccd.value == ''"
+                ngbTooltip="{{ 'easyPos.alert.cccd' | translate }} "
+                placement="left"
+                style="right: -18px; top: 34px"
+              >
+                <div class="alert-user-input">
+                  <i class="fas fa-circle-exclamation"></i>
+                  <!--                  <span jhiTranslate="easyPos.alert.cccd">Số căn cước phải có 9-12 chữ số</span>-->
+                </div>
+              </div>
+            </div>
+
+            <!--          email-->
+            <div class="position-relative">
+              <label class="my-form-label title-info" for="email"><span jhiTranslate="easyPos.customer.info.Email">Email</span> </label>
+              <div class="user-input-text-div">
+                <input
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  email="true"
+                  [(ngModel)]="cus.email"
+                  placeholder="Ví dụ: sds@gmail.com"
+                  #email="ngModel"
+                  maxlength="50"
+                />
+              </div>
+              <div
+                id="alert-email"
+                class="position-absolute"
+                ngbTooltip="{{ 'easyPos.alert.email' | translate }}"
+                [hidden]="(email.valid && testMail(email.value)) || email.untouched || email.value == ''"
+              >
+                <div class="alert-user-input">
+                  <i class="fas fa-circle-exclamation"></i>
+                  <!--                <span jhiTranslate="easyPos.alert.email">Email không hợp lệ</span>-->
+                </div>
+              </div>
+            </div>
+
+            <!--          tỉnh-->
+            <div>
+              <label class="my-form-label title-info p-0"><span jhiTranslate="easyPos.customer.info.province">Tỉnh</span> </label>
+              <div class="user-input-text-div p-0">
+                <ng-select
+                  class="select-value"
+                  id="city"
+                  name="city"
+                  [(ngModel)]="cus.city"
+                  [clearable]="!(cus.city === null || cus.city == '')"
+                  placeholder="Ví dụ: Thành phố Hà Nội"
+                >
+                  <ng-option *ngFor="let province of listProvinces" [value]="province">{{ province }} </ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <!--          địa chỉ-->
+            <div>
+              <label class="my-form-label title-info p-0 m-0" for="dia-chi"
+                ><span jhiTranslate="easyPos.customer.info.address">Địa chỉ</span>
+              </label>
+              <div class="user-input-text-div none-pl-when-small p-0 m-0">
+                <input
+                  class="form-control"
+                  id="dia-chi"
+                  name="dia-chi"
+                  [(ngModel)]="cus.address"
+                  maxlength="400"
+                  placeholder="Ví dụ: 12 Xuân Thủy, Dịch Vọng Hậu"
+                />
+              </div>
+            </div>
+
+            <!--       giới tính-->
+            <div style="height: 63px" class="d-flex flex-column">
+              <label class="my-form-label title-info p-0 m-0" for="dia-chi"><span class="me-4">Giới tính</span> </label>
+              <div style="height: 100%" class="d-flex align-items-center">
+                <div class="user-input-text-div none-pl-when-small p-0 m-0 gap-5 gender">
+                  <div>
+                    <input type="radio" id="male" name="gender" [(ngModel)]="cus.gender" [value]="1" [checked]="cus.gender === 1" />
+                    <label for="male">Nam</label>
+                  </div>
+                  <div>
+                    <input type="radio" id="female" name="gender" [(ngModel)]="cus.gender" [value]="2" [checked]="cus.gender === 2" />
+                    <label for="female">Nữ</label>
+                  </div>
+                  <div>
+                    <input type="radio" id="other" name="gender" [(ngModel)]="cus.gender" [value]="3" [checked]="cus.gender === 3" />
+                    <label for="other">Khác</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--        Mô tả-->
+        <div class="pos-infor row-1 col-md-12 row div-mo-ta pe-10px">
+          <label class="my-form-label title-info p-0 m-0" for="mo-ta"
+            ><span jhiTranslate="easyPos.customer.info.describe">Mô tả</span>
+          </label>
+          <div class="user-input-text-div none-pl-when-small p-0 m-0">
+            <textarea
+              class="form-control"
+              id="mo-ta"
+              name="mo-ta"
+              placeholder="Nhập mô tả..."
+              rows="2"
+              style="width: 100%; padding-left: 4px"
+              [(ngModel)]="cus.description"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="indexUpdate === 1" class="mb-0">
+        <div class="col-in-row">
+          <div class="col col-left">
+            <div>
+              <label for="customer-card-code" class="my-form-label title-info"> Mã thẻ thành viên </label>
+              <div class="user-input-text-div">
+                <input
+                  class="form-control input-value"
+                  type="text"
+                  id="customer-card-code"
+                  name="customer-card-code"
+                  placeholder="Mã thẻ"
+                  [(ngModel)]="cus.cardInformation.cardCode"
+                  maxlength="100"
+                  jhiStringNumberOnly
+                />
+              </div>
+            </div>
+            <div>
+              <label for="card-point" class="my-form-label title-info">Số điểm</label>
+              <div class="user-input-text-div">
+                <input
+                  class="form-control input-value cursor-pointer"
+                  type="text"
+                  id="card-point"
+                  jhiStringNumberOnly
+                  name="card-point"
+                  placeholder="Nhập điểm"
+                  [(ngModel)]="cus.cardInformation.point"
+                  maxlength="100"
+                  [readOnly]="cus.cardInformation.cardId"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="col col-right">
+            <div class="position-ralative">
+              <label for="card-name" class="my-form-label title-info"> Hạng thẻ thành viên </label>
+              <div class="user-input-text-div">
+                <input
+                  class="form-control input-value cursor-pointer"
+                  type="text"
+                  id="card-name"
+                  name="card-name"
+                  placeholder="Hạng thẻ thành viên"
+                  readonly
+                  [(ngModel)]="cus.cardInformation.cardName"
+                />
+              </div>
+            </div>
+            <!-- money -->
+            <div class="position-relative">
+              <label for="amount" class="my-form-label title-info">Số tiền</label>
+              <div class="user-input-text-div">
+                <input
+                  class="form-control input-value cursor-pointer"
+                  id="amount"
+                  name="amount"
+                  [(ngModel)]="cus.cardInformation.amount"
+                  maxlength="100"
+                  placeholder="Nhập tiền"
+                  jhiCurrencyNumber
+                  [numberRound]="0"
+                  [readOnly]="cus.cardInformation.cardId"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="exit-button-dialog" (click)="dismiss()">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <label jhiTranslate="global.entity.action.cancel">Hủy</label>
+    </button>
+    <!--    !testMail(email.value) ||-->
+    <!--    !isNumeric(taxCode.value) ||-->
+    <!--    !isNumericWithZero(sdt.value) ||-->
+    <!--    !isNumeric(cccd.value)-->
+    <button type="button" class="save-button-dialog" [disabled]="!cusForm.form.valid || loading.isLoading" (click)="presave()">
+      <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+      <span jhiTranslate="global.entity.action.save">Lưu</span>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,132 @@
+<div class="modal-header">
+  <h3 class="modal-title text-bold" style="color: white">{{ title }}</h3>
+  <button type="button" class="btn-close" (click)="dismiss($event)">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+<div class="modal-body pb-0">
+  <div class="group-form-custom mt-10px mb-25px row">
+    <!--    formdate -->
+    <div class="group-item-custom1 col-sm-6 col-md-3 col-lg-3">
+      <label class="form-label label-search" jhiTranslate="global.info.fromDate"></label>
+      <div class="item-search">
+        <input
+          class="form-control"
+          placeholder="DD-MM-YYYY"
+          name="d2"
+          #c3="ngModel"
+          [(ngModel)]="fromDate"
+          [maxDate]="utilsService.getFromToMoment(toDate)"
+          ngbDatepicker
+          #d3="ngbDatepicker"
+          (keyup.enter)="getAllUsage()"
+        />
+        <button class="btn form-control btn-datepicker" (click)="d3.toggle()" type="button">
+          <fa-icon [icon]="'calendar-alt'"></fa-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="group-item-custom1 col-sm-6 col-md-3 col-lg-3">
+      <label class="form-label label-search" jhiTranslate="global.info.toDate"></label>
+      <div class="item-search">
+        <input
+          class="form-control"
+          placeholder="DD-MM-YYYY"
+          name="d2"
+          #c2="ngModel"
+          [(ngModel)]="toDate"
+          [minDate]="utilsService.getFromToMoment(fromDate, true)"
+          [maxDate]="utilsService.getCurrentDate()"
+          ngbDatepicker
+          #d2="ngbDatepicker"
+          (keyup.enter)="getAllUsage()"
+        />
+        <button class="btn form-control btn-datepicker" (click)="d2.toggle()" type="button">
+          <fa-icon [icon]="'calendar-alt'"></fa-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="group-item-custom1 col-sm-6 col-md-3 col-lg-3">
+      <label class="form-label label-search">Từ khoá</label>
+      <div class="item-search">
+        <input
+          name="keyword"
+          [(ngModel)]="keyword"
+          class="form-control"
+          type="search"
+          placeholder="Tìm kiếm"
+          (keyup.enter)="getAllUsage()"
+        />
+      </div>
+    </div>
+
+    <!--    end todate-->
+    <div class="group-item-custom1 col-sm-6 col-md-2 col-lg-2">
+      <div class="label-search d-block">
+        <button (click)="isSearch = true; getAllUsage()" class="p-0 btn btn-sm btn-blue btn-search">
+          <fa-icon icon="search"></fa-icon>
+          <span jhiTranslate="global.info.search"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="isSearch && voucherUsages.length == 0" class="d-flex justify-content-center py-3">
+    <label>Không có dữ liệu</label>
+  </div>
+  <div *ngIf="voucherUsages.length > 0">
+    <div class="tab-content rounded-top panel rounded-0 m-0">
+      <div class="tab-pane fade active show">
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="panel panel-inverse m-0" style="height: 500px">
+              <div class="table-responsive">
+                <table class="table editing-table">
+                  <thead>
+                    <tr class="table-custom-header">
+                      <th class="text-break main-table-th-1" jhiTranslate="global.info.Stt">STT</th>
+                      <th class="main-table-th-2">Mã đơn hàng</th>
+                      <th class="main-table-th-3">Thời gian</th>
+                      <th class="main-table-th-4">Khách hàng</th>
+                      <th class="main-table-th-5">Chi nhánh sử dụng</th>
+                      <th class="main-table-th-6" style="border-right: 1px solid #b0d4eb !important">Tổng tiền đơn hàng</th>
+                      <th class="main-table-th-7">Giá trị khuyến mại</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let item of voucherUsages; index as i">
+                      <tr>
+                        <td style="text-align: center; padding: 10px 15px !important">{{ (page - 1) * pageSize + i + 1 }}</td>
+                        <td style="text-align: center">{{ item.billCode }}</td>
+                        <td style="text-align: center">{{ item.createTime }}</td>
+                        <td style="text-align: center">{{ item.customerName }}</td>
+                        <td style="text-align: center">{{ item.companyName }}</td>
+                        <td style="text-align: right">{{ item.billValue | number }}</td>
+                        <td style="text-align: right">{{ item.voucherValue | number }}</td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="group-page-size">
+      <div class="from-pagination d-flex justify-content-center" *ngIf="totalSize > 0">
+        <ngb-pagination
+          class="pagination mb-0"
+          [collectionSize]="totalSize"
+          [(page)]="page"
+          [pageSize]="pageSize"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="loadMore()"
+        ></ngb-pagination>
+      </div>
+    </div>
+  </div>
+</div>

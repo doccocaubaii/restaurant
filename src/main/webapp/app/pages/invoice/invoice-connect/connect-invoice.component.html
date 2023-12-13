@@ -1,0 +1,85 @@
+<!-- BEGIN #app -->
+<div id="app" class="app">
+  <!-- BEGIN login -->
+  <div class="login login-v2 fw-bold">
+    <!-- BEGIN login-cover -->
+    <div class="login-cover">
+      <div class="login-cover-img" style="background-image: url(../assets/img/login-bg/login-bg-17.jpg)" data-id="login-cover-image"></div>
+      <div class="login-cover-bg"></div>
+    </div>
+    <!-- END login-cover -->
+
+    <!-- BEGIN login-container -->
+    <div class="login-container">
+      <!-- BEGIN login-header -->
+      <div class="login-header">
+        <div class="brand">
+          <h4 class="caption-title">Đăng nhập hóa đơn điện tử</h4>
+          <small>Bạn đang sử dụng hệ thống hóa đơn điện tử EasyInvoice. Xem thêm thông tin chi tiết truy cập</small>
+        </div>
+        <div class="icon">
+          <i class="fa fa-lock"></i>
+        </div>
+      </div>
+      <!-- END login-header -->
+
+      <!-- BEGIN login-content -->
+      <div class="login-content">
+        <form class="fs-13px">
+          <div class="form-floating mb-15px" *ngIf="!companies">
+            <input
+              type="text"
+              class="form-control h-45px fs-13px"
+              placeholder="Tài khoản"
+              id="username"
+              [(ngModel)]="loginForm.username"
+              name="username"
+            />
+            <label for="username" class="d-flex align-items-center fs-13px text-gray-600">Tài khoản</label>
+          </div>
+          <div class="form-floating mb-15px" *ngIf="!companies">
+            <input
+              type="password"
+              class="form-control h-45px fs-13px"
+              placeholder="Mật khẩu"
+              id="password"
+              [(ngModel)]="loginForm.password"
+              name="password"
+            />
+            <label for="password" class="d-flex align-items-center fs-13px text-gray-600">Mật khẩu</label>
+          </div>
+          <div>
+            <label class="form-check-label"
+              >Bạn vui lòng nhập thông tin tài khoản và mật khẩu để đăng nhập hệ thống hóa đơn điện tử. Hệ thống này kết nối đẩy dũ liệu lên
+              <span class="text-danger">Tổng cục thuế</span>
+            </label>
+          </div>
+
+          <div *ngIf="companies">
+            <label for="companyId" class="d-flex align-items-center fs-13px text-gray-600">Chọn công ty</label>
+            <ng-select class="form-select form-select-lg form-control" id="companyId" name="companyId" [(ngModel)]="loginForm.companyId">
+              <ng-option *ngFor="let com of companies; let i = index" (select)="(i == 0)" [value]="com.id">{{ com.name }}</ng-option>
+            </ng-select>
+          </div>
+          <div class="mt-20px">
+            <div *ngIf="!companies && errorMessage">
+              <label class="text-danger font-weight-bold"><strong>Đăng nhập thất bại:</strong></label>
+              <label class="text-danger" jhiTranslate="{{ 'login.error.' + errorMessage }}"></label>
+            </div>
+          </div>
+          <div class="mb-15px">
+            <button type="submit" class="btn btn-success d-block h-45px w-100 btn-lg fs-14px" (click)="login()">Cập nhật</button>
+          </div>
+          <hr class="bg-gray-600 opacity-2" />
+          <!--          <div class="text-gray-600 text-center mb-0">&copy; Color Admin All Right Reserved 2022</div>-->
+        </form>
+      </div>
+      <!-- END login-content -->
+    </div>
+    <!-- END login-container -->
+  </div>
+  <!-- END login -->
+
+  <!-- BEGIN login-bg -->
+</div>
+<!-- END #app -->

@@ -1,0 +1,44 @@
+<div class="modal-header">
+  <h5 class="modal-title">Thay đổi số lượng sản phẩm khuyến mại</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true" (click)="decline()">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+<div class="modal-body">
+  <!-- <ng-container *ngIf="cancelOrderSelected; else cancelProductSelected">
+    <p class="title-info text-center">
+      Huỷ món <span>{{ productSelected.productName }}</span> đồng thời sẽ hủy đơn hàng. Bạn có muốn tiếp tục?
+    </p>
+  </ng-container>
+  <ng-template #cancelProductSelected>
+    <p class="title-info text-center">
+      Bạn có chắc chắn muốn hủy món: <span>{{ productSelected.productName }}</span>
+    </p>
+  </ng-template> -->
+  <ng-container *ngFor="let product of productSelected.voucherProducts">
+    <p>Sản phẩm: {{ product.productName }}</p>
+    <p class="title-info">
+      Số lượng hoàn trả: <span>{{ product.quantity || 0 }}/{{ product.quantityInitial }}</span>
+    </p>
+    <div class="input-text-custom">
+      <input
+        type="text"
+        class="input-value form-control"
+        [(ngModel)]="product.quantity"
+        jhiCurrencyNumber
+        [maxvalue]="product.quantityInitial"
+        [numberRound]="lastCompany.roundScaleQuantity"
+      />
+    </div>
+  </ng-container>
+</div>
+<div class="modal-footer">
+  <button class="exit-button-dialog" data-bs-dismiss="modal" (click)="decline()">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.cancel">Hủy</span>
+  </button>
+  <button (click)="accept()" class="ep-btn-custom save-button-dialog">
+    <span [innerHTML]="ICON_SAVE | safeHtml"></span>
+    <span>Lưu</span>
+  </button>
+</div>

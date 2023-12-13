@@ -1,0 +1,246 @@
+<script src="../customer-order.component.ts"></script>
+<div class="modal-header">
+  <h4 class="modal-title" jhiTranslate="easyPos.product.info.detail">Chi tiết sản phẩm</h4>
+  <button type="button" class="btn-close" (click)="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<div class="wrap-discount-tax">
+  <!-- <div>{{ productSelectedLocal | json }}</div> -->
+  <div class="wrap-input">
+    <div class="modal-body input-text-custom input col-6">
+      <label class="title-info" jhiTranslate="easyPos.product.info.productName">Tên sản phẩm</label>
+      <input class="form-control" type="text" [(ngModel)]="productSelectedLocal.productName" />
+    </div>
+    <div class="modal-body input-text-custom input col-6" *ngIf="productSelectedLocal.unit">
+      <label class="title-info" jhiTranslate="easyPos.product.info.unit">ĐƠn vị</label>
+      <input class="form-control" type="text" disabled="true" [ngModel]="productSelectedLocal.unit" />
+    </div>
+    <ng-container *ngIf="productSelectedLocal.productCode !== 'SPDV'">
+      <div class="modal-body input-text-custom input col-6">
+        <label class="title-info" jhiTranslate="easyPos.product.info.unitPrice">Đơn giá</label>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="productSelectedLocal.unitPrice"
+          (ngModelChange)="changeProductSelected(productSelectedLocal)"
+          jhiCurrencyNumber
+          [numberRound]="lastCompany.roundScaleUnitPrice"
+        />
+      </div>
+      <div class="modal-body input-text-custom input col-6">
+        <label class="title-info" jhiTranslate="easyPos.product.info.quantity">Số lượng</label>
+        <ng-container *ngIf="!invoiceConfiguration.overStock && productSelectedLocal.inventoryTracking; else noMaxValue">
+          <input
+            class="form-control"
+            type="text"
+            [(ngModel)]="productSelectedLocal.quantity"
+            (ngModelChange)="changeProductQuantity()"
+            jhiCurrencyNumber
+            [numberRound]="lastCompany.roundScaleQuantity"
+            [maxvalue]="returnOrder ? productSelectedLocal.quantityInitial : productSelectedLocal.quantityProduct"
+          />
+        </ng-container>
+        <ng-template #noMaxValue>
+          <input
+            class="form-control"
+            type="text"
+            [(ngModel)]="productSelectedLocal.quantity"
+            (ngModelChange)="changeProductQuantity()"
+            jhiCurrencyNumber
+            [numberRound]="lastCompany.roundScaleQuantity"
+            [maxvalue]="returnOrder ? productSelected.quantityInitial : undefined"
+          />
+        </ng-template>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="productSelectedLocal.productCode !== 'SPDV'; else productService">
+      <div class="modal-body input-text-custom input col-6">
+        <label class="title-info" jhiTranslate="easyPos.product.info.amount">Tạm tính</label>
+        <input
+          disabled="true"
+          class="form-control"
+          type="text"
+          [ngModel]="productSelectedLocal.amount > 0 ? productSelectedLocal.amount : 0"
+          jhiCurrencyNumber
+          [numberRound]="lastCompany.roundScaleAmount"
+        />
+      </div>
+    </ng-container>
+    <ng-template #productService>
+      <div class="modal-body input-text-custom input col-6">
+        <label class="title-info" jhiTranslate="easyPos.product.info.amount">Tạm tính</label>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="productSelectedLocal.amount"
+          jhiCurrencyNumber
+          [numberRound]="lastCompany.roundScaleAmount"
+          (ngModelChange)="changeProductAmount()"
+        />
+      </div>
+    </ng-template>
+  </div>
+
+  <ng-container
+    *ngIf="
+      (invoiceConfiguration.typeDiscount === invoiceDiscount.productValue ||
+        invoiceConfiguration.typeDiscount === invoiceDiscount.orderProductValue) &&
+      productSelectedLocal.productCode !== 'SPDV'
+    "
+  >
+    <div class="discount-amount wrap-input">
+      <div class="modal-body input-text-custom input col-6">
+        <label class="title-info" jhiTranslate="easyPos.product.info.typeDiscount">Kiểu giảm giá</label>
+        <ng-select
+          class="w-100"
+          [items]="typeDiscountProduct"
+          title="Chọn kiểu giảm giá"
+          bindLabel="name"
+          placeholder="Chọn kiểu giảm giá"
+          bindValue="name"
+          [(ngModel)]="productSelectedLocal.typeDiscount"
+          (ngModelChange)="changeTypeDiscountProduct()"
+        >
+        </ng-select>
+      </div>
+      <div class="modal-body input-text-custom input col-6" *ngIf="productSelectedLocal.typeDiscount == typeDiscount.PERCENT">
+        <label class="title-info" jhiTranslate="easyPos.product.info.typePercent">Phần trăm giảm giá</label>
+        <input
+          class="form-control"
+          type="number"
+          [(ngModel)]="productSelectedLocal.discountPercent"
+          (keypress)="checkDiscountTaxProductPercent($event, 'discountPercent')"
+          (ngModelChange)="getDiscountAmountProduct(productSelectedLocal.discountPercent)"
+          (keydown)="preventIncrement($event)"
+          (click)="getDiscountAmountProduct(productSelectedLocal.discountPercent, $event)"
+        />
+      </div>
+      <div class="modal-body input-text-custom input col-6">
+        <label class="title-info" jhiTranslate="easyPos.product.info.discountAmount">Tiền giảm giá</label>
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="productSelectedLocal.discountAmount"
+          (keyup)="checkDiscountAmountProduct($event, productSelectedLocal)"
+          jhiCurrencyNumber
+          [numberRound]="lastCompany.roundScaleAmount"
+        />
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="wrap-input" *ngIf="invoiceConfiguration.invoiceType === invoiceType.invoiceMultiple">
+    <div class="modal-body input-text-custom input col-6">
+      <label class="title-info" jhiTranslate="easyPos.product.info.vatRate">Thuế sản phẩm</label>
+      <ng-select
+        [disabled]="productSelectedLocal.productCode == spdvProduct.code"
+        class="w-100"
+        [items]="listVat"
+        bindLabel="name"
+        placeholder="Chọn giá trị thuế"
+        bindValue="value"
+        [virtualScroll]="true"
+        [(ngModel)]="productSelectedLocal.vatRate"
+        (ngModelChange)="changeVat(productSelectedLocal.vatRate)"
+      >
+      </ng-select>
+    </div>
+
+    <div class="modal-body input-text-custom input col-6" [hidden]="!statusVatRateInput">
+      <label class="title-info" jhiTranslate="easyPos.product.info.otherVatRate">Thuế suất khác (%)</label>
+      <input
+        class="form-control"
+        type="number"
+        [ngModel]="productSelectedLocal.vatRate < 0 ? null : productSelectedLocal.vatRate"
+        (keypress)="checkDiscountTaxProductPercent($event, 'vatRate')"
+        (ngModelChange)="productSelectedLocal.vatRate = $event; changeVatRateProduct(productSelectedLocal.vatRate)"
+        (keydown)="preventIncrement($event)"
+        (click)="changeVatRateProduct(productSelectedLocal.vatRate, $event)"
+      />
+    </div>
+
+    <div class="modal-body input-text-custom input col-6">
+      <label class="title-info" jhiTranslate="easyPos.product.info.vatAmount">Tiền thuế</label>
+      <input
+        disabled="true"
+        class="form-control"
+        type="text"
+        [ngModel]="productSelectedLocal.displayVatAmount > 0 ? productSelectedLocal.displayVatAmount : 0"
+        jhiCurrencyNumber
+        [numberRound]="lastCompany.roundScaleAmount"
+      />
+    </div>
+  </div>
+
+  <ng-container
+    *ngIf="
+      invoiceConfiguration.invoiceType === invoiceType.invoiceSale &&
+      invoiceConfiguration.discountVat == 1 &&
+      invoiceConfiguration.taxReductionType == 1
+    "
+  >
+    <ng-container *ngIf="productSelectedLocal.discountVatRate > 0">
+      <div class="wrap-input">
+        <div class="modal-body input-text-custom input col-6">
+          <label class="title-info">Thuế giảm trừ</label>
+          <ng-select
+            [disabled]="true"
+            class="w-100"
+            [items]="listVatRateDiscountOrder"
+            bindLabel="name"
+            placeholder="Chọn giá trị thuế"
+            bindValue="value"
+            [virtualScroll]="true"
+            [(ngModel)]="productSelectedLocal.discountVatRate"
+          >
+          </ng-select>
+        </div>
+
+        <div class="modal-body input-text-custom input col-6">
+          <label class="title-info">Tiền thuế giảm trừ</label>
+          <input
+            class="form-control"
+            type="text"
+            [(ngModel)]="productSelectedLocal.displayVatAmount"
+            jhiCurrencyNumber
+            [numberRound]="lastCompany.roundScaleAmount"
+          />
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <div class="wrap-input">
+    <div class="modal-body input-text-custom input col-6" *ngIf="productSelectedLocal.totalAmountTopping">
+      <label class="title-info">Tổng tiền bán kèm</label>
+      <input
+        disabled="true"
+        class="form-control"
+        type="text"
+        [ngModel]="productSelectedLocal.totalAmountTopping"
+        jhiCurrencyNumber
+        [numberRound]="lastCompany.roundScaleAmount"
+      />
+    </div>
+    <div class="modal-body input-text-custom input col-6">
+      <label class="title-info" jhiTranslate="easyPos.product.info.totalAmount">Tổng tiền thanh toán</label>
+      <input
+        disabled="true"
+        class="form-control"
+        type="text"
+        [ngModel]="productSelectedLocal.displayTotalAmount > 0 ? productSelectedLocal.displayTotalAmount : 0"
+        jhiCurrencyNumber
+        [numberRound]="lastCompany.roundScaleAmount"
+      />
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="exit-button-dialog" data-bs-dismiss="modal" (click)="closeModal()">
+    <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.cancel">Hủy</span>
+  </button>
+  <button (click)="saveDiscountTaxAmount()" class="save-button-dialog">
+    <span [innerHTML]="ICON_CONFIRM | safeHtml"></span>
+    <span jhiTranslate="global.entity.action.save">Xác nhận</span>
+  </button>
+</div>

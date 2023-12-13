@@ -1,0 +1,404 @@
+$color-default: #0074bd;
+$color-label: #58647a;
+$font-weight-title: 700;
+$font-size: 16px;
+
+.login-page {
+  color: $color-label;
+  display: flex;
+  width: 100%;
+  height: 100vh;
+
+  .login-container {
+    width: 94%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .login-content {
+      width: 55%;
+      position: relative;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .login-form {
+        background: #ffffff;
+        box-shadow: 6px 4px 30px rgba(0, 116, 189, 0.3);
+        border-radius: 46px;
+        position: absolute;
+        z-index: 1;
+        width: 70%;
+        height: 80%;
+
+        .login-body {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 8%;
+          height: 100%;
+
+          .login-logo {
+            height: 10%;
+          }
+
+          .login-form-custom {
+            height: 40%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            label {
+              font-weight: $font-weight-title;
+              font-size: $font-size;
+              padding-bottom: 2px;
+            }
+
+            lable.login-title {
+              padding-bottom: 1.5%;
+            }
+
+            .login-username {
+              padding-bottom: 3%;
+            }
+
+            .login-username,
+            .login-password {
+              .login-input {
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                .login-input-holder {
+                  position: absolute;
+                  left: 0;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  padding-left: 10px;
+                }
+              }
+
+              .login-input-text {
+                height: 45px !important;
+                font-size: 14px !important;
+                padding-left: 40px;
+                padding-right: 40px;
+                color: $color-label;
+              }
+
+              svg {
+                &:hover {
+                  margin-bottom: 4px;
+                  transition: 0.3s;
+                }
+
+                path {
+                  fill: $color-default;
+                }
+              }
+            }
+
+            .forgot-password {
+              display: flex;
+              justify-content: end;
+              padding-top: 2%;
+              cursor: pointer;
+
+              a {
+                color: $color-default;
+                font-size: 14px;
+                text-decoration: none;
+                font-weight: $font-weight-title;
+
+                &:hover {
+                  opacity: 0.8 !important;
+                  transition: 0.5s;
+                }
+              }
+            }
+
+            .register {
+              padding-top: 10%;
+            }
+
+            span {
+              font-size: 14px;
+              padding-left: 2.5px;
+            }
+          }
+
+          .login-message {
+            height: 5%;
+          }
+
+          .login-submit {
+            //height: 10%;
+            margin-bottom: 1%;
+            width: 100%;
+
+            button:hover {
+              opacity: 1 !important;
+              background: rgb(0, 116, 189, 0.8) !important;
+              transition: 0.5s;
+
+              span {
+                opacity: 1 !important;
+              }
+            }
+          }
+
+          .download-info {
+            height: 35%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            .image-download {
+              display: flex;
+              gap: 10px;
+            }
+
+            label {
+              padding-top: 3%;
+              font-size: smaller;
+              font-weight: $font-weight-title;
+            }
+          }
+        }
+      }
+
+      img.decorate {
+        position: absolute;
+        bottom: 8%;
+        z-index: 0;
+        left: 8%;
+      }
+
+      label.copyright {
+        position: absolute;
+        left: 0;
+        bottom: 20px;
+        padding-left: 20px;
+      }
+    }
+
+    .login-decorate {
+      width: 45%;
+      height: 80%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .background-image {
+        height: 80%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        img {
+          width: 90%;
+        }
+      }
+
+      .company-information {
+        height: 20%;
+        display: flex;
+        font-size: 14px;
+        justify-content: center;
+        align-items: center;
+        left: 0;
+
+        img {
+          //width: 135px;
+          //height: 135px;
+        }
+
+        .company-information-detail {
+          label:first-child {
+            color: $color-default;
+          }
+
+          label {
+            color: $color-label;
+          }
+        }
+      }
+    }
+  }
+
+  .panel-right {
+    background: $color-default;
+    width: 6%;
+  }
+}
+
+@media only screen and (max-width: 1300px) {
+  .background-image {
+    height: 60% !important;
+
+    img {
+    }
+  }
+
+  .company-information {
+    flex-direction: column;
+    height: 40% !important;
+
+    img {
+      width: 135px;
+    }
+
+    .company-information-detail {
+      margin-top: -5%;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      text-align: left;
+    }
+  }
+}
+
+@media only screen and (max-height: 730px) and (min-width: 959px) {
+  .login-body {
+    justify-content: flex-start !important;
+  }
+  .login-form-custom {
+    height: 50% !important;
+  }
+
+  .login-submit {
+    //height: 15% !important;
+  }
+
+  .login-message {
+    height: 15% !important;
+    font-size: 12px;
+  }
+
+  .background-image {
+    img {
+    }
+  }
+
+  .login-logo {
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .download-info {
+    height: 6% !important;
+
+    .image-download {
+      align-items: flex-end;
+      height: 80px;
+
+      img {
+        width: 90%;
+        height: 80%;
+      }
+    }
+  }
+}
+
+@media only screen and (max-height: 650px) {
+  .background-image {
+    img {
+      width: 65% !important;
+      left: 5% !important;
+      top: 0px !important;
+    }
+  }
+  .company-information {
+    height: 10%;
+  }
+}
+
+@media only screen and (max-width: 960px) {
+  .login-container {
+    flex-direction: column;
+    overflow: auto;
+    width: 100% !important;
+
+    .login-content {
+      flex-direction: column;
+      position: unset !important;
+      padding: 6% !important;
+      width: 100% !important;
+      height: auto !important;
+
+      label.copyright {
+        bottom: 0px !important;
+      }
+    }
+
+    .login-form {
+      height: 100% !important;
+      width: 100% !important;
+      position: unset !important;
+
+      .login-body {
+        .login-logo {
+          margin-bottom: 10%;
+        }
+
+        .login-message {
+          margin-bottom: 5%;
+        }
+      }
+    }
+
+    img.decorate {
+      bottom: 19% !important;
+      left: 2% !important;
+    }
+
+    .company-information {
+      display: none !important;
+    }
+
+    .background-image-ipad {
+      display: block !important;
+      width: 100%;
+      z-index: 1;
+
+      img {
+        width: 100%;
+      }
+    }
+
+    label.copyright {
+      position: unset !important;
+      z-index: 1;
+      font-size: 14px;
+    }
+
+    .background-image {
+      display: none !important;
+    }
+  }
+
+  .panel-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 20% !important;
+    height: 100vh !important;
+    z-index: 0;
+  }
+}
+
+.background-image-ipad {
+  display: none;
+}

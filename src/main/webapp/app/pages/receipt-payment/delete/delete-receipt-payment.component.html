@@ -1,0 +1,46 @@
+<div class="modal-header">
+  <div class="group-header">
+    <h5 class="modal-title" jhiTranslate="easyPos.receipt.delete.title">Tao ...</h5>
+    <button type="button" class="btn-close" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+    </button>
+  </div>
+</div>
+<div class="border-header"></div>
+<div class="modal-body body-category">
+  <div class="pos-infor mt-0">
+    <label class="title-info ps-3">
+      <span *ngIf="!deleteMutiple" jhiTranslate="easyPos.receipt.delete.text3">Mã chung tu</span>
+      <!--      <span style="font-weight: 550">{{ no }}</span>-->
+      <!--      <span jhiTranslate="easyPos.receipt.delete.text2">Mã chung tu</span>-->
+      <span *ngIf="deleteMutiple" jhiTranslate="easyPos.receipt.delete.text1">Nhập số lượng bản ghi bạn đã chọn</span>
+      <span *ngIf="deleteMutiple" style="font-weight: 550">{{ numberDelete }}</span>
+      <span *ngIf="deleteMutiple" jhiTranslate="easyPos.receipt.delete.text2"></span>
+      <span *ngIf="deleteMutiple" style="font-weight: 550">{{ numberDelete }}</span>
+      <span *ngIf="deleteMutiple" jhiTranslate="easyPos.receipt.delete.text4"></span>
+    </label>
+    <input
+      *ngIf="deleteMutiple"
+      class="option-title input-value form-control mt-2"
+      [(ngModel)]="noEnter"
+      (keyup.enter)="deleteTransaction()"
+    />
+  </div>
+</div>
+<div class="modal-footer d-flex">
+  <div class="btn-row col-md-12">
+    <button type="button" class="exit-button-dialog me-2 mb-1" (click)="dismiss($event)">
+      <span [innerHTML]="ICON_CANCEL | safeHtml"></span>
+      <span  jhiTranslate="global.entity.action.cancel"></span>
+    </button>
+    <button
+      type="button"
+      class="btn-delete me-1 mb-1 d-flex align-items-center"
+      [disabled]="disableButton"
+      (click)="deleteTransaction()"
+    >
+      <fa-icon icon="trash-can" ngbTooltip="{{ 'global.entity.action.delete' | translate }}"></fa-icon>
+      <span  jhiTranslate="global.entity.action.confirm"></span>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,384 @@
+<h1 class="page-header" jhiTranslate="easyPos.warehouse.title"></h1>
+<div class="amount-inoutward">
+  <div class="group-amount">
+    <div class="inoutward-amount">
+      <span [innerHTML]="ICON_CIRCLE_ARROW_DOWN | safeHtml"></span>
+      <div class="inward-info">
+        <span class="inward-value">{{ inWardAmount | number }}</span>
+        <span class="label-inoutward">Nhập kho</span>
+      </div>
+    </div>
+  </div>
+  <div class="border-amount"></div>
+  <div class="group-amount">
+    <div class="inoutward-amount">
+      <span [innerHTML]="ICON_CIRCLE_ARROW_UP | safeHtml"></span>
+      <div class="inward-info">
+        <span class="inward-value">{{ outWardAmount | number }}</span>
+        <span class="label-inoutward">Xuất kho</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="panel-custom">
+  <ul class="nav">
+    <li class="nav-item" (click)="searchByType(3)">
+      <a href="#nav-pills-tab-0" data-bs-toggle="tab" class="nav-link active">
+        <span class="d-sm-block" jhiTranslate="easyPos.warehouse.info.all"></span>
+      </a>
+    </li>
+    <li class="nav-item" (click)="searchByType(1)" [style]="utilService.getStyleByCode('NK')">
+      <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link">
+        <span class="d-sm-block" jhiJsonCustom="NK"></span>
+      </a>
+    </li>
+    <li class="nav-item" (click)="searchByType(2)" [style]="utilService.getStyleByCode('XK')">
+      <a href="#nav-pills-tab-2" data-bs-toggle="tab" class="nav-link">
+        <span class="d-sm-block" jhiJsonCustom="XK"></span>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<div class="group-form-custom mt-10px mb-15px row">
+  <!--    formdate -->
+  <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+    <label class="form-label label-search" jhiTranslate="global.info.fromDate"></label>
+    <div class="item-search">
+      <input
+        class="form-control"
+        placeholder="DD/MM/YYYY"
+        name="d2"
+        #c3="ngModel"
+        [(ngModel)]="fromDate"
+        ngbDatepicker
+        #d3="ngbDatepicker"
+      />
+      <button class="btn form-control btn-datepicker" (click)="d3.toggle()" type="button">
+        <fa-icon [icon]="'calendar-alt'"></fa-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+    <label class="form-label label-search" jhiTranslate="global.info.toDate"></label>
+    <div class="item-search">
+      <input class="form-control" placeholder="DD/MM/YYYY" name="d2" #c2="ngModel" [(ngModel)]="toDate" ngbDatepicker #d2="ngbDatepicker" />
+      <button class="btn form-control btn-datepicker" (click)="d2.toggle()" type="button">
+        <fa-icon [icon]="'calendar-alt'"></fa-icon>
+      </button>
+    </div>
+  </div>
+
+  <!--    end todate-->
+  <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+    <label class="form-label label-search" jhiTranslate="global.info.keyword"></label>
+    <div class="item-search input-text-custom">
+      <input
+        name="keyword"
+        (keyup.enter)="onSearch()"
+        [(ngModel)]="searchTransactionReq.keyword"
+        class="form-control"
+        type="search"
+        placeholder="Tìm kiếm..."
+        (ngModelChange)="onChangeKeyword()"
+      />
+    </div>
+  </div>
+  <div class="group-item-custom1 col-sm-6 col-md-4 col-lg-3">
+    <div class="label-search d-block">
+      <button (click)="onSearch()" class="btn-search">
+        <fa-icon icon="search"></fa-icon>
+        <span jhiTranslate="global.info.search"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="panel-action">
+  <ul class="nav" *jhiHasAnyAuthority="RS_INWARD_ADD">
+    <li *ngIf="!searchTransactionReq.type || searchTransactionReq.type === 1" class="nav-action cursor-pointer" (click)="onWarehouseIntake(1)">
+      <a class="nav-link nav-link-action">
+        <i class="fa-solid fa-plus"></i>
+        <span class="d-sm-block ms-2">Nhập kho</span>
+      </a>
+    </li>
+    <li *ngIf="!searchTransactionReq.type || searchTransactionReq.type === 2" class="nav-action cursor-pointer" (click)="onWarehouseIntake(2)">
+      <a class="nav-link nav-link-action">
+        <i class="fa-solid fa-plus"></i>
+        <span class="d-sm-block ms-2">Xuất kho</span>
+      </a>
+    </li>
+  </ul>
+
+  <div class="d-flex justify-content-end align-items-center" style="margin-left: auto; height: 45px">
+    <div class="form-page-size">
+      <label
+        class="form-label form-label label-search me-2 mb-0 text-bold"
+        jhiTranslate="global.info.totalParam"
+        [translateValues]="{ count: totalItems || 0 }"
+      ></label>
+      <div class="form-select-size" *ngIf="totalItems > 0">
+        <ng-select
+          [items]="sizes"
+          class="select-value select-size"
+          bindLabel="name"
+          bindValue="id"
+          placeholder="Tất cả"
+          [(ngModel)]="searchTransactionReq.size"
+          (ngModelChange)="getListTransaction()"
+        >
+        </ng-select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-pane fade active show">
+  <div class="row">
+    <div class="col-xl-12">
+      <div class="panel panel-inverse">
+        <div class="table-responsive" style="height: 45vh">
+          <table class="table editing-table">
+            <thead>
+              <tr class="table-custom-header">
+                <th jhiTranslate="easyPos.warehouse.table.stt">#</th>
+                <th jhiTranslate="easyPos.warehouse.table.no">Mã lô hàng</th>
+                <th jhiTranslate="easyPos.warehouse.table.date">Ngày giao dịch</th>
+                <th
+                  *ngIf="!searchTransactionReq.type || searchTransactionReq.type === 1"
+                  jhiTranslate="easyPos.warehouse.table.supplierName"
+                >
+                  Nhà cung cấp
+                </th>
+                <th
+                  *ngIf="!searchTransactionReq.type || searchTransactionReq.type === 2"
+                  jhiTranslate="easyPos.warehouse.table.customerName"
+                >
+                  Khách hàng
+                </th>
+                <th
+                  *ngIf="!searchTransactionReq.type || searchTransactionReq.type === 1"
+                  jhiTranslate="easyPos.warehouse.table.inWardAmount"
+                >
+                  Nhập hàng
+                </th>
+                <th
+                  style="border-left: 1px solid #b0d4eb !important"
+                  *ngIf="!searchTransactionReq.type || searchTransactionReq.type === 2"
+                  jhiTranslate="easyPos.warehouse.table.outWardAmount"
+                >
+                  Xuất hàng
+                </th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody *ngIf="totalItems > 0">
+              <ng-container *ngFor="let transaction of lstTransactionRes; index as i">
+                <tr class="cursor-pointer table-custom-body" [class.editing-head]="idEditing == transaction.id">
+                  <td (click)="viewTransaction(transaction)">{{ i + 1 + (searchTransactionReq.page - 1) * searchTransactionReq.size }}</td>
+                  <td (click)="viewTransaction(transaction)">{{ transaction.no }}</td>
+                  <td (click)="viewTransaction(transaction)">{{ transaction.date | date: 'dd/MM/YYYY' }}</td>
+                  <td (click)="viewTransaction(transaction)" *ngIf="!searchTransactionReq.type">
+                    {{ transaction.type === 1 ? transaction.customerName : '' }}
+                  </td>
+                  <td (click)="viewTransaction(transaction)" *ngIf="!searchTransactionReq.type">
+                    {{ transaction.type === 2 ? transaction.customerName : '' }}
+                  </td>
+                  <td (click)="viewTransaction(transaction)" *ngIf="searchTransactionReq.type">{{ transaction.customerName }}</td>
+                  <td
+                    (click)="viewTransaction(transaction)"
+                    *ngIf="!searchTransactionReq.type"
+                    class="amount-inward"
+                    style="padding-right: 10px !important"
+                  >
+                    {{ transaction.type === 1 ? (transaction.totalAmount | number) : '-' }}
+                  </td>
+                  <td
+                    (click)="viewTransaction(transaction)"
+                    *ngIf="!searchTransactionReq.type"
+                    class="amount-outward"
+                    style="padding-right: 10px !important"
+                  >
+                    {{ transaction.type === 2 ? (transaction.totalAmount | number) : '-' }}
+                  </td>
+                  <td
+                    (click)="viewTransaction(transaction)"
+                    *ngIf="searchTransactionReq.type === 1"
+                    class="amount-inward pe-10px"
+                    style="padding-right: 10px !important"
+                  >
+                    {{ transaction.type === 1 ? (transaction.totalAmount | number) : '-' }}
+                  </td>
+                  <td
+                    (click)="viewTransaction(transaction)"
+                    *ngIf="searchTransactionReq.type === 2"
+                    class="amount-outward pe-10px"
+                    style="padding-right: 10px !important"
+                  >
+                    {{ transaction.type === 2 ? (transaction.totalAmount | number) : '-' }}
+                  </td>
+                  <td>
+                    <div *ngIf="transaction.businessTypeCode
+                    && (transaction.businessTypeCode === BUSINESS_TYPE_IN_WARD
+                    || transaction.businessTypeCode === BUSINESS_TYPE_OUT_WARD)" class="list-action">
+                      <span (click)="updateRsInward(transaction)">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                      </span>
+                      <span (click)="deleteRsInWard(transaction.id)">
+                        <i class="fa-solid fa-trash-can"></i>
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf="transaction.id === idEditing" [class.editing-body]="idEditing == transaction.id" class="scroll-target">
+                  <td [attr.colspan]="getColspan()">
+                    <div class="row wrap-order-detail">
+                      <div class="col-sm-12 col-lg-12 col-xl-4 left-order-detail-content">
+                        <div class="form-group border-bottom form-input-custom">
+                          <label for="pattern" class="form-label with-label-name" jhiTranslate="easyPos.warehouse.table.no"
+                            >Mã lô hàng:
+                          </label>
+                          <div class="user-input-text-div">
+                            <strong id="pattern"> {{ transactionDetailRes.no }} </strong>
+                          </div>
+                        </div>
+                        <div class="form-group border-bottom form-input-custom">
+                          <label for="taxAuthorityCode" class="form-label with-label-name" jhiTranslate="easyPos.warehouse.table.time"
+                            >Thời gian:
+                          </label>
+                          <div class="user-input-text-div">
+                            <strong id="taxAuthorityCode"> {{ transactionDetailRes.date | date: 'dd/MM/YYYY' }} </strong>
+                          </div>
+                        </div>
+                        <div class="form-group border-bottom form-input-custom">
+                          <label for="customerName" class="form-label with-label-name">{{
+                            transactionDetailRes.type === 1 ? 'Nhà cung cấp' : 'Khách hàng'
+                          }}</label>
+                          <div class="user-input-text-div">
+                            <strong id="customerName">
+                              {{ transactionDetailRes.type === 1 ? transactionDetailRes.supplierName : transactionDetailRes.customerName }}
+                            </strong>
+                          </div>
+                        </div>
+                        <div class="form-group border-bottom form-input-custom">
+                          <label for="paymentMethod" class="form-label with-label-name" jhiTranslate="easyPos.warehouse.table.type"
+                            >Phân loại:
+                          </label>
+                          <div class="user-input-text-div">
+                            <strong id="paymentMethod"> {{ transactionDetailRes.type === 1 ? 'Nhập kho' : 'Xuất kho bán hàng' }} </strong>
+                          </div>
+                        </div>
+                        <div class="form-group border-bottom form-input-custom">
+                          <label for="billCode" class="form-label with-label-name" jhiTranslate="easyPos.warehouse.table.note"
+                            >Ghi chú:
+                          </label>
+                          <div class="user-input-text-div">
+                            <strong id="billCode"> {{ transactionDetailRes.description }} </strong>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-12 col-lg-12 col-xl-8 right-order-detail-content">
+                        <div class="table-responsive" style="max-height: 250px">
+                          <table class="table mb-0 editing-table">
+                            <thead class="table-custom-body table-header-sticky">
+                              <tr class="table-custom-header">
+                                <th jhiTranslate="easyPos.warehouse.table.productCode">Mã sản phẩm</th>
+                                <th jhiTranslate="easyPos.warehouse.table.productName">Tên sản phẩm</th>
+                                <th jhiTranslate="easyPos.warehouse.table.unitName">Đơn vị</th>
+                                <th jhiTranslate="easyPos.warehouse.table.quantity">Số lượng</th>
+                                <th jhiTranslate="easyPos.warehouse.table.unitPrice">Đơn giá</th>
+                                <th jhiTranslate="easyPos.warehouse.table.amount">Thành tiền</th>
+                                <th jhiTranslate="easyPos.warehouse.table.discountAmount">Chiết khấu</th>
+                                <th jhiTranslate="easyPos.warehouse.table.totalAmount">Tổng tiền</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let detail of transactionDetailRes.detail; index as i">
+                                <td>
+                                  <label> {{ detail.productCode }}</label>
+                                </td>
+                                <td>
+                                  <label> {{ detail.productName }}</label>
+                                </td>
+                                <td>
+                                  <label> {{ detail.unitName }}</label>
+                                </td>
+                                <td>
+                                  <label> {{ detail.quantity | number }} </label>
+                                </td>
+                                <td>
+                                  <label> {{ detail.unitPrice | number }}</label>
+                                </td>
+                                <td>
+                                  <label> {{ detail.amount | number }} </label>
+                                </td>
+                                <td>
+                                  <label *ngIf="detail.discountAmount"> {{ detail.discountAmount }} %</label>
+                                </td>
+                                <td>
+                                  <label> {{ detail.totalAmount | number }} </label>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="panel-payment">
+                          <div class="pos-sidebar-footer mt-5px p-15px">
+                            <div class="wrap-item text-bold">
+                              <span class="text mb-10px" jhiTranslate="easyPos.warehouse.table.totalQuantity">Tổng số</span>
+                              <span> {{ transactionDetailRes.quantity | number }} </span>
+                            </div>
+                            <div class="wrap-item text-bold">
+                              <span class="text mb-10px" jhiTranslate="easyPos.warehouse.table.totalAmountProduct">Tổng tiền hàng</span>
+                              <span>{{ transactionDetailRes.amount | number }} đ </span>
+                            </div>
+                            <div class="wrap-item text-bold">
+                              <span class="text mb-10px" jhiTranslate="easyPos.warehouse.table.totalDiscount">Tổng chiết khấu</span>
+                              <span> {{ transactionDetailRes.discountAmount | number }} đ </span>
+                            </div>
+                            <div class="wrap-item text-bold">
+                              <span class="text mb-10px" jhiTranslate="easyPos.warehouse.table.costAmount">Chi phí phát sinh</span>
+                              <span> {{ transactionDetailRes.costAmount | number }} đ </span>
+                            </div>
+                            <div class="wrap-item total-amount text-bold text-info">
+                              <span class="text mb-10px" jhiTranslate="easyPos.warehouse.table.totalPaymentAmount"
+                                >Tổng tiền thanh toán</span
+                              >
+                              <span> {{ transactionDetailRes.totalAmount | number }} đ </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+            <tbody *ngIf="totalItems === 0">
+              <tr class="table-not-data">
+                <td colspan="8">
+                  <span jhiTranslate="easyPos.product.info.notData"></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="group-page-size">
+    <div class="from-pagination d-flex justify-content-center" *ngIf="totalItems > 0">
+      <ngb-pagination
+        class="pagination"
+        [collectionSize]="totalItems || 0"
+        [pageSize]="searchTransactionReq.size"
+        [page]="searchTransactionReq.page"
+        aria-label="Default pagination"
+        [directionLinks]="true"
+        [maxSize]="5"
+        (pageChange)="loadMore($event)"
+      ></ngb-pagination>
+    </div>
+  </div>
+</div>

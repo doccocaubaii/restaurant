@@ -1,0 +1,46 @@
+{
+  "easyPos": {
+    "invoice": {
+      "title": "Danh sách hóa đơn",
+      "titleDetail": "Chi tiết hóa đơn",
+      "action": {
+        "publish": "Phát hành",
+        "viewInvoice": "Xem hóa đơn"
+      },
+      "info": {
+        "arisingDate": "Ngày hóa đơn",
+        "update": "Sửa hóa đơn",
+        "allCount": "Tất cả hóa đơn"
+      },
+      "status": {
+        "1": "Hóa đơn hợp lệ",
+        "-2": "Hóa đơn không hợp lệ",
+        "-1": "Hóa đơn đang kiểm tra",
+        "0": "Hóa đơn chưa phát hành"
+      },
+      "config": {
+        "method": {
+          "auto": "Hsm - Phát hành tự động",
+          "manual": "Hsm - Phát hành thủ công",
+          "newSetting": "Token - Mới tạo lập",
+          "hsmNewSetting": "HSM - Hóa đơn mới tạo lập"
+        },
+        "type": {
+          "sale": "Hóa đơn bán hàng",
+          "oneTax": "Hóa đơn GTGT một thuế",
+          "manyTaxes": "Hóa đơn GTGT nhiều thuế"
+        },
+        "overStocks": {
+          "allow": "Cho phép",
+          "notAllow": "Không cho phép"
+        },
+        "discountType": {
+          "byOrder": "Theo giá trị đơn hàng",
+          "byProduct": "Giảm giá theo sản phẩm",
+          "byOrderAndProduct": "Theo giá trị đơn hàng và sản phẩm",
+          "noDiscount": "Không giảm giá"
+        }
+      }
+    }
+  }
+}

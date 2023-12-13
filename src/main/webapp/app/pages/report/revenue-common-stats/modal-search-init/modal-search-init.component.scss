@@ -1,0 +1,136 @@
+.modal-body {
+  max-height: 75vh;
+  overflow: visible;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.modal-footer {
+  height: 64px !important;
+  width: 100%;
+  padding-right: 20px;
+  display: flex;
+  align-items: center;
+}
+.modal .modal-header {
+  display: flex;
+  flex: 0;
+  align-items: center;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.btn-close {
+  color: #ffffff;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  font-size: 16px;
+}
+
+.btn-row {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+.group-item-search {
+  display: flex;
+  align-items: center;
+}
+.group-time {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.item-time {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+}
+.item-time-picker {
+  padding: 8px 8px !important;
+  display: flex;
+  align-items: center;
+  width: 50%;
+}
+.group-time-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 50%;
+}
+.input-text-custom {
+  display: flex;
+  align-items: center;
+}
+.title-info {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #58647a;
+  width: 30%;
+  display: flex;
+  align-items: center;
+}
+.item-search {
+  width: 50%;
+  padding: 8px 16px;
+  display: flex;
+  justify-content: space-between;
+}
+.field-search {
+  width: 70%;
+}
+:host::ng-deep .ng-select.ng-select-single .ng-select-container {
+  height: 40px;
+}
+:host::ng-deep .ng-select .ng-select-container {
+  border-radius: 8px;
+  border: 1px solid #58647a;
+}
+:host::ng-deep ng-select .ng-select-container .ng-placeholder{
+  color: #9ba3b1 !important;
+  font-size: 16px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+}
+.btn-datepicker {
+  right: 12px !important;
+  top: 6px !important;
+}
+:host::ng-deep .ng-option-disabled {
+  opacity: 0.8;
+}
+
+:host::ng-deep .ng-select .ng-clear-wrapper {
+  display: none;
+}
+.form-check-input[type='radio'] {
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+}
+.form-check {
+  display: flex !important;
+  padding-left: 2em;
+  margin-bottom: 0 !important;
+  align-items: center;
+}
+.form-check-label {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #58647a;
+  display: flex;
+  align-items: center;
+}
