@@ -2,15 +2,16 @@ package vn.softdreams.easypos.config;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.pattern.CompositeConverter;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 import org.springframework.boot.ansi.AnsiColor;
 import org.springframework.boot.ansi.AnsiElement;
 import org.springframework.boot.ansi.AnsiOutput;
 import org.springframework.boot.ansi.AnsiStyle;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CRLFLogConverter extends CompositeConverter<ILoggingEvent> {
 

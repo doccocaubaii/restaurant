@@ -4,10 +4,6 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.util.*;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,7 +14,16 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import tech.jhipster.config.JHipsterProperties;
+import vn.softdreams.easypos.dto.authorities.AuthenticationDTO;
 import vn.softdreams.easypos.management.SecurityMetersService;
+import vn.softdreams.easypos.web.rest.vm.LoginVM;
+
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.stream.Collectors;
 
 @Component
 public class TokenProvider {
@@ -64,7 +69,6 @@ public class TokenProvider {
 
     public String createToken(Authentication authentication, boolean rememberMe) {
         String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
-
         long now = (new Date()).getTime();
         Date validity;
         if (rememberMe) {
@@ -72,11 +76,39 @@ public class TokenProvider {
         } else {
             validity = new Date(now + this.tokenValidityInMilliseconds);
         }
-
         return Jwts
             .builder()
             .setSubject(authentication.getName())
             .claim(AUTHORITIES_KEY, authorities)
+            .signWith(key, SignatureAlgorithm.HS512)
+            .setExpiration(validity)
+            .compact();
+    }
+
+    public String createToken(AuthenticationDTO authentication, LoginVM loginVM) {
+        String authorities = authentication
+            .getAuthentication()
+            .getAuthorities()
+            .stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.joining(","));
+        long now = (new Date()).getTime();
+        Date validity;
+        if (loginVM.isRememberMe()) {
+            validity = new Date(now + this.tokenValidityInMillisecondsForRememberMe);
+        } else {
+            validity = new Date(now + this.tokenValidityInMilliseconds);
+        }
+        return Jwts
+            .builder()
+            .setSubject(authentication.getAuthentication().getName())
+            .claim(AUTHORITIES_KEY, authorities)
+            .claim("id", authentication.getId())
+            .claim("companyId", authentication.getCompanyId())
+            .claim("companyName", authentication.getCompanyName())
+            .claim("taxCode", authentication.getTaxCode())
+            .claim("passwordVersion", authentication.getPasswordVersion())
+            .claim("service", authentication.getService())
             .signWith(key, SignatureAlgorithm.HS512)
             .setExpiration(validity)
             .compact();

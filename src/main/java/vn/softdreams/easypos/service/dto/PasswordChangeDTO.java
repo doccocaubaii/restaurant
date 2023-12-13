@@ -1,11 +1,13 @@
 package vn.softdreams.easypos.service.dto;
 
+import vn.softdreams.easypos.domain.AbstractAuditingEntity;
+
 import java.io.Serializable;
 
 /**
  * A DTO representing a password change required data - current and new password.
  */
-public class PasswordChangeDTO implements Serializable {
+public class PasswordChangeDTO extends AbstractAuditingEntity<String> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

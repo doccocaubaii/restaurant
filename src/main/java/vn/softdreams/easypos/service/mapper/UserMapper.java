@@ -1,7 +1,5 @@
 package vn.softdreams.easypos.service.mapper;
 
-import java.util.*;
-import java.util.stream.Collectors;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -11,9 +9,12 @@ import vn.softdreams.easypos.domain.User;
 import vn.softdreams.easypos.service.dto.AdminUserDTO;
 import vn.softdreams.easypos.service.dto.UserDTO;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 /**
  * Mapper for the entity {@link User} and its DTO called {@link UserDTO}.
- *
+ * <p>
  * Normal mappers are generated using MapStruct, this one is hand-coded as MapStruct
  * support is still in beta, and requires a manual step with an IDE.
  */
@@ -46,15 +47,13 @@ public class UserMapper {
         } else {
             User user = new User();
             user.setId(userDTO.getId());
-            user.setLogin(userDTO.getLogin());
-            user.setFirstName(userDTO.getFirstName());
-            user.setLastName(userDTO.getLastName());
+            user.setUsername(userDTO.getUserName());
+            user.setStatus(userDTO.getStatus());
+            user.setPhoneNumber(userDTO.getPhoneNumber());
             user.setEmail(userDTO.getEmail());
-            user.setImageUrl(userDTO.getImageUrl());
-            user.setActivated(userDTO.isActivated());
-            user.setLangKey(userDTO.getLangKey());
-            Set<Authority> authorities = this.authoritiesFromStrings(userDTO.getAuthorities());
-            user.setAuthorities(authorities);
+            user.setManager(userDTO.isManager());
+            //            Set<Authority> authorities = this.authoritiesFromStrings(userDTO.getAuthorities());
+            //            user.setAuthorities(authorities);
             return user;
         }
     }
@@ -77,7 +76,7 @@ public class UserMapper {
         return authorities;
     }
 
-    public User userFromId(Long id) {
+    public User userFromId(Integer id) {
         if (id == null) {
             return null;
         }
@@ -124,7 +123,7 @@ public class UserMapper {
         }
         UserDTO userDto = new UserDTO();
         userDto.setId(user.getId());
-        userDto.setLogin(user.getLogin());
+        userDto.setUserName(user.getUsername());
         return userDto;
     }
 

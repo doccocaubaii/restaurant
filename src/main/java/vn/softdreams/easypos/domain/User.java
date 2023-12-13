@@ -1,113 +1,186 @@
 package vn.softdreams.easypos.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.io.Serializable;
-import java.time.Instant;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.envers.NotAudited;
+import vn.softdreams.easypos.dto.employee.EmployeeResponse;
+import vn.softdreams.easypos.dto.user.UserResponse;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import vn.softdreams.easypos.config.Constants;
+import java.io.Serializable;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A user.
  */
+@JsonIgnoreProperties(value = { "new" })
 @Entity
-@Table(name = "jhi_user")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class User extends AbstractAuditingEntity<Long> implements Serializable {
+@DynamicUpdate
+@Table(name = "ep_user")
+@SuppressWarnings("common-java:DuplicatedBlocks")
+@SqlResultSetMappings(
+    {
+        @SqlResultSetMapping(
+            name = "UserResponse",
+            classes = {
+                @ConstructorResult(
+                    targetClass = UserResponse.class,
+                    columns = {
+                        @ColumnResult(name = "companyId", type = String.class),
+                        @ColumnResult(name = "id", type = String.class),
+                        @ColumnResult(name = "username", type = String.class),
+                        @ColumnResult(name = "password", type = String.class),
+                        @ColumnResult(name = "fullName", type = String.class),
+                        @ColumnResult(name = "email", type = String.class),
+                        @ColumnResult(name = "phoneNumber", type = String.class),
+                        @ColumnResult(name = "address", type = String.class),
+                        @ColumnResult(name = "isManager", type = Boolean.class),
+                        @ColumnResult(name = "creator", type = String.class),
+                        @ColumnResult(name = "updater", type = String.class),
+                        @ColumnResult(name = "createTime", type = String.class),
+                        @ColumnResult(name = "updateTime", type = String.class),
+                    }
+                ),
+            }
+        ),
+        @SqlResultSetMapping(
+            name = "EmployeeResponse",
+            classes = {
+                @ConstructorResult(
+                    targetClass = EmployeeResponse.class,
+                    columns = {
+                        @ColumnResult(name = "id", type = Integer.class),
+                        @ColumnResult(name = "comId", type = Integer.class),
+                        @ColumnResult(name = "name", type = String.class),
+                        @ColumnResult(name = "roleId", type = Integer.class),
+                        @ColumnResult(name = "roleName", type = String.class),
+                        @ColumnResult(name = "username", type = String.class),
+                        @ColumnResult(name = "email", type = String.class),
+                        @ColumnResult(name = "phoneNumber", type = String.class),
+                        @ColumnResult(name = "createTime", type = ZonedDateTime.class),
+                        @ColumnResult(name = "updateTime", type = ZonedDateTime.class),
+                        @ColumnResult(name = "creator", type = Integer.class),
+                    }
+                ),
+            }
+        ),
+    }
+)
+public class User extends AbstractAuditingEntity<String> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @NotNull
-    @Pattern(regexp = Constants.LOGIN_REGEX)
-    @Size(min = 1, max = 50)
-    @Column(length = 50, unique = true, nullable = false)
-    private String login;
+    @Size(max = 100)
+    @Column(name = "username")
+    private String username;
 
-    @JsonIgnore
-    @NotNull
-    @Size(min = 60, max = 60)
-    @Column(name = "password_hash", length = 60, nullable = false)
+    @Column(name = "password")
     private String password;
 
-    @Size(max = 50)
-    @Column(name = "first_name", length = 50)
-    private String firstName;
-
-    @Size(max = 50)
-    @Column(name = "last_name", length = 50)
-    private String lastName;
+    @Size(max = 100)
+    @Column(name = "full_name")
+    private String fullName;
 
     @Email
-    @Size(min = 5, max = 254)
-    @Column(length = 254, unique = true)
+    @Column(name = "email")
     private String email;
 
-    @NotNull
-    @Column(nullable = false)
-    private boolean activated = false;
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
-    @Size(min = 2, max = 10)
-    @Column(name = "lang_key", length = 10)
-    private String langKey;
+    @Size(max = 512)
+    @Column(name = "address")
+    private String address;
 
-    @Size(max = 256)
-    @Column(name = "image_url", length = 256)
-    private String imageUrl;
+    @Column(name = "is_manager")
+    private Boolean isManager = true;
 
-    @Size(max = 20)
-    @Column(name = "activation_key", length = 20)
-    @JsonIgnore
-    private String activationKey;
+    @Column(name = "status")
+    private Integer status;
 
-    @Size(max = 20)
-    @Column(name = "reset_key", length = 20)
-    @JsonIgnore
-    private String resetKey;
+    @NotAudited
+    @Column(name = "normalized_name")
+    private String normalizedName;
 
-    @Column(name = "reset_date")
-    private Instant resetDate = null;
+    @NotAudited
+    @Column(name = "password_version")
+    private Integer passwordVersion;
 
-    @JsonIgnore
     @ManyToMany
     @JoinTable(
-        name = "jhi_user_authority",
-        joinColumns = { @JoinColumn(name = "user_id", referencedColumnName = "id") },
-        inverseJoinColumns = { @JoinColumn(name = "authority_name", referencedColumnName = "name") }
+        name = "company_user",
+        joinColumns = { @JoinColumn(name = "user_id", columnDefinition = "id") },
+        inverseJoinColumns = { @JoinColumn(name = "company_id", referencedColumnName = "id") }
     )
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @BatchSize(size = 20)
-    private Set<Authority> authorities = new HashSet<>();
+    private List<Company> companies = new ArrayList<>();
 
-    public Long getId() {
+    @Transient
+    @JsonDeserialize
+    @JsonSerialize
+    private Integer companyId;
+
+    @Transient
+    @JsonDeserialize
+    @JsonSerialize
+    private String taxCode;
+
+    @Transient
+    @JsonDeserialize
+    @JsonSerialize
+    private Set<String> authorities = new HashSet<>();
+
+    public String getTaxCode() {
+        return taxCode;
+    }
+
+    public void setTaxCode(String taxCode) {
+        this.taxCode = taxCode;
+    }
+
+    public List<Company> getCompanies() {
+        return companies;
+    }
+
+    public void setCompanies(List<Company> companies) {
+        this.companies = companies;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public Integer getCompanyId() {
+        return companyId;
     }
 
-    // Lowercase the login before saving it in database
-    public void setLogin(String login) {
-        this.login = StringUtils.lowerCase(login, Locale.ENGLISH);
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -118,20 +191,12 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
         this.password = password;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getEmail() {
@@ -142,91 +207,59 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
         this.email = email;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public boolean isActivated() {
-        return activated;
+    public String getAddress() {
+        return address;
     }
 
-    public void setActivated(boolean activated) {
-        this.activated = activated;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public String getActivationKey() {
-        return activationKey;
+    public Boolean getManager() {
+        return isManager;
     }
 
-    public void setActivationKey(String activationKey) {
-        this.activationKey = activationKey;
+    public void setManager(Boolean manager) {
+        isManager = manager;
     }
 
-    public String getResetKey() {
-        return resetKey;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setResetKey(String resetKey) {
-        this.resetKey = resetKey;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
-    public Instant getResetDate() {
-        return resetDate;
+    public Set<String> getAuthorities() {
+        return this.authorities;
     }
 
-    public void setResetDate(Instant resetDate) {
-        this.resetDate = resetDate;
-    }
-
-    public String getLangKey() {
-        return langKey;
-    }
-
-    public void setLangKey(String langKey) {
-        this.langKey = langKey;
-    }
-
-    public Set<Authority> getAuthorities() {
-        return authorities;
-    }
-
-    public void setAuthorities(Set<Authority> authorities) {
+    public void setAuthorities(Set<String> authorities) {
         this.authorities = authorities;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof User)) {
-            return false;
-        }
-        return id != null && id.equals(((User) o).id);
+    public String getNormalizedName() {
+        return normalizedName;
     }
 
-    @Override
-    public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-        return getClass().hashCode();
+    public void setNormalizedName(String normalizedName) {
+        this.normalizedName = normalizedName;
     }
 
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "User{" +
-            "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated='" + activated + '\'' +
-            ", langKey='" + langKey + '\'' +
-            ", activationKey='" + activationKey + '\'' +
-            "}";
+    public Integer getPasswordVersion() {
+        return passwordVersion;
+    }
+
+    public void setPasswordVersion(Integer passwordVersion) {
+        this.passwordVersion = passwordVersion;
     }
 }

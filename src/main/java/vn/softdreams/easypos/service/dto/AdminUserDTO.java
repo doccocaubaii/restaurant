@@ -1,53 +1,61 @@
 package vn.softdreams.easypos.service.dto;
 
-import java.io.Serializable;
-import java.time.Instant;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import vn.softdreams.easypos.config.Constants;
-import vn.softdreams.easypos.domain.Authority;
+import vn.softdreams.easypos.config.ZonedDateTimeDeserializer;
+import vn.softdreams.easypos.domain.AbstractAuditingEntity;
 import vn.softdreams.easypos.domain.User;
+
+import javax.validation.constraints.*;
+import java.io.Serializable;
+import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A DTO representing a user, with his authorities.
  */
-public class AdminUserDTO implements Serializable {
+public class AdminUserDTO extends AbstractAuditingEntity<String> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private Integer id;
 
     @NotBlank
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
-    private String login;
+    private String userName;
 
     @Size(max = 50)
-    private String firstName;
+    private String fullName;
 
-    @Size(max = 50)
-    private String lastName;
+    @Size(min = 5, max = 512)
+    private String address;
 
     @Email
+    @NotNull
     @Size(min = 5, max = 254)
     private String email;
 
-    @Size(max = 256)
-    private String imageUrl;
+    @NotNull
+    @Size(max = 10)
+    private String phoneNumber;
 
-    private boolean activated = false;
+    @Size(max = 14)
+    private String taxCode;
 
-    @Size(min = 2, max = 10)
-    private String langKey;
+    private Integer status;
 
-    private String createdBy;
+    private boolean isManager;
 
-    private Instant createdDate;
+    private String tax_machine_code;
 
-    private String lastModifiedBy;
+    private String tax_register_message;
 
-    private Instant lastModifiedDate;
+    @JsonFormat(pattern = Constants.ZONED_DATE_TIME_FORMAT)
+    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
+    private ZonedDateTime tax_register_time;
 
     private Set<String> authorities;
 
@@ -57,50 +65,79 @@ public class AdminUserDTO implements Serializable {
 
     public AdminUserDTO(User user) {
         this.id = user.getId();
-        this.login = user.getLogin();
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
+        this.userName = user.getUsername();
+        this.fullName = user.getFullName();
         this.email = user.getEmail();
-        this.activated = user.isActivated();
-        this.imageUrl = user.getImageUrl();
-        this.langKey = user.getLangKey();
-        this.createdBy = user.getCreatedBy();
-        this.createdDate = user.getCreatedDate();
-        this.lastModifiedBy = user.getLastModifiedBy();
-        this.lastModifiedDate = user.getLastModifiedDate();
-        this.authorities = user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet());
+        this.phoneNumber = user.getPhoneNumber();
+        this.status = user.getStatus();
+        this.isManager = user.getManager() ? user.getManager() : true;
+        Set<String> author = new HashSet<>();
+        author.add("01");
+        this.authorities = user.getAuthorities().size() > 0 ? user.getAuthorities() : author;
     }
 
-    public Long getId() {
+    public String getTax_machine_code() {
+        return tax_machine_code;
+    }
+
+    public void setTax_machine_code(String tax_machine_code) {
+        this.tax_machine_code = tax_machine_code;
+    }
+
+    public String getTax_register_message() {
+        return tax_register_message;
+    }
+
+    public void setTax_register_message(String tax_register_message) {
+        this.tax_register_message = tax_register_message;
+    }
+
+    public ZonedDateTime getTax_register_time() {
+        return tax_register_time;
+    }
+
+    public void setTax_register_time(ZonedDateTime tax_register_time) {
+        this.tax_register_time = tax_register_time;
+    }
+
+    public String getTaxCode() {
+        return taxCode;
+    }
+
+    public void setTaxCode(String taxCode) {
+        this.taxCode = taxCode;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getEmail() {
@@ -111,60 +148,28 @@ public class AdminUserDTO implements Serializable {
         this.email = email;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public boolean isActivated() {
-        return activated;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setActivated(boolean activated) {
-        this.activated = activated;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
-    public String getLangKey() {
-        return langKey;
+    public boolean isManager() {
+        return isManager;
     }
 
-    public void setLangKey(String langKey) {
-        this.langKey = langKey;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Instant getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Instant createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    public Instant getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(Instant lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
+    public void setManager(boolean manager) {
+        isManager = manager;
     }
 
     public Set<String> getAuthorities() {
@@ -175,22 +180,32 @@ public class AdminUserDTO implements Serializable {
         this.authorities = authorities;
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
-        return "AdminUserDTO{" +
-            "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated=" + activated +
-            ", langKey='" + langKey + '\'' +
-            ", createdBy=" + createdBy +
-            ", createdDate=" + createdDate +
-            ", lastModifiedBy='" + lastModifiedBy + '\'' +
-            ", lastModifiedDate=" + lastModifiedDate +
-            ", authorities=" + authorities +
-            "}";
+        return (
+            "AdminUserDTO{" +
+            "id='" +
+            id +
+            '\'' +
+            ", userName='" +
+            userName +
+            '\'' +
+            ", fullName='" +
+            fullName +
+            '\'' +
+            ", email='" +
+            email +
+            '\'' +
+            ", phoneNumber='" +
+            phoneNumber +
+            '\'' +
+            ", status=" +
+            status +
+            ", isManager=" +
+            isManager +
+            ", authorities=" +
+            authorities +
+            '}'
+        );
     }
 }

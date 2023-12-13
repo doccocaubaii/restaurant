@@ -1,18 +1,20 @@
 package vn.softdreams.easypos.service.dto;
 
-import java.io.Serializable;
+import vn.softdreams.easypos.domain.AbstractAuditingEntity;
 import vn.softdreams.easypos.domain.User;
+
+import java.io.Serializable;
 
 /**
  * A DTO representing a user, with only the public attributes.
  */
-public class UserDTO implements Serializable {
+public class UserDTO extends AbstractAuditingEntity<String> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private Integer id;
 
-    private String login;
+    private String userName;
 
     public UserDTO() {
         // Empty constructor needed for Jackson.
@@ -21,31 +23,27 @@ public class UserDTO implements Serializable {
     public UserDTO(User user) {
         this.id = user.getId();
         // Customize it here if you need, or not, firstName/lastName/etc
-        this.login = user.getLogin();
+        this.userName = user.getUsername();
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
-        return "UserDTO{" +
-            "id='" + id + '\'' +
-            ", login='" + login + '\'' +
-            "}";
+        return "UserDTO{" + "id='" + id + '\'' + ", userName='" + userName + '\'' + '}';
     }
 }

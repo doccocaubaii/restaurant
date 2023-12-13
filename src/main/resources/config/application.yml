@@ -16,7 +16,6 @@
 
 ---
 # Conditionally disable springdoc on missing api-docs profile
-
 spring:
   config:
     activate:
@@ -25,30 +24,6 @@ springdoc:
   api-docs:
     enabled: false
 ---
-eureka:
-  client:
-    enabled: false
-    healthcheck:
-      enabled: true
-    fetch-registry: true
-    register-with-eureka: true
-    instance-info-replication-interval-seconds: 10
-    registry-fetch-interval-seconds: 10
-  instance:
-    appname: easyposfrontend
-    instanceId: easyposfrontend:${spring.application.instance-id:${random.value}}
-    lease-renewal-interval-in-seconds: 5
-    lease-expiration-duration-in-seconds: 10
-    status-page-url-path: ${management.endpoints.web.base-path}/info
-    health-check-url-path: ${management.endpoints.web.base-path}/health
-    metadata-map:
-      zone: primary # This is needed for the load balancer
-      profile: ${spring.profiles.active}
-      version: #project.version#
-      git-version: ${git.commit.id.describe:}
-      git-commit: ${git.commit.id.abbrev:}
-      git-branch: ${git.branch:}
-      context-path: ${server.servlet.context-path:}
 management:
   endpoints:
     web:
@@ -66,7 +41,6 @@ management:
             'loggers',
             'prometheus',
             'threaddump',
-            'caches',
             'liquibase',
           ]
   endpoint:
@@ -114,9 +88,10 @@ management:
         request:
           autotime:
             enabled: true
+
 spring:
   application:
-    name: easyPosFrontEnd
+    name: easypos
   profiles:
     # The commented value for `active` can be replaced with valid Spring profiles to load.
     # Otherwise, it will be filled in by maven when building the JAR file
@@ -137,10 +112,16 @@ spring:
   jpa:
     open-in-view: false
     properties:
-      hibernate.jdbc.time_zone: UTC
+      hibernate.connection.handling_mode: DELAYED_ACQUISITION_AND_RELEASE_AFTER_TRANSACTION
+      hibernate.connection:provider_disables_autocommit: true
+      hibernate.envers.audit_strategy: org.hibernate.envers.strategy.ValidityAuditStrategy
+      hibernate.envers.audit_strategy_validity_store_revend_timestamp: true
+      hibernate.envers.store_data_at_delete: true
+      hibernate.time_zone: Asia/Ho_Chi_Minh
+      hibernate.jdbc.time_zone: Asia/Ho_Chi_Minh
       hibernate.id.new_generator_mappings: true
-      hibernate.connection.provider_disables_autocommit: true
-      hibernate.cache.use_second_level_cache: true
+      hibernate.connection.provider_disables_autocommit: false
+      hibernate.cache.use_second_level_cache: false
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: false
       # modify batch size as necessary
@@ -166,13 +147,13 @@ spring:
       matching-strategy: ant_path_matcher
   task:
     execution:
-      thread-name-prefix: easy-pos-front-end-task-
+      thread-name-prefix: easypos-task-
       pool:
         core-size: 2
         max-size: 50
         queue-capacity: 10000
     scheduling:
-      thread-name-prefix: easy-pos-front-end-scheduling-
+      thread-name-prefix: easypos-scheduling-
       pool:
         size: 2
   thymeleaf:
@@ -203,7 +184,7 @@ info:
 
 jhipster:
   clientApp:
-    name: 'easyPosFrontEndApp'
+    name: 'easyposApp'
   # By default CORS is disabled. Uncomment to enable.
   # cors:
   #   allowed-origins: "http://localhost:8100,http://localhost:9000"
@@ -213,12 +194,12 @@ jhipster:
   #   allow-credentials: true
   #   max-age: 1800
   mail:
-    from: easyPosFrontEnd@localhost
+    from: easypos@localhost
   api-docs:
     default-include-pattern: ${server.servlet.context-path:}/api/**
     management-include-pattern: ${server.servlet.context-path:}/management/**
-    title: Easy Pos Front End API
-    description: Easy Pos Front End API documentation
+    title: Easypos API
+    description: Easypos API documentation
     version: 0.0.1
     terms-of-service-url:
     contact-name:
@@ -227,8 +208,8 @@ jhipster:
     license: unlicensed
     license-url:
   security:
-    content-security-policy: "default-src 'self' https://fonts.gstatic.com; connect-src 'self' wss://websocket.easyposs.vn:8883 ws://127.0.0.1:8189; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.ckeditor.com https://storage.googleapis.com; style-src 'self' 'unsafe-inline' https://cdn.ckeditor.com https://fonts.googleapis.com; img-src 'self' https://cdn.ckeditor.com  http://14.225.17.199:8080 http://app.easyposs.vn https://app.easyposs.vn http://api.easyposs.vn https://api.easyposs.vn http://app.ezpos.com.vn https://app.ezpos.com.vn data:; font-src 'self' https://cdn.ckeditor.com https://fonts.gstatic.com data:"
-    # ===================================================================
+    content-security-policy: "default-src 'self'; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:"
+# ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
 # to have type-safe configuration, like in the JHipsterProperties above

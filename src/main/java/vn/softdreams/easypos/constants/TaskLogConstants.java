@@ -1,0 +1,35 @@
+package vn.softdreams.easypos.constants;
+
+public interface TaskLogConstants {
+    interface Status {
+        Integer PROCESSING = 0;
+        Integer OK = 1;
+        Integer FAILED = 2;
+    }
+
+    interface Type {
+        String PUBLISH_INVOICE = "PUBLISH_INVOICE";
+        String IMPORT_INVOICE = "IMPORT_INVOICE";
+        String CHECK_INVOICE = "CHECK_INVOICE";
+        String CHECK_ALL_INVOICE = "CHECK_ALL_INVOICE";
+        String SYNC_INVOICE = "SYNC_INVOICE";
+        String CHECK_INVOICE_STATUS = "CHECK_INVOICE_STATUS";
+        String CANCEL_INVOICE = "CANCEL_INVOICE";
+        String REMOVE_UNSIGNED_INVOICE = "REMOVE_UNSIGNED_INVOICE";
+        String EB_CREATE_MATERIAL_GOODS = "EB_CREATE_MATERIAL_GOODS";
+        String EB_UPDATE_MATERIAL_GOODS = "EB_UPDATE_MATERIAL_GOODS";
+        String EB_CREATE_ACC_OBJECT = "EB_CREATE_ACC_OBJECT";
+        String EB_UPDATE_ACC_OBJECT = "EB_UPDATE_ACC_OBJECT";
+        String EB_CREATE_SAINVOICE = "EB_CREATE_SAINVOICE";
+        String EB_CANCEL_SAINVOICE = "EB_CANCEL_SAINVOICE";
+        String CREATE_ACTIVITY_LOG = "CREATE_ACTIVITY_LOG";
+        String EB_CREATE_PRODUCT_UNIT = "EB_CREATE_PRODUCT_UNIT";
+        String EB_ASYNC_PRODUCT_UNIT = "EB_ASYNC_PRODUCT_UNIT";
+        String EB_CREATE_RS_IN_OUT_WARD = "EB_CREATE_RS_IN_OUT_WARD";
+        String EB_DELETE_RS_IN_OUT_WARD = "EB_DELETE_RS_IN_OUT_WARD";
+        String EB_SAVE_COMPANY_UNIT = "EB_SAVE_COMPANY_UNIT";
+        String EB_CREATE_ACCOUNT = "EB_CREATE_ACCOUNT";
+        String EB_FORGOT_PASSWORD = "EB_FORGOT_PASSWORD";
+        String EB_CHANGE_PASSWORD = "EB_CHANGE_PASSWORD";
+    }
+}

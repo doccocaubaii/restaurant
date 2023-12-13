@@ -1,7 +1,8 @@
 package vn.softdreams.easypos.web.rest.vm;
 
-import javax.validation.constraints.Size;
 import vn.softdreams.easypos.service.dto.AdminUserDTO;
+
+import javax.validation.constraints.Size;
 
 /**
  * View Model extending the AdminUserDTO, which is meant to be used in the user management UI.

@@ -3,7 +3,7 @@ package vn.softdreams.easypos.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * Properties specific to Easy Pos Front End.
+ * Properties specific to Easypos.
  * <p>
  * Properties are configured in the {@code application.yml} file.
  * See {@link tech.jhipster.config.JHipsterProperties} for a good example.

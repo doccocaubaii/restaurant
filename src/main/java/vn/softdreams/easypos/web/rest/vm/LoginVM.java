@@ -1,22 +1,31 @@
 package vn.softdreams.easypos.web.rest.vm;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import vn.softdreams.easypos.web.rest.errors.ExceptionConstants;
+
+import javax.validation.constraints.NotEmpty;
 
 /**
  * View Model object for storing a user's credentials.
  */
 public class LoginVM {
 
-    @NotNull
-    @Size(min = 1, max = 50)
+    @NotEmpty(message = ExceptionConstants.USERNAME_NOT_NULL)
     private String username;
 
-    @NotNull
-    @Size(min = 4, max = 100)
+    @NotEmpty(message = ExceptionConstants.PASSWORD_IN_VALID)
     private String password;
 
+    public Integer companyId;
+
     private boolean rememberMe;
+
+    public Integer getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
+    }
 
     public String getUsername() {
         return username;

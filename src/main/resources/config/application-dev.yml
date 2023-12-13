@@ -12,37 +12,15 @@
 # Full reference is available at:
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
-
 logging:
   level:
-    ROOT: DEBUG
-    tech.jhipster: DEBUG
-    org.hibernate.SQL: DEBUG
-    vn.softdreams.easypos: DEBUG
-
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    enabled: false # By default, the JHipster Registry is not used in the "dev" profile
-    service-url:
-      defaultZone: http://admin:${jhipster.registry.password}@localhost:8761/eureka/
-#zuul:
-#  host:
-#    socket-timeout-millis: 60000
-#    connect-timeout-millis: 60000
-#  routes:
-#    easyPos:
-#      sensitive-headers: Cookie,Set-Cookie
-#      path: /api/client/**
-#      url: http://localhost:8080/api/client
-#    easyPosPage:
-#      sensitive-headers: Cookie,Set-Cookie
-#      path: /api/page/**
-#      url: http://localhost:8080/api/page
-#    easyPosPublic:
-#      path: /api/p/client/**
-#      url: http://localhost:8080/api/p/client
+    ROOT: debug
+    tech.jhipster: debug
+    org.hibernate.SQL: debug
+    vn.softdreams.easypos: debug
+  logback:
+    rollingpolicy:
+      max-file-size: 50MB
 spring:
   devtools:
     restart:
@@ -53,15 +31,6 @@ spring:
   jackson:
     serialization:
       indent-output: true
-  cloud:
-    config:
-      uri: http://admin:${jhipster.registry.password}@localhost:8761/config
-      # name of the config server's property source (file.yml) that we want to use
-      name: easyPosFrontEnd
-      profile: dev
-      label: main # toggle to switch to a different version of the configuration as stored in git
-      # it can be set to any label, branch or commit of the configuration source Git repository
-      request-connect-timeout: 60000
   datasource:
     type: com.microsoft.sqlserver.jdbc.SQLServerDataSource
     url: jdbc:sqlserver://10.100.110.78:1433;databaseName=easyposbackoffice;encrypt=true;trustServerCertificate=true;
@@ -75,37 +44,94 @@ spring:
         prepStmtCacheSize: 250
         prepStmtCacheSqlLimit: 2048
         useServerPrepStmts: true
-  jpa:
+      maximumPoolSize: 100
+      minimumIdle: 20
+      maxLifetime: 1800000
+      idleTimeout: 180000
+      connectionTimeout: 200000
+  datasourceReadOnly:
+    type: com.microsoft.sqlserver.jdbc.SQLServerDataSource
+    url: jdbc:sqlserver://10.100.110.78;databaseName=easyposbackoffice;encrypt=true;trustServerCertificate=true;applicationIntent=ReadOnly;
+    username: sa
+    password: Sds@123
+    hikari:
+      poolName: Hikari
+      auto-commit: false
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+      maximumPoolSize: 100
+      minimumIdle: 20
+      maxLifetime: 1800000
+      idleTimeout: 180000
+      connectionTimeout: 200000
+
   liquibase:
     # Remove 'faker' if you do not want the sample data to be loaded automatically
     contexts: dev
     enabled: false
   mail:
-    host: localhost
-    port: 25
-    username:
-    password:
+    host: mail.softdreams.vn
+    port: 465
+    username: easypos-noreply@softdreams.vn
+    password: 123456Aa@
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
   messages:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
   thymeleaf:
     cache: false
-  sleuth:
-    # https://github.com/spring-projects/spring-framework/issues/27844#issuescomment-1002866885
-    # https://github.com/spring-cloud/spring-cloud-sleuth/issues/2094
-    async:
-      enabled: false
-    enabled: false
-    sampler:
-      probability: 1 # report 100% of traces
-  zipkin: # Use the "zipkin" Maven profile to have the Spring Cloud Zipkin dependencies
-    base-url: http://localhost:9411
-    enabled: false
-    locator:
-      discovery:
-        enabled: true
-
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 10MB
+  rabbitmq:
+    host: 10.100.110.78
+    virtual-host: /
+    username: admin
+    password: Sds#2023
+    ngogiaphatinvoice:
+      ngp-check-invoice-queue: ngp-check-invoice
+      ngp-check-invoice-routing-key: ngp-routing-check-invoice
+      ngp-import-invoice-queue: ngp-import-invoice
+      ngp-import-invoice-routing-key: ngp-routing-import-invoice
+      ngp-issue-invoice-queue: ngp-issue-invoice
+      ngp-issue-invoice-routing-key: ngp-routing-issue-invoice
+      ngp-replace-invoice-queue: ngp-replace-invoice
+      ngp-replace-invoice-routing-key: ngp-routing-replace-invoice
+      ngp-cancel-invoice-queue: ngp-cancel-invoice
+      ngp-cancel-invoice-routing-key: ngp-routing-cancel-invoice
+    easyinvoice:
+      issue-invoice-queue: issue-invoice
+      issue-invoice-routing-key: easypos-issue-invoice
+      check-invoice-queue: check-invoice
+      check-invoice-routing-key: easypos-check-invoice
+      replace-invoice-queue: replace-invoice
+      replace-invoice-routing-key: easypos-replace-invoice
+      import-invoice-queue: import-invoice
+      import-invoice-routing-key: easypos-cancel-invoice
+      cancel-invoice-queue: cancel-invoice
+      cancel-invoice-routing-key: easypos-cancel-invoice
+    easybooks88:
+      send-queue: send-eb88-dev
+      send-routing-key: easypos-send-eb88-dev
+    consumer:
+      max-concurrent-consumer: 2
+      concurrent-consumer: 2
+      prefetch-count: 10
+    producer:
+      reply-timeout: 60000
+      direct-exchange: amq.direct
+  main:
+    allow-circular-references: true
 server:
-  port: 8082
+  port: 8080
 
 # ===================================================================
 # JHipster specific properties
@@ -114,16 +140,10 @@ server:
 # ===================================================================
 
 jhipster:
-  cache: # Cache configuration
-    ehcache: # Ehcache configuration
-      time-to-live-seconds: 3600 # By default objects stay 1 hour in the cache
-      max-entries: 100 # Number of objects in each cache entry
-  registry:
-    password: admin
   # CORS is only enabled by default with the "dev" profile
   cors:
     # Allow Ionic for JHipster by default (* no longer allowed in Spring Boot 2.4+)
-    allowed-origins: 'http://localhost:8100,https://localhost:8100,http://localhost:9000,https://localhost:9000,http://localhost:4200,https://localhost:4200, http://14.225.17.199:8082'
+    allowed-origins: 'http://localhost:8100,https://localhost:8100,http://localhost:9000,https://localhost:9000,http://localhost:4200,https://localhost:4200'
     # Enable CORS when running in GitHub Codespaces
     allowed-origin-patterns: 'https://*.githubpreview.dev'
     allowed-methods: '*'
@@ -135,7 +155,7 @@ jhipster:
     authentication:
       jwt:
         # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
-        base64-secret: MTY0MjM1ZDJlYjBlMTEwYjNlNWM4YjYxN2Q4NmUzMzUwZDAyMTg5ZjBkMGMzNWFhZDVmZWE5MzQ3YmE0Mjc0MTc1ZWU5NTljMjlkNDRiNGM5Y2Y1NTA4YjI5NzMxZmY0YTMxMThjODBhNGM4ZDY0NGY1YzRkNWJiODUwOGQ3ODQ=
+        base64-secret: NDdiMDQ3Njg3NjNkMjJjYTVhMDQyNDgwNjhhZjFjOGIxZTQ4OGJkMTE1Mzk5YTcxMWVkY2JiMjU2YzQxZWM4ZmJiZDU0MTZjODJkYWE5MGU0ZDAyNDNiNWViZjJkYWIxYmY2OGZhMjQyOWY4ODJjNTZmYzIxN2ViOTY4OThkNTQ=
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
         token-validity-in-seconds-for-remember-me: 2592000
