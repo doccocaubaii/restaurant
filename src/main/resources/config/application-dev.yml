@@ -33,27 +33,9 @@ spring:
       indent-output: true
   datasource:
     type: com.microsoft.sqlserver.jdbc.SQLServerDataSource
-    url: jdbc:sqlserver://10.100.110.78:1433;databaseName=easyposbackoffice;encrypt=true;trustServerCertificate=true;
+    url: jdbc:sqlserver://localhost:1433;databaseName=dbpj3;encrypt=true;trustServerCertificate=true;
     username: sa
-    password: Sds@123
-    hikari:
-      poolName: Hikari
-      auto-commit: false
-      data-source-properties:
-        cachePrepStmts: true
-        prepStmtCacheSize: 250
-        prepStmtCacheSqlLimit: 2048
-        useServerPrepStmts: true
-      maximumPoolSize: 100
-      minimumIdle: 20
-      maxLifetime: 1800000
-      idleTimeout: 180000
-      connectionTimeout: 200000
-  datasourceReadOnly:
-    type: com.microsoft.sqlserver.jdbc.SQLServerDataSource
-    url: jdbc:sqlserver://10.100.110.78;databaseName=easyposbackoffice;encrypt=true;trustServerCertificate=true;applicationIntent=ReadOnly;
-    username: sa
-    password: Sds@123
+    password: 1234
     hikari:
       poolName: Hikari
       auto-commit: false
@@ -131,7 +113,7 @@ spring:
   main:
     allow-circular-references: true
 server:
-  port: 8080
+  port: 8082
 
 # ===================================================================
 # JHipster specific properties

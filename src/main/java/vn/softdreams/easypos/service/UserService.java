@@ -501,23 +501,6 @@ public class UserService {
             }
         }
 
-        //                if (password != null) {
-        //                    return new TaskLogSendQueueUser(
-        //                        createAndPublishQueueTask(companyId, user.getId(), password, TaskLogConstants.Type.EB_CREATE_ACCOUNT),
-        //                        user,
-        //                        ownerId
-        //                    );
-        //                }
-        //                return new TaskLogSendQueueUser(null, user, ownerId);
-        //            } catch (Exception e) {
-        //                log.error("Can not create queue task for eb88 creating account/companyOwner : {}", e.getMessage());
-        //            }
-        //            return null;
-        //        });
-        //        if (sendQueue != null && sendQueue.getTaskLogSendQueue() != null) {
-        //            sendTaskLog(sendQueue.getTaskLogSendQueue());
-        //        }
-
         // xoá user cũ nếu ko gắn cho công ty nào cả
         if (userIdOld != null && companyUserRepository.countAllByUserId(userIdOld) < 1) {
             log.debug("Delete user old with id= {}", userIdOld);

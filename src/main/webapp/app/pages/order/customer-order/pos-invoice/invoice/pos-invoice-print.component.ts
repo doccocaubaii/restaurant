@@ -4,10 +4,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as QRCode from 'qrcode';
 import { BaseComponent } from '../../../../../shared/base/base.component';
 import { ConfigService } from '../../../../../layouts/config/service/config.service';
-import { padStart } from '@fullcalendar/core';
 import { UtilsService } from '../../../../../utils/Utils.service';
-import { IProduct } from 'app/pages/order/model/product.model';
-import { take_decimal_number } from 'app/pages/const/function';
 import { ProductBill } from 'app/pages/order/model/bill-payment.model';
 
 @Component({

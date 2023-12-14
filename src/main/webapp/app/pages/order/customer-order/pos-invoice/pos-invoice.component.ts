@@ -10,6 +10,7 @@ import { BillService } from '../../service/bill.service';
 import { PrintService } from '../../service/print.service';
 import html2pdf from 'html2pdf.js';
 import { ICON_CANCEL, ICON_PDF } from '../../../../shared/other/icon';
+import html2canvas from "html2canvas";
 
 @Component({
   selector: 'jhi-pos-invoice',
@@ -94,110 +95,117 @@ export class PosInvoiceComponent extends BaseComponent implements OnInit {
   }
 
   updateContent() {
-    const configs = this.json['json-value'];
-    let tableName1: any = null;
-    let tableName2: any = null;
-    configs.forEach(config => {
-      if (config.tableName && config.isTable && !config.isTopping) {
-        tableName1 = config.tableName;
-      }
-      if (config.tableName && config.isTable && config.isTopping) {
-        tableName2 = config.tableName;
-      }
-      if (!config.isTable && !config.tableName) {
-        const value = this.orderDataPrint[config.columnName];
-        if (config.variable) {
-          if (config.columnName === 'qrCode') {
-            this.genQrCode(value);
-            this.reviewContent = this.reviewContent.replace(new RegExp(config.variable, 'g'), this.urlQR);
-          }
-          if (value !== null && value !== undefined) {
-            if (config.isDate && this.reviewContent.includes(config.variable)) {
-              this.reviewContent = this.replaceContent(this.reviewContent, config.variable, this.getDateFormat(config.variable, value));
-            }
-            this.reviewContent = this.replaceContent(this.reviewContent, config.variable, value);
-          } else {
-            this.reviewContent = this.replaceContent(this.reviewContent, config.variable, '');
-          }
+    if (this.reviewContent) {
+      const configs = this.json['json-value'];
+      let tableName1: any = null;
+      let tableName2: any = null;
+      configs.forEach(config => {
+        if (config.tableName && config.isTable && !config.isTopping) {
+          tableName1 = config.tableName;
         }
-      }
-      if (!config.isTable && config.tableName) {
-        if (this.orderDataPrint[config.tableName]) {
-          const value = this.orderDataPrint[config.tableName][config.columnName];
-          if (value !== null && value !== undefined) {
-            this.reviewContent = this.replaceContent(this.reviewContent, config.variable, value);
-          } else {
-            this.reviewContent = this.replaceContent(this.reviewContent, config.variable, '');
-          }
-        } else {
-          let htmlReplace = this.getContent(config.variable, this.reviewContent, '<tr', '</tr>');
-          if (htmlReplace) {
-            this.reviewContent = this.reviewContent.replace(htmlReplace, '');
-          }
+        if (config.tableName && config.isTable && config.isTopping) {
+          tableName2 = config.tableName;
         }
-      }
-    });
-    if (this.reviewContent.includes('{Ten_san_pham}')) {
-      let bodyContent = this.getContent('{Ten_san_pham}', this.reviewContent, '<tbody>', '</tbody>');
-      let contentSpliceBody = bodyContent.substring(bodyContent.indexOf('<tbody>') + 7, bodyContent.indexOf('</tbody>'));
-      let rawContent = this.getContentParent('{Ten_san_pham}', contentSpliceBody, '<tr');
-      let content = rawContent;
-      if (this.orderDataPrint[tableName1]) {
-        this.orderDataPrint[tableName1].forEach((value, index) => {
-          if (content.includes('{San_pham_ban_kem}')) {
-            let startToppingName = content.indexOf('{San_pham_ban_kem}');
-            let startTopping1 = content.lastIndexOf('<tr', startToppingName);
-            let startTopping2 = content.indexOf('</tr>', startToppingName) + '</tr>'.length;
-            let toppingText = content.slice(startTopping1, startTopping2);
-            let rawTopping = content.slice(startTopping1, startTopping2);
-
-            if (value[tableName2]) {
-              let discountVatRateReplace = this.getContent('{Thue_giam_tru}', content, '<tr', '</tr>');
-              if (discountVatRateReplace) {
-                content = content.replace(new RegExp(discountVatRateReplace, 'g'), '');
+        if (!config.isTable && !config.tableName) {
+          const value = this.orderDataPrint[config.columnName];
+          if (config.variable) {
+            if (config.columnName === 'qrCode') {
+              if (value && this.orderDataPrint.invoiceInfo && this.orderDataPrint.lookupLink) {
+                this.genQrCode(this.getOrigInvUrl(this.orderDataPrint.invoiceInfo.pattern, value, this.orderDataPrint.lookupLink));
+                let qrCode = '<img src="' + this.urlQR + '" alt="">';
+                this.reviewContent = this.reviewContent.replace(new RegExp(config.variable, 'g'), this.urlQR ? qrCode : '');
+              } else {
+                this.reviewContent = this.reviewContent.replace(new RegExp(config.variable, 'g'), '');
               }
-              value[tableName2].forEach((topping, indexTopping) => {
-                configs.forEach(config => {
-                  if (config.isTable && config.isTopping) {
-                    if (content.includes(config.variable)) {
-                      const data = topping[config.columnName];
-                      if (data !== null && data !== undefined) {
-                        toppingText = this.replaceContent(toppingText, config.variable, data);
-                      } else {
-                        toppingText = this.replaceContent(toppingText, config.variable, '');
+            }
+            if (value !== null && value !== undefined) {
+              if (config.isDate && this.reviewContent.includes(config.variable)) {
+                this.reviewContent = this.replaceContent(this.reviewContent, config.variable, this.getDateFormat(config.variable, value));
+              }
+              this.reviewContent = this.replaceContent(this.reviewContent, config.variable, value);
+            } else {
+              this.reviewContent = this.replaceContent(this.reviewContent, config.variable, '');
+            }
+          }
+        }
+        if (!config.isTable && config.tableName) {
+          if (this.orderDataPrint[config.tableName]) {
+            const value = this.orderDataPrint[config.tableName][config.columnName];
+            if (value !== null && value !== undefined) {
+              this.reviewContent = this.replaceContent(this.reviewContent, config.variable, value);
+            } else {
+              this.reviewContent = this.replaceContent(this.reviewContent, config.variable, '');
+            }
+          } else {
+            let htmlReplace = this.getContent(config.variable, this.reviewContent, '<tr', '</tr>');
+            if (htmlReplace) {
+              this.reviewContent = this.reviewContent.replace(htmlReplace, '');
+            }
+          }
+        }
+      });
+      if (this.reviewContent.includes('{Ten_san_pham}')) {
+        let bodyContent = this.getContent('{Ten_san_pham}', this.reviewContent, '<tbody>', '</tbody>');
+        let contentSpliceBody = bodyContent.substring(bodyContent.indexOf('<tbody>') + 7, bodyContent.indexOf('</tbody>'));
+        let rawContent = this.getContentParent('{Ten_san_pham}', contentSpliceBody, '<tr');
+        let content = rawContent;
+        if (this.orderDataPrint[tableName1]) {
+          this.orderDataPrint[tableName1].forEach((value, index) => {
+            if (content.includes('{San_pham_ban_kem}')) {
+              let startToppingName = content.indexOf('{San_pham_ban_kem}');
+              let startTopping1 = content.lastIndexOf('<tr', startToppingName);
+              let startTopping2 = content.indexOf('</tr>', startToppingName) + '</tr>'.length;
+              let toppingText = content.slice(startTopping1, startTopping2);
+              let rawTopping = content.slice(startTopping1, startTopping2);
+
+              if (value[tableName2]) {
+                let discountVatRateReplace = this.getContent('{Thue_giam_tru}', content, '<tr', '</tr>');
+                if (discountVatRateReplace) {
+                  content = content.replace(new RegExp(discountVatRateReplace, 'g'), '');
+                }
+                value[tableName2].forEach((topping, indexTopping) => {
+                  configs.forEach(config => {
+                    if (config.isTable && config.isTopping) {
+                      if (content.includes(config.variable)) {
+                        const data = topping[config.columnName];
+                        if (data !== null && data !== undefined) {
+                          toppingText = this.replaceContent(toppingText, config.variable, data);
+                        } else {
+                          toppingText = this.replaceContent(toppingText, config.variable, '');
+                        }
                       }
                     }
+                  });
+                  if (indexTopping < value[tableName2].length - 1) {
+                    toppingText += rawTopping;
                   }
                 });
-                if (indexTopping < value[tableName2].length - 1) {
-                  toppingText += rawTopping;
-                }
-              });
-              content = content.replace(rawTopping, toppingText);
-            } else {
-              content = content.replace(rawTopping, '');
-            }
-          }
-          configs.forEach(config => {
-            if (config.isTable && !config.isTopping) {
-              if (content.includes(config.variable)) {
-                const data = value[config.columnName];
-                if (data != null && data != undefined) {
-                  content = this.replaceContent(content, config.variable, data);
-                } else {
-                  content = this.replaceContent(content, config.variable, '');
-                }
+                content = content.replace(rawTopping, toppingText);
+              } else {
+                content = content.replace(rawTopping, '');
               }
             }
+            configs.forEach(config => {
+              if (config.isTable && !config.isTopping) {
+                if (content.includes(config.variable)) {
+                  const data = value[config.columnName];
+                  if (data != null && data != undefined) {
+                    content = this.replaceContent(content, config.variable, data);
+                  } else {
+                    content = this.replaceContent(content, config.variable, '');
+                  }
+                }
+              }
+            });
+            if (index < this.orderDataPrint[tableName1].length - 1) {
+              content += rawContent;
+            }
           });
-          if (index < this.orderDataPrint[tableName1].length - 1) {
-            content += rawContent;
-          }
-        });
-      } else {
-        this.reviewContent = this.reviewContent.replace(rawContent, '');
+        } else {
+          this.reviewContent = this.reviewContent.replace(rawContent, '');
+        }
+        this.reviewContent = this.reviewContent.replace(rawContent, content);
       }
-      this.reviewContent = this.reviewContent.replace(rawContent, content);
     }
   }
 
@@ -319,6 +327,9 @@ export class PosInvoiceComponent extends BaseComponent implements OnInit {
     this.statusPrint = !this.statusPrint;
   }
 
+  getOrigInvUrl(pattern: string, fkey: string, portalLink: string) {
+    return portalLink + "/Invoice/ViewFromFkey?token=" + btoa(pattern + "_" + "" + "_" + "0" + "|" + fkey);
+  }
   genQrCode(value: string) {
     if (value) {
       QRCode.toDataURL(value, (err, url) => {
@@ -343,7 +354,7 @@ export class PosInvoiceComponent extends BaseComponent implements OnInit {
     element.style.wordWrap = 'break-word';
 
     await this.alignCenterImg(element);
-    // await this.reduceFontSize(element);
+    await this.reduceFontSize(element);
     await this.setLineHeight(element);
     pageSizeItem = await this.setPageSize(element, pageSizeItem);
     try {
@@ -391,12 +402,16 @@ export class PosInvoiceComponent extends BaseComponent implements OnInit {
     return value;
   }
   openPdfInNewTab(buffer: any) {
-    const blob = new Blob([buffer], { type: 'application/pdf' });
-    const file = new File([blob], 'filename.pdf', { type: 'application/pdf' });
+    const blob = new Blob([buffer], {type: 'application/pdf'});
+    const file = new File([blob], 'filename.pdf', {type: 'application/pdf'});
     const fileURL = URL.createObjectURL(file);
     this.isSavingPdf = false;
     this.isOpenNewTap = true;
-    window.open(fileURL, '_blank');
+    if (buffer.byteLength > 2000000) {
+      window.location.href = fileURL;
+    } else {
+      window.open(fileURL, '_blank');
+    }
   }
   reduceFontSize(element: any) {
     element.querySelectorAll('span').forEach(spanElement => {
@@ -420,7 +435,7 @@ export class PosInvoiceComponent extends BaseComponent implements OnInit {
       }
     });
   }
-  setPageSize(element: any, pageSizeItem: any) {
+  async setPageSize(element: any, pageSizeItem: any) {
     const customSizes = {
       K80: [71, 297],
       K58: [57, 297],
@@ -441,13 +456,39 @@ export class PosInvoiceComponent extends BaseComponent implements OnInit {
         pageSizeItem = customSizes[this.templateSelected.pageSize];
       }
       document.body.appendChild(element);
-      const height = element.offsetHeight;
-      let dpi = 96; // 1 inch = 96px
-      let mmPerInch = 25.4; // 1 inch = 25.4mm
-      let heightInMm = (height / dpi) * mmPerInch; // Convert pixel sang mm
-      pageSizeItem[1] = Number(heightInMm + 40);
+      // Lấy chiều cao của element với chiều rộng cụ thể
+      const specificHeightInMm = await this.getHeightWithSpecificWidth(element, pageSizeItem[0]);
+      // Gán chiều cao tính được cho pageSizeItem
+      if (pageSizeItem[0] >= 210) {
+        pageSizeItem[1] = specificHeightInMm + 20;
+      } else {
+        pageSizeItem[1] = specificHeightInMm + 50;
+      }
+      return pageSizeItem;
     }
-    return pageSizeItem;
+  }
+  async getHeightWithSpecificWidth(element: HTMLElement, specificWidth: number): Promise<number> {
+    // Tạo hình ảnh từ element với chiều rộng cụ thể sử dụng html2canvas
+    const canvas = await html2canvas(element, { width: specificWidth });
+
+    // Lấy chiều cao của hình ảnh đã tạo
+    const heightInPx = canvas.height;
+
+    // Chuyển đổi chiều cao từ pixel sang millimet
+    const dpi = 96; // Số pixel trên mỗi inch
+    const mmPerInch = 25.4; // Số millimet trên mỗi inch
+    const heightInMm = (heightInPx / dpi) * mmPerInch;
+    if (specificWidth >= 210) {
+      return heightInMm + 20; // Trả về chiều cao tính được
+    } else {
+      if (heightInPx < 1100) {
+        return heightInMm; // Trả về chiều cao tính được
+      } else if (heightInPx < 6500) {
+        return heightInMm + 50; // Trả về chiều cao tính được
+      } else {
+        return heightInMm + 100;
+      }
+    }
   }
   alignCenterImg(element: any) {
     element.querySelectorAll('span > img').forEach(imgElement => {

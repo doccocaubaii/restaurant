@@ -144,8 +144,13 @@ export class CkeditorPrintConfigComponent extends BaseComponent implements OnIni
           const value = this.orderSelected[config.columnName];
           if (config.variable) {
             if (config.columnName === 'qrCode') {
-              this.genQrCode(value);
-              this.reviewContent = this.reviewContent.replace(new RegExp(config.variable, 'g'), this.urlQR ? this.urlQR : '');
+              if (value && this.orderSelected.invoiceInfo && this.orderSelected.lookupLink) {
+                this.genQrCode(this.getOrigInvUrl(this.orderSelected.invoiceInfo.pattern, value, this.orderSelected.lookupLink));
+                let qrCode = '<img src="' + this.urlQR + '" alt="">';
+                this.reviewContent = this.reviewContent.replace(new RegExp(config.variable, 'g'), this.urlQR ? qrCode : '');
+              } else {
+                this.reviewContent = this.reviewContent.replace(new RegExp(config.variable, 'g'), '');
+              }
             }
             if (value !== null && value !== undefined) {
               if (config.isDate && this.reviewContent.includes(config.variable)) {
@@ -476,6 +481,9 @@ export class CkeditorPrintConfigComponent extends BaseComponent implements OnIni
     });
   }
 
+  getOrigInvUrl(pattern: string, fkey: string, portalLink: string) {
+    return portalLink + "/Invoice/ViewFromFkey?token=" + btoa(pattern + "_" + "" + "_" + "0" + "|" + fkey);
+  }
   genQrCode(value: string) {
     if (value) {
       QRCode.toDataURL(value, (err, url) => {
