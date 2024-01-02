@@ -1,0 +1,11 @@
+.modal {
+  display: block;
+
+  .title {
+    text-transform: capitalize;
+  }
+
+  .img-product {
+    background-size: contain !important;
+  }
+}

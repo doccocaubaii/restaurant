@@ -1,0 +1,10 @@
+{
+  "easyPos": {
+    "bill": {
+      "title": "Quản lý đơn hàng",
+      "info": {
+        "billCode": "Mã đơn hàng"
+      }
+    }
+  }
+}

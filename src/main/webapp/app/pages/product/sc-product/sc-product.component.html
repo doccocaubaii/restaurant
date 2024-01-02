@@ -1,0 +1,114 @@
+<div
+  class=""
+  id="pos-customer"
+  [ngClass]="{
+    'pos-mobile-sidebar-toggled': posMobileSidebarToggled
+  }"
+>
+  <h1 class="page-header" jhiTranslate="easyPos.product.title"></h1>
+  <div class="d-flex justify-content-end align-items-center">
+    <button type="button" class="btn btn-green me-1 mb-1 header-content-add" (click)="onCreateProduct()">
+      <i class="fas fa-circle-plus me-2"></i>
+      <span jhiTranslate="easyPos.product.info.createProduct"></span>
+    </button>
+  </div>
+  <!-- BEGIN pos-stock-body -->
+  <div class="tab-content p-3 rounded-top panel rounded-0 m-0">
+    <div class="row" style="padding-bottom: 10px">
+      <div class="d-flex align-items-end">
+        <div class="col-md-3 align-items-center">
+          <label class="form-label col-form-label w-auto me-3" jhiTranslate="global.info.keyword">Từ khóa</label>
+          <div class="col-xs-12 col-sm-8 col-md-8 col-lg-11">
+            <div class="form-group w-100%">
+              <input
+                name="keyword"
+                currencyMask
+                [(ngModel)]="filterProduct.keyword"
+                class="form-control w-100%"
+                type="search"
+                placeholder="Tìm kiếm sản phẩm ..."
+                (keyup.enter)="onSearch()"
+                (ngModelChange)="onDeleteKeywordSearch()"
+              />
+            </div>
+          </div>
+        </div>
+
+        <button (click)="onSearch()" class="btn btn-sm btn-blue btn-search">
+          <fa-icon icon="search"></fa-icon>
+          <span jhiTranslate="global.button.search"></span>
+        </button>
+      </div>
+      <div class="d-flex justify-content-end">
+        <label class="badge bg-success" jhiTranslate="global.info.totalParam" [translateValues]="{ count: totalItems }"></label>
+      </div>
+      <div class="tab-pane fade active show container-fluid p-0">
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="panel panel-inverse">
+              <div class="panel-body">
+                <div class="table-responsive">
+                  <table class="table mb-0 editing-table">
+                    <thead style="background-color: rgb(244 246 248)">
+                      <tr>
+                        <th jhiTranslate="easyPos.product.info.stt"></th>
+                        <th jhiTranslate="easyPos.product.info.productCode"></th>
+                        <th jhiTranslate="easyPos.product.info.productName"></th>
+                        <th jhiTranslate="easyPos.product.info.quantity"></th>
+                        <th jhiTranslate="easyPos.product.info.unit"></th>
+                        <th jhiTranslate="easyPos.product.info.salePrice"></th>
+                        <th jhiTranslate="easyPos.product.info.desc"></th>
+                        <th jhiTranslate="global.info.action" class="text-center form-button"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <ng-container *ngFor="let product of lstProduct; index as i">
+                        <tr>
+                          <td class="w-7%">{{ i + 1 + (filterProduct.page - 1) * filterProduct.size }}</td>
+                          <td class="w-12%">{{ product.code }}</td>
+                          <td class="long-text w-15%">{{ product.name }}</td>
+                          <td class="w-12%">{{ product.inventoryCount | number }}</td>
+                          <td class="w-12%">{{ product.unit }}</td>
+                          <td class="w-12%">{{ product.salePrice | number }}</td>
+                          <td class="long-text w-15%">{{ product.description }}</td>
+                          <td class="text-center w-15%">
+                            <div class="d-flex justify-content-center">
+                              <div class="panel-border-button p-5px form-button" style="width: fit-content">
+                                <button (click)="onProductDetail(product.id)" class="btn btn-sm btn-warning">
+                                  <fa-icon icon="edit"></fa-icon>
+                                  <span jhiTranslate="global.entity.action.edit">Sửa</span>
+                                </button>
+                                <button (click)="onConfirmDeleteProduct(product.id)" class="btn btn-sm btn-danger">
+                                  <fa-icon icon="trash-can"></fa-icon>
+                                  <span jhiTranslate="global.entity.action.delete">Xóa</span>
+                                </button>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-center">
+          <ngb-pagination
+            [collectionSize]="totalItems"
+            [page]="filterProduct.page"
+            [pageSize]="filterProduct.size"
+            [maxSize]="5"
+            [rotate]="true"
+            [boundaryLinks]="true"
+            (pageChange)="loadMore($event)"
+          ></ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- END pos-stock-body -->
+</div>
+
+<!-- END pos-stock -->

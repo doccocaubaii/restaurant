@@ -1,0 +1,53 @@
+@media print {
+  .container-fluid {
+    display: block !important;
+  }
+  #app {
+    display: none !important;
+  }
+}
+$sidebar-width: 230px;
+$sidebar-width-collapsed: 65px;
+$app-sidebar-transition: cubic-bezier(0.685, 0.0473, 0.346, 1);
+.show-all-content {
+  margin-left: $sidebar-width;
+  transition: all 0.5s $app-sidebar-transition;
+}
+.mini-content {
+  margin-left: $sidebar-width-collapsed;
+  transition: all 0.5s $app-sidebar-transition;
+}
+.loader {
+  background: black;
+  width: 100%;
+  position: fixed;
+  z-index: 9999;
+  opacity: 0.5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3; /* Màu nền đèn flash */
+  border-top: 4px solid #3498db; /* Màu đèn flash */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite; /* Sử dụng animation để quay đèn flash */
+}
+
+.text {
+  margin-left: 10px;
+  font-weight: bold;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  } /* Góc ban đầu */
+  100% {
+    transform: rotate(360deg);
+  } /* Quay 360 độ */
+}

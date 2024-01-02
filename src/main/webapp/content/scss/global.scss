@@ -1,0 +1,208 @@
+.ellipsis {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.editing-head {
+  background-color: var(--background-color-form) !important;
+  border-top: 1px solid var(--background-color-form);
+  border-left: 1px solid var(--background-color-form);
+  border-right: 1px solid var(--background-color-form);
+}
+.editing-table tbody tr:hover {
+  background-color: rgb(255, 206, 164);
+}
+.editing-body {
+  background-color: var(--bs-table-bg) !important;
+  border-left: 1px solid var(--background-color-form);
+  border-right: 1px solid var(--background-color-form);
+  border-bottom: 1px solid var(--background-color-form);
+}
+
+.border-bottom {
+  border-bottom: var(--border-color-default);
+}
+.editing-padding {
+  padding: 0.5rem 0.5rem;
+}
+.form-input-custom {
+  display: flex;
+  padding: 0.5rem 0.5rem;
+}
+.text-bold {
+  font-weight: bold;
+}
+.panel-border {
+  box-shadow: var(--box-shadow-default) !important;
+  border-radius: 16px;
+}
+
+.collapse-text {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.panel-border-button {
+  box-shadow: var(--box-shadow-default);
+  //border-radius: 16px;
+  padding: 5px !important;
+  border-radius: 8px;
+}
+.custom-ng-select {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  .ng-arrow-wrapper {
+    margin-right: 20px !important;
+  }
+
+  .icon-right-ng-select {
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    width: 20px;
+    color: green;
+    z-index: 1001;
+  }
+}
+
+.search-icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  cursor: pointer;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #dadada;
+  border-radius: 0 6px 6px 0;
+}
+
+.form-search {
+  color: #555;
+  display: flex;
+  padding: 2px;
+  //border: 1px solid currentColor;
+  border-radius: 5px;
+
+  //margin: 0 0 30px;
+}
+
+.input-search {
+  background: transparent;
+  margin: 0;
+  padding: 7px 8px;
+  height: 37px;
+  font-size: 14px;
+  color: inherit;
+  border: 1px solid transparent;
+  border-radius: 6px !important;
+}
+
+.input-search::placeholder {
+  color: #bbb;
+}
+
+.input-search:hover,
+.input-search:active {
+  box-shadow: 0 0 0 0.25rem rgba(66, 133, 244, 0.25);
+}
+.input-search:focus {
+  box-shadow: 0 0 0 0.25rem rgba(66, 133, 244, 0.25);
+  border-color: #1183d6;
+  outline: none;
+}
+
+.form-search.input-search {
+  border: none;
+  padding: 0;
+  width: 100%;
+}
+
+.form-group {
+  width: 100%;
+}
+
+.input-search {
+  border: 1px solid #555;
+  width: 100%;
+  background: transparent no-repeat 13px center;
+}
+
+.btn-search {
+  padding: 0.5rem 0.75rem;
+  font-size: smaller;
+}
+
+.long-text {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.btn-undo-date {
+  border-radius: 0px 6px 6px 0px;
+  border-left: none;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background-color: #ffffff;
+}
+::-webkit-scrollbar-thumb {
+  width: 8px;
+  background-color: #f8c961;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #9a9999;
+  width: 12px !important;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:focus {
+  background-color: #9a9999;
+  width: 12px !important;
+  border-radius: 4px;
+}
+.form-product {
+  overflow-y: auto;
+}
+.form-product::-webkit-scrollbar {
+  width: 0px;
+  background-color: #ffffff;
+}
+.ps > .ps__scrollbar-y-rail {
+  display: none;
+  position: absolute;
+  opacity: 0;
+  right: 0;
+  width: 6px;
+}
+::ng-deep perfect-scrollbar > .ps.ps--active-y > .ps__rail-y {
+  top: 8px !important;
+  width: 16px;
+}
+::ng-deep .ps .ps__thumb-y {
+  background-color: #f8c961;
+  width: 8px !important;
+  right: 0px !important;
+  border-radius: 0px;
+}
+::ng-deep .ps .ps__thumb-y:hover {
+  background-color: #9a9999;
+  width: 12px !important;
+  border-radius: 4px;
+}
+::ng-deep .ps .ps__thumb-y:focus {
+  background-color: #9a9999;
+  width: 12px !important;
+  border-radius: 4px;
+}

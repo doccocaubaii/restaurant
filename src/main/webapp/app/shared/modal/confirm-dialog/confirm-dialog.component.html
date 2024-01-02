@@ -1,0 +1,20 @@
+<div class="modal-header">
+  <h5 class="modal-title" jhiTranslate="{{ 'activate.model.title.' + value.title }}"></h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true" (click)="decline()"></button>
+</div>
+<div class="modal-body">
+  <label jhiTranslate="{{ 'activate.model.content.' + value.message }}"></label>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-sm btn-secondary" (click)="decline()"><fa-icon icon="cancel"></fa-icon> Hủy</button>
+  <button
+    type="button"
+    class="btn btn-sm"
+    [disabled]="loading.isLoading"
+    [ngClass]="value.classBtn ? value.classBtn : 'btn-success'"
+    (click)="accept($event)"
+  >
+    <fa-icon [icon]="value.icon"></fa-icon>
+    <span jhiTranslate="{{ 'activate.model.btn.' + value.btnText }}"></span>
+  </button>
+</div>

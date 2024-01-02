@@ -1,0 +1,156 @@
+<h1 class="page-header">Đơn hàng</h1>
+
+<ul class="nav nav-pills mb-2">
+  <!--  <li class="nav-item" (click)="filterListOrder()">-->
+  <!--    <a href="#nav-pills-tab-1" data-bs-toggle="tab" class="nav-link active">-->
+  <!--      <span class="d-sm-none">Tất cả</span>-->
+  <!--      <span class="d-sm-block d-none">Tất cả</span>-->
+  <!--    </a>-->
+  <!--  </li>-->
+  <!--  <ng-container *ngFor="let status of statusOrder">-->
+  <!--    <li class="nav-item" (click)="filterListOrder(status.id)">-->
+  <!--      <a href="#nav-pills-tab-3" data-bs-toggle="tab" class="nav-link">-->
+  <!--        <span class="d-sm-block d-none">{{ status.name }}</span>-->
+  <!--      </a>-->
+  <!--    </li>-->
+  <!--  </ng-container>-->
+</ul>
+<div class="tab-content p-3 rounded-top panel rounded-0 m-0">
+  <div class="row d-flex justify-content-start flex-wrap" style="padding-bottom: 10px">
+    <div class="d-flex col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-3 col-xxl-3">
+      <label class="form-label col-form-label col-xs-12 col-sm-4 col-md-4 col-lg-2">Từ ngày</label>
+      <div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
+        <form class="form-inline">
+          <div class="form-group">
+            <div class="input-group">
+              <input
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                name="d2"
+                #c3="ngModel"
+                [(ngModel)]="model1"
+                (click)="d3.toggle()"
+                (ngModelChange)="filterOrderList()"
+                ngbDatepicker
+                #d3="ngbDatepicker"
+                style="border-color: #7a7a7a"
+              />
+              <button class="btn btn-outline-secondary" (click)="d3.toggle()" type="button">
+                <i class="fa fa-calendar"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="d-flex col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-3 col-xxl-3">
+      <label class="form-label col-form-label col-xs-12 col-sm-4 col-md-4 col-lg-2">Đến ngày</label>
+      <div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
+        <form class="form-inline">
+          <div class="form-group">
+            <div class="input-group">
+              <input
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                name="d2"
+                #c2="ngModel"
+                [(ngModel)]="model2"
+                (click)="d2.toggle()"
+                (ngModelChange)="filterOrderList()"
+                ngbDatepicker
+                #d2="ngbDatepicker"
+                style="border-color: #7a7a7a"
+              />
+              <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button">
+                <i class="fa fa-calendar"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!--    <div class="d-flex col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-3 col-xxl-3">-->
+    <!--      <label class="form-label col-form-label col-xs-12 col-sm-4 col-md-4 col-lg-2">Từ khóa</label>-->
+    <!--      <div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">-->
+    <!--        <form class="form-inline">-->
+    <!--          <div class="form-group">-->
+    <!--            <div class="input-group">-->
+    <!--              <input-->
+    <!--                name="keyword"-->
+    <!--                [(ngModel)]="filterOrder.keyword"-->
+    <!--                class="nosubmit"-->
+    <!--                type="search"-->
+    <!--                placeholder="Tìm khách hàng (F4)..."-->
+    <!--              />-->
+    <!--            </div>-->
+    <!--          </div>-->
+    <!--        </form>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <button (click)="getListOrder()" class="btn btn-sm btn-blue btn-search" style="width: 100px; height: 38px">
+      <fa-icon icon="search"></fa-icon>
+      <span jhiTranslate="global.button.search"></span>
+    </button>
+  </div>
+  <div class="tab-pane fade active show">
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="panel panel-inverse">
+          <div class="panel-body">
+            <div class="table-responsive">
+              <table class="table editing-table">
+                <thead style="background-color: rgb(244 246 248)">
+                  <tr>
+                    <th>STT</th>
+                    <th>Tên khách hàng</th>
+                    <th>Ngày tạo</th>
+                    <th>Tổng tiền</th>
+                    <th>Phương thức thanh toán</th>
+                    <th>Trạng thái</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let order of listOrder; let index = index">
+                    <tr (click)="viewOrder(order)" (click)="scrollToTargets()" [class.editing-head]="idEditing == order.id">
+                      <td>{{ indexItem + index + 1 }}</td>
+                      <td>{{ order.customerName }}</td>
+                      <td>{{ order.createTime }}</td>
+                      <td>{{ order.totalAmount | numberFormat }} đ</td>
+                      <td>{{ order.paymentMethod }}</td>
+                      <td>{{ order.statusName }}</td>
+                    </tr>
+                    <tr [class.editing-body]="idEditing == order.id" *ngIf="order.id == idEditing">
+                      <td colspan="7">
+                        <jhi-view-detail-order
+                          class="scroll-target"
+                          [idOrderSelected]="order.id"
+                          (dataOnChange)="handleEvent($event)"
+                        ></jhi-view-detail-order>
+                      </td>
+                    </tr>
+                  </ng-container>
+                  <tr *ngIf="!filterOrder.totalItem" class="table-not-data">
+                    <td colspan="6">
+                      <span class="d-flex justify-content-center">Không có đơn hàng tồn tại</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <ngb-pagination
+                *ngIf="filterOrder.totalItem"
+                class="pagination justify-content-center"
+                [collectionSize]="filterOrder.totalItem"
+                [pageSize]="filterOrder.size"
+                [page]="filterOrder.page + 1"
+                aria-label="Default pagination"
+                [directionLinks]="true"
+                [maxSize]="10"
+                (pageChange)="onChangedPage($event)"
+              ></ngb-pagination>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

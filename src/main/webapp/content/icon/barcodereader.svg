@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" width="512" height="512">
+<g id="Barcode_1_">
+	<path style="fill:none;stroke:#000000;stroke-width:40;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" d="&#10;&#9;&#9;M292,256H120c-55.228,0-100-44.771-100-100S64.771,56,120,56h212c22.091,0,40,17.909,40,40c0,4.424-0.718,8.68-2.044,12.658&#10;&#9;&#9;l-40,120C324.66,244.546,309.668,256,292,256z"/>
+	<path style="fill:none;stroke:#000000;stroke-width:40;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" d="&#10;&#9;&#9;M128.911,336c-2.277,8.539-1.247,17.654,2.928,25.504c4.511,8.482,12.304,14.765,21.562,17.333C168.13,382.923,180,392.715,180,416&#10;&#9;&#9;c0,22.091-17.909,40-40,40H60c0,0,17.668,0,0,0c-22.091,0-40-17.909-40-40c0-4.424,0.718-8.68,2.044-12.658l52.713-158.138"/>
+	
+		<line style="fill:none;stroke:#000000;stroke-width:40;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" x1="236.505" y1="256" x2="303.172" y2="56"/>
+	
+		<line style="fill:none;stroke:#000000;stroke-width:40;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" x1="492" y1="216" x2="418.497" y2="216"/>
+	
+		<line style="fill:none;stroke:#000000;stroke-width:40;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" x1="492" y1="136" x2="445.164" y2="136"/>
+</g>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</svg>

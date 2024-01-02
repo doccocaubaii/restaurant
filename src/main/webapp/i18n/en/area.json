@@ -1,0 +1,21 @@
+{
+  "easyPos": {
+    "area": {
+      "title": "Quản lý bàn",
+      "create": {
+        "title": "Tạo khu vực",
+        "tableName": "Tên khu vực"
+      },
+      "update": {
+        "title": "Sửa khu vực"
+      }
+    },
+    "area-unit": {
+      "create": {
+        "title": "Tạo bàn",
+        "tableName": "Tên bàn",
+        "areaName": "Khu vực"
+      }
+    }
+  }
+}

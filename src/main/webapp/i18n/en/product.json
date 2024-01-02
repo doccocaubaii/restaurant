@@ -1,0 +1,51 @@
+{
+  "easyPos": {
+    "product": {
+      "title": "Danh sách sản phẩm",
+      "info": {
+        "stt": "STT",
+        "productCode": "Mã sản phẩm",
+        "productName": "Tên sản phẩm",
+        "totalProduct": "Tổng số ( {{count}} Sản phẩm )",
+        "salePrice": "Giá bán",
+        "unit": "Đơn vị",
+        "desc": "Mô tả",
+        "add": "Thêm",
+        "category": "Nhóm sản phẩm",
+        "action": "Thêm",
+        "categoryName": "Tên nhóm sản phẩm",
+        "quantity": "Số lượng",
+        "createProduct": "Thêm sản phẩm",
+        "createCategory": "Thêm nhóm sản phẩm",
+        "updateCategory": "Chỉnh sửa nhóm sản phẩm",
+        "save": "Lưu",
+        "deleteMessage": "Bạn có muốn xóa sản phẩm này không?",
+        "deleteConvertUnitMessage": "Bạn có muốn xóa đơn vị tính này không?",
+        "message": "Thông báo",
+        "convertsionError1": "Đơn vị tính chuyển đổi không được trùng đơn vị tính chính!",
+        "convertsionError2": "Đơn vị tính chuyển đổi không được trùng nhau!",
+        "vaterateError": "Giá trị quy đổi phải là số không âm!",
+        "unitNull": "Chưa có đơn vị tính chính!",
+        "unitNameError": "Tên đơn vị không hợp lệ!",
+        "deleteConvertUnitMess": "Xóa đơn vị tính chuyển đổi thành công!",
+        "unitIdError": "Đơn vị không được trống!",
+        "salePriceError": "Giá bán phải là số không âm!",
+        "updateConvertUnitSuccess": "Lưu thành công!",
+        "createConvertUnitSuccess": "Thêm thành công!",
+        "groupNameError": "Tên danh mục không hợp lệ!",
+        "convertRate": "Giá trị quy đổi",
+        "createUnit": "Thêm đơn vị",
+        "createConvertUnit": "Thêm đơn vị tính chuyển đổi",
+        "unitName": "Tên đơn vị",
+        "isConvertUnitError": "Chưa lưu đơn vị tính chuyển đổi!",
+        "categoryNameError": "Tên nhóm sản phẩm không hợp lệ!"
+      }
+    },
+    "category": {
+      "title": "Danh sách nhóm sản phẩm",
+      "infor": {
+        "deleteMessage": "Bạn có muốn xóa nhóm sản phẩm này không?"
+      }
+    }
+  }
+}

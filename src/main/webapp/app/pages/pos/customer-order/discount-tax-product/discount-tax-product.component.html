@@ -1,0 +1,41 @@
+<div class="modal-header">
+  <h4 class="modal-title">Chi tiết sản phẩm</h4>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true" (click)="closeModal()"></button>
+</div>
+<div class="wrap-discount-tax">
+  <div class="modal-body col-6">
+    <label>Tên sản phẩm</label>
+    <input class="form-control" type="text" [(ngModel)]="productSelectedLocal.productName" />
+  </div>
+  <div class="modal-body col-6">
+    <label>Đơn giá</label>
+    <input
+      class="form-control"
+      type="text"
+      [(ngModel)]="productSelectedLocal.unitPrice"
+      (ngModelChange)="changeProductSelected(productSelectedLocal)"
+    />
+  </div>
+  <div class="modal-body col-6">
+    <label>Số lượng</label>
+    <input
+      class="form-control"
+      type="number"
+      [(ngModel)]="productSelectedLocal.quantity"
+      (ngModelChange)="changeProductSelected(productSelectedLocal)"
+    />
+  </div>
+  <div class="modal-body col-6">
+    <label>Thành tiền</label>
+    <input disabled="true" class="form-control" type="text" [ngModel]="productSelectedLocal.totalAmount | numberFormat" />
+  </div>
+
+  <div class="modal-body col-6">
+    <label>Tổng tiền thanh toán</label>
+    <input disabled="true" class="form-control" type="text" [ngModel]="productSelectedLocal.totalAmount | numberFormat" />
+  </div>
+</div>
+<div class="modal-footer">
+  <a href="javascript:;" class="btn btn-default" data-bs-dismiss="modal" (click)="closeModal()">Hủy</a>
+  <a (click)="saveDiscountTaxAmount()" href="javascript:;" class="btn btn-success">Xác nhận</a>
+</div>

@@ -1,0 +1,21 @@
+{
+  "easyPos": {
+    "invoice": {
+      "title": "Danh sách hóa đơn",
+      "action": {
+        "publish": "Phát hành",
+        "viewInvoice": "Xem hóa đơn"
+      },
+      "info": {
+        "arisingDate": "Ngày hóa đơn",
+        "update": "Sửa hóa đơn"
+      },
+      "status": {
+        "1": "Hóa đơn hợp lệ",
+        "-2": "Hóa đơn không hợp lệ",
+        "-1": "Hóa đơn đang kiểm tra",
+        "0": "Hóa đơn chưa phát hành"
+      }
+    }
+  }
+}

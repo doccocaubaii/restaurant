@@ -1,0 +1,108 @@
+<ngx-loading-bar [ngClass]="{ top: appSettings.appEmpty }"></ngx-loading-bar>
+
+<!-- BEGIN #app -->
+<div>
+  <div *ngIf="loadingOption.isLoadPage && loadingOption.isLoading" class="loader">
+    <div class="spinner"></div>
+    <div class="text">Loading...</div>
+  </div>
+  <div
+    id="app"
+    class="app"
+    [ngClass]="{
+      'has-scroll': appHasScroll,
+      'app-sidebar-minified': appSettings.appSidebarMinified,
+      'app-sidebar-fixed': !appSettings.appSidebarNone && appSettings.appSidebarFixed,
+      'app-header-fixed': !appSettings.appHeaderNone && appSettings.appHeaderFixed,
+      'app-without-sidebar': appSettings.appSidebarNone || appSettings.appEmpty,
+      'app-without-header': appSettings.appHeaderNone || appSettings.appEmpty,
+      'app-with-end-sidebar': appSettings.appSidebarEnd,
+      'app-with-two-sidebar': appSettings.appSidebarTwo,
+      'app-with-wide-sidebar': appSettings.appSidebarWide,
+      'app-with-light-sidebar': appSettings.appSidebarLight,
+      'app-sidebar-end-toggled': appSettings.appSidebarEndToggled,
+      'app-sidebar-mobile-toggled': appSettings.appSidebarMobileToggled,
+      'app-content-full-height': appSettings.appContentFullHeight,
+      'app-with-top-menu': appSettings.appTopMenu,
+      'app-sidebar-end-mobile-toggled': appSettings.appSidebarEndMobileToggled,
+      'app-gradient-enabled': appSettings.appGradientEnabled,
+      'p-0': appSettings.appEmpty
+    }"
+  >
+    <top-menu *ngIf="appSettings.appTopMenu && !appSettings.appEmpty"></top-menu>
+
+    <jhi-navbar
+      (appSidebarMobileToggled)="onAppSidebarMobileToggled($event)"
+      (appSidebarEndToggled)="onAppSidebarEndToggled($event)"
+      (appSidebarEndMobileToggled)="onAppSidebarEndMobileToggled($event)"
+      [appSidebarTwo]="appSettings.appSidebarTwo"
+      *ngIf="!appSettings.appEmpty && !appSettings.appHeaderNone"
+    >
+    </jhi-navbar>
+
+    <sidebar
+      (appSidebarMinifiedToggled)="onAppSidebarMinifiedToggled($event)"
+      (appSidebarMobileToggled)="onAppSidebarMobileToggled($event)"
+      [appSidebarTransparent]="appSettings.appSidebarTransparent"
+      [appSidebarMinified]="appSettings.appSidebarMinified"
+      [appSidebarGrid]="appSettings.appSidebarGrid"
+      [appSidebarFixed]="appSettings.appSidebarFixed"
+      *ngIf="!appSettings.appSidebarNone && !appSettings.appEmpty"
+    >
+    </sidebar>
+
+    <sidebar-right
+      (appSidebarEndMobileToggled)="onAppSidebarEndMobileToggled($event)"
+      *ngIf="appSettings.appSidebarTwo && !appSettings.appEmpty"
+    >
+    </sidebar-right>
+
+    <div
+      id="content"
+      class="app-content"
+      [ngClass]="
+        appSettings.appContentClass +
+        ' ' +
+        (appSettings.appEmpty ? 'p-0 m-0' : '') +
+        (sidebarOption.isShow ? 'show-all-content' : 'mini-content')
+      "
+    >
+      <div class="alert alert-danger alert-dismissible fade show" *ngIf="!this.isOnline">
+        <strong>Thông báo!</strong>
+        Bạn đang ở chế độ offline
+        <!--      <a href="#" class="alert-link">an example link</a>.-->
+        <!--      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>-->
+      </div>
+      <router-outlet></router-outlet>
+    </div>
+
+    <!--  <theme-panel-->
+    <!--    (appDarkModeChanged)="onAppDarkModeChanged($event)"-->
+    <!--    (appThemeChanged)="onAppThemeChanged($event)"-->
+    <!--    *ngIf="!appSettings.appThemePanelNone"-->
+    <!--  ></theme-panel>-->
+  </div>
+  <!-- END #app -->
+
+  <app-print-page></app-print-page>
+  <ng-template #checkModal let-d="dismiss">
+    <div class="panel panel-inverse" data-sortable-id="ui-modal-notification-3">
+      <div class="panel-heading">
+        <h4 class="panel-title">Bootstrap SweetAlert <span class="badge bg-success ms-1">NEW</span></h4>
+        <div class="panel-heading-btn">
+          <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+        </div>
+      </div>
+      <div class="panel-body">
+        <p class="lead mb-10px@@if(context.theme != 'transparent'){ text-dark}">
+          SweetAlert for Bootstrap. A beautiful replacement for JavaScript's "alert"
+        </p>
+        <hr />
+        <p class="">Try any of those!</p>
+        <div class="d-flex">
+          <a href="javascript:;" data-click="swal-primary" class="btn btn-primary me-1">Primary</a>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

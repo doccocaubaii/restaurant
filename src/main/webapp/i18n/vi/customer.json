@@ -1,0 +1,13 @@
+{
+  "easyPos": {
+    "customer": {
+      "title": "Quản lý khách hàng",
+      "action": {
+        "selectCustomer": "Chọn khách hàng"
+      },
+      "info": {
+        "customerName": "Tên khách hàng"
+      }
+    }
+  }
+}

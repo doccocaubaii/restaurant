@@ -1,0 +1,17 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="exampleModalLongTitle">Thông báo</h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()"></button>
+</div>
+<div class="modal-body" jhiTranslate="easyPos.product.info.deleteMessage"></div>
+<div class="modal-footer">
+  <div class="btn-row col-md-12" style="margin: 0; justify-content: end; display: flex">
+    <button type="button" class="btn btn-default me-2 mb-1" (click)="dismiss()">
+      <fa-icon icon="cancel"></fa-icon>
+      <span class="ms-2" jhiTranslate="global.button.cancel"></span>
+    </button>
+    <button (click)="onDeteleProduct()" class="btn btn-sm btn-danger">
+      <fa-icon icon="trash-can"></fa-icon>
+      <span jhiTranslate="global.entity.action.delete">Xóa</span>
+    </button>
+  </div>
+</div>

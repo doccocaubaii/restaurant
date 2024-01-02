@@ -1,0 +1,28 @@
+.discount {
+  color: var(--bs-primary);
+  cursor: pointer;
+}
+
+.ng-select-input {
+  padding: 8px 10px !important;
+}
+
+.wrap-discount-tax {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.discount-amount {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.modal-body {
+  flex: 0 0 auto !important;
+}

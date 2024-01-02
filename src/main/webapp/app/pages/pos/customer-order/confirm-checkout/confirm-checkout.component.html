@@ -1,0 +1,82 @@
+<div class="modal-header">
+  <h4 class="modal-title">Xác nhận thanh toán</h4>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true" (click)="closeModal()"></button>
+</div>
+<div class="wrap p-20px">
+  <h4 class="totalAmout d-flex justify-content-center">{{ orderSelected.totalAmount | numberFormat }} đ</h4>
+  <div class="wrap-customer-price">
+    <div class="d-flex justify-content-end align-items-center flex-wrap mb-10px">
+      <div class="text w-100 mb-10px">Phương thức thanh toán:</div>
+      <div class="d-flex justify-content-between align-items-center w-100">
+        <div class="d-flex justify-content-start align-items-center col-4">
+          <input
+            type="radio"
+            [(ngModel)]="orderSelected.payment.paymentMethod"
+            (ngModelChange)="hideReasonInput()"
+            id="cash"
+            name="type_payment"
+            value="Tiền mặt"
+            class="me-10px"
+          />
+          <label for="cash">Tiền mặt</label><br />
+        </div>
+        <div class="d-flex justify-content-start align-items-center col-4">
+          <input
+            type="radio"
+            [(ngModel)]="orderSelected.payment.paymentMethod"
+            (ngModelChange)="hideReasonInput()"
+            id="banking"
+            name="type_payment"
+            value="Chuyển khoản"
+            class="me-10px"
+          />
+          <label for="banking">Chuyển khoản</label><br />
+        </div>
+        <div class="d-flex justify-content-start align-items-center col-4">
+          <input
+            type="radio"
+            [checked]="
+              orderSelected.payment.paymentMethod !== paymentMethod.cash && orderSelected.payment.paymentMethod !== paymentMethod.transfer
+            "
+            (click)="showReasonInput()"
+            id="other"
+            name="type_payment"
+            value=""
+            class="me-10px"
+          />
+          <label for="other">Khác</label><br />
+        </div>
+      </div>
+    </div>
+    <div class="pb-10px" *ngIf="togglePaymentMethod">
+      <input
+        type="text"
+        placeholder="Nhập phương thức thanh toán khác"
+        [(ngModel)]="orderSelected.payment.paymentMethod"
+        class="form-control"
+      />
+    </div>
+    <!--    <div class="pb-10px row customer-amount">-->
+    <!--      <div class="col-9">-->
+    <!--        <div>Khách trả:</div>-->
+    <!--        <div>-->
+    <!--          <input-->
+    <!--            #focus-->
+    <!--            type="number"-->
+    <!--            [(ngModel)]="orderSelected.payment.amount"-->
+    <!--            (ngModelChange)="customerPriceChange()"-->
+    <!--            class="form-control"-->
+    <!--          />-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
+  </div>
+  <!-- <div class="check-out d-flex justify-content-end">
+    <button (click)="checkout()" class="btn btn-lg btn-success w-200px">Đồng ý</button>
+  </div> -->
+</div>
+
+<div class="modal-footer">
+  <a href="javascript:;" class="btn btn-default" data-bs-dismiss="modal" (click)="closeModal()">Hủy</a>
+  <a (click)="checkout()" href="javascript:;" class="btn btn-success">Xác nhận</a>
+</div>

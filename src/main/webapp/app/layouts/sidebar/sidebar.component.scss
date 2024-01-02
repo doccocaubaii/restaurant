@@ -1,0 +1,21 @@
+$sidebar-width: 230px;
+$sidebar-width-collapsed: 65px;
+$app-sidebar-transition: cubic-bezier(0.685, 0.0473, 0.346, 1);
+.app-sidebar--mini {
+  width: $sidebar-width-collapsed !important;
+}
+.app-sidebar--show-all {
+  width: $sidebar-width !important;
+  transition: background 0.3s ease-out !important;
+}
+.app-sidebar {
+  transition: all 0.5s $app-sidebar-transition;
+}
+.profile-image-mini {
+  width: 40px !important;
+  height: 40px !important;
+  margin-bottom: 0px !important;
+}
+.menu-text {
+  transition: all 0.8s $app-sidebar-transition;
+}

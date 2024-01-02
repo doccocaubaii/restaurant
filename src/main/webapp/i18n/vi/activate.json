@@ -1,0 +1,23 @@
+{
+  "activate": {
+    "title": "Kích hoạt",
+    "messages": {
+      "success": "<strong>Tài khoản của bạn đã được kích hoạt.</strong> Bạn vui lòng ",
+      "error": "<strong>Không thể kích hoạt tài khoản của bạn.</strong> Vui lòng quay lại trang đăng ký để tạo tài khoản."
+    },
+    "model": {
+      "title": {
+        "publishInvoice": "Phát hành hóa đơn",
+        "deleteInvoice": "Xóa hóa đơn"
+      },
+      "content": {
+        "publishInvoice": "Bạn có chắc chắn muốn phát hành hóa đơn này không?",
+        "deleteInvoice": "Bạn có chắc chắn muốn xóa hóa đơn này không?"
+      },
+      "btn": {
+        "publishInvoice": "Phát hành",
+        "deleteInvoice": "Xóa hóa đơn"
+      }
+    }
+  }
+}
