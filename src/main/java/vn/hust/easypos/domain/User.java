@@ -3,20 +3,21 @@ package vn.hust.easypos.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.persistence.*;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.*;
-import lombok.Data;
-import org.hibernate.annotations.DynamicUpdate;
-
 /**
  * A user.
  */
-@JsonIgnoreProperties(value = { "new" })
+@JsonIgnoreProperties(value = {"new"})
 @Entity
 @Data
 @DynamicUpdate
@@ -66,7 +67,6 @@ public class User extends AbstractAuditingEntity<String> implements Serializable
 //    )
 //    private List<Company> companies = new ArrayList<>();
 
-    @Transient
     @JsonDeserialize
     @JsonSerialize
     private Integer companyId;

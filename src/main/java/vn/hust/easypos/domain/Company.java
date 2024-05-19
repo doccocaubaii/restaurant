@@ -1,16 +1,16 @@
 package vn.hust.easypos.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.io.Serializable;
-
 import jakarta.persistence.*;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.hust.easypos.service.dto.company.CompanyResult;
 
+import java.io.Serializable;
+
 /**
  * A Company.
  */
-@JsonIgnoreProperties(value = { "new" })
+@JsonIgnoreProperties(value = {"new"})
 @Entity
 @DynamicUpdate
 @Table(name = "company")
@@ -21,7 +21,7 @@ import vn.hust.easypos.service.dto.company.CompanyResult;
             classes = {
                 @ConstructorResult(
                     targetClass = CompanyResult.class,
-                    columns = { @ColumnResult(name = "id", type = Integer.class), @ColumnResult(name = "name", type = String.class) }
+                    columns = {@ColumnResult(name = "id", type = Integer.class), @ColumnResult(name = "name", type = String.class)}
                 ),
             }
         ),
@@ -38,7 +38,8 @@ public class Company extends AbstractAuditingEntity<String> implements Serializa
     @Column(name = "name")
     private String name;
 
-    public Company() {}
+    public Company() {
+    }
 
     public Integer getId() {
         return id;

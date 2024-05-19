@@ -3,8 +3,6 @@ package vn.hust.easypos.service.impl;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
-import java.util.*;
-import java.util.stream.Collectors;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +20,9 @@ import vn.hust.easypos.service.dto.company.CompanyResult;
 import vn.hust.easypos.web.rest.errors.ExceptionConstants;
 import vn.hust.easypos.web.rest.errors.InternalServerException;
 import vn.hust.easypos.web.rest.vm.LoginVM;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -41,7 +42,11 @@ public class UserService {
         Integer comId = loginVM.getCompanyId();
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            List<CompanyResult> companyUsers = companyRepository.findAllCompanyCustomByUserID(user.getId());
+            // fake company
+            CompanyResult companyResult = new CompanyResult(user.getId(), user.getFullName());
+
+            List<CompanyResult> companyUsers = new ArrayList<>();
+            companyUsers.add(companyResult);
             authenticationDTO.setActivate(false);
             for (CompanyResult com : companyUsers) {
                 if (companyUsers.size() == 1 || (com.getId() != null && Objects.equals(com.getId(), comId))) {

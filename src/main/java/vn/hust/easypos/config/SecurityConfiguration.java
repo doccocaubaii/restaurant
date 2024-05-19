@@ -22,6 +22,8 @@ import vn.hust.easypos.security.jwt.JWTFilter;
 import vn.hust.easypos.security.jwt.JwtAuthenticationEntryPoint;
 import vn.hust.easypos.security.jwt.TokenProvider;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 @Configuration
@@ -58,8 +60,11 @@ public class SecurityConfiguration {
             )
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+//                    .anyRequest().permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/app/**/*.{js,html}").permitAll()
+
+//                .requestMatchers("/app/*/*.{js,html}").permitAll()
+                .requestMatchers(antMatcher("/app/*/*.{js,html}")).permitAll()
                 .requestMatchers("/i18n/**").permitAll()
                 .requestMatchers("/content/**").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
@@ -79,6 +84,7 @@ public class SecurityConfiguration {
                 .requestMatchers("/management/info").permitAll()
                 .requestMatchers("/management/prometheus").permitAll()
                 .requestMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
+                .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
             .httpBasic(Customizer.withDefaults());

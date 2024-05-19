@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FilterProduct, Page } from '../product';
+import { FilterProduct } from '../product';
 import { ProductService } from '../product.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,7 +10,7 @@ import { Location } from '@angular/common';
 @Component({
   selector: 'jhi-modal-create-product',
   templateUrl: './modal-create-product.component.html',
-  styleUrls: ['./modal-create-product.component.scss'],
+  styleUrls: ['./modal-create-product.component.scss']
 })
 export class ModalCreateProductComponent extends BaseComponent implements OnInit {
   @ViewChild('imageInput')
@@ -22,9 +22,9 @@ export class ModalCreateProductComponent extends BaseComponent implements OnInit
   categories: any = [];
   isConvertUnit = false;
   unitName = '';
-  private modalRef: NgbModalRef | undefined;
   convertUnitDetail: any = {};
   lastCompany: any = {};
+  private modalRef: NgbModalRef | undefined;
 
   constructor(
     private service: ProductService,
@@ -91,7 +91,7 @@ export class ModalCreateProductComponent extends BaseComponent implements OnInit
         purchasePrice: value.data.purchasePrice,
         salePrice: value.data.salePrice,
         description: value.data.description,
-        imageUrl: value.data.imageUrl,
+        imageUrl: value.data.imageUrl
       };
     });
   }
@@ -180,12 +180,16 @@ export class ModalCreateProductComponent extends BaseComponent implements OnInit
     }
   }
 
-  onCategorySelected($event: any) {}
+  onCategorySelected($event: any) {
+  }
 
-  onChangeSalePrice() {}
+  onChangeSalePrice() {
+  }
 
   dismiss(value: any) {
     this.activeModal.close(value);
   }
-  ngOnDestroy() {}
+
+  ngOnDestroy() {
+  }
 }
