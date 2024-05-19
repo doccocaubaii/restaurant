@@ -1,9 +1,7 @@
 package vn.hust.easypos.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import javax.validation.Validator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -38,16 +36,12 @@ import vn.hust.easypos.web.rest.vm.LoginVM;
 @RequestMapping("/api")
 public class UserJWTController {
 
-    private final Logger log = LoggerFactory.getLogger(UserJWTController.class);
     private static final String ENTITY_NAME = "authenticate";
-
-    @Autowired
-    public UserService userService;
-
     private final TokenProvider tokenProvider;
     private final Validator customValidator;
-
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    @Autowired
+    public UserService userService;
 
     public UserJWTController(
         TokenProvider tokenProvider,
@@ -63,27 +57,6 @@ public class UserJWTController {
     public ResponseEntity<ResultDTO> authorize(@RequestBody LoginVM loginVM) {
         Common.validateInput(customValidator, ENTITY_NAME, loginVM);
         return new ResponseEntity<>(login(loginVM), HttpStatus.OK);
-    }
-
-    /**
-     * Object to return as body in JWT Authentication.
-     */
-    static class JWTToken {
-
-        private String idToken;
-
-        JWTToken(String idToken) {
-            this.idToken = idToken;
-        }
-
-        @JsonProperty("id_token")
-        String getIdToken() {
-            return idToken;
-        }
-
-        void setIdToken(String idToken) {
-            this.idToken = idToken;
-        }
     }
 
     public ResultDTO login(LoginVM loginVM) {
@@ -104,8 +77,8 @@ public class UserJWTController {
             } else {
                 if (
                     ex instanceof InternalServerException ||
-                    ex instanceof InternalAuthenticationServiceException ||
-                    ex instanceof UserNameNotFoundExceptionCustom
+                        ex instanceof InternalAuthenticationServiceException ||
+                        ex instanceof UserNameNotFoundExceptionCustom
                 ) {
                     resultDTO = new ResultDTO(ex.getMessage(), ex.getMessage());
                 } else {
@@ -140,5 +113,26 @@ public class UserJWTController {
         resultDTO.setStatus(authenticationDTO.isActivate());
         httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
         return resultDTO;
+    }
+
+    /**
+     * Object to return as body in JWT Authentication.
+     */
+    static class JWTToken {
+
+        private String idToken;
+
+        JWTToken(String idToken) {
+            this.idToken = idToken;
+        }
+
+        @JsonProperty("id_token")
+        String getIdToken() {
+            return idToken;
+        }
+
+        void setIdToken(String idToken) {
+            this.idToken = idToken;
+        }
     }
 }

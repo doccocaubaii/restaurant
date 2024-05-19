@@ -1,6 +1,6 @@
 package vn.hust.easypos.web.rest.vm;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 import vn.hust.easypos.web.rest.errors.ExceptionConstants;
 
 /**

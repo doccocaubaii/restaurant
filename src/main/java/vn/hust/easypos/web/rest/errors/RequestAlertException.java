@@ -3,11 +3,9 @@ package vn.hust.easypos.web.rest.errors;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import org.zalando.problem.AbstractThrowableProblem;
-import org.zalando.problem.Status;
 
 @SuppressWarnings("java:S110") // Inheritance tree of classes should not be too deep
-public class RequestAlertException extends AbstractThrowableProblem {
+public class RequestAlertException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
@@ -21,7 +19,7 @@ public class RequestAlertException extends AbstractThrowableProblem {
     }
 
     public RequestAlertException(URI type, String defaultMessage, String entityName, String errorKey, Object data) {
-        super(type, defaultMessage, Status.BAD_REQUEST, null, null, null, getAlertParameters(entityName, errorKey));
+        super( defaultMessage);
         this.entityName = entityName;
         this.errorKey = errorKey;
         this.data = data;

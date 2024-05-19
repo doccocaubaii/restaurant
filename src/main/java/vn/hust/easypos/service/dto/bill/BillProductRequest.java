@@ -1,10 +1,8 @@
 package vn.hust.easypos.service.dto.bill;
 
 import java.math.BigDecimal;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+
+import jakarta.validation.constraints.*;
 import vn.hust.easypos.web.rest.errors.ExceptionConstants;
 
 public class BillProductRequest {

@@ -2,9 +2,9 @@ package vn.hust.easypos.service.dto.product;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+
+
+import jakarta.validation.constraints.*;
 import vn.hust.easypos.web.rest.errors.ExceptionConstants;
 
 public class SaveProductRequest implements Serializable {

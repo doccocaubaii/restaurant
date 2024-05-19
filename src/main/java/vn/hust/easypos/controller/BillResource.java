@@ -1,8 +1,9 @@
 package vn.hust.easypos.controller;
 
 import java.net.URISyntaxException;
-import javax.validation.Validator;
-import javax.validation.constraints.NotNull;
+
+import jakarta.validation.Validator;
+import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +44,7 @@ public class BillResource {
 
     @GetMapping("/client/page/bill/get-with-paging")
     public ResponseEntity<ResultDTO> getAllBills(
-        @org.springdoc.api.annotations.ParameterObject Pageable pageable,
+        Pageable pageable,
         @RequestParam(required = false) Integer status,
         @RequestParam(required = false) String fromDate,
         @RequestParam(required = false) String toDate,

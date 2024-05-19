@@ -1,7 +1,8 @@
 package vn.hust.easypos.service.dto;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import vn.hust.easypos.web.rest.errors.ExceptionConstants;
 
 public class BillCancelRequest {
@@ -12,7 +13,8 @@ public class BillCancelRequest {
     @NotBlank(message = ExceptionConstants.BILL_CODE_NOT_NULL)
     private String billCode;
 
-    public BillCancelRequest() {}
+    public BillCancelRequest() {
+    }
 
     public BillCancelRequest(Integer billId, String billCode) {
         this.billId = billId;

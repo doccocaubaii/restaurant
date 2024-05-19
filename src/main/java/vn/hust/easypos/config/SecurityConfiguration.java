@@ -1,46 +1,45 @@
 package vn.hust.easypos.config;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
-import org.springframework.web.filter.CorsFilter;
-import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
-import tech.jhipster.config.JHipsterProperties;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import vn.hust.easypos.security.AuthoritiesConstants;
 import vn.hust.easypos.security.jwt.JWTConfigurer;
+import vn.hust.easypos.security.jwt.JWTFilter;
+import vn.hust.easypos.security.jwt.JwtAuthenticationEntryPoint;
 import vn.hust.easypos.security.jwt.TokenProvider;
 
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-@Import(SecurityProblemSupport.class)
+@EnableMethodSecurity(securedEnabled = true)
+@Configuration
 public class SecurityConfiguration {
 
-    private final JHipsterProperties jHipsterProperties;
+    private final JWTFilter jwtFilter;
 
     private final TokenProvider tokenProvider;
 
-    private final CorsFilter corsFilter;
-    private final SecurityProblemSupport problemSupport;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     public SecurityConfiguration(
-        TokenProvider tokenProvider,
-        CorsFilter corsFilter,
-        JHipsterProperties jHipsterProperties,
-        SecurityProblemSupport problemSupport
+        JWTFilter jwtFilter, TokenProvider tokenProvider,
+        JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint
     ) {
+        this.jwtFilter = jwtFilter;
         this.tokenProvider = tokenProvider;
-        this.corsFilter = corsFilter;
-        this.problemSupport = problemSupport;
-        this.jHipsterProperties = jHipsterProperties;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
 
     @Bean
@@ -52,53 +51,51 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // @formatter:off
         http
-            .csrf()
-            .disable()
-            .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
-            .exceptionHandling()
-                .authenticationEntryPoint(problemSupport)
-                .accessDeniedHandler(problemSupport)
-        .and()
-            .headers()
-                .contentSecurityPolicy(jHipsterProperties.getSecurity().getContentSecurityPolicy())
-            .and()
-                .referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
-            .and()
-                .permissionsPolicy().policy("camera=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), sync-xhr=()")
-            .and()
-                .frameOptions().sameOrigin()
-        .and()
-            .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-            .authorizeRequests()
-            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .antMatchers("/app/**/*.{js,html}").permitAll()
-            .antMatchers("/i18n/**").permitAll()
-            .antMatchers("/content/**").permitAll()
-            .antMatchers("/swagger-ui/**").permitAll()
-            .antMatchers("/test/**").permitAll()
-            .antMatchers("/api/authenticate").permitAll()
-            .antMatchers("/api/register").permitAll()
-            .antMatchers("/api/activate").permitAll()
-            .antMatchers("/api/client/**").permitAll()
-            .antMatchers("/api/page/**").permitAll()
-            .antMatchers("/api/p/client/**").permitAll()
-            .antMatchers("/api/account/reset-password/init").permitAll()
-            .antMatchers("/api/account/reset-password/finish").permitAll()
-            .antMatchers("/api/admin/**").hasAuthority(AuthoritiesConstants.ADMIN)
-            .antMatchers("/api/**").authenticated()
-            .antMatchers("/management/health").permitAll()
-            .antMatchers("/management/health/**").permitAll()
-            .antMatchers("/management/info").permitAll()
-            .antMatchers("/management/prometheus").permitAll()
-            .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
-        .and()
-            .httpBasic()
-        .and()
-            .apply(securityConfigurerAdapter());
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .exceptionHandling(e -> e
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+            )
+            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers("/app/**/*.{js,html}").permitAll()
+                .requestMatchers("/i18n/**").permitAll()
+                .requestMatchers("/content/**").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/test/**").permitAll()
+                .requestMatchers("/api/authenticate").permitAll()
+                .requestMatchers("/api/register").permitAll()
+                .requestMatchers("/api/activate").permitAll()
+                .requestMatchers("/api/client/**").permitAll()
+                .requestMatchers("/api/page/**").permitAll()
+                .requestMatchers("/api/p/client/**").permitAll()
+                .requestMatchers("/api/account/reset-password/init").permitAll()
+                .requestMatchers("/api/account/reset-password/finish").permitAll()
+                .requestMatchers("/api/admin/**").hasAuthority(AuthoritiesConstants.ADMIN)
+                .requestMatchers("/api/**").authenticated()
+                .requestMatchers("/management/health").permitAll()
+                .requestMatchers("/management/health/**").permitAll()
+                .requestMatchers("/management/info").permitAll()
+                .requestMatchers("/management/prometheus").permitAll()
+                .requestMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
+            )
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+            .httpBasic(Customizer.withDefaults());
         return http.build();
         // @formatter:on
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfig = new CorsConfiguration();
+        corsConfig.addAllowedOrigin("*");
+        corsConfig.addAllowedMethod("*");
+        corsConfig.addAllowedHeader("*");
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfig);
+        return source;
     }
 
     private JWTConfigurer securityConfigurerAdapter() {

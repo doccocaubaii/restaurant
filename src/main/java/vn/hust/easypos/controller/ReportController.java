@@ -1,7 +1,9 @@
 package vn.hust.easypos.controller;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

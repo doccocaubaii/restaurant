@@ -7,7 +7,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.*;
+
+import jakarta.persistence.*;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.hust.easypos.config.Constants;
 import vn.hust.easypos.service.dto.bill.BillItemResponse;

@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import javax.persistence.*;
+
+import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.DynamicUpdate;
 
 /**

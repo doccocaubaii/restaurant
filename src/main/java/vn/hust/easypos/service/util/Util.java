@@ -1,11 +1,14 @@
 package vn.hust.easypos.service.util;
 
 import com.google.common.base.Strings;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,15 +18,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
-import javax.imageio.ImageIO;
-import javax.xml.bind.DatatypeConverter;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public final class Util {
-
-    private static final Logger log = LoggerFactory.getLogger(Util.class);
 
     public static final String DATE_PATTERN_1 = "yyyy-MM-dd'T'HH:mm:ss";
     public static final String DATE_PATTERN_2 = "yyyy/MM/dd";
@@ -37,6 +33,10 @@ public final class Util {
     public static final String DATE_PATTERN_10 = "yyyy-MM-dd HH:mm:ss";
     public static final String DATE_PATTERN_11 = "HH:mm dd/MM/yyyy";
     public static final String DATE_PATTERN_12 = "yyyyMM";
+    private static final Logger log = LoggerFactory.getLogger(Util.class);
+
+    private Util() {
+    }
 
     /**
      * Read bytes from a File into a byte[].
@@ -66,12 +66,12 @@ public final class Util {
         if (length > Integer.MAX_VALUE) {
             throw new IOException(
                 "Could not completely read file " +
-                file.getName() +
-                " as it is too long (" +
-                length +
-                " bytes, max supported " +
-                Integer.MAX_VALUE +
-                ")"
+                    file.getName() +
+                    " as it is too long (" +
+                    length +
+                    " bytes, max supported " +
+                    Integer.MAX_VALUE +
+                    ")"
             );
         }
 
@@ -172,7 +172,8 @@ public final class Util {
                     //                    BufferedImage resized = resize(image, height, resizeWidth);
                     file = new File(path + date + fileName);
                     ImageIO.write(image, type, file);
-                } catch (Exception ignore) {}
+                } catch (Exception ignore) {
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -214,7 +215,8 @@ public final class Util {
                 file = new File(path + date + fileName);
                 ImageIO.write(image, "png", file);
                 return file;
-            } catch (Exception ignore) {}
+            } catch (Exception ignore) {
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
@@ -240,8 +242,6 @@ public final class Util {
         g2d.dispose();
         return resized;
     }
-
-    private Util() {}
 
     /**
      * @param date
@@ -488,12 +488,12 @@ public final class Util {
         String day = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.forLanguageTag("vi"));
         return (
             day +
-            "\n" +
-            Util.formatTime(calendar.get(Calendar.DAY_OF_MONTH)) +
-            " - " +
-            Util.formatTime(calendar.get(Calendar.MONTH) + 1) +
-            " - " +
-            calendar.get(Calendar.YEAR)
+                "\n" +
+                Util.formatTime(calendar.get(Calendar.DAY_OF_MONTH)) +
+                " - " +
+                Util.formatTime(calendar.get(Calendar.MONTH) + 1) +
+                " - " +
+                calendar.get(Calendar.YEAR)
         );
     }
 
@@ -548,23 +548,12 @@ public final class Util {
         return Period.between(DateOfBirth, LocalDate.now()).getYears();
     }
 
-    public static String createMd5(String before) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(before.getBytes());
-            byte[] digest = md.digest();
-            return DatatypeConverter.printHexBinary(digest).toLowerCase();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     /**
      * Xóa tất cả các dấu phẩy và ký tự trắng thừa sau 1 chuỗi
-     * @author thanhld
+     *
      * @param str
      * @return
+     * @author thanhld
      */
     public static String removeAllLastComma(String str) {
         if (StringUtils.isEmpty(str)) return str;
@@ -613,7 +602,8 @@ public final class Util {
                     //                    BufferedImage resized = resize(image, height, resizeWidth);
                     file = new File(path + date + fileName);
                     ImageIO.write(image, type, file);
-                } catch (Exception ignore) {}
+                } catch (Exception ignore) {
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();

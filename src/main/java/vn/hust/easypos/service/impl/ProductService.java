@@ -7,7 +7,8 @@ import static vn.hust.easypos.web.rest.errors.ExceptionConstants.PRODUCT_NOT_FOU
 import com.google.common.base.Strings;
 import java.util.Arrays;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;

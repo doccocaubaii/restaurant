@@ -3,11 +3,9 @@ package vn.hust.easypos.web.rest.errors;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import org.zalando.problem.AbstractThrowableProblem;
-import org.zalando.problem.Status;
 
 @SuppressWarnings("java:S110") // Inheritance tree of classes should not be too deep
-public class InternalServerException extends AbstractThrowableProblem {
+public class InternalServerException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
@@ -24,7 +22,7 @@ public class InternalServerException extends AbstractThrowableProblem {
     }
 
     public InternalServerException(URI type, String defaultMessage, String entityName, String errorKey) {
-        super(type, defaultMessage, Status.INTERNAL_SERVER_ERROR, null, null, null, getAlertParameters(entityName, errorKey));
+        super( defaultMessage);
         this.entityName = entityName;
         this.errorKey = errorKey;
     }

@@ -2,8 +2,9 @@ package vn.hust.easypos.service.dto.bill;
 
 import java.math.BigDecimal;
 import java.util.List;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import vn.hust.easypos.web.rest.errors.ExceptionConstants;
 
 public class BillCreateRequest {

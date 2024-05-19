@@ -2,7 +2,8 @@ package vn.hust.easypos.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
-import javax.persistence.*;
+
+import jakarta.persistence.*;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.hust.easypos.service.dto.company.CompanyResult;
 

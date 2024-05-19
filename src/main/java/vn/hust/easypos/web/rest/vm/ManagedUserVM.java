@@ -1,6 +1,6 @@
 package vn.hust.easypos.web.rest.vm;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 import vn.hust.easypos.service.dto.AdminUserDTO;
 
 /**

@@ -1,9 +1,8 @@
 package vn.hust.easypos.repository.impl;
 
 import com.google.common.base.Strings;
-import java.util.*;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -12,6 +11,8 @@ import vn.hust.easypos.repository.ProductRepositoryCustom;
 import vn.hust.easypos.service.dto.product.ProductDetailResponse;
 import vn.hust.easypos.service.dto.product.ProductResponse;
 import vn.hust.easypos.service.util.Common;
+
+import java.util.*;
 
 public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
@@ -38,17 +39,17 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             strQuery.append(" order by p.name desc ");
             Query query = entityManager.createNativeQuery(
                 "select p.id id, " +
-                "p.com_id comId, " +
-                "p.code code, " +
-                "p.name name, " +
-                "p.unit unit, " +
-                "p.in_price inPrice, " +
-                "p.out_price outPrice, " +
-                "p.description description, " +
-                "p.created_date createTime, " +
-                "p.last_modified_date updateTime,  " +
-                "p.image imageUrl " +
-                strQuery,
+                    "p.com_id comId, " +
+                    "p.code code, " +
+                    "p.name name, " +
+                    "p.unit unit, " +
+                    "p.in_price inPrice, " +
+                    "p.out_price outPrice, " +
+                    "p.description description, " +
+                    "p.created_date createTime, " +
+                    "p.last_modified_date updateTime,  " +
+                    "p.image imageUrl " +
+                    strQuery,
                 "ProductItemResult"
             );
             Common.setParamsWithPageable(query, params, pageable, 0);
@@ -68,17 +69,17 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
         Query query = entityManager.createNativeQuery(
             "select p.id id, " +
-            "p.com_id comId, " +
-            "p.code code, " +
-            "p.name name, " +
-            "p.unit unit, " +
-            "p.in_price inPrice, " +
-            "p.out_price outPrice, " +
-            "p.description description, " +
-            "p.created_date createTime, " +
-            "p.last_modified_date updateTime,  " +
-            "p.image imageUrl " +
-            strQuery,
+                "p.com_id comId, " +
+                "p.code code, " +
+                "p.name name, " +
+                "p.unit unit, " +
+                "p.in_price inPrice, " +
+                "p.out_price outPrice, " +
+                "p.description description, " +
+                "p.created_date createTime, " +
+                "p.last_modified_date updateTime,  " +
+                "p.image imageUrl " +
+                strQuery,
             "ProductItemResult"
         );
         Common.setParams(query, params);

@@ -1,11 +1,12 @@
 package vn.hust.easypos.controller;
 
 import java.math.BigDecimal;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Validator;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Validator;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;

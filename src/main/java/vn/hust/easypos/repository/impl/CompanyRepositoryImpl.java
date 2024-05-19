@@ -1,16 +1,19 @@
 package vn.hust.easypos.repository.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import vn.hust.easypos.repository.CompanyRepositoryCustom;
 import vn.hust.easypos.service.dto.company.CompanyResult;
 import vn.hust.easypos.service.util.Common;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Repository
 public class CompanyRepositoryImpl implements CompanyRepositoryCustom {
 
     @Autowired
