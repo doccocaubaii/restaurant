@@ -2,10 +2,17 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import appSettings from '../../../config/app-settings';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalDialogComponent } from '../../../shared/modal/modal-dialog.component';
-import { DeliveryType, LIST_PRODUCT, MenuType, NoTaxProduct, Page, PaymentMethod, StatusOrder } from 'app/pages/const/customer-order.const';
+import {
+  DeliveryType,
+  LIST_PRODUCT,
+  MenuType,
+  Page,
+  PaymentMethod,
+  StatusOrder
+} from 'app/pages/const/customer-order.const';
 import { ProductService } from '../service/product.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, debounceTime, distinctUntilChanged, pluck, switchMap, tap } from 'rxjs';
+import { debounceTime, pluck, Subscription, tap } from 'rxjs';
 import { IProduct } from '../model/product.model';
 import { FormControl } from '@angular/forms';
 import { validVariable } from 'app/pages/const/function';
@@ -21,10 +28,12 @@ import { BaseComponent } from 'app/shared/base/base.component';
 import { ConfirmDialogService } from 'app/shared/service/confirm-dialog.service';
 import { IArea } from 'app/entities/area/area.model';
 import { PosInvoiceComponent } from './pos-invoice/pos-invoice.component';
+import { RxStompService } from '../../../rxStomp/rx-stomp.service';
+
 @Component({
   selector: 'customer-order',
   templateUrl: './customer-order.component.html',
-  styleUrls: ['./customer-order.component.scss'],
+  styleUrls: ['./customer-order.component.scss']
 })
 export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDestroy {
   appSettings = appSettings;
@@ -49,9 +58,15 @@ export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDes
   activeBorderProductGroup = 0;
   activeBorderArea = 0;
   activeCreateOrder: boolean | null = null;
+  receivedMessages: any[] = [];
+  message: string = '';
+  idTable: any = 1;
   private lastCompany: any;
+  private topicSubscription: Subscription | undefined;
+
 
   constructor(
+    private rxStompService: RxStompService,
     protected productService: ProductService,
     protected activatedRoute: ActivatedRoute,
     protected orderService: BillService,
@@ -77,6 +92,15 @@ export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDes
         this.createOrder();
       }
     });
+    try {
+      this.topicSubscription = this.rxStompService.watch(`/topic/messages/${this.lastCompany.id}`).subscribe((res: any) => {
+        let data = JSON.parse(res.body);
+        this.receivedMessages.push(data);
+      });
+      // Sử dụng idA và idB ở đây
+    } catch (error) {
+      console.error('Error fetching route params:', error);
+    }
   }
 
   searchProduct() {
@@ -111,7 +135,23 @@ export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDes
     });
   }
 
-  changeCustomer() {}
+  onSendMessage() {
+    if (!this.message) return;
+    if (!this.lastCompany || !this.idTable) {
+      this.toast.error('Error url not valid!');
+      console.log('adminId = ' + this.lastCompany);
+      console.log('tableId = ' + this.idTable);
+      return;
+    }
+    let senderObj = {
+      type: 0,
+      userId: this.lastCompany.id,
+      tableId: this.idTable,
+      content: this.message
+    };
+    this.rxStompService.publish({ destination: '/app/sendMessage', body: JSON.stringify(senderObj) });
+    this.message = '';
+  }
 
   async createOrder() {
     const order: IBillPayment = new IBillPayment();
@@ -131,7 +171,11 @@ export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDes
     if (!this.checkOrder(this.orderSelected)) {
       return;
     }
-    const dialogRef = this.modalService.open(ConfirmCheckoutComponent, { size: 'lg', backdrop: 'static', windowClass: 'margin-5' });
+    const dialogRef = this.modalService.open(ConfirmCheckoutComponent, {
+      size: 'lg',
+      backdrop: 'static',
+      windowClass: 'margin-5'
+    });
     dialogRef.componentInstance.orderSelected = this.orderSelected;
     dialogRef.closed.subscribe(res => {
       if (res[0]) {
@@ -168,7 +212,11 @@ export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDes
   }
 
   openDiscountTaxProductComponent(productSelected: ProductBill) {
-    const dialogRef = this.modalService.open(DiscountTaxProductComponent, { size: 'lg', backdrop: 'static', windowClass: 'margin-5' });
+    const dialogRef = this.modalService.open(DiscountTaxProductComponent, {
+      size: 'lg',
+      backdrop: 'static',
+      windowClass: 'margin-5'
+    });
     dialogRef.componentInstance.productSelected = productSelected;
     dialogRef.closed.subscribe((res?: ProductBill) => {
       if (res) {
@@ -195,7 +243,11 @@ export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDes
   }
 
   showDetailProduct(product: IProduct) {
-    const dialogRef = this.modalService.open(ProductDetailComponent, { size: 'xl', backdrop: 'static', windowClass: 'margin-5' });
+    const dialogRef = this.modalService.open(ProductDetailComponent, {
+      size: 'xl',
+      backdrop: 'static',
+      windowClass: 'margin-5'
+    });
     dialogRef.componentInstance.product = product;
     dialogRef.closed.subscribe(res => {
       if (res) {
@@ -242,7 +294,7 @@ export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDes
         amount: 0,
         totalPreTax: 0,
         totalAmount: 0,
-        position: this.orderSelected.products.length + 1,
+        position: this.orderSelected.products.length + 1
       };
       this.orderSelected.products.push(newProductSelected);
     }
@@ -322,14 +374,14 @@ export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDes
   ngAfterViewInit() {
     const targets = [].slice.call(document.querySelectorAll('.pos-menu [data-filter]'));
 
-    targets.map(function (target: any) {
-      target.onclick = function (e) {
+    targets.map(function(target: any) {
+      target.onclick = function(e) {
         e.preventDefault();
         const targetBtn = e.target;
         const targetFilter = targetBtn.getAttribute('data-filter');
         targetBtn.classList.add('active');
         const allFilter = [].slice.call(document.querySelectorAll('.pos-menu [data-filter]'));
-        allFilter.map(function (filterElm: any) {
+        allFilter.map(function(filterElm: any) {
           const filterElmFilter = filterElm.getAttribute('data-filter');
           if (targetFilter !== filterElmFilter) {
             filterElm.classList.remove('active');
@@ -337,7 +389,7 @@ export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDes
         });
 
         const allContent = [].slice.call(document.querySelectorAll('.pos-content [data-type]'));
-        allContent.map(function (contentElm: any) {
+        allContent.map(function(contentElm: any) {
           const contentType = contentElm.getAttribute('data-type');
 
           if (targetFilter === 'all') {
@@ -366,11 +418,16 @@ export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDes
     if (!this.checkOrder(this.orderSelected)) {
       return;
     }
-    const dialogRef = this.modalService.open(PosInvoiceComponent, { size: 'lg', backdrop: 'static', windowClass: 'margin-5' });
+    const dialogRef = this.modalService.open(PosInvoiceComponent, {
+      size: 'lg',
+      backdrop: 'static',
+      windowClass: 'margin-5'
+    });
     dialogRef.componentInstance.orderSelected = this.orderSelected;
   }
 
   ngOnDestroy() {
+    if (this.topicSubscription) this.topicSubscription.unsubscribe();
     this.appSettings.appEmpty = false;
     this.appSettings.appContentFullHeight = false;
   }

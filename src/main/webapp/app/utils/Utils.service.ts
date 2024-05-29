@@ -1,35 +1,27 @@
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable, timeout } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { SessionStorageService } from 'ngx-webstorage';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { StateStorageService } from '../core/auth/state-storage.service';
+import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApplicationConfigService } from '../core/config/application-config.service';
-import { PING } from '../constants/api.constants';
-import { catchError } from 'rxjs/operators';
-import { LoadingBarConfig, LoadingBarService } from '@ngx-loading-bar/core';
 import { createRequestOption } from '../core/request/request-util';
-import { last_company } from '../object-stores.constants';
 import { parse } from 'date-fns';
 import { BaseComponent } from '../shared/base/base.component';
 import dayjs from 'dayjs/esm';
-import moment from 'moment';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class UtilsService extends BaseComponent implements OnInit {
   options: any = new BehaviorSubject(true);
+  checkOnline = new BehaviorSubject(true);
 
   constructor(
     private translateService: TranslateService,
     private sessionStorageService: SessionStorageService,
     private http: HttpClient,
     protected activatedRoute: ActivatedRoute,
-    public router: Router,
-    public loadingBar: LoadingBarService
-  ) {
+    public router: Router) {
     super();
   }
 
@@ -47,11 +39,10 @@ export class UtilsService extends BaseComponent implements OnInit {
       nullable: true,
       min: null,
       max: null,
-      inputMode: 1,
+      inputMode: 1
     };
   }
 
-  checkOnline = new BehaviorSubject(true);
   optionCurrentCy() {
     return {
       align: 'left',
@@ -61,7 +52,7 @@ export class UtilsService extends BaseComponent implements OnInit {
       precision: 2,
       prefix: '',
       suffix: '',
-      thousands: '.',
+      thousands: '.'
     };
   }
 
@@ -87,13 +78,13 @@ export class UtilsService extends BaseComponent implements OnInit {
 
   getDataOfflineProductGroups(): Observable<any> {
     return this.http.get(SERVER_API_URL + 'api/client/page/product-group/get-all-for-offline', {
-      observe: 'response',
+      observe: 'response'
     });
   }
 
   getDataOfflineProducts(): Observable<any> {
     return this.http.get(SERVER_API_URL + 'api/client/page/product/get-all-for-offline', {
-      observe: 'response',
+      observe: 'response'
     });
   }
 
@@ -101,7 +92,7 @@ export class UtilsService extends BaseComponent implements OnInit {
     const options = createRequestOption(req);
     return this.http.get(SERVER_API_URL + 'api/client/page/customer/get-all-for-offline', {
       params: options,
-      observe: 'response',
+      observe: 'response'
     });
   }
 
@@ -109,13 +100,13 @@ export class UtilsService extends BaseComponent implements OnInit {
     const options = createRequestOption(req);
     return this.http.get(SERVER_API_URL + 'api/client/page/offline-bill/sync', {
       params: options,
-      observe: 'response',
+      observe: 'response'
     });
   }
 
   getDataOfflineAreas(): Observable<any> {
     return this.http.get(SERVER_API_URL + 'api/client/page/area/get-all-for-offline', {
-      observe: 'response',
+      observe: 'response'
     });
   }
 

@@ -1,16 +1,13 @@
 <div
-  [ngClass]="{
-    'pos-mobile-sidebar-toggled': posMobileSidebarToggled
-  }"
-  class="pos pos-customer overflow-x-hidden"
+  class="pos pos-customer overflow-x-hidden fullScreenCustom"
   id="pos-customer"
 >
-  <ng-container *ngIf="orderSelected">
+  <ng-container *ngIf="true">
     <div class="pos-menu">
       <div class="nav-container">
         <perfect-scrollbar class="h-100">
           <ul class="nav nav-tabs">
-            <li (click)="filterProductByProductGroupId()" class="nav-item">
+            <li class="nav-item">
               <a [class.active]="true" class="nav-link"> Back </a>
             </li>
           </ul>
@@ -52,7 +49,7 @@
             </li>
             <div *ngIf="menuType==0" class="form-group d-flex col-4 ms-auto p-2px">
               <form class="nosubmit">
-                <input [formControl]="query" class="nosubmit search-header" placeholder="Tìm món (F3)..."
+                <input class="nosubmit search-header" placeholder="Tìm món (F3)..."
                        type="search" />
               </form>
             </div>
@@ -63,21 +60,7 @@
               <div class="pos-content overflow-hidden">
                 <perfect-scrollbar class="mb-xs-1 mb-sm-1 mb-md-1 mb-lg-1 mb-xl-3 mb-xxl-3">
                   <div (scroll)="loadMore($event)" class="product-row d-flex flex-wrap">
-                    <div (click)="addProduct()"
-                         class="col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 wrap-product-container">
-                      <div class="pos-stock-product add-product">
-                        <div class="pos-stock-product-container panel-border cursor-pointer">
-                          <div class="add-product-icon">
-                            <div class="background-product-icon">
-                              <i _ngcontent-veq-c152="" class="fa fa-plus"></i>
-                            </div>
-                          </div>
-                          <div class="add-product">Thêm sản phẩm</div>
-                        </div>
-                      </div>
-                    </div>
                     <div
-                      (click)="checkVatProduct(product)"
                       *ngFor="let product of listProduct"
                       class="col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 wrap-product-container"
                     >
@@ -132,7 +115,7 @@
                 <div class="chat-messages p-4">
                   <ng-container *ngFor="let mes of receivedMessages">
                     <div
-                      [ngClass]="{ 'chat-message-right': mes.type!=1, 'chat-message-left':mes.type==1 }"
+                      [ngClass]="{ 'chat-message-right': mes.type==1, 'chat-message-left':mes.type!=1}"
                       class="pb-4">
                       <div>
                         <img
@@ -142,9 +125,9 @@
                         <!--                        <div class="text-muted small text-nowrap mt-2">2:33 am</div>-->
                       </div>
                       <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-                        <div *ngIf="mes.type==1" class="font-weight-bold mb-1"> Bàn {{ mes.tableId }}</div>
+                        <div *ngIf="mes.type==1" class="font-weight-bold mb-1">You</div>
                         <div *ngIf="mes.type!=1"
-                             class="font-weight-bold mb-1">You
+                             class="font-weight-bold mb-1">{{ mes.userName }}
                         </div>
                         {{ mes.content }}
                       </div>
@@ -180,33 +163,33 @@
                   <i class="fa fa-caret-down p-6px"></i>
                 </div>
               </a>
-              <div *ngIf="!idOrderSelected" class="dropdown-menu dropdown-menu-end">
-                <ng-container *ngFor="let order of listOrder">
-                  <ng-container *ngIf="order.billDate !== orderSelected.billDate">
-                    <a (click)="changeOrderSelected(order)" class="dropdown-item d-flex justify-content-between">
-                      <div class="d-flex justify-content-start">
-                        <img class="img-icon h-30px" src="/assets/img/pos/icon-table-black.svg" />
-                        <span class="order">Order: <b>order.xyz</b></span>
-                      </div>
-                      <div class="d-flex">
-                        <div class="background-icon remove-color">
-                          <fa-icon (click)="removeOrderFromOrderList(order)" [icon]="'xmark'"
-                                   class="padding-fa"></fa-icon>
-                        </div>
-                      </div>
-                    </a>
-                  </ng-container>
-                </ng-container>
-                <div class="dropdown-divider"></div>
-                <div class="add-new-order">
-                  <a (click)="createOrder()" class="dropdown-item">
-                    <span>Tạo đơn hàng mới </span>
-                    <div class="background-icon add-color">
-                      <i _ngcontent-veq-c152="" class="fa fa-plus"></i>
-                    </div>
-                  </a>
-                </div>
-              </div>
+              <!--              <div *ngIf="!idOrderSelected" class="dropdown-menu dropdown-menu-end">-->
+              <!--                <ng-container *ngFor="let order of listOrder">-->
+              <!--                  <ng-container *ngIf="order.billDate !== orderSelected.billDate">-->
+              <!--                    <a (click)="changeOrderSelected(order)" class="dropdown-item d-flex justify-content-between">-->
+              <!--                      <div class="d-flex justify-content-start">-->
+              <!--                        <img class="img-icon h-30px" src="/assets/img/pos/icon-table-black.svg" />-->
+              <!--                        <span class="order">Order: <b>order.xyz</b></span>-->
+              <!--                      </div>-->
+              <!--                      <div class="d-flex">-->
+              <!--                        <div class="background-icon remove-color">-->
+              <!--                          <fa-icon (click)="removeOrderFromOrderList(order)" [icon]="'xmark'"-->
+              <!--                                   class="padding-fa"></fa-icon>-->
+              <!--                        </div>-->
+              <!--                      </div>-->
+              <!--                    </a>-->
+              <!--                  </ng-container>-->
+              <!--                </ng-container>-->
+              <!--                <div class="dropdown-divider"></div>-->
+              <!--                <div class="add-new-order">-->
+              <!--                  <a  class="dropdown-item">-->
+              <!--                    <span>Tạo đơn hàng mới </span>-->
+              <!--                    <div class="background-icon add-color">-->
+              <!--                      <i _ngcontent-veq-c152="" class="fa fa-plus"></i>-->
+              <!--                    </div>-->
+              <!--                  </a>-->
+              <!--                </div>-->
+              <!--              </div>-->
             </div>
             <ul class="nav nav-tabs nav-fill">
               <div class="row d-flex"></div>
@@ -287,21 +270,21 @@
                             class="img"
                           ></div>
                           <div class="info d-flex justify-content-between align-items-start flex-column">
-                            <div (click)="openDiscountTaxProductComponent(productSelected)"
-                                 class="title cursor-pointer">
+                            <div
+                              class="title cursor-pointer">
                               {{ productSelected.productName }}
                             </div>
                             <div class="input-group quantity">
-                              <div (click)="decreaseProductQuantity(productSelected)" class="input-group-item">
+                              <div class="input-group-item">
                                 <i class="fa fa-minus"></i>
                               </div>
                               <input
-                                (ngModelChange)="changeProductSelectedQuantity(productSelected)"
+
                                 [(ngModel)]="productSelected.quantity"
                                 class="form-control"
                                 type="string"
                               />
-                              <div (click)="increaseProductQuantity(productSelected)" class="input-group-item">
+                              <div class="input-group-item">
                                 <i class="fa fa-plus"></i>
                               </div>
                             </div>
@@ -311,13 +294,12 @@
                       <div class="col-3 total-price d-flex justify-content-start align-items-end flex-column">
                         <div class="wrap-delete-icon">
                           <i
-                            (click)="confirmRemoveProductSelected(productSelected)"
                             class="fa-regular fa-trash-can cursor-pointer delete-product"
                           ></i>
                         </div>
                         <div class="mb-5px mt-5px">{{ productSelected.amount | numberFormat }} đ</div>
                         <div>{{ productSelected.totalAmount | numberFormat }} đ</div>
-                        <ng-container *ngIf="activeRemoveProductSelected == productSelected.productProductUnitId">
+                        <ng-container>
                           <div class="pos-remove-confirmation">
                             <svg
                               class="mr-2"
@@ -336,8 +318,8 @@
                               />
                             </svg>
                             <div class="alert">Bạn có chắc chắn muốn xóa sản phẩm?</div>
-                            <a (click)="cancel()" class="btn btn-white ms-auto me-2">Hủy</a>
-                            <a (click)="removeProductFromCustomerOrder(productSelected)" class="btn btn-danger">Xóa</a>
+                            <a class="btn btn-white ms-auto me-2">Hủy</a>
+                            <a class="btn btn-danger">Xóa</a>
                           </div>
                         </ng-container>
                       </div>
@@ -373,22 +355,22 @@
           <div class="wrap-pos-sidebar-footer">
             <div class="pos-sidebar-footer">
               <div
-                [class.justify-content-between]="posSidebarFooterStatus"
-                [class.justify-content-end]="!posSidebarFooterStatus"
+                [class.justify-content-between]="true"
+                [class.justify-content-end]="!true"
                 class="d-flex align-items-center mb-1"
               >
-                <div *ngIf="posSidebarFooterStatus">
+                <div *ngIf="true">
                   <img class="icon" src="content/icon/quan-ly/coin.svg" />
                   <span class="text">Chi tiết thanh toán</span>
                 </div>
                 <div>
-                  <i (click)="togglePosSidebarFooter()" *ngIf="posSidebarFooterStatus"
+                  <i *ngIf="true"
                      class="cursor-pointer fa-solid fa-chevron-down"></i>
-                  <i (click)="togglePosSidebarFooter()" *ngIf="!posSidebarFooterStatus"
+                  <i *ngIf="!true"
                      class="cursor-pointer fa-solid fa-chevron-up"></i>
                 </div>
               </div>
-              <ng-container *ngIf="posSidebarFooterStatus">
+              <ng-container>
                 <div class="d-flex justify-content-between align-items-center mb-1">
                   <span class="text">Tổng số sản phẩm</span>
                   <span class="fw-600"> {{ orderSelected.products.length }} </span>
@@ -401,7 +383,7 @@
             </div>
             <div class="pos-sidebar-footer">
               <div class="btn-row">
-                <a (click)="openConfirmCheckoutForm()" class="btn btn-success">
+                <a class="btn btn-success">
                   <fa-icon [icon]="'dollar'"></fa-icon>
                   Thanh toán</a
                 >

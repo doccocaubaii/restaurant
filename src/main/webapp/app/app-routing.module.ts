@@ -8,19 +8,21 @@ import { DashboardPage } from './pages/dashboard/dashboard.component';
 import { OrderPage } from './pages/don-hang/order.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { KhachqrScComponent } from './pages/pos/customer-order/khachqr-sc/khachqr-sc.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'tong-quan', component: DashboardPage, data: { title: 'Dashboard V3' } },
   { path: 'don-hang', component: OrderPage, data: { title: 'Order' } },
   { path: 'login', component: LoginPage, data: { title: 'Login' } },
+  { path: 'pos/ban-hang/:idA/:idT', component: KhachqrScComponent, data: { title: 'Order For Customer' } },
   { path: 'pos/ban-hang', component: PosCustomerOrderPage, data: { title: 'Pos customer order page' } },
   { path: 'pos/ban-hang/:id', component: PosCustomerOrderPage, data: { title: 'Pos customer order page' } },
   { path: 'pos/counter-checkout', component: PosCounterCheckoutPage, data: { title: 'Pos counter checkout' } },
   {
     path: 'pos/san-pham',
-    loadChildren: () => import('./pages/product/product.module').then(m => m.ProductModule),
-  },
+    loadChildren: () => import('./pages/product/product.module').then(m => m.ProductModule)
+  }
 ];
 
 @NgModule({
@@ -28,12 +30,13 @@ const routes: Routes = [
     RouterModule.forRoot(routes, {
       scrollPositionRestoration: 'enabled',
       anchorScrolling: 'enabled',
-      enableTracing: DEBUG_INFO_ENABLED,
+      enableTracing: DEBUG_INFO_ENABLED
     }),
     BrowserModule,
     FormsModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule
   ],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule {
+}

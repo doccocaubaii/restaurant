@@ -61,6 +61,9 @@ public class SecurityConfiguration {
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
 //                    .anyRequest().permitAll()
+                .requestMatchers("/ws/**").permitAll()
+                .requestMatchers("/app/**").permitAll()
+                .requestMatchers("/sendMessage/**").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
 //                .requestMatchers("/app/*/*.{js,html}").permitAll()

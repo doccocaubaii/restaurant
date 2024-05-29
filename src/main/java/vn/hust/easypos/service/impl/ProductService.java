@@ -1,13 +1,6 @@
 package vn.hust.easypos.service.impl;
 
-import static vn.hust.easypos.constants.ResultConstants.*;
-import static vn.hust.easypos.web.rest.errors.ExceptionConstants.PRODUCT_NOT_FOUND;
-import static vn.hust.easypos.web.rest.errors.ExceptionConstants.PRODUCT_NOT_FOUND_VI;
-
 import com.google.common.base.Strings;
-import java.util.Arrays;
-import java.util.Optional;
-
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +21,13 @@ import vn.hust.easypos.service.util.Common;
 import vn.hust.easypos.service.util.ImagePathConstants;
 import vn.hust.easypos.web.rest.errors.InternalServerException;
 
+import java.util.Arrays;
+import java.util.Optional;
+
+import static vn.hust.easypos.constants.ResultConstants.*;
+import static vn.hust.easypos.web.rest.errors.ExceptionConstants.PRODUCT_NOT_FOUND;
+import static vn.hust.easypos.web.rest.errors.ExceptionConstants.PRODUCT_NOT_FOUND_VI;
+
 @Service
 public class ProductService {
 
@@ -42,9 +42,12 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public ResultDTO getWithPagingForProduct(Pageable pageable, String keyword) {
-        User user = userService.getUserWithAuthorities();
-        Page<ProductDetailResponse> productResponses = productRepository.getWithPagingForProduct(pageable, user.getCompanyId(), keyword);
+    public ResultDTO getWithPagingForProduct(Pageable pageable, String keyword, Integer company) {
+        if (company == null) {
+            User user = userService.getUserWithAuthorities();
+            company = user.getCompanyId();
+        }
+        Page<ProductDetailResponse> productResponses = productRepository.getWithPagingForProduct(pageable, company, keyword);
         return new ResultDTO(
             SUCCESS,
             GET_PRODUCTS_SUCCESS_VI,

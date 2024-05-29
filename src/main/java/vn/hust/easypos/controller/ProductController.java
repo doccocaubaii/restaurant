@@ -1,7 +1,5 @@
 package vn.hust.easypos.controller;
 
-import java.math.BigDecimal;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Validator;
 import jakarta.validation.constraints.Min;
@@ -24,6 +22,8 @@ import vn.hust.easypos.service.util.Common;
 import vn.hust.easypos.service.util.Util;
 import vn.hust.easypos.web.rest.errors.ExceptionConstants;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/api")
 public class ProductController {
@@ -40,8 +40,10 @@ public class ProductController {
     }
 
     @GetMapping("/client/page/product/product-get-with-paging")
-    public ResponseEntity<ResultDTO> getWithPagingForProduct(Pageable pageable, @RequestParam(required = false) String keyword) {
-        ResultDTO result = productService.getWithPagingForProduct(pageable, keyword);
+    public ResponseEntity<ResultDTO> getWithPagingForProduct(Pageable pageable,
+                                                             @RequestParam(required = false) String keyword,
+                                                             @RequestParam(required = false) Integer companyId) {
+        ResultDTO result = productService.getWithPagingForProduct(pageable, keyword, companyId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

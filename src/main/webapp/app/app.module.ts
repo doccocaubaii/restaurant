@@ -7,7 +7,12 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { NgxWebstorageModule } from 'ngx-webstorage';
 import dayjs from 'dayjs/esm';
-import { NgbDateAdapter, NgbDatepickerConfig, NgbDatepickerModule, NgbTimepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbDateAdapter,
+  NgbDatepickerConfig,
+  NgbDatepickerModule,
+  NgbTimepickerModule
+} from '@ng-bootstrap/ng-bootstrap';
 
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import './config/dayjs';
@@ -36,11 +41,14 @@ import { HeaderComponent } from './layouts/header/header.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { HIGHLIGHT_OPTIONS, HighlightModule } from 'ngx-highlightjs';
-import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface, PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import {
+  PERFECT_SCROLLBAR_CONFIG,
+  PerfectScrollbarConfigInterface,
+  PerfectScrollbarModule
+} from 'ngx-perfect-scrollbar';
 import { TrendModule } from 'ngx-trend';
 import { NgxEditorModule } from 'ngx-editor';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
@@ -62,9 +70,13 @@ import { SidebarOption } from './utils/SidebarOption';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ProductDetailComponent } from './pages/pos/customer-order/product-detail/product-detail.component';
 import { ConfirmCheckoutComponent } from './pages/pos/customer-order/confirm-checkout/confirm-checkout.component';
-import { DiscountTaxProductComponent } from './pages/pos/customer-order/discount-tax-product/discount-tax-product.component';
+import {
+  DiscountTaxProductComponent
+} from './pages/pos/customer-order/discount-tax-product/discount-tax-product.component';
 import { ViewDetailOrderComponent } from './pages/don-hang/view-detail-order/view-detail-order.component';
-import { ShowListActionOrderComponent } from './pages/don-hang/view-detail-order/show-list-action-order/show-list-action-order.component';
+import {
+  ShowListActionOrderComponent
+} from './pages/don-hang/view-detail-order/show-list-action-order/show-list-action-order.component';
 import { ToastrModule } from 'ngx-toastr';
 
 import { LoadingOption } from './utils/loadingOption';
@@ -72,10 +84,15 @@ import { PosInvoiceComponent } from './pages/pos/customer-order/pos-invoice/pos-
 import { NgxCurrencyModule } from 'ngx-currency';
 import { AccountModule } from './account/account.module';
 import { BaseFormProductComponent } from './pages/base-form-product/base-form-product/base-form-product.component';
-import { BaseCreateProductComponent } from './pages/base-create-product/base-create-product/base-create-product.component';
+import {
+  BaseCreateProductComponent
+} from './pages/base-create-product/base-create-product/base-create-product.component';
+import { KhachqrScComponent } from './pages/pos/customer-order/khachqr-sc/khachqr-sc.component';
+import { RxStompService } from './rxStomp/rx-stomp.service';
+import { rxStompServiceFactory } from './rxStomp/rx-stomp-service-factory';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  suppressScrollX: true,
+  suppressScrollX: true
 };
 FullCalendarModule.registerPlugins([dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin, bootstrapPlugin]);
 
@@ -95,11 +112,10 @@ FullCalendarModule.registerPlugins([dayGridPlugin, timeGridPlugin, interactionPl
     TranslationModule,
     CalendarModule.forRoot({
       provide: DateAdapter,
-      useFactory: adapterFactory,
+      useFactory: adapterFactory
     }),
     FormsModule,
     HighlightModule,
-    LoadingBarRouterModule,
     NgApexchartsModule,
     NgbDatepickerModule,
     NgbTimepickerModule,
@@ -116,7 +132,7 @@ FullCalendarModule.registerPlugins([dayGridPlugin, timeGridPlugin, interactionPl
     NgSelectModule,
     AccountModule,
     ToastrModule.forRoot(),
-    NgxCurrencyModule,
+    NgxCurrencyModule
   ],
 
   providers: [
@@ -127,7 +143,7 @@ FullCalendarModule.registerPlugins([dayGridPlugin, timeGridPlugin, interactionPl
     { provide: NgbDateAdapter, useClass: NgbDateDayjsAdapter },
     {
       provide: PERFECT_SCROLLBAR_CONFIG,
-      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,
+      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
     },
     {
       provide: HIGHLIGHT_OPTIONS,
@@ -137,11 +153,15 @@ FullCalendarModule.registerPlugins([dayGridPlugin, timeGridPlugin, interactionPl
         languages: {
           typescript: () => import('highlight.js/lib/languages/typescript'),
           css: () => import('highlight.js/lib/languages/css'),
-          xml: () => import('highlight.js/lib/languages/xml'),
-        },
-      },
+          xml: () => import('highlight.js/lib/languages/xml')
+        }
+      }
     },
-    httpInterceptorProviders,
+    {
+      provide: RxStompService,
+      useFactory: rxStompServiceFactory
+    },
+    httpInterceptorProviders
   ],
   declarations: [
     ShowListActionOrderComponent,
@@ -170,8 +190,9 @@ FullCalendarModule.registerPlugins([dayGridPlugin, timeGridPlugin, interactionPl
     PosInvoiceComponent,
     BaseFormProductComponent,
     BaseCreateProductComponent,
+    KhachqrScComponent
   ],
-  bootstrap: [MainComponent],
+  bootstrap: [MainComponent]
 })
 export class AppModule {
   constructor(applicationConfigService: ApplicationConfigService, iconLibrary: FaIconLibrary, dpConfig: NgbDatepickerConfig) {
