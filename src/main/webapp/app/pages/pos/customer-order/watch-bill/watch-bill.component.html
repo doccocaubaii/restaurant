@@ -1,0 +1,91 @@
+<div class="modal-header">
+  <h5 class="modal-title">Xem bill</h5>
+  <button (click)="decline()" aria-hidden="true" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+</div>
+<div class="modal-body">
+  <div class="p-4" style="max-height: 50vh; overflow-y:auto; ">
+    <ng-container *ngFor="let productSelected of orderSelected.products">
+      <div class="row pos-table-row panel-border">
+        <div class="col-4">
+          <div class="pos-product-thumb">
+            <div class="d-flex">
+              <div
+                [style]="{
+                              'background-image':
+                                'url(' +
+                                (!!productSelected.imageUrl ? productSelected.imageUrl : 'content/icon/san-pham/products.svg') +
+                                ')'
+                            }"
+                class="img"
+              ></div>
+
+            </div>
+            <div class="info d-flex justify-content-between align-items-start flex-column">
+              <div
+                class="title cursor-pointer">
+                <!--                              {{ productSelected.productName }}-->
+              </div>
+              <div class="input-group quantity" style="width: 70px;padding: 0;">
+                <input
+                  [(ngModel)]="productSelected.quantity"
+                  class="form-control"
+                  disabled="true"
+                  type="string"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-8 total-price d-flex justify-content-start align-items-end flex-column">
+          <div class="mt-5px">
+            Tên sản phẩm : <span>{{ productSelected.productName }}</span>
+          </div>
+          <div class="mb-5px mt-5px">
+            Giá sản phẩm:
+            {{ productSelected.unitPrice | numberFormat }} đ
+          </div>
+          <div>
+            Số tiền:
+            {{ productSelected.totalAmount | numberFormat }} đ
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+  </div>
+  <div class="pos-sidebar-footer">
+    <div
+      [class.justify-content-between]="true"
+      [class.justify-content-end]="!true"
+      class="d-flex align-items-center mb-1"
+    >
+      <div *ngIf="true">
+        <img class="icon" src="content/icon/quan-ly/coin.svg" />
+        <span class="text">Chi tiết thanh toán</span>
+      </div>
+      <div>
+        <i *ngIf="true"
+           class="cursor-pointer fa-solid fa-chevron-down"></i>
+        <i *ngIf="!true"
+           class="cursor-pointer fa-solid fa-chevron-up"></i>
+      </div>
+    </div>
+    <ng-container>
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <span class="text">Tổng số sản phẩm</span>
+        <span class="fw-600"> {{ orderSelected.quantity }} </span>
+      </div>
+    </ng-container>
+    <div class="d-flex justify-content-between align-items-center">
+      <span class="text">Tổng tiền thanh toán </span>
+      <span class="fw-600"> {{ orderSelected.totalAmount | numberFormat }} đ </span>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button (click)="decline()" class="btn btn-sm btn-secondary" type="button">
+    <fa-icon icon="cancel"></fa-icon>
+    Đóng
+  </button>
+</div>
+

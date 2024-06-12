@@ -1,6 +1,8 @@
 package vn.hust.easypos.constants;
 
 public interface BillConstants {
+    String DateConstants = "yyyyMMddHHmmssFF6";
+
     interface TypeInv {
         Integer BAN_HANG = 0;
         Integer MOT_THUE = 1;
@@ -45,6 +47,4 @@ public interface BillConstants {
         Character HOA_DON_BAN_HANG = '2';
         Character HOA_DON_KHAC = '5';
     }
-
-    String DateConstants = "yyyyMMddHHmmssFF6";
 }

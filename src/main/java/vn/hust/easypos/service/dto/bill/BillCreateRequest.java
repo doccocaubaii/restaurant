@@ -1,20 +1,21 @@
 package vn.hust.easypos.service.dto.bill;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import vn.hust.easypos.web.rest.errors.ExceptionConstants;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 public class BillCreateRequest {
+
+    private Integer tableId;
 
     private Integer id;
 
     @NotNull(message = ExceptionConstants.COMPANY_ID_NOT_NULL)
     private Integer comId;
 
-    @NotBlank(message = ExceptionConstants.CUSTOMER_NAME_NOT_NULL)
     private String customerName;
 
     @NotBlank(message = ExceptionConstants.BILL_DATE_NOT_NULL)
@@ -38,9 +39,6 @@ public class BillCreateRequest {
     @Digits(integer = 21, fraction = 6, message = ExceptionConstants.AMOUNT_INVALID)
     private BigDecimal totalAmount;
 
-    @NotNull(message = ExceptionConstants.BILL_STATUS_IN_VALID)
-    @Min(value = 0, message = ExceptionConstants.BILL_STATUS_IN_VALID)
-    @Max(value = 1, message = ExceptionConstants.BILL_STATUS_IN_VALID)
     private Integer status;
 
     @Size(max = 512, message = ExceptionConstants.DESCRIPTION_MAX_LENGTH)
@@ -52,6 +50,9 @@ public class BillCreateRequest {
     @NotNull(message = ExceptionConstants.PRODUCTS_NOT_NULL)
     @Valid
     private List<BillProductRequest> products;
+
+    public BillCreateRequest() {
+    }
 
     public BigDecimal getAmount() {
         return amount;
@@ -68,8 +69,6 @@ public class BillCreateRequest {
     public void setComId(Integer comId) {
         this.comId = comId;
     }
-
-    public BillCreateRequest() {}
 
     public Integer getId() {
         return id;
@@ -153,5 +152,13 @@ public class BillCreateRequest {
 
     public void setPayment(BillPaymentRequest payment) {
         this.payment = payment;
+    }
+
+    public Integer getTableId() {
+        return tableId;
+    }
+
+    public void setTableId(Integer tableId) {
+        this.tableId = tableId;
     }
 }

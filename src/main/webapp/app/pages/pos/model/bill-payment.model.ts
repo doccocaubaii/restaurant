@@ -1,4 +1,5 @@
 import dayjs from 'dayjs/esm';
+
 export class IBillPayment {
   id!: number;
   comId!: number;
@@ -12,6 +13,7 @@ export class IBillPayment {
   status!: number;
   payment!: Payment;
   products!: ProductBill[];
+  tableId!: number;
 }
 
 export class ProductBill {

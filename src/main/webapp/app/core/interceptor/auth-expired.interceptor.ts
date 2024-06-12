@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -8,6 +8,8 @@ import { StateStorageService } from 'app/core/auth/state-storage.service';
 import { AccountService } from 'app/core/auth/account.service';
 import { LoginService } from '../../pages/login/login.service';
 import { ACCOUNT } from '../../constants/api.constants';
+
+
 @Injectable()
 export class AuthExpiredInterceptor implements HttpInterceptor {
   constructor(
@@ -15,7 +17,8 @@ export class AuthExpiredInterceptor implements HttpInterceptor {
     private stateStorageService: StateStorageService,
     private router: Router,
     private accountService: AccountService
-  ) {}
+  ) {
+  }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
@@ -26,8 +29,13 @@ export class AuthExpiredInterceptor implements HttpInterceptor {
             this.loginService.logout();
             this.router.navigate(['/login']);
           }
-        },
+        }
       })
     );
+  }
+
+  private isMatchingUrl(url: string): boolean {
+    const regex = /\/pos\/ban-hang\/([^\/]+)\/([^\/]+)$/;
+    return regex.test(url);
   }
 }

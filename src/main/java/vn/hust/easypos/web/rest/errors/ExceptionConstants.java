@@ -343,7 +343,7 @@ public final class ExceptionConstants {
         "{\"code\": \"PHONE_NUMBER_NOT_EMPTY\",\"message\": \"Không để trống số điện thoại\"}";
     public static final String USERNAME_NOT_NULL = "{\"code\": \"USERNAME_NOT_NULL\",\"message\": \"Tên đăng nhập không được bỏ trống\"}";
     public static final String USERNAME_NOT_NULL_CODE = "USERNAME_NOT_NULL_CODE";
-    public static final String USERNAME_NOT_NULL_VI = "Tên đăng nhập không được bỏ trống";
+    public static final String USERNAME_NOT_NULL_VI = "Tên đăng nhập không được bỏ trống2";
     public static final String PASSWORD_IN_VALID = "{\"code\": \"PASSWORD_NOT_NULL\",\"message\": \"Mật khẩu không hợp lệ\"}";
     public static final String PASSWORD_NOT_BLANK = "{\"code\": \"PASSWORD_NOT_BLANK\",\"message\": \"Không để trống mật khẩu\"}";
     public static final String EMAIL_IN_VALID = "{\"code\": \"EMAIL_IN_VALID\",\"message\": \"Email không hợp lệ\"}";
@@ -815,5 +815,6 @@ public final class ExceptionConstants {
     public static final String HOUR_REVENUE_DATE_NOT_NULL = "HOUR_REVENUE_DATE_NOT_NULL";
     public static final String HOUR_REVENUE_DATE_NOT_NULL_VI = "Khoảng giờ không hợp lệ";
 
-    private ExceptionConstants() {}
+    private ExceptionConstants() {
+    }
 }

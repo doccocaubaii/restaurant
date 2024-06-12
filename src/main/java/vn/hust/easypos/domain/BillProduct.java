@@ -4,17 +4,16 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import jakarta.persistence.*;
+import org.hibernate.annotations.DynamicUpdate;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
-
-import jakarta.persistence.*;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.DynamicUpdate;
 
 /**
  * A BillProduct.Chi tiết hóa đơn bán hàng
  */
-@JsonIgnoreProperties(value = { "new" })
+@JsonIgnoreProperties(value = {"new"})
 @Entity
 @DynamicUpdate
 @Table(name = "bill_product")
@@ -112,17 +111,21 @@ public class BillProduct extends AbstractAuditingEntity<String> implements Seria
         return this.productName;
     }
 
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
     public BillProduct productName(String productName) {
         this.setProductName(productName);
         return this;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
     public BigDecimal getQuantity() {
         return this.quantity;
+    }
+
+    public void setQuantity(BigDecimal quantity) {
+        this.quantity = quantity;
     }
 
     public BillProduct quantity(BigDecimal quantity) {
@@ -130,12 +133,12 @@ public class BillProduct extends AbstractAuditingEntity<String> implements Seria
         return this;
     }
 
-    public void setQuantity(BigDecimal quantity) {
-        this.quantity = quantity;
-    }
-
     public String getUnit() {
         return this.unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     public BillProduct unit(String unit) {
@@ -143,12 +146,12 @@ public class BillProduct extends AbstractAuditingEntity<String> implements Seria
         return this;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
     public BigDecimal getUnitPrice() {
         return this.unitPrice;
+    }
+
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
     }
 
     public BillProduct unitPrice(BigDecimal unitPrice) {
@@ -156,21 +159,17 @@ public class BillProduct extends AbstractAuditingEntity<String> implements Seria
         return this;
     }
 
-    public void setUnitPrice(BigDecimal unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
     public BigDecimal getTotalAmount() {
         return this.totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
     public BillProduct totalAmount(BigDecimal totalAmount) {
         this.setTotalAmount(totalAmount);
         return this;
-    }
-
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
     }
 
     public Integer getPosition() {

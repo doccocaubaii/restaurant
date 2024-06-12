@@ -1,17 +1,23 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import dayjs from 'dayjs/esm';
 
 import { isPresent } from 'app/core/util/operators';
-import { DATE_FORMAT, DATE_TIME_FORMAT } from 'app/config/input.constants';
+import { DATE_TIME_FORMAT } from 'app/config/input.constants';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
 import { CancelOrder, CompleteOrder, IBillPayment } from '../model/bill-payment.model';
 import { OrderResponse } from '../model/orderResponse.model';
-import { CHECKOUT_BILL_BY_ID, CREATE_BILL, GET_BILL_BY_ID, GET_LIST_BILL, UPDATE_BILL } from 'app/constants/api.constants';
-import { CANCEL_BILL_BY_ID } from 'app/constants/api.constants';
+import {
+  CANCEL_BILL_BY_ID,
+  CHECKOUT_BILL_BY_ID,
+  CREATE_BILL,
+  GET_BILL_BY_ID,
+  GET_BILL_TEMP,
+  GET_LIST_BILL,
+  TEMP_CREATE_BILL,
+  UPDATE_BILL
+} from 'app/constants/api.constants';
 
 export type PartialUpdateBillPayment = Partial<IBillPayment> & Pick<IBillPayment, 'id'>;
 
@@ -27,16 +33,22 @@ export type EntityResponseType = HttpResponse<OrderResponse>;
 export type EntityArrayResponseType = HttpResponse<OrderResponse[]>;
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class BillService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api');
 
-  constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
+  constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {
+  }
 
   create(billPayment: IBillPayment) {
     const copy = this.convertDateFromClient(billPayment);
     return this.http.post(`${this.resourceUrl}${CREATE_BILL}`, copy, { observe: 'response' });
+  }
+
+  tempCreate(billPayment: IBillPayment): Observable<any> {
+    const copy = this.convertDateFromClient(billPayment);
+    return this.http.post(`${this.resourceUrl}${TEMP_CREATE_BILL}`, copy, { observe: 'response' });
   }
 
   update(billPayment: IBillPayment) {
@@ -51,7 +63,17 @@ export class BillService {
 
   complete(completeOrder: CompleteOrder) {
     const paymentTime = completeOrder.paymentTime.format(DATE_TIME_FORMAT);
-    return this.http.put(`${this.resourceUrl}${CHECKOUT_BILL_BY_ID}`, { ...completeOrder, paymentTime }, { observe: 'response' });
+    return this.http.post(`${this.resourceUrl}${CHECKOUT_BILL_BY_ID}`, {
+      ...completeOrder,
+      paymentTime
+    }, { observe: 'response' });
+  }
+
+  findByTableAndComId(obj: any): Observable<any> {
+    let params = new HttpParams()
+      .set('tableId', obj.tableId)
+      .set('comId', obj.comId);
+    return this.http.get(`${this.resourceUrl}${GET_BILL_TEMP}`, { observe: 'response', params: params });
   }
 
   find(id: number) {
@@ -60,7 +82,10 @@ export class BillService {
 
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
-    return this.http.get<OrderResponse[]>(`${this.resourceUrl}${GET_LIST_BILL}`, { params: options, observe: 'response' });
+    return this.http.get<OrderResponse[]>(`${this.resourceUrl}${GET_LIST_BILL}`, {
+      params: options,
+      observe: 'response'
+    });
     // .pipe(map(res => this.convertResponseArrayFromServer(res)));
   }
 
@@ -97,26 +122,26 @@ export class BillService {
   protected convertDateFromClient<T extends IBillPayment>(billPayment: T): RestOf<T> {
     return {
       ...billPayment,
-      billDate: billPayment.billDate.format(DATE_TIME_FORMAT),
+      billDate: billPayment.billDate.format(DATE_TIME_FORMAT)
     };
   }
 
   protected convertDateFromServer(restBillPayment: OrderResponse): OrderResponse {
     return {
-      ...restBillPayment,
+      ...restBillPayment
       // createTime: restBillPayment.createTime ? (dayjs(restBillPayment.createTime))
     };
   }
 
   protected convertResponseFromServer(res: HttpResponse<any>) {
     return res.clone({
-      body: res.body ? this.convertDateFromServer(res.body) : null,
+      body: res.body ? this.convertDateFromServer(res.body) : null
     });
   }
 
   protected convertResponseArrayFromServer(res: HttpResponse<OrderResponse[]>): HttpResponse<OrderResponse[]> {
     return res.clone({
-      body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
+      body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null
     });
   }
 }

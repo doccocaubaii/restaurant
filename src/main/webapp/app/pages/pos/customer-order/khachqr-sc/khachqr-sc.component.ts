@@ -5,6 +5,13 @@ import { ToastrService } from 'ngx-toastr';
 import { RxStompService } from '../../../../rxStomp/rx-stomp.service';
 import { ProductService } from '../../service/product.service';
 import { Page } from '../../../const/customer-order.const';
+import { IProduct } from '../../model/product.model';
+import { IBillPayment, ProductBill } from '../../model/bill-payment.model';
+import { validVariable } from '../../../const/function';
+import dayjs from 'dayjs/esm';
+import { BillService } from '../../service/bill.service';
+import { WatchBillComponent } from '../watch-bill/watch-bill.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'jhi-khachqr-sc',
@@ -27,13 +34,16 @@ export class KhachqrScComponent implements OnInit, OnDestroy {
   listProduct: any = [];
   loading = true;
   filterProduct: any = { page: Page.PAGE_NUMBER, size: 15, companyId: null };
+  activeRemoveProductSelected: any = 0;
   private topicSubscription: Subscription | undefined;
 
   constructor(
     protected productService: ProductService,
     private rxStompService: RxStompService,
     private route: ActivatedRoute,
-    private toast: ToastrService) {
+    protected orderService: BillService,
+    private toast: ToastrService,
+    protected modalService: NgbModal) {
   }
 
   async ngOnInit(): Promise<void> {
@@ -62,6 +72,7 @@ export class KhachqrScComponent implements OnInit, OnDestroy {
       result?.forEach(item => {
         this.listProduct?.push(item);
       });
+      console.log(this.listProduct);
     });
   }
 
@@ -88,11 +99,126 @@ export class KhachqrScComponent implements OnInit, OnDestroy {
   }
 
 
-  addProduct() {
+  addProductToOrder(product: IProduct) {
+    let findProduct = false;
+    let newProductSelected;
+    this.orderSelected.products.forEach(productSelected => {
+      if (productSelected.productCode === product.code) {
+        productSelected.quantity && productSelected.quantity++;
+        newProductSelected = productSelected;
+        findProduct = true;
+      }
+    });
+    if (!findProduct) {
+      newProductSelected = {
+        productId: product.id,
+        imageUrl: product.imageUrl,
+        productName: product.name,
+        productCode: product.code,
+        quantity: 1,
+        unit: product.unit,
+        unitPrice: product.salePrice,
+        amount: 0,
+        totalPreTax: 0,
+        totalAmount: 0,
+        position: this.orderSelected.products.length + 1
+      };
+      this.orderSelected.products.push(newProductSelected);
+    }
+    this.changeProductSelected(newProductSelected);
+  }
+
+  changeProductSelected(newProductSelected?: ProductBill) {
+    if (newProductSelected) {
+      newProductSelected.amount = newProductSelected.quantity * newProductSelected.unitPrice;
+      newProductSelected.totalAmount = newProductSelected.amount;
+    }
+    this.updateOrder();
+  }
+
+  updateOrder() {
+    this.orderSelected.totalAmount = 0;
+    this.orderSelected.amount = 0;
+    this.orderSelected.quantity = 0;
+    this.orderSelected.products.forEach(productSelected => {
+      this.orderSelected.quantity += productSelected.quantity;
+      this.orderSelected.amount += productSelected.amount;
+    });
+    this.orderSelected.totalAmount = this.orderSelected.amount;
+  }
+
+  removeProductFromCustomerOrder(product: ProductBill) {
+    this.orderSelected.products = this.orderSelected.products.filter(
+      productSelected => product.productId !== productSelected.productId
+    );
+    this.activeRemoveProductSelected = 0;
+    this.changeProductSelected();
+  }
+
+  increaseProductQuantity(product: ProductBill) {
+    product.quantity && product.quantity++;
+    this.changeProductSelected(product);
+  }
+
+  decreaseProductQuantity(product: ProductBill) {
+    if (product.quantity === 1) {
+      this.activeRemoveProductSelected = product.productId;
+    } else {
+      product.quantity && product.quantity--;
+    }
+    this.changeProductSelected(product);
+  }
+
+  goiMon() {
+    if (!this.checkOrder(this.orderSelected)) {
+      return;
+    }
+    this.orderService.tempCreate({
+      ...this.orderSelected,
+      billDate: dayjs(),
+      tableId: this.idTable,
+      comId: this.idAmin
+    }).subscribe(res => {
+      if (res.body?.status) {
+        this.toast.success('Thành công');
+        this.orderSelected = {
+          totalAmount: 0,
+          products: [],
+          deliveryType: 1
+        };
+      }
+    });
+  }
+
+  checkOrder(orderSelected: IBillPayment) {
+    const listProperty = ['products'];
+    const listValue = ['sản phẩm'];
+    for (let i = 0; i < listProperty.length; i++) {
+      if (!validVariable(orderSelected[listProperty[i]])) {
+        this.toast.warning(`Vui lòng chọn ${listValue[i]}`);
+        return false;
+      }
+    }
+    return true;
+  }
+
+  loadMore($event) {
 
   }
 
-  loadMore($event: Event) {
-
+  xemBill() {
+    this.orderService.findByTableAndComId({ tableId: this.idTable, comId: this.idAmin })
+      .subscribe(
+        (res) => {
+          const dialogRef = this.modalService.open(WatchBillComponent, {
+            size: 'md',
+            backdrop: 'static',
+            windowClass: 'margin-5'
+          });
+          dialogRef.componentInstance.orderSelected = res.body.data;
+        }, error => {
+          this.toast.success('Bạn chưa gọi sản phẩm nào');
+        }
+      );
   }
 }

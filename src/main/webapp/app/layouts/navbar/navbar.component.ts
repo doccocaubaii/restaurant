@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, Renderer2 } from '@angular/core';
 
 import appSettings from '../../config/app-settings';
-import { AccountService } from '../../core/auth/account.service';
 import { Router } from '@angular/router';
 import { UtilsService } from '../../utils/Utils.service';
 import { LoginService } from '../../pages/login/login.service';
@@ -15,7 +14,7 @@ import { SessionStorageService } from 'ngx-webstorage';
 @Component({
   selector: 'jhi-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss'],
+  styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent extends BaseComponent implements OnInit {
   @Input() appSidebarTwo;
@@ -24,9 +23,12 @@ export class NavbarComponent extends BaseComponent implements OnInit {
   @Output() appSidebarEndMobileToggled = new EventEmitter<boolean>();
   @Output() appSidebarNone = new EventEmitter<boolean>();
   appSettings = appSettings;
-  lastUser: any;
+  lastUser: any = {
+    fullname: 'Khách lẻ'
+  };
   lastCompany: any;
   languages = LANGUAGES;
+
   constructor(
     private renderer: Renderer2,
     private utilsService: UtilsService,
@@ -39,6 +41,7 @@ export class NavbarComponent extends BaseComponent implements OnInit {
     super();
     this.lastUser = {};
   }
+
   toggleAppSidebarMobile() {
     this.appSidebarMobileToggled.emit(true);
   }
@@ -86,6 +89,7 @@ export class NavbarComponent extends BaseComponent implements OnInit {
       this.router.navigate([pathOffline]);
     }
   }
+
   changeLanguage(languageKey: string): void {
     this.sessionStorageService.store('locale', languageKey);
     this.translateService.use(languageKey);

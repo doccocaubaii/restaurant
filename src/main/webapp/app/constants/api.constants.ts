@@ -44,8 +44,10 @@ export const REGISTER_DEVICE = '/client/common/register-owner-device';
 // bill
 export const GET_LIST_BILL = '/client/page/bill/get-with-paging';
 export const GET_BILL_BY_ID = '/client/page/bill/by-id/';
+export const GET_BILL_TEMP = '/client/page/bill/temp';
 export const GET_BILL_BY_CODE = '/client/page/bill/by-code/';
 export const CREATE_BILL = '/client/page/bill/create';
+export const TEMP_CREATE_BILL = '/client/page/bill/temp-create';
 export const UPDATE_BILL = '/client/page/bill/update';
 export const CHECKOUT_BILL_BY_ID = '/client/page/bill/done-by-id';
 export const CANCEL_BILL_BY_ID = '/client/page/bill/cancel-by-id';

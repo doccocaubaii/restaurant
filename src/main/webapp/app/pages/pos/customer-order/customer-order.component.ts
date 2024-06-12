@@ -317,7 +317,6 @@ export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDes
       this.orderSelected.quantity += productSelected.quantity;
       this.orderSelected.amount += productSelected.amount;
     });
-    this.orderSelected.quantity = this.orderSelected.products.length;
     this.orderSelected.totalAmount = this.orderSelected.amount;
   }
 

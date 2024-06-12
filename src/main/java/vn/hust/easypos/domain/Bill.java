@@ -3,11 +3,6 @@ package vn.hust.easypos.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-
 import jakarta.persistence.*;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.hust.easypos.config.Constants;
@@ -16,10 +11,15 @@ import vn.hust.easypos.service.dto.bill.BillStatItem;
 import vn.hust.easypos.service.dto.bill.BillStatsResult;
 import vn.hust.easypos.service.util.Common;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
 /**
  * A Bill. Hóa đơn bán hàng
  */
-@JsonIgnoreProperties(value = { "new" })
+@JsonIgnoreProperties(value = {"new"})
 @Entity
 @Table(name = "bill")
 @SuppressWarnings("common-java:DuplicatedBlocks")
@@ -49,7 +49,7 @@ import vn.hust.easypos.service.util.Common;
             classes = {
                 @ConstructorResult(
                     targetClass = BillStatItem.class,
-                    columns = { @ColumnResult(name = "time", type = String.class), @ColumnResult(name = "money", type = BigDecimal.class) }
+                    columns = {@ColumnResult(name = "time", type = String.class), @ColumnResult(name = "money", type = BigDecimal.class)}
                 ),
             }
         ),
@@ -108,7 +108,7 @@ public class Bill extends AbstractAuditingEntity<String> implements Serializable
     private BillPayment payment;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "bill", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "bill", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BillProduct> products;
 
     @Column(name = "customer_normalized_name")
@@ -116,6 +116,17 @@ public class Bill extends AbstractAuditingEntity<String> implements Serializable
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "table_id")
+    private Integer tableId;
+
+    public Integer getTableId() {
+        return tableId;
+    }
+
+    public void setTableId(Integer tableId) {
+        this.tableId = tableId;
+    }
 
     public BigDecimal getAmount() {
         return amount;
@@ -155,10 +166,6 @@ public class Bill extends AbstractAuditingEntity<String> implements Serializable
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
-    }
-
-    public void setBillDate(String billDate) {
-        this.billDate = Common.convertStringToZoneDateTime(billDate, Constants.ZONED_DATE_TIME_FORMAT);
     }
 
     public String getCustomerNormalizedName() {
@@ -227,6 +234,10 @@ public class Bill extends AbstractAuditingEntity<String> implements Serializable
 
     public LocalDateTime getBillDate() {
         return billDate;
+    }
+
+    public void setBillDate(String billDate) {
+        this.billDate = Common.convertStringToZoneDateTime(billDate, Constants.ZONED_DATE_TIME_FORMAT);
     }
 
     public void setBillDate(LocalDateTime billDate) {

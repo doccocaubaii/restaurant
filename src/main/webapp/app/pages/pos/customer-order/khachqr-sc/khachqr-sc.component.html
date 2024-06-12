@@ -61,6 +61,7 @@
                 <perfect-scrollbar class="mb-xs-1 mb-sm-1 mb-md-1 mb-lg-1 mb-xl-3 mb-xxl-3">
                   <div (scroll)="loadMore($event)" class="product-row d-flex flex-wrap">
                     <div
+                      (click)="addProductToOrder(product)"
                       *ngFor="let product of listProduct"
                       class="col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 wrap-product-container"
                     >
@@ -98,11 +99,6 @@
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                    <div *ngIf="loading" class="wrap-spinner">
-                      <div class="spinner-border" role="status">
-                        <span class="sr-only">Loading...</span>
                       </div>
                     </div>
                   </div>
@@ -163,33 +159,7 @@
                   <i class="fa fa-caret-down p-6px"></i>
                 </div>
               </a>
-              <!--              <div *ngIf="!idOrderSelected" class="dropdown-menu dropdown-menu-end">-->
-              <!--                <ng-container *ngFor="let order of listOrder">-->
-              <!--                  <ng-container *ngIf="order.billDate !== orderSelected.billDate">-->
-              <!--                    <a (click)="changeOrderSelected(order)" class="dropdown-item d-flex justify-content-between">-->
-              <!--                      <div class="d-flex justify-content-start">-->
-              <!--                        <img class="img-icon h-30px" src="/assets/img/pos/icon-table-black.svg" />-->
-              <!--                        <span class="order">Order: <b>order.xyz</b></span>-->
-              <!--                      </div>-->
-              <!--                      <div class="d-flex">-->
-              <!--                        <div class="background-icon remove-color">-->
-              <!--                          <fa-icon (click)="removeOrderFromOrderList(order)" [icon]="'xmark'"-->
-              <!--                                   class="padding-fa"></fa-icon>-->
-              <!--                        </div>-->
-              <!--                      </div>-->
-              <!--                    </a>-->
-              <!--                  </ng-container>-->
-              <!--                </ng-container>-->
-              <!--                <div class="dropdown-divider"></div>-->
-              <!--                <div class="add-new-order">-->
-              <!--                  <a  class="dropdown-item">-->
-              <!--                    <span>Tạo đơn hàng mới </span>-->
-              <!--                    <div class="background-icon add-color">-->
-              <!--                      <i _ngcontent-veq-c152="" class="fa fa-plus"></i>-->
-              <!--                    </div>-->
-              <!--                  </a>-->
-              <!--                </div>-->
-              <!--              </div>-->
+
             </div>
             <ul class="nav nav-tabs nav-fill">
               <div class="row d-flex"></div>
@@ -198,15 +168,6 @@
 
           <div>
             <div class="panel-border wrap-customer-delivery">
-              <div class="customer-tax d-flex justify-content-between align-items-center mb-2">
-                <div class="text col-4 d-flex align-items-center">
-                  <img class="icon" src="content/icon/khach-hang/themKhachHang.svg" />Khách hàng:
-                </div>
-                <div class="customer-input col-8">
-                  <span>Khách lẻ</span>
-                </div>
-              </div>
-
               <div class="d-flex justify-content-end align-items-center flex-wrap mb-2 mt-2">
                 <div class="text delivery-title col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-4">
                   <img class="icon" src="content/icon/ban-online/vanChuyen.svg" />Kiểu giao đơn:
@@ -236,17 +197,6 @@
                     />
                     <label for="get_away">Mang về</label><br />
                   </div>
-                  <div class="delivery-item d-flex justify-content-start align-items-center col-4">
-                    <input
-                      [(ngModel)]="orderSelected.deliveryType"
-                      [value]="3"
-                      class="me-10px"
-                      id="shipping"
-                      name="type_shipping"
-                      type="radio"
-                    />
-                    <label for="shipping">Giao hàng</label><br />
-                  </div>
                 </div>
               </div>
             </div>
@@ -257,6 +207,7 @@
               <div class="tab-pane fade h-100 show active" id="newOrderTab">
                 <div class="pos-table">
                   <ng-container *ngFor="let productSelected of orderSelected.products">
+                    <!--                    {{ productSelected | json }}-->
                     <div class="row pos-table-row panel-border">
                       <div class="col-9">
                         <div class="pos-product-thumb">
@@ -275,7 +226,7 @@
                               {{ productSelected.productName }}
                             </div>
                             <div class="input-group quantity">
-                              <div class="input-group-item">
+                              <div (click)="decreaseProductQuantity(productSelected)" class="input-group-item">
                                 <i class="fa fa-minus"></i>
                               </div>
                               <input
@@ -284,7 +235,7 @@
                                 class="form-control"
                                 type="string"
                               />
-                              <div class="input-group-item">
+                              <div (click)="increaseProductQuantity(productSelected)" class="input-group-item">
                                 <i class="fa fa-plus"></i>
                               </div>
                             </div>
@@ -293,13 +244,13 @@
                       </div>
                       <div class="col-3 total-price d-flex justify-content-start align-items-end flex-column">
                         <div class="wrap-delete-icon">
-                          <i
-                            class="fa-regular fa-trash-can cursor-pointer delete-product"
+                          <i (click)="activeRemoveProductSelected=productSelected.productId"
+                             class="fa-regular fa-trash-can cursor-pointer delete-product"
                           ></i>
                         </div>
-                        <div class="mb-5px mt-5px">{{ productSelected.amount | numberFormat }} đ</div>
+                        <div class="mb-5px mt-5px">{{ productSelected.unitPrice | numberFormat }} đ</div>
                         <div>{{ productSelected.totalAmount | numberFormat }} đ</div>
-                        <ng-container>
+                        <ng-container *ngIf="activeRemoveProductSelected == productSelected.productId">
                           <div class="pos-remove-confirmation">
                             <svg
                               class="mr-2"
@@ -318,8 +269,8 @@
                               />
                             </svg>
                             <div class="alert">Bạn có chắc chắn muốn xóa sản phẩm?</div>
-                            <a class="btn btn-white ms-auto me-2">Hủy</a>
-                            <a class="btn btn-danger">Xóa</a>
+                            <a (click)="activeRemoveProductSelected=0" class="btn btn-white ms-auto me-2">Hủy</a>
+                            <a (click)="removeProductFromCustomerOrder(productSelected)" class="btn btn-danger">Xóa</a>
                           </div>
                         </ng-container>
                       </div>
@@ -372,20 +323,24 @@
               </div>
               <ng-container>
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                  <span class="text">Tổng số sản phẩm</span>
-                  <span class="fw-600"> {{ orderSelected.products.length }} </span>
+                  <span class="text">Số sản phẩm</span>
+                  <span class="fw-600"> {{ orderSelected.quantity }} </span>
                 </div>
               </ng-container>
               <div class="d-flex justify-content-between align-items-center">
-                <span class="text">Tổng tiền thanh toán </span>
+                <span class="text">Tiền thanh toán </span>
                 <span class="fw-600"> {{ orderSelected.totalAmount | numberFormat }} đ </span>
               </div>
             </div>
             <div class="pos-sidebar-footer">
               <div class="btn-row">
-                <a class="btn btn-success">
+                <a (click)="goiMon()" class="btn btn-success">
                   <fa-icon [icon]="'dollar'"></fa-icon>
-                  Thanh toán</a
+                  Gọi món</a
+                >
+                <a (click)="xemBill()" class="btn btn-success">
+                  <fa-icon [icon]="'dollar'"></fa-icon>
+                  Xem bill</a
                 >
               </div>
             </div>

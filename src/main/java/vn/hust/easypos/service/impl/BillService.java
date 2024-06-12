@@ -1,10 +1,6 @@
 package vn.hust.easypos.service.impl;
 
 import com.google.common.base.Strings;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +21,17 @@ import vn.hust.easypos.repository.ProductRepository;
 import vn.hust.easypos.service.dto.ResultDTO;
 import vn.hust.easypos.service.dto.bill.BillCreateRequest;
 import vn.hust.easypos.service.dto.bill.BillItemResponse;
+import vn.hust.easypos.service.dto.bill.BillProductRequest;
 import vn.hust.easypos.service.dto.product.ProductImagesResult;
-import vn.hust.easypos.service.dto.product.ProductResponse;
 import vn.hust.easypos.service.util.Common;
 import vn.hust.easypos.web.rest.errors.BadRequestAlertException;
 import vn.hust.easypos.web.rest.errors.ExceptionConstants;
 import vn.hust.easypos.web.rest.errors.InternalServerException;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BillService {
@@ -97,27 +98,6 @@ public class BillService {
                 );
             } else {
                 billOld = billOptional.get();
-                if (!Objects.equals(billOld.getStatus(), BillConstants.Status.BILL_DONT_COMPLETE)) {
-                    throw new BadRequestAlertException(
-                        ExceptionConstants.BILL_NOT_UPDATE_VI,
-                        ExceptionConstants.BILL_NOT_UPDATE_VI,
-                        ExceptionConstants.BILL_NOT_UPDATE
-                    );
-                }
-                Set<Integer> ids = new HashSet<>();
-                for (BillProduct billProduct : billOld.getProducts()) {
-                    if (billProduct.getProductId() != null) {
-                        ids.add(billProduct.getProductId());
-                    }
-                }
-                List<ProductResponse> products = productRepository.searchAllByComIdAndIdAndStatusTrue(user.getCompanyId(), ids);
-                if (products.size() != ids.size()) {
-                    throw new BadRequestAlertException(
-                        ExceptionConstants.BILL_CANNOT_UPDATE_VI,
-                        ExceptionConstants.BILL_NOT_UPDATE_VI,
-                        ExceptionConstants.BILL_CANNOT_UPDATE
-                    );
-                }
                 bill.setCode(billOld.getCode());
             }
         }
@@ -125,11 +105,10 @@ public class BillService {
         BillPayment billPayment;
         if (isNew) {
             if (bill.getPayment() == null) {
-                throw new BadRequestAlertException(
-                    ExceptionConstants.BILL_PAYMENTS_IS_EMPTY_VI,
-                    ENTITY_NAME,
-                    ExceptionConstants.BILL_PAYMENTS_IS_EMPTY
-                );
+                BillPayment payment = new BillPayment();
+                payment.setPaymentMethod("Tiền mặt");
+                payment.setAmount(bill.getAmount());
+                bill.setPayment(payment);
             }
             billPayment = bill.getPayment();
         } else {
@@ -182,7 +161,7 @@ public class BillService {
         if (!isNew) {
             for (BillProduct billProduct : billOld.getProducts()) {
                 billProduct.setBill(null);
-                billProductRepository.delete(billProduct);
+//                billProductRepository.delete(billProduct);
             }
         }
         bill.setCustomerNormalizedName(Common.normalizedName(Arrays.asList(bill.getCustomerName())));
@@ -227,5 +206,70 @@ public class BillService {
             ExceptionConstants.BILL_NOT_FOUND + id,
             ExceptionConstants.BILL_NOT_FOUND_VI
         );
+    }
+
+    public ResultDTO getBillTemp(Integer tableId, Integer comId) {
+        Optional<Bill> bill = billRepository.findByTableIdAndComIdAndStatus(tableId, comId, BillConstants.Status.BILL_DONT_COMPLETE);
+        if (bill.isPresent()) {
+            List<ProductImagesResult> productImagesResults = productRepository.findImagesByBillId(bill.get().getId());
+            if (!productImagesResults.isEmpty()) {
+                Map<Integer, String> mapImages = productImagesResults
+                    .stream()
+                    .collect(Collectors.toMap(ProductImagesResult::getId, ProductImagesResult::getImage));
+                for (BillProduct item : bill.get().getProducts()) {
+                    if (mapImages.containsKey(item.getProductId())) {
+                        item.setImageUrl(mapImages.get(item.getProductId()));
+                    }
+                }
+            }
+            return new ResultDTO(ResultConstants.SUCCESS, ResultConstants.SUCCESS_GET_DETAIL, true, bill, 1);
+        }
+
+        throw new InternalServerException(
+            ExceptionConstants.BILL_NOT_FOUND,
+            ExceptionConstants.BILL_NOT_FOUND,
+            ExceptionConstants.BILL_NOT_FOUND_VI
+        );
+    }
+
+    public ResultDTO saveTempBill(BillCreateRequest billDTO) {
+        Optional<Bill> billO = billRepository.findByTableIdAndComIdAndStatus(billDTO.getTableId(), billDTO.getComId(), BillConstants.Status.BILL_DONT_COMPLETE);
+        billDTO.setStatus(BillConstants.Status.BILL_DONT_COMPLETE);
+        if (billO.isEmpty()) return saveBill(billDTO);
+        Bill bill = billO.get();
+        billDTO.setId(bill.getId());
+        billDTO.setQuantity(bill.getQuantity().add(billDTO.getQuantity()));
+        billDTO.setAmount(bill.getAmount().add(billDTO.getAmount()));
+        billDTO.setTotalAmount(bill.getTotalAmount().add(billDTO.getTotalAmount()));
+        joinBillProducts(bill.getProducts(), billDTO.getProducts());
+        return saveBill(billDTO);
+    }
+
+    private void joinBillProducts(List<BillProduct> src, List<BillProductRequest> target) {
+        for (int i = 0; i < src.size(); i++) {
+            Boolean isAdded = false;
+            BillProductRequest temp = modelMapper.map(src.get(i), BillProductRequest.class);
+            for (int j = 0; j < target.size(); j++) {
+                BillProductRequest rq = target.get(j);
+                if (Objects.equals(temp.getProductCode(), rq.getProductCode())) {
+                    rq.setAmount(rq.getAmount().add(temp.getAmount()));
+                    rq.setTotalAmount(rq.getTotalAmount().add(temp.getTotalAmount()));
+                    rq.setQuantity(rq.getQuantity().add(temp.getQuantity()));
+                    isAdded = true;
+                    break;
+                }
+            }
+            if (!isAdded) target.add(temp);
+        }
+    }
+
+    public ResultDTO completeBill(Integer billId) {
+        Optional<Bill> billO = billRepository.findById(billId);
+        if (billO.isPresent()) {
+            Bill bill = billO.get();
+            bill.setStatus(BillConstants.Status.BILL_COMPLETE);
+            billRepository.save(bill);
+        }
+        return new ResultDTO("Thành công", "Thành công", true);
     }
 }
