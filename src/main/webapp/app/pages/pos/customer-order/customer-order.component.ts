@@ -430,4 +430,8 @@ export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDes
     this.appSettings.appEmpty = false;
     this.appSettings.appContentFullHeight = false;
   }
+
+  routerHome() {
+    this.router.navigate(['tong-quan']);
+  }
 }

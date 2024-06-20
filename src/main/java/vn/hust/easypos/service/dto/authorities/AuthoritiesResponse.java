@@ -5,6 +5,15 @@ import java.util.List;
 import vn.hust.easypos.service.dto.company.CompanyResult;
 
 public class AuthoritiesResponse implements Serializable {
+    private Integer status;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
     private String id_token;
     private boolean isActivate;

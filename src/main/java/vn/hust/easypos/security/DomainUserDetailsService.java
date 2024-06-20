@@ -40,7 +40,7 @@ public class DomainUserDetailsService implements UserDetailsService {
     }
 
     private org.springframework.security.core.userdetails.User createSpringSecurityUser(User user) {
-        if (user.getStatus() != UserConstants.Status.ACTIVATE) {
+        if (user.getStatus() != UserConstants.Status.ACTIVATE && user.getStatus() != UserConstants.Status.ACTIVATE_EMAIL) {
             throw new UserNotActivatedException("ACCOUNT_NOT_ACTIVE");
         }
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();

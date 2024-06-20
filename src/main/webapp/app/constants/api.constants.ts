@@ -72,3 +72,11 @@ export const INVENTORY_COMMON_STATUS_V2 = '/client/page/report/inventory-common-
 export const PRODUCT_PROFIT_STATUS = '/client/page/report/product-profit-status';
 export const PRODUCT_SALE_STATUS = '/client/page/report/product-profit-status';
 // End report
+
+export const GET_LIST_STAFF = '/client/account/staffs';
+export const CREATE_STAFF = '/client/account/staff';
+
+export const ACTIVE_ACCOUNT = '/client/account/active';
+export const SEND_EMAIL = '/client/account/send-email';
+
+

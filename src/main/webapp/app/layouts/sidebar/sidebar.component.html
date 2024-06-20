@@ -70,6 +70,15 @@
           <div *ngIf="sidebarOption.isShow" class="menu-text">Đơn hàng</div>
         </a>
       </div>
+      <div class="menu-item">
+        <a (click)="getLink('pos/nhan-vien')" class="menu-link">
+          <div class="menu-icon">
+<!--            <i aria-hidden="true" class="fa fa-qrcode"></i>-->
+            <i class="fa fa-users" aria-hidden="true"></i>
+          </div>
+          <div *ngIf="sidebarOption.isShow" class="">Nhân viên</div>
+        </a>
+      </div>
 
       <div class="menu-item">
         <a (click)="getLink('pos/qr-code')" class="menu-link">

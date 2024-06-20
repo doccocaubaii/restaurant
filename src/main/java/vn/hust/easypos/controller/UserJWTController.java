@@ -98,6 +98,7 @@ public class UserJWTController {
         authoritiesResponseDTO.setCompanyId(authenticationDTO.getCompanyId());
         authoritiesResponseDTO.setCompanyName(authenticationDTO.getCompanyName());
         authoritiesResponseDTO.setId(authenticationDTO.getId());
+        authoritiesResponseDTO.setStatus(userService.getUserById(authenticationDTO.getId()).getStatus());
         HttpHeaders httpHeaders = new HttpHeaders();
 
         if (authenticationDTO.isActivate()) {

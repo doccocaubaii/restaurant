@@ -10,6 +10,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { KhachqrScComponent } from './pages/pos/customer-order/khachqr-sc/khachqr-sc.component';
 import { QrCodeComponent } from './pages/qr-code/qr-code.component';
+import { StaffComponent } from './pages/staff/staff.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -20,6 +21,7 @@ const routes: Routes = [
   { path: 'pos/ban-hang', component: PosCustomerOrderPage, data: { title: 'Pos customer order page' } },
   { path: 'pos/ban-hang/:id', component: PosCustomerOrderPage, data: { title: 'Pos customer order page' } },
   { path: 'pos/qr-code', component: QrCodeComponent, data: { title: 'QR Code' } },
+  { path: 'pos/nhan-vien', component: StaffComponent, data: { title: 'Staff' } },
   { path: 'pos/counter-checkout', component: PosCounterCheckoutPage, data: { title: 'Pos counter checkout' } },
   {
     path: 'pos/san-pham',

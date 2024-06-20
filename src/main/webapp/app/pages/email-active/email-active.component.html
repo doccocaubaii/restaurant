@@ -1,0 +1,31 @@
+<div class="modal-header">
+  <h3 class="modal-title text-bold" id="exampleModalPopoversLabel">Kích hoạt email</h3>
+  <button type="button" class="btn-close" aria-label="Close" (click)="dismiss($event)"></button>
+</div>
+<div class="modal-body row">
+  <div class="col-md-12">
+    <div class="pos-group-info margin-top-0" style="margin-top: 0">
+      <div class="pos-infor col-md-12 row">
+        <div class="col-md-12 pe-0 margin-top-24">
+          <div>
+            <span>Email của bạn {{email}} chưa được kích hoạt. Vui lòng kiểm tra email của bạn để nhận mã OTP. Nhập mã OTP được gửi từ Gmail của bạn vào ô dưới đây để kích hoạt tài khoản.</span>
+          </div>
+          <label class="title-info">OTP<span style="color: red; margin: 0px">*</span></label>
+          <input class="input-value form-control" placeholder="OTP" [(ngModel)]="otp" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <div class="btn-row col-md-12" style="margin: 0; justify-content: end; display: flex">
+    <button type="button" class="btn btn-default me-2 mb-1" (click)="dismiss($event)">
+      <fa-icon icon="cancel"></fa-icon>
+      <span class="ms-2" jhiTranslate="global.button.cancel"></span>
+    </button>
+    <button type="button" class="btn btn-success me-1 mb-1" (click)="onSave()">
+      <i class="fas fa-square-check"></i>
+      <span class="ms-2" jhiTranslate="global.button.save"></span>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,85 @@
+<div class="modal-header">
+  <h3 class="modal-title text-bold" id="exampleModalPopoversLabel">{{ selectedItem.id ? 'Chi tiết nhân viên' : 'Thêm mới nhân viên' }}</h3>
+  <button type="button" class="btn-close" aria-label="Close" (click)="dismiss($event)"></button>
+</div>
+<div class="modal-body row">
+  <div class="col-md-12">
+    <div class="pos-group-info margin-top-0" style="margin-top: 0">
+      <div class="pos-infor col-md-12 row">
+        <div class="col-md-12 pe-0 margin-top-24">
+          <label class="title-info">Tên đăng nhập <span style="color: red; margin: 0px">*</span></label>
+          <input class="input-value form-control" placeholder="Tên đăng nhập" [(ngModel)]="selectedItem.username" />
+        </div>
+      </div>
+
+      <div class="pos-infor col-md-12 row">
+        <div class="col-md-12 pe-0 margin-top-24">
+          <label class="title-info">Mật khẩu <span style="color: red; margin: 0px">*</span></label>
+          <input type="password" class="input-value form-control" placeholder="Mật khẩu" [(ngModel)]="selectedItem.password" />
+        </div>
+      </div>
+      <div class="pos-infor col-md-12 row">
+        <div class="col-md-12 pe-0 margin-top-24">
+          <label class="title-info">Họ tên <span style="color: red; margin: 0px">*</span></label>
+          <input class="input-value form-control" placeholder="Họ tên" [(ngModel)]="selectedItem.fullName" />
+        </div>
+      </div>
+      <div class="pos-infor col-md-12 row">
+        <div class="col-md-12 pe-0 margin-top-24">
+          <label class="title-info">Email<span style="color: red; margin: 0px">*</span></label>
+          <input class="input-value form-control" placeholder="Email" [(ngModel)]="selectedItem.email" />
+        </div>
+      </div>
+      <div class="pos-infor col-md-12 row">
+        <div class="col-md-12 pe-0 margin-top-24">
+          <label class="title-info">Số điện thoại<span style="color: red; margin: 0px">*</span></label>
+          <input jhiNumberOnly class="input-value form-control" placeholder="Số điện thoại" [(ngModel)]="selectedItem.phoneNumber" />
+        </div>
+      </div>
+<!--      <div class="pos-infor col-md-12 row">-->
+<!--        <div class="col-md-12 ps-0">-->
+<!--          <label class="title-info">Giá bán <span style="color: red; margin: 0px">*</span></label>-->
+<!--          <input-->
+<!--            class="input-value form-control"-->
+<!--            placeholder="Nhập giá bán"-->
+<!--            type="number"-->
+<!--            [(ngModel)]="selectedItem.salePrice"-->
+<!--            jhiNumberOnly-->
+<!--            (click)="selectedItem.salePrice < 0 ? (selectedItem.salePrice = 0) : selectedItem.salePrice"-->
+<!--          />-->
+<!--        </div>-->
+<!--        <div class="col-md-6 pe-0 margin-top-24">-->
+<!--          <label class="title-info">Giá nhập <span style="color: red; margin: 0px">*</span> </label>-->
+<!--          <input-->
+<!--            class="input-value form-control"-->
+<!--            placeholder="Nhập giá nhập"-->
+<!--            type="number"-->
+<!--            [(ngModel)]="selectedItem.purchasePrice"-->
+<!--            jhiNumberOnly-->
+<!--            (click)="selectedItem.purchasePrice < 0 ? (selectedItem.purchasePrice = 0) : selectedItem.purchasePrice"-->
+<!--          />-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="pos-infor mb-0 col-md-12 row">-->
+<!--        <div class="col-md-12 ps-0 pe-0">-->
+<!--          <label class="title-info">Đơn vị tính </label>-->
+<!--          <div class="custom-select-wrapper">-->
+<!--            <input class="input-value form-control" [(ngModel)]="selectedItem.unit" />-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <div class="btn-row col-md-12" style="margin: 0; justify-content: end; display: flex">
+    <button type="button" class="btn btn-default me-2 mb-1" (click)="dismiss($event)">
+      <fa-icon icon="cancel"></fa-icon>
+      <span class="ms-2" jhiTranslate="global.button.cancel"></span>
+    </button>
+    <button type="button" class="btn btn-success me-1 mb-1" (click)="onSave()">
+      <i class="fas fa-square-check"></i>
+      <span class="ms-2" jhiTranslate="global.button.save"></span>
+    </button>
+  </div>
+</div>

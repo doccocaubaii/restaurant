@@ -2,6 +2,8 @@ package vn.hust.easypos.constants;
 
 public interface UserConstants {
     interface Status {
+        Integer ACTIVATE_EMAIL = 2;
+
         Integer ACTIVATE = 1;
         Integer INACTIVE = 0;
     }

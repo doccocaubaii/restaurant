@@ -1,17 +1,29 @@
 package vn.hust.easypos.service.impl;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.hust.easypos.config.Constants;
+import vn.hust.easypos.constants.ResultConstants;
+import vn.hust.easypos.constants.UserConstants;
+import vn.hust.easypos.domain.Otp;
 import vn.hust.easypos.domain.User;
 import vn.hust.easypos.repository.CompanyRepository;
+import vn.hust.easypos.repository.OtpRepository;
 import vn.hust.easypos.repository.UserRepository;
 import vn.hust.easypos.security.SecurityUtils;
 import vn.hust.easypos.security.UserNameNotFoundExceptionCustom;
+import vn.hust.easypos.service.dto.ResultDTO;
+import vn.hust.easypos.service.dto.StaffDTO;
+import vn.hust.easypos.service.dto.StaffResponse;
 import vn.hust.easypos.service.dto.authorities.AuthenticationDTO;
 import vn.hust.easypos.service.dto.company.CompanyResult;
+import vn.hust.easypos.web.rest.errors.CustomException;
 import vn.hust.easypos.web.rest.errors.ExceptionConstants;
 import vn.hust.easypos.web.rest.errors.InternalServerException;
 import vn.hust.easypos.web.rest.vm.LoginVM;
@@ -19,16 +31,27 @@ import vn.hust.easypos.web.rest.vm.LoginVM;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static vn.hust.easypos.constants.ResultConstants.GET_PRODUCTS_SUCCESS_VI;
+import static vn.hust.easypos.constants.ResultConstants.SUCCESS;
+
 @Service
 @Transactional
 public class UserService {
 
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
+    private final ModelMapper modelMapper;
 
-    public UserService(UserRepository userRepository, CompanyRepository companyRepository) {
+    private final PasswordEncoder passwordEncoder;
+
+    private final OtpRepository otpRepository;
+
+    public UserService(UserRepository userRepository, CompanyRepository companyRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder, OtpRepository otpRepository) {
         this.userRepository = userRepository;
         this.companyRepository = companyRepository;
+        this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
+        this.otpRepository = otpRepository;
     }
 
     public AuthenticationDTO getAuthoritiesAndInfo(LoginVM loginVM) {
@@ -38,7 +61,7 @@ public class UserService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             // fake company
-            CompanyResult companyResult = new CompanyResult(user.getId(), user.getFullName());
+            CompanyResult companyResult = new CompanyResult(user.getCompanyId(), user.getFullName());
 
             List<CompanyResult> companyUsers = new ArrayList<>();
             companyUsers.add(companyResult);
@@ -79,7 +102,6 @@ public class UserService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 //            JwtDTO jwtDTO = getInfoJwt();
-            user.setCompanyId(user.getId());
             user.setAuthorities(new HashSet<>());
             return user;
         }
@@ -135,5 +157,65 @@ public class UserService {
         stringBuilder.append("_");
         stringBuilder.append(Constants.SEQ);
         return stringBuilder.toString();
+    }
+
+    public ResultDTO createStaff(StaffDTO staffDTO) {
+        User admin = getUserWithAuthorities();
+        if (!admin.getId().equals(admin.getCompanyId())) throw new CustomException("Bạn không có quyền này");
+        User user;
+        if (staffDTO.getId() != null) {
+            user = userRepository.findById(staffDTO.getId()).orElseThrow(() -> new CustomException("Không tìm thấy ID nhân viên"));
+            user.setEmail(staffDTO.getEmail());
+            user.setFullName(staffDTO.getFullName());
+            user.setUsername(staffDTO.getUsername());
+            user.setPhoneNumber(staffDTO.getPhoneNumber());
+        } else {
+            user = this.modelMapper.map(staffDTO, User.class);
+        }
+        user.setStatus(1);
+        user.setNormalizedName(user.getFullName().concat(user.getUsername()).toLowerCase());
+        if (staffDTO.getPassword() != null) user.setPassword(passwordEncoder.encode(staffDTO.getPassword()));
+        user.setCompanyId(admin.getCompanyId());
+        User savedUser = userRepository.save(user);
+        return new ResultDTO(savedUser);
+    }
+
+    public ResultDTO searchStaffs(Pageable pageable, String keyword) {
+        ResultDTO resultDTO = new ResultDTO();
+        User user = getUserWithAuthorities();
+        Page<StaffResponse> page = userRepository.searchStaffs(pageable, keyword, user.getCompanyId());
+        resultDTO.setMessage(ResultConstants.SUCCESS);
+        resultDTO.setReason(ResultConstants.SUCCESS_GET_LIST);
+        resultDTO.setStatus(true);
+        resultDTO.setData(page.getContent());
+        resultDTO.setCount((int) page.getTotalElements());
+        return resultDTO;
+    }
+
+    public ResultDTO delStaff(Integer id) {
+        userRepository.findById(id).ifPresent(userRepository::delete);
+        return new ResultDTO(
+            SUCCESS,
+            "Xóa nhân viên thành công",
+            true
+        );    }
+
+    public User getUserById(Integer id) {
+        return userRepository.findById(id).orElse(new User());
+    }
+
+    public ResultDTO activeAccount(Integer userId, String otp) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException("Không tìm thây user"));
+        if (user.getStatus() != UserConstants.Status.ACTIVATE_EMAIL) throw new CustomException("Trạng thái tài khoản không hợp lệ");
+        Otp otp1 = otpRepository.findFirstByUserIdAndAndTypeAndAndStatus(userId, 1, 1).orElseThrow(() -> new CustomException("Không tìm mã hợp lệ"));
+        if (otp1.getCode().equals(otp)) {
+            user.setStatus(1);
+            userRepository.save(user);
+            otp1.setStatus(0);
+            otpRepository.save(otp1);
+            return new ResultDTO("Kích hoạt tài khoản thành công",null,true);
+        } else
+            return new ResultDTO("Kích hoạt tài khoản thất bại",null,false);
+
     }
 }

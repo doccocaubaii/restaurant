@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
+import vn.hust.easypos.service.dto.StaffResponse;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -22,6 +23,24 @@ import java.util.Set;
 @Data
 @DynamicUpdate
 @Table(name = "ep_user")
+@SqlResultSetMappings({
+    @SqlResultSetMapping(
+        name = "StaffResponse",
+        classes = {
+            @ConstructorResult(
+                targetClass = StaffResponse.class,
+                columns = {
+                    @ColumnResult(name = "id", type = Integer.class),
+                    @ColumnResult(name = "email", type = String.class),
+                    @ColumnResult(name = "full_name", type = String.class),
+                    @ColumnResult(name = "username", type = String.class),
+                    @ColumnResult(name = "phone_number", type = String.class),
+                    @ColumnResult(name = "status", type = Integer.class),
+                }
+            ),
+        }
+    ),
+})
 public class User extends AbstractAuditingEntity<String> implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -59,16 +78,7 @@ public class User extends AbstractAuditingEntity<String> implements Serializable
     @Column(name = "normalized_name")
     private String normalizedName;
 
-//    @ManyToMany
-//    @JoinTable(
-//        name = "company_user",
-//        joinColumns = { @JoinColumn(name = "user_id", columnDefinition = "id") },
-//        inverseJoinColumns = { @JoinColumn(name = "company_id", referencedColumnName = "id") }
-//    )
-//    private List<Company> companies = new ArrayList<>();
-
-    @JsonDeserialize
-    @JsonSerialize
+    @Column(name = "company_id")
     private Integer companyId;
 
     @Transient

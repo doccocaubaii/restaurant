@@ -92,6 +92,10 @@ import { RxStompService } from './rxStomp/rx-stomp.service';
 import { rxStompServiceFactory } from './rxStomp/rx-stomp-service-factory';
 import { WatchBillComponent } from './pages/pos/customer-order/watch-bill/watch-bill.component';
 import { QrCodeComponent } from './pages/qr-code/qr-code.component';
+import { StaffComponent } from './pages/staff/staff.component';
+import { ModalCreateStaffComponent } from './pages/staff/modal-create-staff/modal-create-staff.component';
+import { ModalDeleteStaffComponent } from './pages/staff/modal-delete-staff/modal-delete-staff.component';
+import { EmailActiveComponent } from './pages/email-active/email-active.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -194,7 +198,11 @@ FullCalendarModule.registerPlugins([dayGridPlugin, timeGridPlugin, interactionPl
     BaseCreateProductComponent,
     KhachqrScComponent,
     WatchBillComponent,
-    QrCodeComponent
+    QrCodeComponent,
+    StaffComponent,
+    ModalCreateStaffComponent,
+    ModalDeleteStaffComponent,
+    EmailActiveComponent
   ],
   bootstrap: [MainComponent]
 })

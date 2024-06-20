@@ -15,6 +15,13 @@ import vn.hust.easypos.service.dto.ResponseDTO;
 @Log4j2
 public class ExceptionTranslator {
 
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ResponseDTO> handleCustomException(CustomException ex) {
+        ResponseDTO responseDTO = new ResponseDTO(ex.getMessage(), ex.getMessage(), ex.getCode());
+        return ResponseEntity.status(HttpStatus.valueOf(Integer.parseInt(ex.getCode()))).body(responseDTO);
+    }
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseDTO> handleOtherExceptions(Exception ex) {
         ResponseDTO responseDTO = new ResponseDTO("There is an error occurred", ex.getMessage(), "500");

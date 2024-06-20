@@ -13,9 +13,16 @@ public class ResultDTO {
     private Object data;
     private Integer count;
 
-    public ResultDTO() {}
+    public ResultDTO() {
+    }
 
     // status auto = false
+
+    public ResultDTO(Object data) {
+        this.data = data;
+        this.status = true;
+        this.message = "Thành công";
+    }
 
     public ResultDTO(Object message, String reason) {
         if (message instanceof String) {

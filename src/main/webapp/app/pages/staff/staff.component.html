@@ -1,0 +1,108 @@
+<h1 class="page-header">Quản lý nhân viên</h1>
+
+<div *ngIf="lastUser.id == lastUser.comId" class="d-flex justify-content-end align-items-center">
+  <button type="button" class="btn btn-green me-1 mb-1 header-content-add" (click)="onCreateStaff(0)">
+    <i class="fas fa-circle-plus me-2"></i>
+    <span>Thêm nhân viên</span>
+  </button>
+</div>
+<div class="tab-content p-3 rounded-top panel rounded-0 m-0">
+  <div class="row d-flex justify-content-start flex-wrap" style="padding-bottom: 10px">
+    <div class="d-flex align-items-end">
+      <div class="col-md-3 align-items-center">
+        <label class="form-label col-form-label w-auto me-3" jhiTranslate="global.info.keyword">Từ khóa</label>
+        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-11">
+          <div class="form-group w-100%">
+            <input
+              name="keyword"
+              [(ngModel)]="filterObj.keyword"
+              class="form-control w-100%"
+              type="search"
+              placeholder="Tìm kiếm nhân viên ..."
+              (keyup.enter)="getList()"
+            />
+          </div>
+        </div>
+      </div>
+
+      <button (click)="getList()" class="btn btn-sm btn-blue btn-search">
+        <fa-icon icon="search"></fa-icon>
+        <span jhiTranslate="global.button.search"></span>
+      </button>
+    </div>
+    <div class="d-flex justify-content-end">
+      <label class="badge bg-success" jhiTranslate="global.info.totalParam" [translateValues]="{ count: filterObj.totalItem }"></label>
+    </div>
+  </div>
+  <div class="tab-pane fade active show">
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="panel panel-inverse">
+          <div class="panel-body">
+            <div class="table-responsive">
+              <table class="table editing-table">
+                <thead style="background-color: rgb(244 246 248)">
+                <tr>
+                  <th>STT</th>
+                  <th>Tên tài khoản</th>
+                  <th>Tên nhân viên</th>
+                  <th>Số điện thoại</th>
+                  <th>Email</th>
+                  <th>Trạng thái</th>
+                  <th jhiTranslate="global.info.action" class="text-center form-button"
+                      *ngIf="lastUser.id == lastUser.comId" ></th>
+                </tr>
+                </thead>
+                <tbody>
+                <ng-container *ngFor="let item of list; let index = index">
+                  <tr>
+                    <td>{{ filterObj.page * filterObj.size + index + 1 }}</td>
+                    <td>{{ item.username }}</td>
+                    <td>{{ item.fullName }}</td>
+                    <td>{{ item.phoneNumber }}</td>
+                    <td>{{ item.email }}</td>
+                    <td>
+                      <span *ngIf="item.status == 1">Hoạt động</span>
+                      <span *ngIf="item.status == 2">Chưa kích hoạt</span>
+                    </td>
+                    <td class="text-center w-15%"  *ngIf="lastUser.id == lastUser.comId" >
+                      <div class="d-flex justify-content-center">
+                        <div class="panel-border-button p-5px form-button" style="width: fit-content">
+                          <button (click)="onStaffDetail(item)" class="btn btn-sm btn-warning">
+                            <fa-icon icon="edit"></fa-icon>
+                            <span jhiTranslate="global.entity.action.edit">Sửa</span>
+                          </button>
+                          <button (click)="onConfirmDeleteStaff(item.id)" class="btn btn-sm btn-danger">
+                            <fa-icon icon="trash-can"></fa-icon>
+                            <span jhiTranslate="global.entity.action.delete">Xóa</span>
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+                <tr *ngIf="!filterObj.totalItem" class="table-not-data">
+                  <td colspan="6">
+                    <span class="d-flex justify-content-center">Không có nhân viên nào</span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+              <ngb-pagination
+                (pageChange)="onChangedPage($event)"
+                *ngIf="filterObj.totalItem"
+                [collectionSize]="filterObj.totalItem"
+                [directionLinks]="true"
+                [maxSize]="10"
+                [pageSize]="filterObj.size"
+                [page]="filterObj.page + 1"
+                aria-label="Default pagination"
+                class="pagination justify-content-center"
+              ></ngb-pagination>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

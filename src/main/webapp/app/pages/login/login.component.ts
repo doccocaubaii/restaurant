@@ -23,6 +23,9 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { GET_COMPANY_CONFIG, GET_OWNER_INFO } from '../../constants/api.constants';
 import { ApplicationConfigService } from '../../core/config/application-config.service';
+import { ModalCreateStaffComponent } from '../staff/modal-create-staff/modal-create-staff.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EmailActiveComponent } from '../email-active/email-active.component';
 
 @Component({
   selector: 'login',
@@ -44,7 +47,8 @@ export class LoginPage extends BaseComponent implements OnInit, OnDestroy {
     private loginService: LoginService,
     private utilsService: UtilsService,
     private http: HttpClient,
-    private applicationConfigService: ApplicationConfigService
+    protected modalService: NgbModal,
+  private applicationConfigService: ApplicationConfigService
   ) {
     super();
     this.appSettings.appEmpty = true;
@@ -72,7 +76,6 @@ export class LoginPage extends BaseComponent implements OnInit, OnDestroy {
           this.loginForm.companyId = this.companies[0].id;
         } else if (res.status) {
           if (!this.router.getCurrentNavigation()) {
-            // There were no routing during login (eg from navigationToStoredUrl)
             this.router.navigate(['tong-quan']);
             const db = new AppDB();
             let ownerInfo = {};
@@ -91,9 +94,24 @@ export class LoginPage extends BaseComponent implements OnInit, OnDestroy {
             };
             this.deleteAll(last_company);
             this.deleteAll(last_user);
-            // Thêm mới data lastCompany
-            this.addItem(last_company, data_last_company);
-            this.addItem(last_user, data_last_user);
+
+            if (res.data.status == 2) {
+              const modalRef = this.modalService.open(EmailActiveComponent, { size: 'lg', backdrop: 'static' });
+              modalRef.componentInstance.id = res.data.id;
+              modalRef.componentInstance.email = res.data.email;
+              modalRef.result.then((close?: any) => {
+                  this.addItem(last_company, data_last_company);
+                  this.addItem(last_user, data_last_user);
+              }
+              , (dissmiss) => {
+                  this.router.navigate(['login']);
+                }
+                );
+            } else {
+              // Thêm mới data lastCompany
+              this.addItem(last_company, data_last_company);
+              this.addItem(last_user, data_last_user);
+            }
           }
         }
       },
