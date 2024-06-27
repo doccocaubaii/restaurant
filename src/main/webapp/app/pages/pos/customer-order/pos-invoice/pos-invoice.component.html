@@ -60,20 +60,6 @@
         </div>
       </div>
       <div class="item-content-common-info row">
-        <div class="col-6">Mã cơ quan thuế</div>
-        <div
-          class="col-6"
-          [ngStyle]="{
-            fontWeight: getValue('TaxAuthorityCode').isBold ? 'bold' : 'normal',
-            fontSize: getValue('TaxAuthorityCode').fontSize + 'px',
-            textAlign:
-              getValue('TaxAuthorityCode').alignText == 0 ? 'left' : getValue('TaxAuthorityCode').alignText == 1 ? 'center' : 'right'
-          }"
-        >
-          <label>{{ orderSelected.taxAuthorityCode }}</label>
-        </div>
-      </div>
-      <div class="item-content-common-info row">
         <div class="customer-label col-6">Khách hàng</div>
         <div
           class="col-6"
@@ -138,19 +124,6 @@
           }"
         >
           <label>{{ orderSelected.discountAmount | number }}</label>
-        </div>
-      </div>
-      <div class="wrap-amount-invoice row">
-        <div class="col-6">Tổng tiền thuế</div>
-        <div
-          class="col-6"
-          [ngStyle]="{
-            fontWeight: getValue('TotalVatAmount').isBold ? 'bold' : 'normal',
-            fontSize: getValue('TotalVatAmount').fontSize + 'px',
-            textAlign: getValue('TotalVatAmount').alignText == 0 ? 'left' : getValue('TotalVatAmount').alignText == 1 ? 'center' : 'right'
-          }"
-        >
-          <label>{{ orderSelected.vatAmount | number }}</label>
         </div>
       </div>
       <div class="wrap-amount-invoice row">
@@ -230,34 +203,6 @@
         >
           <label>CẢM ƠN QUÝ KHÁCH</label>
         </div>
-      </div>
-      <div
-        [ngStyle]="{
-          fontWeight: getValue('Fkey').isBold ? 'bold' : 'normal',
-          fontSize: getValue('Fkey').fontSize + 'px',
-          textAlign: getValue('Fkey').alignText == 0 ? 'left' : getValue('Fkey').alignText == 1 ? 'center' : 'right'
-        }"
-      >
-        <label>Mã QR tra cứu</label>
-      </div>
-      <div
-        [ngStyle]="{
-          fontWeight: getValue('QrSearch').isBold ? 'bold' : 'normal',
-          fontSize: getValue('QrSearch').fontSize + 'px',
-          textAlign: getValue('QrSearch').alignText == 0 ? 'left' : getValue('QrSearch').alignText == 1 ? 'center' : 'right'
-        }"
-      >
-        <img class="qrcode" [src]="urlQR" alt="" />
-      </div>
-      <div>Tra cứu hóa đơn tại</div>
-      <div
-        [ngStyle]="{
-          fontWeight: getValue('PortalLink').isBold ? 'bold' : 'normal',
-          fontSize: getValue('PortalLink').fontSize + 'px',
-          textAlign: getValue('PortalLink').alignText == 0 ? 'left' : getValue('PortalLink').alignText == 1 ? 'center' : 'right'
-        }"
-      >
-        <label>{{ getValue('PortalLink').content }}</label>
       </div>
     </div>
   </div>

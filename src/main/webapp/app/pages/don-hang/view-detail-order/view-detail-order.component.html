@@ -1,7 +1,7 @@
 <div class="row" *ngIf="orderDetail">
   <div class="col-5 col-sm-12 col-lg-12 col-xl-5">
     <div class="form-group border-bottom form-input-custom">
-      <label for="taxAuthorityCode" class="form-label with-label-name">Tên khách hàng</label>
+      <label for="taxAuthorityCode" class="form-label with-label-name">Số bàn</label>
       <div class="user-input-text-div">
         <strong id="taxAuthorityCode">{{ orderDetail.customerName }}</strong>
       </div>
@@ -34,8 +34,6 @@
             <th>Tên sản phẩm</th>
             <th>Đơn giá</th>
             <th>Số lượng (đơn vị)</th>
-            <th>Tổng tiền trước thuế</th>
-            <th>Thuế suất</th>
             <th>Tổng</th>
           </tr>
         </thead>
@@ -52,12 +50,6 @@
             </td>
             <td>
               <label> {{ product.quantity | numberFormat }} ({{ product.unit }})</label>
-            </td>
-            <td>
-              <label> {{ product.totalPreTax | numberFormat }}</label>
-            </td>
-            <td>
-              <label> {{ product.vatRate ? product.vatRate : 0 }} %</label>
             </td>
             <td>
               <label> {{ product.totalAmount | numberFormat }}</label>

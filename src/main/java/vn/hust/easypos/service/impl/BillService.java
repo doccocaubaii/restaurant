@@ -65,6 +65,7 @@ public class BillService {
     }
 
     public ResultDTO saveBill(BillCreateRequest billDTO) {
+        if (Strings.isNullOrEmpty(billDTO.getCustomerName())) billDTO.setCustomerName("Bàn " + billDTO.getTableId());
         Bill bill = new Bill();
         //       Copy data từ dto vào bill
         ResultDTO resultDTO = new ResultDTO();

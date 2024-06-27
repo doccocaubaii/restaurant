@@ -76,6 +76,8 @@ public class AccountResource {
         return new ResponseEntity<>(resultDTO, HttpStatus.OK);
     }
 
+    
+
     private static class AccountResourceException extends RuntimeException {
 
         private AccountResourceException(String message) {
