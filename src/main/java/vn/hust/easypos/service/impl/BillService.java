@@ -19,12 +19,11 @@ import vn.hust.easypos.repository.BillProductRepository;
 import vn.hust.easypos.repository.BillRepository;
 import vn.hust.easypos.repository.ProductRepository;
 import vn.hust.easypos.service.dto.ResultDTO;
-import vn.hust.easypos.service.dto.bill.BillCreateRequest;
-import vn.hust.easypos.service.dto.bill.BillItemResponse;
-import vn.hust.easypos.service.dto.bill.BillProductRequest;
+import vn.hust.easypos.service.dto.bill.*;
 import vn.hust.easypos.service.dto.product.ProductImagesResult;
 import vn.hust.easypos.service.util.Common;
 import vn.hust.easypos.web.rest.errors.BadRequestAlertException;
+import vn.hust.easypos.web.rest.errors.CustomException;
 import vn.hust.easypos.web.rest.errors.ExceptionConstants;
 import vn.hust.easypos.web.rest.errors.InternalServerException;
 
@@ -64,13 +63,14 @@ public class BillService {
         this.billProductRepository = billProductRepository;
     }
 
-    public ResultDTO saveBill(BillCreateRequest billDTO) {
+    public ResultDTO saveBill(BillCreateRequest billDTO, Integer status) {
         if (Strings.isNullOrEmpty(billDTO.getCustomerName())) billDTO.setCustomerName("Bàn " + billDTO.getTableId());
         Bill bill = new Bill();
         //       Copy data từ dto vào bill
         ResultDTO resultDTO = new ResultDTO();
         User user = userService.getUserWithAuthorities();
         bill = convertBill(user, billDTO);
+        if (status != null) bill.setStatus(status);
         billRepository.save(bill);
         log.debug("Save Bill success : {}", bill);
         resultDTO.setStatus(true);
@@ -236,14 +236,14 @@ public class BillService {
     public ResultDTO saveTempBill(BillCreateRequest billDTO) {
         Optional<Bill> billO = billRepository.findByTableIdAndComIdAndStatus(billDTO.getTableId(), billDTO.getComId(), BillConstants.Status.BILL_DONT_COMPLETE);
         billDTO.setStatus(BillConstants.Status.BILL_DONT_COMPLETE);
-        if (billO.isEmpty()) return saveBill(billDTO);
+        if (billO.isEmpty()) return saveBill(billDTO, null);
         Bill bill = billO.get();
         billDTO.setId(bill.getId());
         billDTO.setQuantity(bill.getQuantity().add(billDTO.getQuantity()));
         billDTO.setAmount(bill.getAmount().add(billDTO.getAmount()));
         billDTO.setTotalAmount(bill.getTotalAmount().add(billDTO.getTotalAmount()));
         joinBillProducts(bill.getProducts(), billDTO.getProducts());
-        return saveBill(billDTO);
+        return saveBill(billDTO, null);
     }
 
     private void joinBillProducts(List<BillProduct> src, List<BillProductRequest> target) {
@@ -272,5 +272,56 @@ public class BillService {
             billRepository.save(bill);
         }
         return new ResultDTO("Thành công", "Thành công", true);
+    }
+
+    public ResultDTO join(BillJoin joinDTO) {
+        Bill bill = billRepository.findById(joinDTO.getId()).orElseThrow( () -> new CustomException("Not found bill"));
+
+        BillCreateRequest billCreateRequest = converBillToCreateRequest(bill);
+        bill.setStatus(4);
+        billRepository.save(bill);
+        return saveTempBill(billCreateRequest);
+    }
+
+    private BillCreateRequest converBillToCreateRequest(Bill bill) {
+        BillCreateRequest billCreateRequest = new BillCreateRequest();
+        billCreateRequest.setTableId(bill.getTableId());
+        billCreateRequest.setId(bill.getId());
+        billCreateRequest.setComId(bill.getComId());
+        billCreateRequest.setCustomerName(bill.getCustomerName());
+        billCreateRequest.setDeliveryType(bill.getDeliveryType());
+        billCreateRequest.setQuantity(bill.getQuantity());
+        billCreateRequest.setAmount(bill.getAmount());
+        billCreateRequest.setTotalAmount(bill.getTotalAmount());
+        billCreateRequest.setStatus(bill.getStatus());
+        billCreateRequest.setDescription(bill.getDescription());
+        billCreateRequest.setPayment(convertPaymentToRequest(bill.getPayment()));
+        billCreateRequest.setProducts(converProductToProductRQ(bill.getProducts()));
+        return billCreateRequest;
+    }
+
+    private List<BillProductRequest> converProductToProductRQ(List<BillProduct> products) {
+        List<BillProductRequest> list = new ArrayList<>();
+        for (int i = 0; i < products.size(); i++){
+            BillProductRequest billProductRequest = new BillProductRequest();
+            billProductRequest.setProductId(products.get(i).getProductId().toString());
+            billProductRequest.setProductName(products.get(i).getProductName());
+            billProductRequest.setProductCode(products.get(i).getProductCode());
+            billProductRequest.setQuantity(products.get(i).getQuantity());
+            billProductRequest.setUnit(products.get(i).getUnit());
+            billProductRequest.setUnitPrice(products.get(i).getUnitPrice());
+            billProductRequest.setAmount(products.get(i).getAmount());
+            billProductRequest.setTotalAmount(products.get(i).getTotalAmount());
+            billProductRequest.setPosition(products.get(i).getPosition());
+            list.add(billProductRequest);
+        }
+        return list;
+    }
+
+    private BillPaymentRequest convertPaymentToRequest(BillPayment payment) {
+        BillPaymentRequest billPaymentRequest = new BillPaymentRequest();
+        billPaymentRequest.setPaymentMethod(payment.getPaymentMethod());
+        billPaymentRequest.setAmount(payment.getAmount());
+        return billPaymentRequest;
     }
 }

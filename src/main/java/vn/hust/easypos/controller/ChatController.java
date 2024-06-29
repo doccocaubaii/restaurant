@@ -30,6 +30,11 @@ public class ChatController {
         return chatDTO;
     }
 
+    public void reload(Integer id, Integer tableId) {
+        this.template.convertAndSend("/topic/reload/"+ id, tableId);// gửi cho chủ quán
+        return ;
+    }
+
 //    @MessageMapping("/chat.addUser")
 //    @SendTo("/topic/public")
 //    public ChatMessage addUser(@Payload ChatMessage chatMessage,

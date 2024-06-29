@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import vn.hust.easypos.service.dto.AdminUserDTO;
+import vn.hust.easypos.service.dto.ChangePasswordDTO;
 import vn.hust.easypos.service.dto.ResultDTO;
 import vn.hust.easypos.service.dto.StaffDTO;
 import vn.hust.easypos.service.impl.EmailService;
@@ -50,6 +51,12 @@ public class AccountResource {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @PostMapping("/client/user/change-password")
+    public ResponseEntity<ResultDTO> changePassword(@RequestBody ChangePasswordDTO request) {
+        ResultDTO result = userService.changePassword(request);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     @DeleteMapping("/client/account/staff/{id}")
     public ResponseEntity<ResultDTO> delStaff(@PathVariable(value = "id") @NotNull(message = ExceptionConstants.EMPLOYEE_NOT_FOUND_VI) Integer id) {
         ResultDTO result = userService.delStaff(id);
@@ -76,7 +83,7 @@ public class AccountResource {
         return new ResponseEntity<>(resultDTO, HttpStatus.OK);
     }
 
-    
+
 
     private static class AccountResourceException extends RuntimeException {
 

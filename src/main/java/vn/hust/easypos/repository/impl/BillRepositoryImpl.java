@@ -39,6 +39,8 @@ public class BillRepositoryImpl implements BillRepositoryCustom {
         if (status != null) {
             strQuery.append(" AND status = :status ");
             params.put("status", status);
+        } else {
+            strQuery.append(" AND status != 3 AND status != 4 ");
         }
         if (!Strings.isNullOrEmpty(fromDate) || !Strings.isNullOrEmpty(toDate)) {
             Common.addDateSearchCustom(fromDate, toDate, params, strQuery, "b.created_date", "bill");

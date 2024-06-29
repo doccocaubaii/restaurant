@@ -173,7 +173,7 @@ export class KhachqrScComponent implements OnInit, OnDestroy {
     if (!this.checkOrder(this.orderSelected)) {
       return;
     }
-    this.orderService.tempCreate({
+    this.orderService.create3({
       ...this.orderSelected,
       billDate: dayjs(),
       tableId: this.idTable,

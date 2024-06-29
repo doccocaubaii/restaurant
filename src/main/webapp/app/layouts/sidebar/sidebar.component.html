@@ -71,6 +71,15 @@
         </a>
       </div>
       <div class="menu-item">
+        <a class="menu-link" routerLink="bep">
+          <div class="menu-icon">
+<!--            <fa-icon [icon]="'file-lines'"></fa-icon>-->
+            <i class="fa-solid fa-utensils"></i>
+          </div>
+          <div *ngIf="sidebarOption.isShow" class="menu-text">Bếp</div>
+        </a>
+      </div>
+      <div class="menu-item">
         <a (click)="getLink('pos/nhan-vien')" class="menu-link">
           <div class="menu-icon">
 <!--            <i aria-hidden="true" class="fa fa-qrcode"></i>-->

@@ -15,8 +15,9 @@ public interface BillConstants {
     }
 
     interface Status {
-        Integer BILL_DONT_COMPLETE = 0;
-        Integer BILL_COMPLETE = 1;
+        Integer BILL_DONT_COMPLETE = 0; // đã làm
+        Integer BILL_COMPLETE = 1; // đã thanh toán
+        Integer BILL_WAITTING = 3; // chua làm
         Integer BILL_CANCEL = 2;
     }
 

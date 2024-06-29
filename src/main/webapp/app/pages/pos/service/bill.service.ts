@@ -10,7 +10,7 @@ import { CancelOrder, CompleteOrder, IBillPayment } from '../model/bill-payment.
 import { OrderResponse } from '../model/orderResponse.model';
 import {
   CANCEL_BILL_BY_ID,
-  CHECKOUT_BILL_BY_ID,
+  CHECKOUT_BILL_BY_ID, CREATE3,
   CREATE_BILL,
   GET_BILL_BY_ID,
   GET_BILL_TEMP,
@@ -46,8 +46,17 @@ export class BillService {
     return this.http.post(`${this.resourceUrl}${CREATE_BILL}`, copy, { observe: 'response' });
   }
 
-  tempCreate(billPayment: IBillPayment): Observable<any> {
+  create3(billPayment: IBillPayment): Observable<any> {
     const copy = this.convertDateFromClient(billPayment);
+    return this.http.post(`${this.resourceUrl}${CREATE3}`, copy, { observe: 'response' });
+  }
+
+  tempCreate(id: any, type: any, comId): Observable<any> {
+    const copy = {
+      id : id,
+      type : type,
+      comId : comId
+    };
     return this.http.post(`${this.resourceUrl}${TEMP_CREATE_BILL}`, copy, { observe: 'response' });
   }
 

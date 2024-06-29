@@ -98,7 +98,7 @@ public class Bill extends AbstractAuditingEntity<String> implements Serializable
     private BigDecimal totalAmount;
 
     @Column(name = "status")
-    private Integer status;
+    private Integer status;// 1 là hoàn thành, 0 la chưa thánh toán , 2 là hủy, 3 là đang chờ chế biến, 4 là ẩn
 
     @Column(name = "quantity", precision = 21, scale = 6)
     private BigDecimal quantity;

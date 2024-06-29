@@ -96,6 +96,7 @@ import { StaffComponent } from './pages/staff/staff.component';
 import { ModalCreateStaffComponent } from './pages/staff/modal-create-staff/modal-create-staff.component';
 import { ModalDeleteStaffComponent } from './pages/staff/modal-delete-staff/modal-delete-staff.component';
 import { EmailActiveComponent } from './pages/email-active/email-active.component';
+import { KitchenComponent } from './pages/kitchen/kitchen.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -202,7 +203,8 @@ FullCalendarModule.registerPlugins([dayGridPlugin, timeGridPlugin, interactionPl
     StaffComponent,
     ModalCreateStaffComponent,
     ModalDeleteStaffComponent,
-    EmailActiveComponent
+    EmailActiveComponent,
+    KitchenComponent
   ],
   bootstrap: [MainComponent]
 })

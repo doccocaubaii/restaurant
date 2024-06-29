@@ -20,6 +20,7 @@ import vn.hust.easypos.service.dto.BillCancelRequest;
 import vn.hust.easypos.service.dto.ResultDTO;
 import vn.hust.easypos.service.dto.bill.BillCompleteRequest;
 import vn.hust.easypos.service.dto.bill.BillCreateRequest;
+import vn.hust.easypos.service.dto.bill.BillJoin;
 import vn.hust.easypos.service.impl.BillService;
 import vn.hust.easypos.service.util.Common;
 import vn.hust.easypos.web.rest.errors.ExceptionConstants;
@@ -38,30 +39,44 @@ public class BillResource {
     private final UserRepository userRepository;
     private final DomainUserDetailsService domainUserDetailsService;
 
-    public BillResource(Validator customValidator, BillService billService, UserRepository userRepository, DomainUserDetailsService domainUserDetailsService) {
+    private final ChatController controller;
+
+    public BillResource(Validator customValidator, BillService billService, UserRepository userRepository, DomainUserDetailsService domainUserDetailsService, ChatController controller) {
         this.customValidator = customValidator;
         this.billService = billService;
         this.userRepository = userRepository;
         this.domainUserDetailsService = domainUserDetailsService;
+        this.controller = controller;
     }
 
     @PostMapping("/client/page/bill/create")
-    public ResponseEntity<ResultDTO> createBill(@RequestBody BillCreateRequest billDTO) throws URISyntaxException {
+    public ResponseEntity<ResultDTO> createBill(@RequestBody BillCreateRequest billDTO) throws URISyntaxException {// k dùng
         Common.validateInput(customValidator, ENTITY_NAME, billDTO);
 //        log.debug("REST request to save Bill : {}", billDTO);
-        ResultDTO result = billService.saveBill(billDTO);
+        ResultDTO result = billService.saveBill(billDTO, null);
         Bill bill = (Bill) result.getData();
         result.setData(new BillCancelRequest(bill.getId(), bill.getCode()));
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping("/client/page/bill/temp-create")
-    public ResponseEntity<ResultDTO> createTempBill(@RequestBody BillCreateRequest billDTO) throws URISyntaxException {
-        Common.validateInput(customValidator, ENTITY_NAME, billDTO);
-        setAuthen(billDTO.getComId());
-        ResultDTO result = billService.saveTempBill(billDTO);
+    public ResponseEntity<ResultDTO> createTempBill(@RequestBody BillJoin joinDTO) throws URISyntaxException {//ghép bill
+//        Common.validateInput(customValidator, ENTITY_NAME, joinDTO);
+        setAuthen(joinDTO.getComId());
+        ResultDTO result = billService.join(joinDTO);
         Bill bill = (Bill) result.getData();
         result.setData(new BillCancelRequest(bill.getId(), bill.getCode()));
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping("/client/page/bill/create3")
+    public ResponseEntity<ResultDTO> create3Bill(@RequestBody BillCreateRequest billDTO) throws URISyntaxException {// tạo bill đến bếp
+        Common.validateInput(customValidator, ENTITY_NAME, billDTO);
+        setAuthen(billDTO.getComId());
+        ResultDTO result = billService.saveBill(billDTO, 3);
+        Bill bill = (Bill) result.getData();
+        result.setData(new BillCancelRequest(bill.getId(), bill.getCode()));
+        controller.reload(bill.getComId(), bill.getTableId());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

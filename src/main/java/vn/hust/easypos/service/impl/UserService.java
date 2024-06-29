@@ -18,6 +18,7 @@ import vn.hust.easypos.repository.OtpRepository;
 import vn.hust.easypos.repository.UserRepository;
 import vn.hust.easypos.security.SecurityUtils;
 import vn.hust.easypos.security.UserNameNotFoundExceptionCustom;
+import vn.hust.easypos.service.dto.ChangePasswordDTO;
 import vn.hust.easypos.service.dto.ResultDTO;
 import vn.hust.easypos.service.dto.StaffDTO;
 import vn.hust.easypos.service.dto.StaffResponse;
@@ -217,5 +218,15 @@ public class UserService {
         } else
             return new ResultDTO("Kích hoạt tài khoản thất bại",null,false);
 
+    }
+
+    public ResultDTO changePassword(ChangePasswordDTO request) {
+        if (!Objects.equals(request.getNewPassword(), request.getConfirmPassword())) throw new CustomException("Mật khẩu xác nhận không khớp");
+        User user = getUserWithAuthorities();
+        if (passwordEncoder.matches(request.getOldPassword(),user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            userRepository.save(user);
+        } else return new ResultDTO("Password is incorrect","",false);
+        return new ResultDTO("Success","",true);
     }
 }

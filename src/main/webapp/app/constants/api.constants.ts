@@ -48,6 +48,9 @@ export const GET_BILL_TEMP = '/client/page/bill/temp';
 export const GET_BILL_BY_CODE = '/client/page/bill/by-code/';
 export const CREATE_BILL = '/client/page/bill/create';
 export const TEMP_CREATE_BILL = '/client/page/bill/temp-create';
+
+export const CREATE3 = '/client/page/bill/create3';
+
 export const UPDATE_BILL = '/client/page/bill/update';
 export const CHECKOUT_BILL_BY_ID = '/client/page/bill/done-by-id';
 export const CANCEL_BILL_BY_ID = '/client/page/bill/cancel-by-id';

@@ -11,11 +11,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { KhachqrScComponent } from './pages/pos/customer-order/khachqr-sc/khachqr-sc.component';
 import { QrCodeComponent } from './pages/qr-code/qr-code.component';
 import { StaffComponent } from './pages/staff/staff.component';
+import { KitchenComponent } from './pages/kitchen/kitchen.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'tong-quan', component: DashboardPage, data: { title: 'Dashboard V3' } },
   { path: 'don-hang', component: OrderPage, data: { title: 'Order' } },
+  { path: 'bep', component: KitchenComponent, data: { title: 'Kitchen' } },
   { path: 'login', component: LoginPage, data: { title: 'Login' } },
   { path: 'pos/ban-hang/:idA/:idT', component: KhachqrScComponent, data: { title: 'Order For Customer' } },
   { path: 'pos/ban-hang', component: PosCustomerOrderPage, data: { title: 'Pos customer order page' } },
