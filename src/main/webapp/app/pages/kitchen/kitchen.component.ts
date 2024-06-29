@@ -114,7 +114,7 @@ export class KitchenComponent extends BaseComponent  implements OnInit, OnDestro
     this.orderService.tempCreate(order, b, this.lastCompany.id).subscribe(
       (res) => {
         if (res.body.status ) {
-          this.toast.success(res.body.message.message);
+          this.toast.success("Thành công");
           this.getListOrder();
           console.log(res);
         }

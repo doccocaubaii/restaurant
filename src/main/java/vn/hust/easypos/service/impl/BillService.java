@@ -274,9 +274,14 @@ public class BillService {
         return new ResultDTO("Thành công", "Thành công", true);
     }
 
+    @Transactional
     public ResultDTO join(BillJoin joinDTO) {
-        Bill bill = billRepository.findById(joinDTO.getId()).orElseThrow( () -> new CustomException("Not found bill"));
 
+        if (joinDTO.getType() == 0) {
+            billRepository.updateStatusByBillId(joinDTO.getId(), 4);
+            return new ResultDTO("Thành công", "Thành công", true);
+        }
+        Bill bill = billRepository.findById(joinDTO.getId()).orElseThrow( () -> new CustomException("Not found bill"));
         BillCreateRequest billCreateRequest = converBillToCreateRequest(bill);
         bill.setStatus(4);
         billRepository.save(bill);

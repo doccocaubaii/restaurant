@@ -64,8 +64,11 @@ public class BillResource {
 //        Common.validateInput(customValidator, ENTITY_NAME, joinDTO);
         setAuthen(joinDTO.getComId());
         ResultDTO result = billService.join(joinDTO);
-        Bill bill = (Bill) result.getData();
-        result.setData(new BillCancelRequest(bill.getId(), bill.getCode()));
+        if (result.getData() != null)
+        {
+            Bill bill = (Bill) result.getData();
+            result.setData(new BillCancelRequest(bill.getId(), bill.getCode()));
+        }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
