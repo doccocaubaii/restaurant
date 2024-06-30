@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "easy-pos-front-end": {
+    "restaurant-front-end": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -87,15 +87,15 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "easy-pos-front-end:build:development",
+            "browserTarget": "restaurant-front-end:build:development",
             "port": 4200
           },
           "configurations": {
             "production": {
-              "browserTarget": "easy-pos-front-end:build:production"
+              "browserTarget": "restaurant-front-end:build:production"
             },
             "development": {
-              "browserTarget": "easy-pos-front-end:build:development"
+              "browserTarget": "restaurant-front-end:build:development"
             }
           },
           "defaultConfiguration": "development"

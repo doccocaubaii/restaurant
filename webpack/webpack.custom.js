@@ -30,7 +30,7 @@ module.exports = async (config, options, targetOptions) => {
         },
       }),
       new WebpackNotifierPlugin({
-        title: 'Easy Pos Front End',
+        title: 'Restaurant Front End',
         contentImage: path.join(__dirname, 'logo-jhipster.png'),
       })
     );

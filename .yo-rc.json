@@ -2,7 +2,7 @@
   "generator-jhipster": {
     "applicationType": "monolith",
     "authenticationType": "jwt",
-    "baseName": "easyPosFrontEnd",
+    "baseName": "restaurantFrontEnd",
     "blueprints": [],
     "buildTool": "maven",
     "cacheProvider": "ehcache",
@@ -31,7 +31,7 @@
     "microfrontends": [],
     "nativeLanguage": "en",
     "otherModules": [],
-    "packageName": "vn.hust.easypos",
+    "packageName": "vn.hust.restaurant",
     "pages": [],
     "prodDatabaseType": "mssql",
     "reactive": false,

@@ -35,8 +35,8 @@
 #    instance-info-replication-interval-seconds: 10
 #    registry-fetch-interval-seconds: 10
 #  instance:
-#    appname: easyposfrontend
-#    instanceId: easyposfrontend:${spring.application.instance-id:${random.value}}
+#    appname: restaurantfrontend
+#    instanceId: restaurantfrontend:${spring.application.instance-id:${random.value}}
 #    lease-renewal-interval-in-seconds: 5
 #    lease-expiration-duration-in-seconds: 10
 #    status-page-url-path: ${management.endpoints.web.base-path}/info
@@ -116,7 +116,7 @@
 #            enabled: true
 #spring:
 #  application:
-#    name: easyPosFrontEnd
+#    name: restaurantFrontEnd
 #  profiles:
 #    # The commented value for `active` can be replaced with valid Spring profiles to load.
 #    # Otherwise, it will be filled in by maven when building the JAR file
@@ -166,13 +166,13 @@
 #      matching-strategy: ant_path_matcher
 #  task:
 #    execution:
-#      thread-name-prefix: easy-pos-front-end-task-
+#      thread-name-prefix: restaurant-front-end-task-
 #      pool:
 #        core-size: 2
 #        max-size: 50
 #        queue-capacity: 10000
 #    scheduling:
-#      thread-name-prefix: easy-pos-front-end-scheduling-
+#      thread-name-prefix: restaurant-front-end-scheduling-
 #      pool:
 #        size: 2
 #  thymeleaf:
@@ -203,7 +203,7 @@
 #
 #jhipster:
 #  clientApp:
-#    name: 'easyPosFrontEndApp'
+#    name: 'restaurantFrontEndApp'
 #  # By default CORS is disabled. Uncomment to enable.
 #  # cors:
 #  #   allowed-origins: "http://localhost:8100,http://localhost:9000"
@@ -213,12 +213,12 @@
 #  #   allow-credentials: true
 #  #   max-age: 1800
 #  mail:
-#    from: easyPosFrontEnd@localhost
+#    from: restaurantFrontEnd@localhost
 #  api-docs:
 #    default-include-pattern: ${server.servlet.context-path:}/api/**
 #    management-include-pattern: ${server.servlet.context-path:}/management/**
-#    title: Easy Pos Front End API
-#    description: Easy Pos Front End API documentation
+#    title: Restaurant Front End API
+#    description: Restaurant Front End API documentation
 #    version: 0.0.1
 #    terms-of-service-url:
 #    contact-name:

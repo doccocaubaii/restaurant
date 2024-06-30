@@ -18430,7 +18430,7 @@ a:focus {
   background-repeat: no-repeat;
   display: flex;
   align-items: center;
-  border-radius: 40px;
+  /*border-radius: 40px;*/
 }
 
 .app-sidebar .menu .menu-profile .menu-profile-image img {

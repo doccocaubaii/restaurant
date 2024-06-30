@@ -10,12 +10,12 @@
         <version>3.2.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>vn.hust.easypos</groupId>
-    <artifactId>easy-pos-front-end</artifactId>
+    <groupId>vn.hust.restaurant</groupId>
+    <artifactId>restaurant-front-end</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Easy Pos Front End</name>
-    <description>Description for easyPosFrontEnd</description>
+    <name>Restaurant Front End</name>
+    <description>Description for restaurantFrontEnd</description>
 
     <dependencies>
         <dependency>

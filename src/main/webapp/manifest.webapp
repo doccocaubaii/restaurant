@@ -1,6 +1,6 @@
 {
-  "name": "EasyPosFrontEnd",
-  "short_name": "EasyPosFrontEnd",
+  "name": "restaurantFrontEnd",
+  "short_name": "restaurantFrontEnd",
   "icons": [
     {
       "src": "./content/images/jhipster_family_member_0_head-192.png",

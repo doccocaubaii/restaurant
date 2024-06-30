@@ -14,7 +14,7 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
       tap({
         error: (err: HttpErrorResponse) => {
           if (!(err.status === 401 && (err.message === '' || err.url?.includes('api/client/common/account')))) {
-            this.eventManager.broadcast(new EventWithContent('easyPosFrontEndApp.httpError', err));
+            this.eventManager.broadcast(new EventWithContent('restaurantFrontEndApp.httpError', err));
           }
         },
       })

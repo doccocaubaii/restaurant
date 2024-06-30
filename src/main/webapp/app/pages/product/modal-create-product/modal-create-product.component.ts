@@ -135,8 +135,8 @@ export class ModalCreateProductComponent extends BaseComponent implements OnInit
   onCreateConversionUnit() {
     if (!this.selectedProduct.unitId) {
       this.toastr.error(
-        this.translateService.instant('easyPos.product.info.unitNull'),
-        this.translateService.instant('easyPos.product.info.message')
+        this.translateService.instant('restaurant.product.info.unitNull'),
+        this.translateService.instant('restaurant.product.info.message')
       );
     } else {
       this.convertUnitDetail = {};
@@ -174,8 +174,8 @@ export class ModalCreateProductComponent extends BaseComponent implements OnInit
       }
     } else {
       this.toastr.error(
-        this.translateService.instant('easyPos.product.info.isConvertUnitError'),
-        this.translateService.instant('easyPos.product.info.message')
+        this.translateService.instant('restaurant.product.info.isConvertUnitError'),
+        this.translateService.instant('restaurant.product.info.message')
       );
     }
   }
