@@ -3,6 +3,7 @@ package vn.hust.restaurant.service.impl;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vn.hust.restaurant.domain.Otp;
 import vn.hust.restaurant.domain.User;
 import vn.hust.restaurant.repository.OtpRepository;
@@ -12,6 +13,7 @@ import vn.hust.restaurant.web.rest.errors.CustomException;
 import java.util.Random;
 
 @Service
+@Transactional
 public class EmailService {
     private final UserRepository userRepository;
 
