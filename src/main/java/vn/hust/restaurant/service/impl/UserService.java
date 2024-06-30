@@ -172,7 +172,7 @@ public class UserService {
         } else {
             user = this.modelMapper.map(staffDTO, User.class);
         }
-        user.setStatus(1);
+        user.setStatus(2);
         user.setNormalizedName(user.getFullName().concat(user.getUsername()).toLowerCase());
         if (staffDTO.getPassword() != null) user.setPassword(passwordEncoder.encode(staffDTO.getPassword()));
         user.setCompanyId(admin.getCompanyId());
