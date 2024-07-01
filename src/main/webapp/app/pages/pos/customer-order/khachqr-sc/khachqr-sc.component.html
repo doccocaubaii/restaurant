@@ -234,6 +234,7 @@
                                 [(ngModel)]="productSelected.quantity"
                                 class="form-control"
                                 type="string"
+                                (ngModelChange)="this.changeProductSelected(productSelected)"
                               />
                               <div (click)="increaseProductQuantity(productSelected)" class="input-group-item">
                                 <i class="fa fa-plus"></i>

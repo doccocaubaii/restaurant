@@ -95,14 +95,12 @@
   </div>
 
   <div class="col-4">
-    <div class="label-chart">Biểu đồ cột báo cáo doanh thu và lợi nhuận</div>
+<!--    <div class="label-chart">Biểu đồ cột báo cáo doanh thu và lợi nhuận</div>-->
     <div class="h-450px">
       <canvas baseChart
               [type]="'pie'"
-              [datasets]="pieChartDatasets"
-              [labels]="pieChartLabels"
+              [data]="pieChartData"
               [options]="pieChartOptions"
-              [plugins]="[]"
               [legend]="true">
       </canvas>
     </div>

@@ -12,7 +12,7 @@ import dayjs from 'dayjs/esm';
 import { DATE_FORMAT } from 'app/config/input.constants';
 import { STATISTICS } from '../const/customer-order.const';
 import { LIST_STATISTICS } from './../const/customer-order.const';
-import { ChartConfiguration, ChartOptions } from 'chart.js';
+import { Chart, ChartConfiguration, ChartOptions, Colors } from 'chart.js';
 
 @Component({
   selector: 'dashboard-v3',
@@ -25,6 +25,7 @@ export class DashboardPage extends BaseComponent implements OnInit {
     fromDate : '',
     toDate :''
   }
+
 
   public lineChartOptions: ChartOptions<'line'> = {
     responsive: false
@@ -40,9 +41,9 @@ export class DashboardPage extends BaseComponent implements OnInit {
   public pieChartDatasets = [ {
     data: []
   } ];
-
-
   printConfigs = printConfigs;
+  pieChartData: ChartConfiguration<'pie'>['data'];
+
 
   constructor(private utilsService: UtilsService, private reportInvoiceService: ReportInvoiceService) {
     super();
@@ -79,18 +80,32 @@ export class DashboardPage extends BaseComponent implements OnInit {
         datasets: [
           {
             data: datasetsLineChart,
-            label: 'Series A',
+            label: 'Doanh thu',
             fill: true,
             tension: 0.5,
             borderColor: 'black',
-            backgroundColor: 'rgba(130,239,160, 0.3)' // rgba(255,0,0,0.3)
+            backgroundColor: 'rgba(255,0,0,0.3)'
           }
         ]
       };
-      this.pieChartLabels = pieLabel;
-      this.pieChartDatasets = [ {
-        data: pieData
-      } ];
+      this.pieChartData = {
+        labels:pieLabel,
+        datasets: [
+          {
+            data: pieData,
+            label: 'Doanh thu',
+            // fill: true,
+            // tension: 0.5,
+            borderColor: 'black',
+            // backgroundColor: 'rgba(255,0,0,0.3)'
+          }
+        ]
+      }
+      // this.pieChartLabels = pieLabel;
+      // this.pieChartDatasets = [ {
+      //   data: pieData,
+      //   borderColor: 'black',
+      // } ];
     });
   }
 }
