@@ -1,6 +1,6 @@
 <h1 class="page-header">Quản lý nhân viên</h1>
 
-<div *ngIf="lastUser.id == lastUser.comId" class="d-flex justify-content-end align-items-center">
+<div *ngIf="lastUser?.id == lastUser?.comId" class="d-flex justify-content-end align-items-center">
   <button type="button" class="btn btn-green me-1 mb-1 header-content-add" (click)="onCreateStaff(0)">
     <i class="fas fa-circle-plus me-2"></i>
     <span>Thêm nhân viên</span>

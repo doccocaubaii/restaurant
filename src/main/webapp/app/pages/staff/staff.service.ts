@@ -28,6 +28,6 @@ export class StaffService {
   }
 
   deleteStaffById(id: any): Observable<any>  {
-    return this.http.delete(`${this.resourceUrl}${CREATE_STAFF}${id}`);
+    return this.http.delete(`${this.resourceUrl}${CREATE_STAFF}/${id}`);
   }
 }
