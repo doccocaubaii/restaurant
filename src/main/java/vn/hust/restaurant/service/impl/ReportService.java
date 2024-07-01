@@ -24,6 +24,7 @@ import vn.hust.restaurant.domain.User;
 import vn.hust.restaurant.repository.BillRepository;
 import vn.hust.restaurant.service.dto.ResultDTO;
 import vn.hust.restaurant.service.dto.RevenueCommonStatsResponse;
+import vn.hust.restaurant.service.dto.StaticResponse;
 import vn.hust.restaurant.service.dto.bill.BillStatItem;
 import vn.hust.restaurant.service.dto.bill.BillStatsResponse;
 import vn.hust.restaurant.service.dto.bill.BillStatsResult;
@@ -55,20 +56,10 @@ public class ReportService {
     }
 
     public ResultDTO getBillRevenue(
-        Integer comId,
         String fromDate,
-        String toDate,
-        String fromHour,
-        String toHour,
-        Integer type,
-        Pageable pageable,
-        Boolean isPaging,
-        Boolean isChart
+        String toDate
     ) throws ParseException {
         User user = userService.getUserWithAuthorities();
-        if (type == null) {
-            type = BY_MONTH;
-        }
         LocalDate date1 = LocalDate.parse(fromDate);
         LocalDate date2 = LocalDate.parse(toDate);
 
@@ -76,129 +67,24 @@ public class ReportService {
         if (daysBetween == 0) {
             daysBetween = 1;
         }
-        if (type.equals(StatisticConstants.BY_DAY) && daysBetween > 60 && isChart != null && isChart) {
-            type = BY_MONTH;
-        }
         int scale = 0;
-        String format = getFormat(fromHour, toHour, type);
-        List<BillStatItem> revenues = billRepository.getBillMoney(user.getCompanyId(), fromDate, toDate, format);
-        List<RevenueByMonth> bills = processData(revenues);
+        List<BillStatItem> revenues = billRepository.getBillMoney(user.getCompanyId(), fromDate, toDate);
+        List<BillStatItem> fullRevenues = new ArrayList<>();
+        for (LocalDate date3 = date1; !date3.isAfter(date2); date3 = date3.plusDays(1)) {
+            String date3Str = date3.toString();
+            Optional<BillStatItem> existingItem = revenues.stream()
+                .filter(item -> Objects.equals(item.getTime(), date3Str))
+                .findFirst();
 
-        List<RevenueByMonth> revenueByMonthList = getAllRevenueEvenZero(bills, type, user, fromDate, toDate, fromHour, toHour);
-        int count = revenueByMonthList.size();
-        RevenueCommonStatsResponse response = new RevenueCommonStatsResponse();
-        response.setFromDate(fromDate);
-        response.setToDate(toDate);
-        response.setComId(comId);
-        BigDecimal totalRevenue = BigDecimal.ZERO;
-        BigDecimal totalProfit = BigDecimal.ZERO;
-        List<RevenueCommonStatsResponse.Detail> list = new ArrayList<>();
-        Map<String, BigDecimal> averageRevenueMap = new LinkedHashMap<>();
-        Map<String, BigDecimal> averageProfitMap = new LinkedHashMap<>();
-        if (!type.equals(StatisticConstants.BY_HOUR)) {
-            for (RevenueByMonth revenue : revenueByMonthList) {
-                totalRevenue = totalRevenue.add(revenue.getRevenue());
-                totalProfit = totalProfit.add(revenue.getProfit());
-                RevenueCommonStatsResponse.Detail detail = new RevenueCommonStatsResponse.Detail();
-                setDetail(detail, type, revenue);
-                list.add(detail);
-            }
-            if (type.equals(BY_MONTH) && !list.isEmpty()) {
-                RevenueCommonStatsResponse.Detail detail = list.get(0);
-                detail.setFromDate(fromDate);
-                list.set(0, detail);
-
-                RevenueCommonStatsResponse.Detail lastDetail = list.get(list.size() - 1);
-                lastDetail.setToDate(toDate);
-                list.set(list.size() - 1, lastDetail);
-            }
-        } else {
-            for (RevenueByMonth revenue : revenueByMonthList) {
-                String key = revenue.getMonth().substring(revenue.getMonth().lastIndexOf(" ") + 1);
-                if (averageRevenueMap.containsKey(key)) {
-                    averageRevenueMap.put(key, averageRevenueMap.get(key).add(revenue.getRevenue()));
-                } else {
-                    averageRevenueMap.put(key, revenue.getRevenue());
-                }
-                if (averageProfitMap.containsKey(key)) {
-                    averageProfitMap.put(key, averageProfitMap.get(key).add(revenue.getProfit()));
-                } else {
-                    averageProfitMap.put(key, revenue.getProfit());
-                }
-            }
-            count = averageRevenueMap.size();
-            for (Map.Entry<String, BigDecimal> entry : averageRevenueMap.entrySet()) {
-                RevenueCommonStatsResponse.Detail detail = new RevenueCommonStatsResponse.Detail();
-                setDetailAverage(detail, entry.getKey(), entry.getValue(), averageProfitMap.get(entry.getKey()), daysBetween);
-                list.add(detail);
-                totalRevenue = totalRevenue.add(detail.getRevenue());
-                totalProfit = totalProfit.add(detail.getProfit());
-                detail.setRevenue(Common.roundMoney(detail.getRevenue(), scale));
-                detail.setProfit(Common.roundMoney(detail.getProfit(), scale));
-            }
-        }
-        if (isPaging != null && isPaging && pageable != null) {
-            int start = Math.min(list.size(), pageable.getPageNumber() * pageable.getPageSize());
-            int end = Math.min((start + pageable.getPageSize()), list.size());
-            list = list.subList(start, end);
-        }
-
-        response.setDetail(list);
-        response.setRevenue(Common.roundMoney(totalRevenue, scale));
-        response.setProfit(Common.roundMoney(totalProfit, scale));
-        response.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern(Constants.ZONED_DATE_TIME_FORMAT)));
-        return new ResultDTO(ResultConstants.SUCCESS, ResultConstants.SUCCESS_GET_BILL_REVENUE, true, response, count);
-    }
-
-    private String getFormat(String fromHour, String toHour, Integer type) {
-        String format = "";
-        if (Objects.equals(type, BY_MONTH)) {
-            format = BYMONTH;
-        } else if (Objects.equals(type, StatisticConstants.BY_DAY)) {
-            format = BYDAY;
-        } else if (Objects.equals(type, StatisticConstants.BY_HOUR)) {
-            if (
-                (!Strings.isNullOrEmpty(fromHour) && Strings.isNullOrEmpty(toHour)) ||
-                (!Strings.isNullOrEmpty(toHour) && Strings.isNullOrEmpty(fromHour))
-            ) {
-                throw new BadRequestAlertException(
-                    ExceptionConstants.HOUR_REVENUE_DATE_NOT_NULL_VI,
-                    ExceptionConstants.HOUR_REVENUE_DATE_NOT_NULL_VI,
-                    ExceptionConstants.HOUR_REVENUE_DATE_NOT_NULL
-                );
-            }
-            format = BYHOUR;
-        }
-        return format;
-    }
-
-    private List<BillStatItem> processExpense(List<BillStatItem> expenses, List<BillStatItem> cancelExpenses) {
-        List<BillStatItem> result = new ArrayList<>();
-        Map<String, BillStatItem> expenseMap = new HashMap<>();
-        Map<String, BillStatItem> cancelMap = new HashMap<>();
-        for (BillStatItem item : expenses) {
-            expenseMap.put(item.getTime(), item);
-        }
-        for (BillStatItem item : cancelExpenses) {
-            cancelMap.put(item.getTime(), item);
-        }
-        for (Map.Entry<String, BillStatItem> entry : expenseMap.entrySet()) {
-            if (!cancelMap.containsKey(entry.getKey())) {
-                result.add(entry.getValue());
+            if (existingItem.isPresent()) {
+                fullRevenues.add(existingItem.get());
             } else {
-                BillStatItem item = entry.getValue();
-                item.setMoney(item.getMoney().subtract(cancelMap.get(entry.getKey()).getMoney()));
-                result.add(item);
-                cancelMap.remove(entry.getKey());
+                fullRevenues.add(new BillStatItem(date3Str, new BigDecimal("0")));
             }
         }
-        for (Map.Entry<String, BillStatItem> entry : cancelMap.entrySet()) {
-            BillStatItem item = entry.getValue();
-            item.setMoney(BigDecimal.ZERO.subtract(item.getMoney()));
-            result.add(item);
-        }
-        result.sort(Comparator.comparing(BillStatItem::getTime));
-        return result;
+        List<BillStatItem>  pieChart = billRepository.getPieChart(user.getCompanyId(), fromDate, toDate);
+        StaticResponse staticResponse = new StaticResponse(fullRevenues, pieChart);
+        return new ResultDTO(ResultConstants.SUCCESS, ResultConstants.SUCCESS_GET_BILL_REVENUE, true, staticResponse, 1);
     }
 
     private List<RevenueByMonth> processData(List<BillStatItem> revenues) {

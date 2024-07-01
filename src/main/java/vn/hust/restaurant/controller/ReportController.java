@@ -27,17 +27,10 @@ public class ReportController {
     @GetMapping("/client/page/home/revenue-common-stats")
     //    @CheckAuthorize(value = AuthoritiesConstants.Report.VIEW)
     public ResultDTO revenueCommonStats(
-        @RequestParam Integer comId,
         @RequestParam String fromDate,
-        @RequestParam String toDate,
-        @RequestParam(required = false) String fromHour,
-        @RequestParam(required = false) String toHour,
-        @RequestParam(required = false) Integer type,
-        @RequestParam(required = false) Boolean isChart,
-        Pageable pageable,
-        @RequestParam(required = false) Boolean isPaging
+        @RequestParam String toDate
     ) throws Exception {
-        return reportService.getBillRevenue(comId, fromDate, toDate, fromHour, toHour, type, pageable, isPaging, isChart);
+        return reportService.getBillRevenue(fromDate, toDate);
     }
 
     @GetMapping("/client/page/home/bill-common-stats")

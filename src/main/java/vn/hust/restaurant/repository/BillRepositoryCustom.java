@@ -17,7 +17,9 @@ public interface BillRepositoryCustom {
         Integer companyId
     );
 
-    List<BillStatItem> getBillMoney(Integer companyId, String fromDate, String toDate, String format);
+    List<BillStatItem> getBillMoney(Integer companyId, String fromDate, String toDate);
 
     BillStatsResult getBillStats(Integer comId, String fromDate, String toDate);
+
+    List<BillStatItem> getPieChart(Integer companyId, String fromDate, String toDate);
 }

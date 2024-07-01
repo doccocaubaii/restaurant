@@ -24,10 +24,8 @@ export class ReportInvoiceService {
   private resourceUrl = this.applicationConfigService.getEndpointFor('/api');
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
-  getRevenueCommonStatus(reportInvoiceInput: ReportInvoiceInput) {
-    const options = this.convertDateFromClient(reportInvoiceInput);
+  getRevenueCommonStatus(options : any) {
     const param = createRequestOption(options);
-    // options = this.convertDateFromClient(options);
     return this.http
       .get(`${this.resourceUrl}${REVENUE_COMMON_STATUS}`, { params: param, observe: 'response' })
       .pipe(map(res => this.convertResponseArrayFromServer(res)));

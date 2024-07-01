@@ -75,25 +75,18 @@ public class BillRepositoryImpl implements BillRepositoryCustom {
     }
 
     @Override
-    public List<BillStatItem> getBillMoney(Integer comId, String fromDate, String toDate, String format) {
+    public List<BillStatItem> getBillMoney(Integer comId, String fromDate, String toDate) {
         List<BillStatItem> items = new ArrayList<>();
         Map<String, Object> params = new HashMap<>();
         StringBuilder strQuery = new StringBuilder();
         strQuery.append(" FROM bill b ");
         strQuery.append(" WHERE b.com_id = :com_id and status = 1 ");
         params.put("com_id", comId);
-        Common.addDateSearchCustom(fromDate, toDate, params, strQuery, "b.bill_date", "bill");
+        Common.addDateSearchCustom(fromDate, toDate, params, strQuery, "b.created_date", "bill");
         Query query = entityManager.createNativeQuery(
-            "SELECT format(bill_date, '" +
-            format +
-            "') time, SUM(b.total_amount) money " +
+            "select DATE(created_date) time, sum(amount) money  " +
             strQuery +
-            " GROUP BY format(bill_date, '" +
-            format +
-            "') " +
-            " ORDER BY format(bill_date, '" +
-            format +
-            "') ",
+            " GROUP BY DATE(created_date)  ORDER BY DATE(created_date) ",
             "BillMoneyResultItem"
         );
         Common.setParams(query, params);
@@ -120,5 +113,25 @@ public class BillRepositoryImpl implements BillRepositoryCustom {
             return results.get(0);
         }
         return new BillStatsResult();
+    }
+
+    @Override
+    public List<BillStatItem> getPieChart(Integer comId, String fromDate, String toDate) {
+        List<BillStatItem> items = new ArrayList<>();
+        Map<String, Object> params = new HashMap<>();
+        StringBuilder strQuery = new StringBuilder();
+        strQuery.append(" FROM bill b ");
+        strQuery.append(" join bill_product p on b.id = p.bill_id ");
+        strQuery.append(" WHERE b.com_id = :com_id and b.status = 1 ");
+        params.put("com_id", comId);
+        Common.addDateSearchCustom(fromDate, toDate, params, strQuery, "b.created_date", "bill");
+        Query query = entityManager.createNativeQuery(
+            "select p.product_name time,sum(p.amount) money" +
+                strQuery + " GROUP BY p.product_id,p.product_name  ORDER BY sum(p.amount), p.product_name ",
+            "BillMoneyResultItem"
+        );
+        Common.setParams(query, params);
+        items = query.getResultList();
+        return items;
     }
 }

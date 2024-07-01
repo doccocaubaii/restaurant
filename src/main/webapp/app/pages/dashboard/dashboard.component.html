@@ -4,57 +4,6 @@
 </ol>
 <h1 class="page-header">Trang chủ</h1>
 
-<div class="row" *ngIf="invoiceCommonStatus">
-  <div class="col-xl-3 col-md-6">
-    <div class="widget widget-stats bg-blue">
-      <div class="stats-icon"><i class="fa fa-desktop"></i></div>
-      <div class="stats-info">
-        <h5>Tất cả số hóa đơn trong kỳ</h5>
-        <p>{{ invoiceCommonStatus.allCount }}</p>
-      </div>
-      <div class="stats-link">
-        <a href="javascript:;">Xem chi tiết<i class="fa fa-arrow-alt-circle-right"></i></a>
-      </div>
-    </div>
-  </div>
-  <div class="col-xl-3 col-md-6">
-    <div class="widget widget-stats bg-green">
-      <div class="stats-icon"><i class="fa fa-clock"></i></div>
-      <div class="stats-info">
-        <h5>Số hóa đơn xử lý thành công trong kỳ</h5>
-        <p>{{ invoiceCommonStatus.doneCount }}</p>
-      </div>
-      <div class="stats-link">
-        <a href="javascript:;">Xem chi tiết<i class="fa fa-arrow-alt-circle-right"></i></a>
-      </div>
-    </div>
-  </div>
-  <div class="col-xl-3 col-md-6">
-    <div class="widget widget-stats bg-orange">
-      <div class="stats-icon"><i class="fa fa-link"></i></div>
-      <div class="stats-info">
-        <h5>Số hóa đơn đang xử lý</h5>
-        <p>{{ invoiceCommonStatus.processingCount }}</p>
-      </div>
-      <div class="stats-link">
-        <a href="javascript:;">Xem chi tiết<i class="fa fa-arrow-alt-circle-right"></i></a>
-      </div>
-    </div>
-  </div>
-  <div class="col-xl-3 col-md-6">
-    <div class="widget widget-stats bg-red">
-      <div class="stats-icon"><i class="fa fa-users"></i></div>
-      <div class="stats-info">
-        <h5>Số hóa đơn chưa phát hành</h5>
-        <p>{{ invoiceCommonStatus.newCount }}</p>
-      </div>
-      <div class="stats-link">
-        <a href="javascript:;">Xem chi tiết<i class="fa fa-arrow-alt-circle-right"></i></a>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="row d-flex justify-content-start flex-wrap" style="padding-bottom: 10px">
   <div class="d-flex col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-3 col-xxl-3">
     <label class="form-label col-form-label col-xs-12 col-sm-4 col-md-4 col-lg-3">Từ ngày</label>
@@ -68,7 +17,7 @@
               name="d3"
               #c3="ngModel"
               (click)="d3.toggle()"
-              [(ngModel)]="reportInvoiceInput.fromDate"
+              [(ngModel)]="infoObject.fromDate"
               (ngModelChange)="getRevenueCommonStatus()"
               ngbDatepicker
               #d3="ngbDatepicker"
@@ -94,7 +43,7 @@
               name="d2"
               #c2="ngModel"
               (click)="d2.toggle()"
-              [(ngModel)]="reportInvoiceInput.toDate"
+              [(ngModel)]="infoObject.toDate"
               (ngModelChange)="getRevenueCommonStatus()"
               ngbDatepicker
               #d2="ngbDatepicker"
@@ -108,236 +57,55 @@
       </form>
     </div>
   </div>
-  <div class="d-flex col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-3 col-xxl-3">
-    <label class="form-label col-form-label col-xs-12 col-sm-4 col-md-4 col-lg-3">Thống kê</label>
-    <div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
-      <form class="form-inline">
-        <div class="form-group">
-          <div class="input-group">
-            <ng-select
-              class="col-12"
-              [items]="listStatistics"
-              bindLabel="name"
-              title="Loại thống kê"
-              placeholder="Chọn loại thống kê"
-              bindValue="id"
-              [(ngModel)]="reportInvoiceInput.type"
-              name="type"
-              (ngModelChange)="getRevenueCommonStatus()"
-            >
-            </ng-select>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
+<!--  <div class="d-flex col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-3 col-xxl-3">-->
+<!--    <label class="form-label col-form-label col-xs-12 col-sm-4 col-md-4 col-lg-3">Thống kê</label>-->
+<!--    <div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">-->
+<!--      <form class="form-inline">-->
+<!--        <div class="form-group">-->
+<!--          <div class="input-group">-->
+<!--            <ng-select-->
+<!--              class="col-12"-->
+<!--              [items]="listStatistics"-->
+<!--              bindLabel="name"-->
+<!--              title="Loại thống kê"-->
+<!--              placeholder="Chọn loại thống kê"-->
+<!--              bindValue="id"-->
+<!--              [(ngModel)]="reportInvoiceInput.type"-->
+<!--              name="type"-->
+<!--              (ngModelChange)="getRevenueCommonStatus()"-->
+<!--            >-->
+<!--            </ng-select>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </form>-->
+<!--    </div>-->
+<!--  </div>-->
 </div>
 
 <div class="row">
-  <!-- <div class="col-xl-12">
-    <panel title="Biểu đồ đường báo cáo doanh thu và lợi nhuận">
-      <div class="h-250px">
-        <ngx-charts-line-chart
-          [animations]="false"
-          [scheme]="lineChartColor"
-          [results]="revenueCommonStatus"
-          [xAxis]="true"
-          [yAxis]="true"
-          [legend]="true"
-          [showXAxisLabel]="false"
-          [showYAxisLabel]="false"
-          [roundDomains]="true"
-
-        >
-        </ngx-charts-line-chart>
-      </div>
-    </panel>
-  </div> -->
-
-  <div class="col-xl-6">
-    <div class="label-chart">Biểu đồ cột báo cáo doanh thu và lợi nhuận</div>
-    <div class="h-450px">
-      <ngx-charts-bar-vertical-2d
-        [scheme]="lineChartColor"
-        [results]="revenueCommonStatusBarVertical"
-        [xAxis]="true"
-        [yAxis]="true"
-        [legend]="true"
-        [showXAxisLabel]="true"
-        [showYAxisLabel]="true"
-        [barPadding]="1"
-        [groupPadding]="1"
-      >
-      </ngx-charts-bar-vertical-2d>
+  <div class ="col-8">
+    <div style="display: block;">
+      <canvas baseChart height="400"  style="width: 100%"
+              [type]="'line'"
+              [data]="lineChartData"
+              [options]="lineChartOptions"
+              [legend]="true">
+      </canvas>
     </div>
   </div>
 
-  <!-- <div class="col-xl-4">
-    <panel title="Analytics Details" bodyClass="p-0">
-      <div class="table-responsive">
-        <table class="table table-panel align-middle mb-0">
-          <thead>
-            <tr>
-              <th>Source</th>
-              <th>Total</th>
-              <th>Trend</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td nowrap><label class="badge bg-danger">Unique Visitor</label></td>
-              <td>
-                13,203 <span class="text-success"><i class="fa fa-arrow-up"></i></span>
-              </td>
-              <td>
-                <ngx-trend
-                  [height]="30"
-                  [autoDraw]="true"
-                  [autoDrawDuration]="0"
-                  [autoDrawEasing]="'ease-out'"
-                  [smooth]="true"
-                  [data]="[0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0]"
-                  [gradient]="[global.color.red]"
-                  [radius]="0.1"
-                  [strokeWidth]="5"
-                  [strokeLinecap]="'butt'"
-                >
-                </ngx-trend>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap><label class="badge bg-warning">Bounce Rate</label></td>
-              <td>28.2%</td>
-              <td>
-                <ngx-trend
-                  [height]="30"
-                  [autoDraw]="true"
-                  [autoDrawDuration]="0"
-                  [autoDrawEasing]="'ease-out'"
-                  [smooth]="true"
-                  [data]="[0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0]"
-                  [gradient]="[global.color.orange]"
-                  [radius]="0.1"
-                  [strokeWidth]="5"
-                  [strokeLinecap]="'butt'"
-                >
-                </ngx-trend>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap><label class="badge bg-success">Total Page Views</label></td>
-              <td>1,230,030</td>
-              <td>
-                <ngx-trend
-                  [height]="30"
-                  [autoDraw]="true"
-                  [autoDrawDuration]="0"
-                  [autoDrawEasing]="'ease-out'"
-                  [smooth]="true"
-                  [data]="[0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0]"
-                  [gradient]="[global.color.success]"
-                  [radius]="0.1"
-                  [strokeWidth]="5"
-                  [strokeLinecap]="'butt'"
-                >
-                </ngx-trend>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap><label class="badge bg-blue">Avg Time On Site</label></td>
-              <td>00:03:45</td>
-              <td>
-                <ngx-trend
-                  [height]="30"
-                  [autoDraw]="true"
-                  [autoDrawDuration]="0"
-                  [autoDrawEasing]="'ease-out'"
-                  [smooth]="true"
-                  [data]="[0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0]"
-                  [gradient]="[global.color.blue]"
-                  [radius]="0.1"
-                  [strokeWidth]="5"
-                  [strokeLinecap]="'butt'"
-                >
-                </ngx-trend>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap><label class="badge bg-default text-gray-900">% New Visits</label></td>
-              <td>40.5%</td>
-              <td>
-                <ngx-trend
-                  [height]="30"
-                  [autoDraw]="true"
-                  [autoDrawDuration]="0"
-                  [autoDrawEasing]="'ease-out'"
-                  [smooth]="true"
-                  [data]="[0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0]"
-                  [gradient]="[global.color.gray500]"
-                  [radius]="0.1"
-                  [strokeWidth]="5"
-                  [strokeLinecap]="'butt'"
-                >
-                </ngx-trend>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap><label class="badge bg-inverse">Return Visitors</label></td>
-              <td>73.4%</td>
-              <td>
-                <ngx-trend
-                  [height]="30"
-                  [autoDraw]="true"
-                  [autoDrawDuration]="0"
-                  [autoDrawEasing]="'ease-out'"
-                  [smooth]="true"
-                  [data]="[0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0]"
-                  [gradient]="[global.color.componentColor]"
-                  [radius]="0.1"
-                  [strokeWidth]="5"
-                  [strokeLinecap]="'butt'"
-                >
-                </ngx-trend>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </panel>
-    <panel title="Visitors User Agent">
-      <div class="h-300px">
-        <ngx-charts-pie-chart
-          [scheme]="pieChartColor"
-          [results]="pieChartData"
-          [legend]="false"
-          [explodeSlices]="false"
-          [labels]="true"
-          [doughnut]="false"
-        >
-        </ngx-charts-pie-chart>
-      </div>
-    </panel>
-  </div> -->
+  <div class="col-4">
+    <div class="label-chart">Biểu đồ cột báo cáo doanh thu và lợi nhuận</div>
+    <div class="h-450px">
+      <canvas baseChart
+              [type]="'pie'"
+              [datasets]="pieChartDatasets"
+              [labels]="pieChartLabels"
+              [options]="pieChartOptions"
+              [plugins]="[]"
+              [legend]="true">
+      </canvas>
+    </div>
+  </div>
 </div>
 
-<!-- <div class="row">
-  <input type="text" [ngModel]="id" />
-  <button type="button" (click)="findByIDTest()">findByID</button>
-  <button type="button" (click)="findByKeySearch(printConfigs, 'name', 'aaaa')">findByKeySearch</button>
-  <button
-    type="button"
-    (click)="
-      addArrItems(printConfigs, [
-        { name: randomString(6), age: randomAge() },
-        { name: randomString(6), age: randomAge() }
-      ])
-    "
-  >
-    addArrItems
-  </button>
-  <button type="button" (click)="addItem(printConfigs, { name: randomString(6), age: randomAge() })">addItem</button>
-  <button type="button" (click)="deleteByID(printConfigs, 231)">deleteByID</button>
-  <button type="button" (click)="editByID(printConfigs, 232, 'name', randomString(6))">editByID</button>
-  <button type="button" (click)="findByKeySearchBetween(printConfigs, 'age', 0, 15)">findByKeySearchBetween</button>
-  <input type="text" [ngModel]="dataTest?.name" />
-</div> -->

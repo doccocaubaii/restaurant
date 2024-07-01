@@ -12,123 +12,85 @@ import dayjs from 'dayjs/esm';
 import { DATE_FORMAT } from 'app/config/input.constants';
 import { STATISTICS } from '../const/customer-order.const';
 import { LIST_STATISTICS } from './../const/customer-order.const';
+import { ChartConfiguration, ChartOptions } from 'chart.js';
 
 @Component({
   selector: 'dashboard-v3',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
+  styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardPage extends BaseComponent implements OnInit {
   global = global;
-  dataTest: any;
+  infoObject : any = {
+    fromDate : '',
+    toDate :''
+  }
+
+  public lineChartOptions: ChartOptions<'line'> = {
+    responsive: false
+  };
+
+  public lineChartData: ChartConfiguration<'line'>['data'];
+
+  // Pie
+  public pieChartOptions: ChartOptions<'pie'> = {
+    responsive: false,
+  };
+  public pieChartLabels = [];
+  public pieChartDatasets = [ {
+    data: []
+  } ];
+
 
   printConfigs = printConfigs;
-
-  revenueCommonStatus: any;
-  revenueCommonStatusBarVertical: any = [];
-  lineChartColor: any = { domain: [global.color.blue, global.color.success, global.color.purple, global.color.componentColor] };
-
-  reportInvoiceInput: ReportInvoiceInput = new ReportInvoiceInput();
-  listStatistics = LIST_STATISTICS;
-
-  invoiceCommonStatus;
 
   constructor(private utilsService: UtilsService, private reportInvoiceService: ReportInvoiceService) {
     super();
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
     }, 500);
-    // await this.populate();
-
-    this.resetRevenueCommonStatus();
-    this.findByIDTest();
-  }
-
-  resetRevenueCommonStatus() {
-    const revenueCommonStatusLocal = [
-      {
-        name: 'Doanh thu',
-        series: [],
-      },
-      {
-        name: 'Lợi nhuận',
-        series: [],
-      },
-    ];
-    return revenueCommonStatusLocal;
-  }
-
-  resetRevenueCommonBarVerticalStatus() {
-    return [];
-  }
-
-  addNewRevenueCommonBarVerticalStatus() {
-    return {
-      name: '',
-      series: [
-        {
-          name: 'Doanh thu',
-          value: 0,
-        },
-        {
-          name: 'Lợi nhuận',
-          value: 0,
-        },
-      ],
-    };
-  }
-
-  getName(dataDetail) {
-    let name;
-    switch (this.reportInvoiceInput.type) {
-      case STATISTICS.month:
-        name = (new Date(dataDetail.fromDate).getMonth() + 1).toString();
-        break;
-      case STATISTICS.date:
-        name = new Date(dataDetail.fromDate).getDate() + '-' + (new Date(dataDetail.fromDate).getMonth() + 1);
-        break;
-      case STATISTICS.hour:
-        name = new Date(dataDetail.fromDate).getHours() + 'h-' + new Date(dataDetail.fromDate).getDate();
-        break;
-      default:
-    }
-    return name;
+    this.infoObject.fromDate = dayjs().subtract(30, 'day');
+    this.infoObject.toDate = dayjs();
+    this.getRevenueCommonStatus();
   }
 
   getRevenueCommonStatus() {
-    this.reportInvoiceService.getRevenueCommonStatus(this.reportInvoiceInput).subscribe(res => {
-      this.revenueCommonStatus = [...this.resetRevenueCommonStatus()];
-      this.revenueCommonStatus.forEach((item, index) => {
-        res.body.detail.forEach(dataDetail => {
-          let name = this.getName(dataDetail);
-          item.series.push({ value: index ? dataDetail.profit : dataDetail.revenue, name });
-        });
-      });
+    let obj = {
+      fromDate : this.infoObject.fromDate.format(DATE_FORMAT),
+      toDate : this.infoObject.toDate.format(DATE_FORMAT),
+    }
+    this.reportInvoiceService.getRevenueCommonStatus(obj)
+      .subscribe(res => {
+      let data = res.body;
+      let labelsLineChart = data.revenue.map(item => item.time);
+      let datasetsLineChart = data.revenue.map(item => item.money);
+      let pieLabel = data.pieChart.map(item => item.time);
+      let pieData = data.pieChart.map(item => item.money);
+      console.log(labelsLineChart);
+      console.log(datasetsLineChart);
+      console.log(pieLabel);
+      console.log(pieData);
 
-      this.revenueCommonStatusBarVertical = [];
-      res.body.detail.forEach(dataDetail => {
-        let revenueCommonBarVerticalStatusLocal = this.addNewRevenueCommonBarVerticalStatus();
-        let name = this.getName(dataDetail);
-        revenueCommonBarVerticalStatusLocal.name = name;
-        revenueCommonBarVerticalStatusLocal.series.forEach((serie, index) => {
-          serie.value = index ? dataDetail.profit : dataDetail.revenue;
-        });
-        this.revenueCommonStatusBarVertical.push(revenueCommonBarVerticalStatusLocal);
-      });
-      this.revenueCommonStatusBarVertical = [...this.revenueCommonStatusBarVertical];
+      this.lineChartData = {
+        labels:labelsLineChart,
+        datasets: [
+          {
+            data: datasetsLineChart,
+            label: 'Series A',
+            fill: true,
+            tension: 0.5,
+            borderColor: 'black',
+            backgroundColor: 'rgba(130,239,160, 0.3)' // rgba(255,0,0,0.3)
+          }
+        ]
+      };
+      this.pieChartLabels = pieLabel;
+      this.pieChartDatasets = [ {
+        data: pieData
+      } ];
     });
-  }
-
-  async findByIDTest() {
-    this.dataTest = await this.getCompany();
-    this.reportInvoiceInput.comId = this.dataTest.id;
-    this.reportInvoiceInput.fromDate = dayjs().subtract(30, 'day');
-    this.reportInvoiceInput.toDate = dayjs();
-    this.reportInvoiceInput.type = STATISTICS.date;
-
-    this.getRevenueCommonStatus();
   }
 }
