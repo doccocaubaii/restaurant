@@ -33,7 +33,7 @@ export class KhachqrScComponent implements OnInit, OnDestroy {
   message: string = '';
   listProduct: any = [];
   loading = true;
-  filterProduct: any = { page: Page.PAGE_NUMBER, size: 15, companyId: null };
+  filterProduct: any = { page: Page.PAGE_NUMBER, size: 15, companyId: null , keyword :''};
   activeRemoveProductSelected: any = 0;
   private topicSubscription: Subscription | undefined;
 

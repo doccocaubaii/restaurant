@@ -48,10 +48,12 @@
               </a>
             </li>
             <div *ngIf="menuType==0" class="form-group d-flex col-4 ms-auto p-2px">
-              <form class="nosubmit">
-                <input class="nosubmit search-header" placeholder="Tìm món (F3)..."
+              <div style = "width:100%">
+                <input class="nosubmit search-header" placeholder="Tìm món ..."
+                       [(ngModel)]="filterProduct.keyword"
+                       (keydown.enter)="listProduct=[];getListProduct()"
                        type="search" />
-              </form>
+              </div>
             </div>
           </ul>
           <div class="row col-12 tab-content-right panel rounded-0 pt-3 pb-3 m-0"
