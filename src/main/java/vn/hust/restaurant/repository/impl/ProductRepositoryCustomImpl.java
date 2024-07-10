@@ -36,7 +36,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         Common.setParams(countQuery, params);
         Number count = (Number) countQuery.getSingleResult();
         if (count.intValue() > 0) {
-            strQuery.append(" order by p.name desc ");
+            strQuery.append("order by p.created_date ");
             Query query = entityManager.createNativeQuery(
                 "select p.id id, " +
                     "p.com_id comId, " +
