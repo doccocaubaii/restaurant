@@ -108,23 +108,6 @@ public class UserService {
         throw new InternalServerException(ExceptionConstants.USERNAME_NOT_NULL_VI, ExceptionConstants.USERNAME_NOT_NULL_CODE);
     }
 
-//    public JwtDTO getInfoJwt() {
-//        if (!Strings.isNullOrEmpty(SecurityContextHolder.getContext().getAuthentication().getCredentials().toString())) {
-//            String[] chunks = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString().split("\\.");
-//            Base64.Decoder decoder = Base64.getUrlDecoder();
-//            String payload = new String(decoder.decode(chunks[1]));
-//            try {
-//                ObjectMapper mapper = new ObjectMapper();
-//                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-//                JwtDTO jwtDTO = mapper.readValue(payload, JwtDTO.class);
-//                return jwtDTO;
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        return null;
-//    }
-
     public Integer getCompanyId() {
         User user = getUserWithAuthorities();
         return user.getCompanyId();

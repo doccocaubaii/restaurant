@@ -34,7 +34,7 @@ public class EmailService {
 
     public void sendOtpEmail(String toEmail, String otp) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("gnhatminhg@gmail.com");
+        message.setFrom("dungk2pi@gmail.com");
         message.setTo(toEmail);
         message.setSubject("Restaurant - OTP for Account Activation");
         message.setText(buildEmailBody(otp));

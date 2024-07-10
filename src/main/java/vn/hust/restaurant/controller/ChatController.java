@@ -27,6 +27,7 @@ public class ChatController {
     public ChatDTO sendMessage(@Payload ChatDTO chatDTO) {
         this.template.convertAndSend("/topic/messages/" + chatDTO.getUserId(), chatDTO);// gửi cho chủ quán
         this.template.convertAndSend("/topic/messages/" + chatDTO.getUserId() + "/" + chatDTO.getTableId(), chatDTO); // gửi cho khách
+
         return chatDTO;
     }
 

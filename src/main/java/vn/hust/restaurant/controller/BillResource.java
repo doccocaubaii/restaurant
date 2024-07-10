@@ -29,7 +29,7 @@ import java.net.URISyntaxException;
 
 @RestController
 @RequestMapping("/api")
-public class BillResource {
+public class  BillResource {
 
     private static final String ENTITY_NAME = "Bill";
     private final Validator customValidator;

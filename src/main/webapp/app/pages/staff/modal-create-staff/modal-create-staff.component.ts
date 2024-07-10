@@ -32,6 +32,7 @@ export class ModalCreateStaffComponent  extends BaseComponent implements OnInit 
   }
 
   onSave() {
+
     this.selectedItem.comId = this.lastCompany.id;
     this.service.updateStaff(this.selectedItem).subscribe(value => {
       this.toastr.success(value.message[0].message, value.message[0].code);

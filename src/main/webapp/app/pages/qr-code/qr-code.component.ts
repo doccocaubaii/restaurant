@@ -20,12 +20,17 @@ export class QrCodeComponent implements OnInit {
   ngOnInit(): void {
   }
 
+
+
   genQrCode() {
-    let value = 'http://localhost:9000/pos/ban-hang/1/' + this.tableId;
+
     if (this.tableId < 0 || !this.tableId) {
       this.toast.error('Số bàn không hợp lệ');
       return;
     }
+    let currentUrl = document.location.protocol + "//" + document.location.hostname + ":" + document.location.port;
+    console.log(currentUrl);
+      let value = currentUrl + '/pos/ban-hang/1/' + this.tableId;
     if (value) {
       QRCode.toDataURL(value, (err, url) => {
         if (err) {
