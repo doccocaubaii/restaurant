@@ -60,7 +60,7 @@ export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDes
   activeCreateOrder: boolean | null = null;
   receivedMessages: any[] = [];
   message: string = '';
-  idTable: any = 1;
+  idTable: any = 1;// đây
   private lastCompany: any;
   private topicSubscription: Subscription | undefined;
 
@@ -194,10 +194,10 @@ export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDes
   checkOrder(orderSelected: IBillPayment) {
     const listProperty = ['customerName', 'products'];
     const listValue = ['khách hàng', 'sản phẩm'];
-    if (this.orderSelected.deliveryType === DeliveryType.AT_TABLE) {
-      listProperty.push('areaId');
-      listValue.push('bàn');
-    }
+    // if (this.orderSelected.deliveryType === DeliveryType.AT_TABLE) {
+    //   listProperty.push('areaId');
+    //   listValue.push('bàn');
+    // }
     for (let i = 0; i < listProperty.length; i++) {
       if (!validVariable(orderSelected[listProperty[i]])) {
         this.toast.warning(`Vui lòng chọn ${listValue[i]}`);

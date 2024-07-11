@@ -113,19 +113,19 @@
                 <div class="chat-messages p-4">
                   <ng-container *ngFor="let mes of receivedMessages">
                     <div
-                      [ngClass]="{ 'chat-message-right': mes.type==1, 'chat-message-left':mes.type!=1}"
+                      [ngClass]="{ 'chat-message-right': mes.type==this.idTable, 'chat-message-left':mes.type!=this.idTable}"
                       class="pb-4">
                       <div>
                         <img
-                          [src]="mes.type==1?'../assets/img/user/customer.jpg':'../assets/img/user/user-13.jpg'"
+                          [src]="mes.type!=0?'../assets/img/user/customer.jpg':'../assets/img/user/user-13.jpg'"
                           alt="Chris Wood"
                           class="rounded-circle mr-1" height="40" width="40">
                         <!--                        <div class="text-muted small text-nowrap mt-2">2:33 am</div>-->
                       </div>
                       <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-                        <div *ngIf="mes.type==1" class="font-weight-bold mb-1">You</div>
-                        <div *ngIf="mes.type!=1"
-                             class="font-weight-bold mb-1">{{ mes.userName }}
+                        <div *ngIf="mes.type==this.idTable" class="font-weight-bold mb-1">You</div>
+                        <div *ngIf="mes.type!=this.idTable"
+                             class="font-weight-bold mb-1">Bàn {{ mes.tableId }}
                         </div>
                         {{ mes.content }}
                       </div>

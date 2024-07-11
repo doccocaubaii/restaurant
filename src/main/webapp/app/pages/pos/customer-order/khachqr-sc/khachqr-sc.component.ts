@@ -54,7 +54,7 @@ export class KhachqrScComponent implements OnInit, OnDestroy {
       this.filterProduct.companyId = this.idAmin;
       console.log('idAmin:', this.idAmin);
       console.log('idTable:', this.idTable);
-      this.topicSubscription = this.rxStompService.watch(`/topic/messages/${this.idAmin}/${this.idTable}`).subscribe((res: any) => {
+      this.topicSubscription = this.rxStompService.watch(`/topic/messages/${this.idAmin}`).subscribe((res: any) => {
         let data = JSON.parse(res.body);
         this.receivedMessages.push(data);
       });
@@ -89,7 +89,7 @@ export class KhachqrScComponent implements OnInit, OnDestroy {
       return;
     }
     let senderObj = {
-      type: 1,
+      type: this.idTable,
       userId: this.idAmin,
       tableId: this.idTable,
       content: this.message

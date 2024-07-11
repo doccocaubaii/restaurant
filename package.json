@@ -120,6 +120,7 @@
     "dexie": "^3.2.3",
     "flag-icon-css": "^4.1.7",
     "moment": "^2.29.4",
+    "ng": "^0.0.0",
     "ng-apexcharts": "^1.7.4",
     "ng-multiselect-dropdown": "^0.3.8",
     "ng2-charts": "^4.1.1",
@@ -137,6 +138,7 @@
     "ngx-webstorage": "10.0.1",
     "qrcode": "^1.5.3",
     "rxjs": "7.5.6",
+    "tooltip": "^1.6.1",
     "tslib": "2.4.0",
     "zone.js": "0.11.6"
   },
