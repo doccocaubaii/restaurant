@@ -36,6 +36,7 @@ export class KhachqrScComponent implements OnInit, OnDestroy {
   filterProduct: any = { page: Page.PAGE_NUMBER, size: 15, companyId: null , keyword :''};
   activeRemoveProductSelected: any = 0;
   private topicSubscription: Subscription | undefined;
+  private isStopLoading = false;
 
   constructor(
     protected productService: ProductService,
@@ -72,6 +73,7 @@ export class KhachqrScComponent implements OnInit, OnDestroy {
       result?.forEach(item => {
         this.listProduct?.push(item);
       });
+      if (result && result.length == 0) this.isStopLoading = true;
       console.log(this.listProduct);
     });
   }
@@ -203,7 +205,10 @@ export class KhachqrScComponent implements OnInit, OnDestroy {
   }
 
   loadMore($event) {
-
+    if (this.isStopLoading) return;
+    console.log("load more");
+    this.filterProduct.page ++;
+    this.getListProduct();
   }
 
   xemBill() {

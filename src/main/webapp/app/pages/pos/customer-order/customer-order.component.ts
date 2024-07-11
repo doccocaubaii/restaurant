@@ -43,7 +43,7 @@ export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDes
   loading = true;
 
   menuType: number = MenuType.ProductGroup;
-  filterProduct: FilterProduct = { page: Page.PAGE_NUMBER, size: 15 };
+  filterProduct: any = { page: Page.PAGE_NUMBER, size: 15 };
   query: FormControl = new FormControl('');
 
   listProduct?: IProduct[] | null = [];
@@ -63,6 +63,8 @@ export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDes
   idTable: any = 1;
   private lastCompany: any;
   private topicSubscription: Subscription | undefined;
+  private isStopLoading = false;
+
 
 
   constructor(
@@ -132,6 +134,7 @@ export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDes
       result?.forEach(item => {
         this.listProduct?.push(item);
       });
+      if (result && result.length == 0) this.isStopLoading = true;
     });
   }
 
@@ -355,15 +358,11 @@ export class PosCustomerOrderPage extends BaseComponent implements OnInit, OnDes
     this.changeProductSelected(product);
   }
 
-  loadMore(event) {
-    console.log(this.listProduct);
-    if (event.target.scrollTop === 0) {
-      return;
-    }
-    if (event.target.offsetHeight + event.target.scrollTop >= event.target.scrollHeight) {
-      this.filterProduct.page !== undefined && (this.filterProduct.page += 1);
-      this.getListProduct();
-    }
+  loadMore($event) {
+    if (this.isStopLoading) return;
+    console.log("load more");
+    this.filterProduct.page ++;
+    this.getListProduct();
   }
 
   togglePosMobileSidebar() {

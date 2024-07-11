@@ -60,9 +60,15 @@
           <div class="row col-12 tab-content-right panel rounded-0 pt-3 pb-3 m-0"
                style="flex-direction: column; display: flex;flex-grow: 1;">
             <div *ngIf="menuType === 0" class="tab-pane fade active show" id="default-tab-1">
-              <div class="pos-content overflow-hidden">
-                <perfect-scrollbar class="mb-xs-1 mb-sm-1 mb-md-1 mb-lg-1 mb-xl-3 mb-xxl-3">
-                  <div (scroll)="loadMore($event)" class="product-row d-flex flex-wrap">
+              <div class="pos-content"
+                   infinite-scroll
+                   [scrollWindow]="false"
+                   [infiniteScrollDistance]="1"
+                   [infiniteScrollThrottle]="150"
+                   (scrolled)="loadMore($event)"
+              >
+                <div class="mb-xs-1 mb-sm-1 mb-md-1 mb-lg-1 mb-xl-3 mb-xxl-3">
+                  <div  class="product-row d-flex flex-wrap">
                     <div (click)="addProduct()"
                          class="col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 wrap-product-container">
                       <div class="pos-stock-product add-product">
@@ -123,7 +129,7 @@
                       </div>
                     </div>
                   </div>
-                </perfect-scrollbar>
+                </div>
               </div>
             </div>
             <div *ngIf="menuType === 1" class="tab-pane fade active show"

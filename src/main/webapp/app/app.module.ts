@@ -98,6 +98,7 @@ import { ModalCreateStaffComponent } from './pages/staff/modal-create-staff/moda
 import { ModalDeleteStaffComponent } from './pages/staff/modal-delete-staff/modal-delete-staff.component';
 import { EmailActiveComponent } from './pages/email-active/email-active.component';
 import { KitchenComponent } from './pages/kitchen/kitchen.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -130,6 +131,7 @@ FullCalendarModule.registerPlugins([dayGridPlugin, timeGridPlugin, interactionPl
     NgxDatatableModule,
     NgxEditorModule,
     NgxChartsModule,
+    InfiniteScrollModule,
     PerfectScrollbarModule,
     ReactiveFormsModule,
     TrendModule,
